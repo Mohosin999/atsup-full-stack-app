@@ -1,4 +1,4 @@
-# CVCoach - AI-Powered Resume Analysis & Builder Platform
+# CVCoach - AI-Powered Resume Analysis & Builder Platform (AI)
 
 CVCoach is an AI-powered resume analysis and building platform that helps job seekers optimize their resumes for Applicant Tracking Systems (ATS) and job matching. Users can upload resumes to receive detailed ATS scores, missing keyword identification, and AI-generated improvement recommendations. The platform also features resume-to-job matching with skills gap analysis, a professional resume builder with AI-powered content generation, plus secure authentication, Stripe payment integration for premium features, and a centralized dashboard.
 

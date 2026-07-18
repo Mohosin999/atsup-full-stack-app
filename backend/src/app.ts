@@ -9,6 +9,8 @@ dotenv.config();
 
 const app: Application = express();
 
+app.set("trust proxy", 1);
+
 applyMiddleware(app);
 
 app.get("/", (_req: Request, res: Response) => {

@@ -10,14 +10,15 @@ export default defineConfig({
     },
   },
 
-  // server: {
-  //   proxy: {
-  //     "/api": {
-  //       target: "http://localhost:5000",
-  //       changeOrigin: true,
-  //     },
-  //   },
-  // },
+  server: {
+    port: 3000,
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+    },
+  },
   // build: {
   //   outDir: "build",
   //   sourcemap: true,

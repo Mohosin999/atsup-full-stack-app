@@ -404,8 +404,6 @@ export const ModelName = {
   AtsScore: 'AtsScore',
   AtsScoreHistory: 'AtsScoreHistory',
   JobDescription: 'JobDescription',
-  JobMatch: 'JobMatch',
-  JobMatchHistory: 'JobMatchHistory',
   Payment: 'Payment',
   ResumeBuildHistory: 'ResumeBuildHistory'
 } as const
@@ -423,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "resume" | "resumeTemplate" | "analysis" | "atsScore" | "atsScoreHistory" | "jobDescription" | "jobMatch" | "jobMatchHistory" | "payment" | "resumeBuildHistory"
+    modelProps: "user" | "resume" | "resumeTemplate" | "analysis" | "atsScore" | "atsScoreHistory" | "jobDescription" | "payment" | "resumeBuildHistory"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -945,154 +943,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    JobMatch: {
-      payload: Prisma.$JobMatchPayload<ExtArgs>
-      fields: Prisma.JobMatchFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.JobMatchFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.JobMatchFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload>
-        }
-        findFirst: {
-          args: Prisma.JobMatchFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.JobMatchFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload>
-        }
-        findMany: {
-          args: Prisma.JobMatchFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload>[]
-        }
-        create: {
-          args: Prisma.JobMatchCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload>
-        }
-        createMany: {
-          args: Prisma.JobMatchCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.JobMatchCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload>[]
-        }
-        delete: {
-          args: Prisma.JobMatchDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload>
-        }
-        update: {
-          args: Prisma.JobMatchUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload>
-        }
-        deleteMany: {
-          args: Prisma.JobMatchDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.JobMatchUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.JobMatchUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload>[]
-        }
-        upsert: {
-          args: Prisma.JobMatchUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchPayload>
-        }
-        aggregate: {
-          args: Prisma.JobMatchAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateJobMatch>
-        }
-        groupBy: {
-          args: Prisma.JobMatchGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.JobMatchGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.JobMatchCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.JobMatchCountAggregateOutputType> | number
-        }
-      }
-    }
-    JobMatchHistory: {
-      payload: Prisma.$JobMatchHistoryPayload<ExtArgs>
-      fields: Prisma.JobMatchHistoryFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.JobMatchHistoryFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.JobMatchHistoryFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload>
-        }
-        findFirst: {
-          args: Prisma.JobMatchHistoryFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.JobMatchHistoryFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload>
-        }
-        findMany: {
-          args: Prisma.JobMatchHistoryFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload>[]
-        }
-        create: {
-          args: Prisma.JobMatchHistoryCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload>
-        }
-        createMany: {
-          args: Prisma.JobMatchHistoryCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.JobMatchHistoryCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload>[]
-        }
-        delete: {
-          args: Prisma.JobMatchHistoryDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload>
-        }
-        update: {
-          args: Prisma.JobMatchHistoryUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload>
-        }
-        deleteMany: {
-          args: Prisma.JobMatchHistoryDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.JobMatchHistoryUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.JobMatchHistoryUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload>[]
-        }
-        upsert: {
-          args: Prisma.JobMatchHistoryUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobMatchHistoryPayload>
-        }
-        aggregate: {
-          args: Prisma.JobMatchHistoryAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateJobMatchHistory>
-        }
-        groupBy: {
-          args: Prisma.JobMatchHistoryGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.JobMatchHistoryGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.JobMatchHistoryCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.JobMatchHistoryCountAggregateOutputType> | number
-        }
-      }
-    }
     Payment: {
       payload: Prisma.$PaymentPayload<ExtArgs>
       fields: Prisma.PaymentFieldRefs
@@ -1398,44 +1248,6 @@ export const JobDescriptionScalarFieldEnum = {
 } as const
 
 export type JobDescriptionScalarFieldEnum = (typeof JobDescriptionScalarFieldEnum)[keyof typeof JobDescriptionScalarFieldEnum]
-
-
-export const JobMatchScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  resumeId: 'resumeId',
-  jobDescription: 'jobDescription',
-  jobTitle: 'jobTitle',
-  company: 'company',
-  matchPercentage: 'matchPercentage',
-  breakdown: 'breakdown',
-  missingSkills: 'missingSkills',
-  missingKeywords: 'missingKeywords',
-  suggestions: 'suggestions',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobMatchScalarFieldEnum = (typeof JobMatchScalarFieldEnum)[keyof typeof JobMatchScalarFieldEnum]
-
-
-export const JobMatchHistoryScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  title: 'title',
-  resumeName: 'resumeName',
-  jobDescription: 'jobDescription',
-  matchPercentage: 'matchPercentage',
-  breakdown: 'breakdown',
-  missingSkills: 'missingSkills',
-  missingKeywords: 'missingKeywords',
-  suggestions: 'suggestions',
-  resumeContent: 'resumeContent',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobMatchHistoryScalarFieldEnum = (typeof JobMatchHistoryScalarFieldEnum)[keyof typeof JobMatchHistoryScalarFieldEnum]
 
 
 export const PaymentScalarFieldEnum = {
@@ -1757,8 +1569,6 @@ export type GlobalOmitConfig = {
   atsScore?: Prisma.AtsScoreOmit
   atsScoreHistory?: Prisma.AtsScoreHistoryOmit
   jobDescription?: Prisma.JobDescriptionOmit
-  jobMatch?: Prisma.JobMatchOmit
-  jobMatchHistory?: Prisma.JobMatchHistoryOmit
   payment?: Prisma.PaymentOmit
   resumeBuildHistory?: Prisma.ResumeBuildHistoryOmit
 }

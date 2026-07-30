@@ -17,9 +17,10 @@ const sanitizeSpellingGrammar = (spellingGrammar: any) => {
 export const createAtsScoreHistory = async (
   userId: string,
   resumeName: string,
-  resumeContent: ResumeContent
+  resumeContent: ResumeContent,
+  jobDescription?: string
 ) => {
-  const analysis = await analyzeWithGemini(resumeContent);
+  const analysis = await analyzeWithGemini(resumeContent, jobDescription);
 
   const hasContactInfo =
     !analysis.sectionScores.contactInfo.hasContactInfo &&

@@ -218,8 +218,6 @@ export type UserWhereInput = {
   analyses?: Prisma.AnalysisListRelationFilter
   atsScores?: Prisma.AtsScoreListRelationFilter
   atsScoreHistories?: Prisma.AtsScoreHistoryListRelationFilter
-  jobMatches?: Prisma.JobMatchListRelationFilter
-  jobMatchHistories?: Prisma.JobMatchHistoryListRelationFilter
   jobDescriptions?: Prisma.JobDescriptionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   resumeBuildHistories?: Prisma.ResumeBuildHistoryListRelationFilter
@@ -241,8 +239,6 @@ export type UserOrderByWithRelationInput = {
   analyses?: Prisma.AnalysisOrderByRelationAggregateInput
   atsScores?: Prisma.AtsScoreOrderByRelationAggregateInput
   atsScoreHistories?: Prisma.AtsScoreHistoryOrderByRelationAggregateInput
-  jobMatches?: Prisma.JobMatchOrderByRelationAggregateInput
-  jobMatchHistories?: Prisma.JobMatchHistoryOrderByRelationAggregateInput
   jobDescriptions?: Prisma.JobDescriptionOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryOrderByRelationAggregateInput
@@ -267,8 +263,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   analyses?: Prisma.AnalysisListRelationFilter
   atsScores?: Prisma.AtsScoreListRelationFilter
   atsScoreHistories?: Prisma.AtsScoreHistoryListRelationFilter
-  jobMatches?: Prisma.JobMatchListRelationFilter
-  jobMatchHistories?: Prisma.JobMatchHistoryListRelationFilter
   jobDescriptions?: Prisma.JobDescriptionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   resumeBuildHistories?: Prisma.ResumeBuildHistoryListRelationFilter
@@ -322,8 +316,6 @@ export type UserCreateInput = {
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
@@ -345,8 +337,6 @@ export type UserUncheckedCreateInput = {
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -368,8 +358,6 @@ export type UserUpdateInput = {
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
@@ -391,8 +379,6 @@ export type UserUncheckedUpdateInput = {
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -574,34 +560,6 @@ export type UserUpdateOneRequiredWithoutJobDescriptionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutJobDescriptionsInput, Prisma.UserUpdateWithoutJobDescriptionsInput>, Prisma.UserUncheckedUpdateWithoutJobDescriptionsInput>
 }
 
-export type UserCreateNestedOneWithoutJobMatchesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutJobMatchesInput, Prisma.UserUncheckedCreateWithoutJobMatchesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutJobMatchesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutJobMatchesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutJobMatchesInput, Prisma.UserUncheckedCreateWithoutJobMatchesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutJobMatchesInput
-  upsert?: Prisma.UserUpsertWithoutJobMatchesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutJobMatchesInput, Prisma.UserUpdateWithoutJobMatchesInput>, Prisma.UserUncheckedUpdateWithoutJobMatchesInput>
-}
-
-export type UserCreateNestedOneWithoutJobMatchHistoriesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutJobMatchHistoriesInput, Prisma.UserUncheckedCreateWithoutJobMatchHistoriesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutJobMatchHistoriesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutJobMatchHistoriesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutJobMatchHistoriesInput, Prisma.UserUncheckedCreateWithoutJobMatchHistoriesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutJobMatchHistoriesInput
-  upsert?: Prisma.UserUpsertWithoutJobMatchHistoriesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutJobMatchHistoriesInput, Prisma.UserUpdateWithoutJobMatchHistoriesInput>, Prisma.UserUncheckedUpdateWithoutJobMatchHistoriesInput>
-}
-
 export type UserCreateNestedOneWithoutPaymentsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentsInput, Prisma.UserUncheckedCreateWithoutPaymentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentsInput
@@ -644,8 +602,6 @@ export type UserCreateWithoutResumesInput = {
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
@@ -666,8 +622,6 @@ export type UserUncheckedCreateWithoutResumesInput = {
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -704,8 +658,6 @@ export type UserUpdateWithoutResumesInput = {
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
@@ -726,8 +678,6 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -749,8 +699,6 @@ export type UserCreateWithoutResumeTemplatesInput = {
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
@@ -771,8 +719,6 @@ export type UserUncheckedCreateWithoutResumeTemplatesInput = {
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -809,8 +755,6 @@ export type UserUpdateWithoutResumeTemplatesInput = {
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
@@ -831,8 +775,6 @@ export type UserUncheckedUpdateWithoutResumeTemplatesInput = {
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -852,8 +794,6 @@ export type UserCreateWithoutAnalysesInput = {
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
@@ -874,8 +814,6 @@ export type UserUncheckedCreateWithoutAnalysesInput = {
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -912,8 +850,6 @@ export type UserUpdateWithoutAnalysesInput = {
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
@@ -934,8 +870,6 @@ export type UserUncheckedUpdateWithoutAnalysesInput = {
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -956,8 +890,6 @@ export type UserCreateWithoutAtsScoresInput = {
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
@@ -978,8 +910,6 @@ export type UserUncheckedCreateWithoutAtsScoresInput = {
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -1016,8 +946,6 @@ export type UserUpdateWithoutAtsScoresInput = {
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
@@ -1038,8 +966,6 @@ export type UserUncheckedUpdateWithoutAtsScoresInput = {
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -1060,8 +986,6 @@ export type UserCreateWithoutAtsScoreHistoriesInput = {
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
@@ -1082,8 +1006,6 @@ export type UserUncheckedCreateWithoutAtsScoreHistoriesInput = {
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -1120,8 +1042,6 @@ export type UserUpdateWithoutAtsScoreHistoriesInput = {
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
@@ -1142,8 +1062,6 @@ export type UserUncheckedUpdateWithoutAtsScoreHistoriesInput = {
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -1165,8 +1083,6 @@ export type UserCreateWithoutJobDescriptionsInput = {
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
   resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
@@ -1187,8 +1103,6 @@ export type UserUncheckedCreateWithoutJobDescriptionsInput = {
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
   resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
@@ -1225,8 +1139,6 @@ export type UserUpdateWithoutJobDescriptionsInput = {
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
   resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
@@ -1247,216 +1159,6 @@ export type UserUncheckedUpdateWithoutJobDescriptionsInput = {
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
-  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutJobMatchesInput = {
-  id?: string
-  email: string
-  name: string
-  googleId?: string | null
-  password?: string | null
-  picture?: string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
-  analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
-  atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
-  jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
-  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutJobMatchesInput = {
-  id?: string
-  email: string
-  name: string
-  googleId?: string | null
-  password?: string | null
-  picture?: string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
-  analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
-  atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
-  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutJobMatchesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutJobMatchesInput, Prisma.UserUncheckedCreateWithoutJobMatchesInput>
-}
-
-export type UserUpsertWithoutJobMatchesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutJobMatchesInput, Prisma.UserUncheckedUpdateWithoutJobMatchesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutJobMatchesInput, Prisma.UserUncheckedCreateWithoutJobMatchesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutJobMatchesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutJobMatchesInput, Prisma.UserUncheckedUpdateWithoutJobMatchesInput>
-}
-
-export type UserUpdateWithoutJobMatchesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
-  analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
-  atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
-  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutJobMatchesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
-  analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
-  atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
-  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutJobMatchHistoriesInput = {
-  id?: string
-  email: string
-  name: string
-  googleId?: string | null
-  password?: string | null
-  picture?: string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
-  analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
-  atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
-  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutJobMatchHistoriesInput = {
-  id?: string
-  email: string
-  name: string
-  googleId?: string | null
-  password?: string | null
-  picture?: string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
-  analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
-  atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
-  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutJobMatchHistoriesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutJobMatchHistoriesInput, Prisma.UserUncheckedCreateWithoutJobMatchHistoriesInput>
-}
-
-export type UserUpsertWithoutJobMatchHistoriesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutJobMatchHistoriesInput, Prisma.UserUncheckedUpdateWithoutJobMatchHistoriesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutJobMatchHistoriesInput, Prisma.UserUncheckedCreateWithoutJobMatchHistoriesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutJobMatchHistoriesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutJobMatchHistoriesInput, Prisma.UserUncheckedUpdateWithoutJobMatchHistoriesInput>
-}
-
-export type UserUpdateWithoutJobMatchHistoriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
-  analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
-  atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
-  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutJobMatchHistoriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
-  analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
-  atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
   resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
@@ -1477,8 +1179,6 @@ export type UserCreateWithoutPaymentsInput = {
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
   resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
@@ -1499,8 +1199,6 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
   resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
@@ -1537,8 +1235,6 @@ export type UserUpdateWithoutPaymentsInput = {
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
   resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
@@ -1559,8 +1255,6 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
   resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
@@ -1581,8 +1275,6 @@ export type UserCreateWithoutResumeBuildHistoriesInput = {
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
   resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
@@ -1603,8 +1295,6 @@ export type UserUncheckedCreateWithoutResumeBuildHistoriesInput = {
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobMatches?: Prisma.JobMatchUncheckedCreateNestedManyWithoutUserInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
   resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
@@ -1641,8 +1331,6 @@ export type UserUpdateWithoutResumeBuildHistoriesInput = {
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
   resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
@@ -1663,8 +1351,6 @@ export type UserUncheckedUpdateWithoutResumeBuildHistoriesInput = {
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobMatches?: Prisma.JobMatchUncheckedUpdateManyWithoutUserNestedInput
-  jobMatchHistories?: Prisma.JobMatchHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
   resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
@@ -1680,8 +1366,6 @@ export type UserCountOutputType = {
   analyses: number
   atsScores: number
   atsScoreHistories: number
-  jobMatches: number
-  jobMatchHistories: number
   jobDescriptions: number
   payments: number
   resumeBuildHistories: number
@@ -1693,8 +1377,6 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   analyses?: boolean | UserCountOutputTypeCountAnalysesArgs
   atsScores?: boolean | UserCountOutputTypeCountAtsScoresArgs
   atsScoreHistories?: boolean | UserCountOutputTypeCountAtsScoreHistoriesArgs
-  jobMatches?: boolean | UserCountOutputTypeCountJobMatchesArgs
-  jobMatchHistories?: boolean | UserCountOutputTypeCountJobMatchHistoriesArgs
   jobDescriptions?: boolean | UserCountOutputTypeCountJobDescriptionsArgs
   payments?: boolean | UserCountOutputTypeCountPaymentsArgs
   resumeBuildHistories?: boolean | UserCountOutputTypeCountResumeBuildHistoriesArgs
@@ -1742,20 +1424,6 @@ export type UserCountOutputTypeCountAtsScoreHistoriesArgs<ExtArgs extends runtim
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountJobMatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.JobMatchWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountJobMatchHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.JobMatchHistoryWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
 export type UserCountOutputTypeCountJobDescriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.JobDescriptionWhereInput
 }
@@ -1797,8 +1465,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   analyses?: boolean | Prisma.User$analysesArgs<ExtArgs>
   atsScores?: boolean | Prisma.User$atsScoresArgs<ExtArgs>
   atsScoreHistories?: boolean | Prisma.User$atsScoreHistoriesArgs<ExtArgs>
-  jobMatches?: boolean | Prisma.User$jobMatchesArgs<ExtArgs>
-  jobMatchHistories?: boolean | Prisma.User$jobMatchHistoriesArgs<ExtArgs>
   jobDescriptions?: boolean | Prisma.User$jobDescriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
   resumeBuildHistories?: boolean | Prisma.User$resumeBuildHistoriesArgs<ExtArgs>
@@ -1851,8 +1517,6 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   analyses?: boolean | Prisma.User$analysesArgs<ExtArgs>
   atsScores?: boolean | Prisma.User$atsScoresArgs<ExtArgs>
   atsScoreHistories?: boolean | Prisma.User$atsScoreHistoriesArgs<ExtArgs>
-  jobMatches?: boolean | Prisma.User$jobMatchesArgs<ExtArgs>
-  jobMatchHistories?: boolean | Prisma.User$jobMatchHistoriesArgs<ExtArgs>
   jobDescriptions?: boolean | Prisma.User$jobDescriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
   resumeBuildHistories?: boolean | Prisma.User$resumeBuildHistoriesArgs<ExtArgs>
@@ -1869,8 +1533,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     analyses: Prisma.$AnalysisPayload<ExtArgs>[]
     atsScores: Prisma.$AtsScorePayload<ExtArgs>[]
     atsScoreHistories: Prisma.$AtsScoreHistoryPayload<ExtArgs>[]
-    jobMatches: Prisma.$JobMatchPayload<ExtArgs>[]
-    jobMatchHistories: Prisma.$JobMatchHistoryPayload<ExtArgs>[]
     jobDescriptions: Prisma.$JobDescriptionPayload<ExtArgs>[]
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     resumeBuildHistories: Prisma.$ResumeBuildHistoryPayload<ExtArgs>[]
@@ -2285,8 +1947,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   analyses<T extends Prisma.User$analysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   atsScores<T extends Prisma.User$atsScoresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$atsScoresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AtsScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   atsScoreHistories<T extends Prisma.User$atsScoreHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$atsScoreHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AtsScoreHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  jobMatches<T extends Prisma.User$jobMatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobMatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobMatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  jobMatchHistories<T extends Prisma.User$jobMatchHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobMatchHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobMatchHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   jobDescriptions<T extends Prisma.User$jobDescriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobDescriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobDescriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.User$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   resumeBuildHistories<T extends Prisma.User$resumeBuildHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resumeBuildHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeBuildHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2816,54 +2476,6 @@ export type User$atsScoreHistoriesArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.AtsScoreHistoryScalarFieldEnum | Prisma.AtsScoreHistoryScalarFieldEnum[]
-}
-
-/**
- * User.jobMatches
- */
-export type User$jobMatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the JobMatch
-   */
-  select?: Prisma.JobMatchSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the JobMatch
-   */
-  omit?: Prisma.JobMatchOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.JobMatchInclude<ExtArgs> | null
-  where?: Prisma.JobMatchWhereInput
-  orderBy?: Prisma.JobMatchOrderByWithRelationInput | Prisma.JobMatchOrderByWithRelationInput[]
-  cursor?: Prisma.JobMatchWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.JobMatchScalarFieldEnum | Prisma.JobMatchScalarFieldEnum[]
-}
-
-/**
- * User.jobMatchHistories
- */
-export type User$jobMatchHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the JobMatchHistory
-   */
-  select?: Prisma.JobMatchHistorySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the JobMatchHistory
-   */
-  omit?: Prisma.JobMatchHistoryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.JobMatchHistoryInclude<ExtArgs> | null
-  where?: Prisma.JobMatchHistoryWhereInput
-  orderBy?: Prisma.JobMatchHistoryOrderByWithRelationInput | Prisma.JobMatchHistoryOrderByWithRelationInput[]
-  cursor?: Prisma.JobMatchHistoryWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.JobMatchHistoryScalarFieldEnum | Prisma.JobMatchHistoryScalarFieldEnum[]
 }
 
 /**

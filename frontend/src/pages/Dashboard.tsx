@@ -6,11 +6,10 @@ import {
   Zap,
   Plus,
   ChevronRight,
-  Target,
   FileCheck,
 } from "lucide-react";
 import { useAppSelector } from "../hooks/redux";
-import { atsScoreApi, jobMatchApi, resumeBuildHistoryApi } from "../api/api";
+import { atsScoreApi, resumeBuildHistoryApi } from "../api/api";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import BackButton from "../components/ui/BackButton";
 
@@ -19,7 +18,6 @@ export default function Dashboard() {
   const [recentBuilds, setRecentBuilds] = useState<any[]>([]);
   const [totalResumes, setTotalResumes] = useState(0);
   const [totalAtsHistory, setTotalAtsHistory] = useState(0);
-  const [totalJobMatchHistory, setTotalJobMatchHistory] = useState(0);
   const [loadingBuilds, setLoadingBuilds] = useState(true);
   const [loadingStats, setLoadingStats] = useState(true);
 
@@ -27,22 +25,19 @@ export default function Dashboard() {
     setLoadingBuilds(true);
     setLoadingStats(true);
     try {
-      const [buildRes, atsRes, jobMatchRes] = await Promise.all([
+      const [buildRes, atsRes] = await Promise.all([
         resumeBuildHistoryApi.getAll(1, 5),
         atsScoreApi.getAll(1, 1),
-        jobMatchApi.getAll(1, 1),
       ]);
       const data = {
         recentBuilds: buildRes.data.data || [],
         totalResumes: buildRes.data.pagination?.total || 0,
         totalAtsHistory: atsRes.data.pagination?.total || 0,
-        totalJobMatchHistory: jobMatchRes.data.pagination?.total || 0,
       };
       localStorage.setItem('dashboardData', JSON.stringify(data));
       setRecentBuilds(data.recentBuilds);
       setTotalResumes(data.totalResumes);
       setTotalAtsHistory(data.totalAtsHistory);
-      setTotalJobMatchHistory(data.totalJobMatchHistory);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -58,7 +53,6 @@ export default function Dashboard() {
       setRecentBuilds(data.recentBuilds);
       setTotalResumes(data.totalResumes);
       setTotalAtsHistory(data.totalAtsHistory);
-      setTotalJobMatchHistory(data.totalJobMatchHistory);
       setLoadingBuilds(false);
       setLoadingStats(false);
     }
@@ -80,15 +74,6 @@ export default function Dashboard() {
       color: "bg-amber-600",
       link: "/ats-score",
       stats: "Check how ATS systems read your resume",
-    },
-    {
-      title: "Job Match Analysis",
-      description:
-        "Compare your resume against job descriptions to see how well you match",
-      icon: Target,
-      color: "bg-teal-600",
-      link: "/job-match",
-      stats: "See your match percentage with any job",
     },
     {
       title: "Resume Builder",
@@ -119,7 +104,6 @@ export default function Dashboard() {
               credits={user?.subscription.credits || 0}
               totalResumes={totalResumes}
               totalAtsHistory={totalAtsHistory}
-              totalJobMatchHistory={totalJobMatchHistory}
               loading={loadingStats}
             />
           </div>
@@ -151,7 +135,7 @@ const WelcomeHeader = ({ user, credits }: { user: any; credits: number }) => (
 );
 
 const FeaturesGrid = ({ features }: { features: any[] }) => (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
     {features.map((feature, index) => (
       <motion.div
         key={feature.title}
@@ -258,13 +242,11 @@ const QuickStats = ({
   credits,
   totalResumes,
   totalAtsHistory,
-  totalJobMatchHistory,
   loading,
 }: {
   credits: number;
   totalResumes: number;
   totalAtsHistory: number;
-  totalJobMatchHistory: number;
   loading: boolean;
 }) => (
   <motion.div
@@ -309,22 +291,6 @@ const QuickStats = ({
               </p>
               <p className="font-semibold text-gray-900 dark:text-white">
                 {totalAtsHistory}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-              <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Job Matches
-              </p>
-              <p className="font-semibold text-gray-900 dark:text-white">
-                {totalJobMatchHistory}
               </p>
             </div>
           </div>

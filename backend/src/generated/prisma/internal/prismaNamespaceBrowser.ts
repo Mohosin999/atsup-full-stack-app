@@ -58,8 +58,6 @@ export const ModelName = {
   AtsScore: 'AtsScore',
   AtsScoreHistory: 'AtsScoreHistory',
   JobDescription: 'JobDescription',
-  JobMatch: 'JobMatch',
-  JobMatchHistory: 'JobMatchHistory',
   Payment: 'Payment',
   ResumeBuildHistory: 'ResumeBuildHistory'
 } as const
@@ -198,44 +196,6 @@ export const JobDescriptionScalarFieldEnum = {
 } as const
 
 export type JobDescriptionScalarFieldEnum = (typeof JobDescriptionScalarFieldEnum)[keyof typeof JobDescriptionScalarFieldEnum]
-
-
-export const JobMatchScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  resumeId: 'resumeId',
-  jobDescription: 'jobDescription',
-  jobTitle: 'jobTitle',
-  company: 'company',
-  matchPercentage: 'matchPercentage',
-  breakdown: 'breakdown',
-  missingSkills: 'missingSkills',
-  missingKeywords: 'missingKeywords',
-  suggestions: 'suggestions',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobMatchScalarFieldEnum = (typeof JobMatchScalarFieldEnum)[keyof typeof JobMatchScalarFieldEnum]
-
-
-export const JobMatchHistoryScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  title: 'title',
-  resumeName: 'resumeName',
-  jobDescription: 'jobDescription',
-  matchPercentage: 'matchPercentage',
-  breakdown: 'breakdown',
-  missingSkills: 'missingSkills',
-  missingKeywords: 'missingKeywords',
-  suggestions: 'suggestions',
-  resumeContent: 'resumeContent',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type JobMatchHistoryScalarFieldEnum = (typeof JobMatchHistoryScalarFieldEnum)[keyof typeof JobMatchHistoryScalarFieldEnum]
 
 
 export const PaymentScalarFieldEnum = {

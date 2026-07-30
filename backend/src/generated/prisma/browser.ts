@@ -53,16 +53,6 @@ export type AtsScoreHistory = Prisma.AtsScoreHistoryModel
  */
 export type JobDescription = Prisma.JobDescriptionModel
 /**
- * Model JobMatch
- * 
- */
-export type JobMatch = Prisma.JobMatchModel
-/**
- * Model JobMatchHistory
- * 
- */
-export type JobMatchHistory = Prisma.JobMatchHistoryModel
-/**
  * Model Payment
  * 
  */

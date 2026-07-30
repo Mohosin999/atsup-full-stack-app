@@ -4,7 +4,7 @@ History Dropdown Component
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ChevronDown, FileSearch, Briefcase, FileText } from "lucide-react";
+import { ChevronDown, FileSearch, FileText } from "lucide-react";
 
 export default function HistoryDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,15 +31,6 @@ export default function HistoryDropdown() {
       gradient: "from-purple-500 to-blue-500",
       bgLight: "hover:bg-purple-500/20",
       activePath: "/ats-score-history",
-    },
-    {
-      title: "Job Match History",
-      description: "View all your past job match analyses",
-      icon: Briefcase,
-      path: "/job-match-history",
-      gradient: "from-green-500 to-emerald-500",
-      bgLight: "hover:bg-green-500/20",
-      activePath: "/job-match-history",
     },
     {
       title: "Resume Build History",

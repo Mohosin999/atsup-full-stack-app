@@ -66,15 +66,21 @@ export interface AISectionSuggestion {
 }
 
 export const analyzeAtsScore = async (
-  resume: ResumeContent
+  resume: ResumeContent,
+  jobDescription?: string
 ): Promise<AtsAnalysisResult> => {
   const resumeText = JSON.stringify(resume, null, 2);
+
+  const jobDescriptionSection = jobDescription
+    ? `\n\nTarget Job Description:\n${jobDescription}\n\nUse the job description to provide more targeted feedback on keyword matching, skills relevance, and experience alignment.`
+    : '';
 
   const prompt = `
 Analyze this resume for ATS (Applicant Tracking System) compatibility and provide a detailed assessment.
 
 Resume Content:
 ${resumeText}
+${jobDescriptionSection}
 
 Provide your analysis in the following JSON format ONLY (no additional text):
 {

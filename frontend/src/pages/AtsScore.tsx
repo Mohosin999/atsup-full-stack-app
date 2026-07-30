@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FileText, Upload, CheckCircle, XCircle } from "lucide-react";
+import { Upload, CheckCircle, XCircle, Scan } from "lucide-react";
 import { toast } from "react-toastify";
 import { atsScoreApi, resumeParserApi } from "../api/api";
 import { useAppDispatch } from "../hooks/redux";
@@ -13,14 +13,18 @@ import SuggestionList from "../components/SuggestionList";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { AtsScoreHistory, ResumeContent } from "../types";
 
+type Step = "upload" | "jobDescription";
+
 export default function AtsScorePage() {
   const navigate = useNavigate();
   const { id: analysisId } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
+  const [step, setStep] = useState<Step>("upload");
   const [resumeName, setResumeName] = useState("");
   const [resumeContent, setResumeContent] = useState<ResumeContent | null>(
     null,
   );
+  const [jobDescription, setJobDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AtsScoreHistory | null>(null);
@@ -30,8 +34,10 @@ export default function AtsScorePage() {
       loadAnalysis(analysisId);
     } else {
       setResult(null);
+      setStep("upload");
       setResumeName("");
       setResumeContent(null);
+      setJobDescription("");
     }
   }, [analysisId]);
 
@@ -58,8 +64,10 @@ export default function AtsScorePage() {
       const formData = new FormData();
       formData.append("resume", file);
       const response = await resumeParserApi.parse(formData);
+      console.log("Parsed Resume Data:", response.data.data);
       setResumeName(response.data.data.resumeName);
       setResumeContent(response.data.data.resumeContent);
+      setStep("jobDescription");
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to upload resume");
     } finally {
@@ -78,9 +86,10 @@ export default function AtsScorePage() {
       const response = await atsScoreApi.analyze({
         resumeName,
         resumeContent,
+        jobDescription: jobDescription.trim() || undefined,
       });
       setResult(response.data.data);
-      
+
       if (response.data.credits !== undefined) {
         dispatch(setUserCredits(response.data.credits));
         toast.success(`ATS analysis completed! 1 credit deducted. New balance: ${response.data.credits}`);
@@ -96,8 +105,10 @@ export default function AtsScorePage() {
 
   const handleReset = () => {
     setResult(null);
+    setStep("upload");
     setResumeName("");
     setResumeContent(null);
+    setJobDescription("");
   };
 
   return (
@@ -122,46 +133,50 @@ export default function AtsScorePage() {
         </motion.div>
 
         {!result ? (
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto space-y-6">
+            {/* Step 1: Upload Resume */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-gray-800 rounded-lg p-6 mb-6"
+              className={`bg-gray-800 rounded-lg p-6 ${step !== "upload" ? "opacity-60" : ""}`}
             >
-              <h2 className="text-xl font-semibold text-white mb-4">
-                Upload Resume
-              </h2>
-
-              <div className="mb-4">
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-700 border-dashed rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 transition-colors">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    {loading ? (
-                      <LoadingSpinner />
-                    ) : (
-                      <>
-                        <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                        <p className="text-sm text-gray-400">
-                          <span className="font-semibold">Click to upload</span>{" "}
-                          or drag and drop
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          PDF, DOCX (MAX. 10MB)
-                        </p>
-                      </>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept=".pdf,.docx"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (file) await handleFileUpload(file);
-                    }}
-                  />
-                </label>
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step === "upload" ? "bg-green-500 text-white" : resumeContent ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}>
+                  {resumeContent ? <CheckCircle className="w-5 h-5" /> : "1"}
+                </div>
+                <h2 className="text-xl font-semibold text-white">
+                  Upload Resume
+                </h2>
               </div>
+
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-700 border-dashed rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 transition-colors">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  {loading ? (
+                    <LoadingSpinner />
+                  ) : (
+                    <>
+                      <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-400">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        PDF only (MAX. 10MB)
+                      </p>
+                    </>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  className="hidden"
+                  accept=".pdf"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) await handleFileUpload(file);
+                  }}
+                />
+              </label>
 
               {resumeContent && (
                 <div className="mt-4 p-4 bg-green-900/20 border border-green-500/30 rounded-lg">
@@ -171,18 +186,54 @@ export default function AtsScorePage() {
                   </div>
                 </div>
               )}
+            </motion.div>
 
+            {/* Step 2: Job Description */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className={`bg-gray-800 rounded-lg p-6 ${step !== "jobDescription" ? "opacity-60" : ""}`}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step === "jobDescription" ? "bg-green-500 text-white" : jobDescription ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}>
+                  {jobDescription ? <CheckCircle className="w-5 h-5" /> : "2"}
+                </div>
+                <h2 className="text-xl font-semibold text-white">
+                  Paste Job Description
+                </h2>
+              </div>
+
+              <textarea
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                placeholder="Paste the job description here (optional, but recommended for better analysis)..."
+                rows={10}
+                disabled={step !== "jobDescription"}
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+              />
+            </motion.div>
+
+            {/* Scan Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
               <button
                 onClick={handleAnalyze}
                 disabled={!resumeContent || analyzing}
-                className="w-full mt-4 h-12 gradient-btn disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-14 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-green-500/25"
               >
                 {analyzing ? (
                   <span className="flex items-center justify-center gap-2">
-                    <LoadingSpinner /> Analyzing...
+                    <LoadingSpinner /> Scanning...
                   </span>
                 ) : (
-                  "Analyze ATS Score"
+                  <>
+                    <Scan className="w-5 h-5" />
+                    Scan Resume
+                  </>
                 )}
               </button>
             </motion.div>

@@ -12,8 +12,8 @@ interface Step {
 }
 
 interface HowItWorksSectionProps {
-  activeTab: "analysis" | "creation" | "jobmatch";
-  setActiveTab: (tab: "analysis" | "creation" | "jobmatch") => void;
+  activeTab: "analysis" | "creation";
+  setActiveTab: (tab: "analysis" | "creation") => void;
   steps: Step[];
 }
 
@@ -66,16 +66,6 @@ export default function HowItWorksSection({ activeTab, setActiveTab, steps }: Ho
               }`}
             >
               Resume Builder
-            </button>
-            <button
-              onClick={() => setActiveTab("jobmatch")}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 ${
-                activeTab === "jobmatch"
-                  ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg"
-                  : "text-gray-400 hover:text-white"
-              }`}
-            >
-              Job Match
             </button>
           </motion.div>
         </motion.div>

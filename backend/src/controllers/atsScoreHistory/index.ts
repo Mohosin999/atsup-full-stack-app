@@ -11,7 +11,7 @@ import {
 
 export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
   try {
-    const { resumeName, resumeContent } = req.body;
+    const { resumeName, resumeContent, jobDescription } = req.body;
 
     if (!resumeContent) {
       return res.status(400).json({
@@ -39,7 +39,8 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
     const score = await createAtsScoreHistory(
       req.user.id,
       resumeName || 'Untitled Resume',
-      resumeContent
+      resumeContent,
+      jobDescription
     );
 
     // Deduct 1 credit for ATS Score Analysis

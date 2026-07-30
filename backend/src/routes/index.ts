@@ -4,8 +4,6 @@ import analysisRoutes from './analysis';
 import jobRoutes from './jobs';
 import atsScoreRoutes from './atsScore';
 import atsScoreHistoryRoutes from './atsScoreHistory';
-import jobMatchRoutes from './jobMatch';
-import jobMatchHistoryRoutes from './jobMatchHistory';
 import resumeBuildHistoryRoutes from './resumeBuildHistory';
 import resumeBuilderRoutes from './resumeBuilder';
 import resumeParserRoutes from './resumeParser';
@@ -18,8 +16,6 @@ export {
   jobRoutes,
   atsScoreRoutes,
   atsScoreHistoryRoutes,
-  jobMatchRoutes,
-  jobMatchHistoryRoutes,
   resumeBuildHistoryRoutes,
   resumeBuilderRoutes,
   resumeParserRoutes,
@@ -33,8 +29,6 @@ export const routes = [
   { path: '/api/jobs', router: jobRoutes },
   { path: '/api/ats-score', router: atsScoreRoutes },
   { path: '/api/ats-score-history', router: atsScoreHistoryRoutes },
-  { path: '/api/job-match', router: jobMatchRoutes },
-  { path: '/api/job-match-history', router: jobMatchHistoryRoutes },
   { path: '/api/resume-build-history', router: resumeBuildHistoryRoutes },
   { path: '/api/resume-builder', router: resumeBuilderRoutes },
   { path: '/api/resume-parser', router: resumeParserRoutes },

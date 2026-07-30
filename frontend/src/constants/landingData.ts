@@ -7,7 +7,6 @@ import {
   TrendingUp,
   Wand2,
   User,
-  Briefcase,
   FileCheck,
   Sparkles,
 } from "lucide-react";
@@ -140,29 +139,5 @@ export const creationSteps = [
     number: "04",
     title: "Preview & Download",
     description: "Preview your resume in real-time and download as PDF with clickable links.",
-  },
-];
-
-// Steps for job match
-export const jobMatchSteps = [
-  {
-    number: "01",
-    title: "Upload Resume",
-    description: "Upload your resume (PDF or DOCX) that you want to match against jobs.",
-  },
-  {
-    number: "02",
-    title: "Paste Job Descriptions",
-    description: "Add multiple job descriptions to compare your resume against.",
-  },
-  {
-    number: "03",
-    title: "Get Match Score",
-    description: "See how well your resume matches each job with detailed compatibility scores.",
-  },
-  {
-    number: "04",
-    title: "Improve & Apply",
-    description: "Get suggestions to improve your resume and apply with confidence.",
   },
 ];

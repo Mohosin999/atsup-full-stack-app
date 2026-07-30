@@ -111,30 +111,10 @@ export interface MissingKeywords {
   softSkills: string[];
 }
 
-export interface JobMatch {
-  score: number;
-  missingKeywords: string[];
-  suggestions: string[];
-}
-
 export interface ExistingSections {
   experience: boolean;
   education: boolean;
   skills: boolean;
-}
-
-export interface JobMatchingBreakdown {
-  // New format
-  skillsMatch?: { score: number; details: string };
-  keywordsMatch?: { score: number; details: string };
-  // Legacy format
-  requiredSkillsMatch?: { score: number; details: string };
-  relevantWorkExperience?: { score: number; details: string };
-  technologiesUsed?: { score: number; details: string };
-  toolsFrameworks?: { score: number; details: string };
-  industryRelevance?: { score: number; details: string };
-  yearsExperienceAlignment?: { score: number; details: string };
-  roleResponsibilitySimilarity?: { score: number; details: string };
 }
 
 export interface ATSBreakdown {
@@ -157,8 +137,6 @@ export interface Analysis {
   atsScore?: number;
   atsBreakdown?: ATSBreakdown;
   atsSuggestions?: string[];
-  jobMatchSuggestions?: string[];
-  jobMatchingBreakdown?: JobMatchingBreakdown;
   feedback: Feedback;
   sectionScores: SectionScores;
   keywords: Keywords;
@@ -166,7 +144,6 @@ export interface Analysis {
   recommendedKeywords: string[];
   howToUseKeywords: string[];
   resumeImprovements: string[];
-  jobMatch?: JobMatch;
   existingSections: ExistingSections;
   createdAt: string;
 }
@@ -249,28 +226,6 @@ export interface AtsScore {
   updatedAt: string;
 }
 
-// Job Match Types
-export interface JobMatchResult {
-  _id: string;
-  userId: string;
-  resumeId: Resume | string;
-  jobDescription: string;
-  jobTitle?: string;
-  company?: string;
-  matchPercentage: number;
-  breakdown: {
-    keywords: { score: number; matched: string[]; missing: string[] };
-    skills: { score: number; matched: string[]; missing: string[] };
-    education: { score: number; details: string };
-    experience: { score: number; yearsMatched: number; yearsRequired?: number };
-  };
-  missingSkills: string[];
-  missingKeywords: string[];
-  suggestions: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
 // Resume Builder Types
 export interface ResumeTemplate {
   _id: string;
@@ -320,28 +275,6 @@ export interface AtsScoreHistory {
     errors: Array<{ type: string; message: string; suggestion: string }>;
   };
   atsFriendliness: number;
-  suggestions: string[];
-  resumeContent: ResumeContent;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Job Match History Types
-export interface JobMatchHistory {
-  _id: string;
-  userId: string;
-  title: string;
-  resumeName: string;
-  jobDescription: string;
-  matchPercentage: number;
-  breakdown: {
-    keywords: { score: number; matched: string[]; missing: string[] };
-    skills: { score: number; matched: string[]; missing: string[] };
-    education: { score: number; details: string };
-    experience: { score: number; yearsMatched: number; yearsRequired?: number };
-  };
-  missingSkills: string[];
-  missingKeywords: string[];
   suggestions: string[];
   resumeContent: ResumeContent;
   createdAt: string;

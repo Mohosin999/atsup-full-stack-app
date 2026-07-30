@@ -23,8 +23,6 @@ model User {
   analyses          Analysis[]
   atsScores         AtsScore[]
   atsScoreHistories AtsScoreHistory[]
-  jobMatches        JobMatch[]
-  jobMatchHistories JobMatchHistory[]
   jobDescriptions   JobDescription[]
   payments          Payment[]
   resumeBuildHistories ResumeBuildHistory[]
@@ -48,7 +46,6 @@ model Resume {
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   analyses  Analysis[]
   atsScores AtsScore[]
-  jobMatches JobMatch[]
 
   @@index([userId, createdAt])
   @@map("resumes")
@@ -153,50 +150,6 @@ model JobDescription {
 
   @@index([userId, createdAt])
   @@map("job_descriptions")
-}
-
-model JobMatch {
-  id              String   @id @default(cuid())
-  userId          String
-  resumeId        String
-  jobDescription  String   @db.Text
-  jobTitle        String?
-  company         String?
-  matchPercentage Int      @db.Integer
-  breakdown       Json
-  missingSkills   String[]
-  missingKeywords String[]
-  suggestions     String[]
-  createdAt       DateTime @default(now()) @db.Timestamp()
-  updatedAt       DateTime @updatedAt @db.Timestamp()
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt])
-  @@index([resumeId])
-  @@map("job_matches")
-}
-
-model JobMatchHistory {
-  id              String   @id @default(cuid())
-  userId          String
-  title           String   @db.VarChar(255)
-  resumeName      String   @db.VarChar(255)
-  jobDescription  String   @db.Text
-  matchPercentage Int      @db.Integer
-  breakdown       Json
-  missingSkills   String[]
-  missingKeywords String[]
-  suggestions     String[]
-  resumeContent   Json
-  createdAt       DateTime @default(now()) @db.Timestamp()
-  updatedAt       DateTime @updatedAt @db.Timestamp()
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt])
-  @@map("job_match_histories")
 }
 
 model Payment {

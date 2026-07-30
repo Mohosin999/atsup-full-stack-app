@@ -6,7 +6,6 @@ import {
   allFeatures,
   analysisSteps,
   creationSteps,
-  jobMatchSteps,
   testimonials,
 } from "../constants/landingData";
 import FloatingOrbs from "../components/home-page/FloatingOrbs";
@@ -22,7 +21,7 @@ export default function HomePage() {
   const dispatch = useAppDispatch();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [activeTab, setActiveTab] = useState<
-    "analysis" | "creation" | "jobmatch"
+    "analysis" | "creation"
   >("analysis");
 
   const handleLogout = async () => {
@@ -47,9 +46,7 @@ export default function HomePage() {
             steps={
               activeTab === "analysis"
                 ? analysisSteps
-                : activeTab === "creation"
-                  ? creationSteps
-                  : jobMatchSteps
+                : creationSteps
             }
           />
           <TestimonialsSection testimonials={testimonials} />

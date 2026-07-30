@@ -17,7 +17,6 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
 
   const historyOptions = [
     { title: "ATS Score History", path: "/ats-score-history" },
-    { title: "Job Match History", path: "/job-match-history" },
     { title: "Resume Build History", path: "/resume-build-history" },
   ];
 

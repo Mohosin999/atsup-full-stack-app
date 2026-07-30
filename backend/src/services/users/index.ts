@@ -51,9 +51,7 @@ export const deleteUserAccount = async (userId: string) => {
   await prisma.payment.deleteMany({ where: { userId } });
   await prisma.resumeBuildHistory.deleteMany({ where: { userId } });
   await prisma.atsScoreHistory.deleteMany({ where: { userId } });
-  await prisma.jobMatchHistory.deleteMany({ where: { userId } });
   await prisma.analysis.deleteMany({ where: { userId } });
-  await prisma.jobMatch.deleteMany({ where: { userId } });
   await prisma.atsScore.deleteMany({ where: { userId } });
   await prisma.resume.deleteMany({ where: { userId } });
 

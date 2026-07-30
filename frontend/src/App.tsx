@@ -8,9 +8,7 @@ import Settings from "./pages/Settings";
 import Builder from "./pages/Builder";
 import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScore";
-import JobMatch from "./pages/JobMatch";
 import AtsScoreHistory from "./pages/AtsScoreHistory";
-import JobMatchHistory from "./pages/JobMatchHistory";
 import ResumeBuildHistory from "./pages/ResumeBuildHistory";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
@@ -112,34 +110,10 @@ function App() {
           }
         />
         <Route
-          path="/job-match"
-          element={
-            <PrivateRoute>
-              <JobMatch />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/job-match/:id"
-          element={
-            <PrivateRoute>
-              <JobMatch />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path="/ats-score-history"
           element={
             <PrivateRoute>
               <AtsScoreHistory />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/job-match-history"
-          element={
-            <PrivateRoute>
-              <JobMatchHistory />
             </PrivateRoute>
           }
         />

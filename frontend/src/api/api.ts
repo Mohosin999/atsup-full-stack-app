@@ -96,20 +96,12 @@ export const jobApi = {
 };
 
 export const atsScoreApi = {
-  analyze: (data: { resumeName: string; resumeContent: any }) => api.post('/ats-score-history/analyze', data),
+  analyze: (data: { resumeName: string; resumeContent: any; jobDescription?: string }) =>
+    api.post('/ats-score-history/analyze', data),
   getAll: (page = 1, limit = 3) => api.get(`/ats-score-history?page=${page}&limit=${limit}`),
   getById: (id: string) => api.get(`/ats-score-history/${id}`),
   delete: (id: string) => api.delete(`/ats-score-history/${id}`),
   deleteAll: () => api.delete('/ats-score-history'),
-};
-
-export const jobMatchApi = {
-  analyze: (data: { resumeName: string; resumeContent: any; jobDescription: string }) =>
-    api.post('/job-match-history/analyze', data),
-  getAll: (page = 1, limit = 3) => api.get(`/job-match-history?page=${page}&limit=${limit}`),
-  getById: (id: string) => api.get(`/job-match-history/${id}`),
-  delete: (id: string) => api.delete(`/job-match-history/${id}`),
-  deleteAll: () => api.delete('/job-match-history'),
 };
 
 export const resumeBuildHistoryApi = {

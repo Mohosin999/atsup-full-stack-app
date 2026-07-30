@@ -1,92 +1,146 @@
-import mongoose from "mongoose";
-import { User } from "../../models/User";
-import { Resume } from "../../models/Resume";
-import { AtsScore } from "../../models/AtsScore";
-import { JobMatch } from "../../models/JobMatch";
-import { Analysis } from "../../models/Analysis";
-import { Payment } from "../../models/Payment";
-import { ResumeBuildHistory } from "../../models/ResumeBuildHistory";
-import { AtsScoreHistory } from "../../models/AtsScoreHistory";
-import { JobMatchHistory } from "../../models/JobMatchHistory";
+import { prisma } from '../../lib/prisma';
 
 interface UpdateProfileData {
   name?: string;
   preferences?: {
-    theme?: "light" | "dark" | "system";
+    theme?: 'light' | 'dark' | 'system';
     defaultTemplate?: string;
     notifications?: boolean;
   };
 }
 
 export const getUserProfile = async (userId: string) => {
-  return User.findById(userId).select("-__v");
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      googleId: true,
+      picture: true,
+      preferences: true,
+      subscription: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 };
 
 export const updateUserProfile = async (
   userId: string,
   updateData: UpdateProfileData
 ) => {
-  return User.findByIdAndUpdate(userId, { $set: updateData }, {
-    new: true,
-    runValidators: true,
-  }).select("-__v");
+  return prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      googleId: true,
+      picture: true,
+      preferences: true,
+      subscription: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 };
 
 export const deleteUserAccount = async (userId: string) => {
-  const userObjectId = new mongoose.Types.ObjectId(userId);
+  await prisma.payment.deleteMany({ where: { userId } });
+  await prisma.resumeBuildHistory.deleteMany({ where: { userId } });
+  await prisma.atsScoreHistory.deleteMany({ where: { userId } });
+  await prisma.jobMatchHistory.deleteMany({ where: { userId } });
+  await prisma.analysis.deleteMany({ where: { userId } });
+  await prisma.jobMatch.deleteMany({ where: { userId } });
+  await prisma.atsScore.deleteMany({ where: { userId } });
+  await prisma.resume.deleteMany({ where: { userId } });
 
-  await Resume.deleteMany({ userId: userObjectId });
-  await AtsScore.deleteMany({ userId: userObjectId });
-  await JobMatch.deleteMany({ userId: userObjectId });
-  await Analysis.deleteMany({ userId: userObjectId });
-  await Payment.deleteMany({ user: userObjectId });
-  await ResumeBuildHistory.deleteMany({ userId: userObjectId });
-  await AtsScoreHistory.deleteMany({ userId: userObjectId });
-  await JobMatchHistory.deleteMany({ userId: userObjectId });
-
-  return User.findByIdAndDelete(userId);
+  return prisma.user.delete({ where: { id: userId } });
 };
 
 export const useUserCredit = async (userId: string) => {
-  const user = await User.findById(userId);
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 
-  if (user.subscription.credits <= 0) {
-    throw new Error("Insufficient credits");
+  const subscription = (user.subscription as any) || {};
+  const credits = subscription.credits ?? 0;
+
+  if (credits <= 0) {
+    throw new Error('Insufficient credits');
   }
 
-  user.subscription.credits -= 1;
-  await user.save();
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      subscription: {
+        ...subscription,
+        credits: credits - 1,
+      },
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      picture: true,
+      preferences: true,
+      subscription: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 
-  return { credits: user.subscription.credits, user };
+  return { credits: (updated.subscription as any).credits, user: updated };
 };
 
 export const useUserCredits = async (userId: string, amount: number) => {
-  const user = await User.findById(userId);
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 
-  if (user.subscription.credits < amount) {
-    throw new Error("Insufficient credits");
+  const subscription = (user.subscription as any) || {};
+  const credits = subscription.credits ?? 0;
+
+  if (credits < amount) {
+    throw new Error('Insufficient credits');
   }
 
-  user.subscription.credits -= amount;
-  await user.save();
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      subscription: {
+        ...subscription,
+        credits: credits - amount,
+      },
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      picture: true,
+      preferences: true,
+      subscription: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 
-  return { credits: user.subscription.credits, user };
+  return { credits: (updated.subscription as any).credits, user: updated };
 };
 
 export const getUserCredits = async (userId: string) => {
-  const user = await User.findById(userId);
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 
-  return user.subscription.credits;
+  const subscription = (user.subscription as any) || {};
+  return subscription.credits ?? 0;
 };

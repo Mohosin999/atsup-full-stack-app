@@ -1,4 +1,4 @@
-import { JobDescription } from "../../models/JobDescription";
+import { prisma } from '../../lib/prisma';
 
 interface JobInput {
   title: string;
@@ -19,11 +19,13 @@ export const getAllJobsByUser = async (
   const skip = (page - 1) * limit;
 
   const [jobs, total] = await Promise.all([
-    JobDescription.find({ userId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
-    JobDescription.countDocuments({ userId }),
+    prisma.jobDescription.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+    prisma.jobDescription.count({ where: { userId } }),
   ]);
 
   return {
@@ -38,13 +40,17 @@ export const getAllJobsByUser = async (
 };
 
 export const getJobById = async (jobId: string, userId: string) => {
-  return JobDescription.findOne({ _id: jobId, userId });
+  return prisma.jobDescription.findFirst({
+    where: { id: jobId, userId },
+  });
 };
 
 export const createJob = async (jobData: JobInput, userId: string) => {
-  return JobDescription.create({
-    ...jobData,
-    userId,
+  return prisma.jobDescription.create({
+    data: {
+      ...jobData,
+      userId,
+    },
   });
 };
 
@@ -53,13 +59,29 @@ export const updateJobById = async (
   userId: string,
   jobData: Partial<JobInput>
 ) => {
-  return JobDescription.findOneAndUpdate(
-    { _id: jobId, userId },
-    { $set: jobData },
-    { new: true, runValidators: true }
-  );
+  const existing = await prisma.jobDescription.findFirst({
+    where: { id: jobId, userId },
+  });
+
+  if (!existing) {
+    return null;
+  }
+
+  return prisma.jobDescription.update({
+    where: { id: jobId },
+    data: jobData,
+  });
 };
 
 export const deleteJobById = async (jobId: string, userId: string) => {
-  return JobDescription.findOneAndDelete({ _id: jobId, userId });
+  const existing = await prisma.jobDescription.findFirst({
+    where: { id: jobId, userId },
+  });
+
+  if (!existing) {
+    return null;
+  }
+
+  await prisma.jobDescription.delete({ where: { id: jobId } });
+  return existing;
 };

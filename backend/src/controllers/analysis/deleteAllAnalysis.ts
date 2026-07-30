@@ -1,10 +1,12 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../types';
-import { Analysis } from '../../models/Analysis';
+import { prisma } from '../../lib/prisma';
 
 export const deleteAllAnalyses = async (req: AuthRequest, res: Response) => {
   try {
-    await Analysis.deleteMany({ userId: req.user._id });
+    await prisma.analysis.deleteMany({
+      where: { userId: req.user.id },
+    });
 
     return res.json({
       success: true,

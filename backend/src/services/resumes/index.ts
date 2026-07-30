@@ -1,11 +1,7 @@
-import { Resume } from "../../models/Resume";
-import { User } from "../../models/User";
-import { parseResumeFile } from "../resumeParser";
-
-interface ResumeContent {
-  personalInfo?: any;
-  [key: string]: any;
-}
+import { prisma } from '../../lib/prisma';
+import { parseResumeFile } from '../resumeParser';
+import { ResumeContent } from '../../types';
+import { findUserById } from '../auth';
 
 interface PaginationOptions {
   page: number;
@@ -20,25 +16,32 @@ export const getAllResumesByUser = async (
   const { page, limit, sourceType } = options;
   const skip = (page - 1) * limit;
 
-  const query: any = { 
-    userId, 
-    $or: [
-      { isActive: true },
-      { isActive: { $exists: false } }
-    ]
-  };
+  const where: any = { userId };
 
   if (sourceType) {
-    query.sourceType = sourceType;
+    where.sourceType = sourceType;
   }
 
   const [resumes, total] = await Promise.all([
-    Resume.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .select("-originalFormat"),
-    Resume.countDocuments(query),
+    prisma.resume.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+      select: {
+        id: true,
+        sourceType: true,
+        originalFormat: false,
+        content: true,
+        metadata: true,
+        tags: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+        userId: true,
+      },
+    }),
+    prisma.resume.count({ where }),
   ]);
 
   return {
@@ -53,7 +56,21 @@ export const getAllResumesByUser = async (
 };
 
 export const getResumeById = async (resumeId: string, userId: string) => {
-  return Resume.findOne({ _id: resumeId, userId });
+  return prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+    select: {
+      id: true,
+      sourceType: true,
+      originalFormat: true,
+      content: true,
+      metadata: true,
+      tags: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      userId: true,
+    },
+  });
 };
 
 interface UploadedFile {
@@ -70,23 +87,37 @@ export const createResumeFromUpload = async (
 ) => {
   const parsedContent = await parseResumeFile(file.path, file.mimetype);
 
-  const resume = await Resume.create({
-    userId,
-    sourceType: "uploaded",
-    originalFormat: {
-      filename: file.filename,
-      mimetype: file.mimetype,
-      size: file.size,
-      path: file.path,
+  const resume = await prisma.resume.create({
+    data: {
+      userId,
+      sourceType: 'uploaded',
+      originalFormat: {
+        filename: file.filename,
+        mimetype: file.mimetype,
+        size: file.size,
+        path: file.path,
+      },
+      content: parsedContent,
+      metadata: {
+        filename: file.filename,
+        originalName: file.originalname,
+        size: file.size,
+        type: file.mimetype,
+      },
+      isActive: true,
     },
-    content: parsedContent,
-    metadata: {
-      filename: file.filename,
-      originalName: file.originalname,
-      size: file.size,
-      type: file.mimetype,
+    select: {
+      id: true,
+      sourceType: true,
+      originalFormat: true,
+      content: true,
+      metadata: true,
+      tags: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      userId: true,
     },
-    isActive: true,
   });
 
   return resume;
@@ -96,33 +127,67 @@ export const createResumeFromContent = async (
   userId: string,
   content: ResumeContent
 ) => {
-  const user = await User.findById(userId);
+  const user = await findUserById(userId);
 
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 
-  if (user.subscription.credits <= 0) {
-    throw new Error("Insufficient credits. Please upgrade your plan.");
+  const subscription = (user.subscription as any) || {};
+  const credits = subscription.credits ?? 0;
+
+  if (credits <= 0) {
+    throw new Error('Insufficient credits. Please upgrade your plan.');
   }
 
-  user.subscription.credits -= 1;
-  await user.save();
-
-  const resume = await Resume.create({
-    userId,
-    sourceType: "builder",
-    content,
-    metadata: {
-      filename: `resume_${Date.now()}.json`,
-      originalName: content.personalInfo?.fullName || "Resume",
-      size: JSON.stringify(content).length,
-      type: "application/json",
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      subscription: {
+        ...subscription,
+        credits: credits - 1,
+      },
     },
-    isActive: true,
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      picture: true,
+      preferences: true,
+      subscription: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
-  return { resume, remainingCredits: user.subscription.credits };
+  const resume = await prisma.resume.create({
+    data: {
+      userId,
+      sourceType: 'builder',
+      content,
+      metadata: {
+        filename: `resume_${Date.now()}.json`,
+        originalName: content.personalInfo?.fullName || 'Resume',
+        size: JSON.stringify(content).length,
+        type: 'application/json',
+      },
+      isActive: true,
+    },
+    select: {
+      id: true,
+      sourceType: true,
+      originalFormat: true,
+      content: true,
+      metadata: true,
+      tags: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      userId: true,
+    },
+  });
+
+  return { resume, remainingCredits: (updated.subscription as any).credits };
 };
 
 export const updateResumeById = async (
@@ -130,24 +195,48 @@ export const updateResumeById = async (
   userId: string,
   updateData: any
 ) => {
-  return Resume.findOneAndUpdate(
-    { _id: resumeId, userId },
-    { $set: updateData },
-    { new: true, runValidators: true }
-  );
+  const existing = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+  });
+
+  if (!existing) {
+    return null;
+  }
+
+  return prisma.resume.update({
+    where: { id: resumeId },
+    data: updateData,
+    select: {
+      id: true,
+      sourceType: true,
+      originalFormat: true,
+      content: true,
+      metadata: true,
+      tags: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      userId: true,
+    },
+  });
 };
 
 export const deleteResumeById = async (resumeId: string, userId: string) => {
-  return Resume.findOneAndDelete({ _id: resumeId, userId });
+  const existing = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+  });
+
+  if (!existing) {
+    return null;
+  }
+
+  await prisma.resume.delete({ where: { id: resumeId } });
+  return existing;
 };
 
-export const deleteAllResumesByUser = async (userId: string): Promise<{ deletedCount: number }> => {
-  const result = await Resume.deleteMany({ 
-    userId, 
-    $or: [
-      { isActive: true },
-      { isActive: { $exists: false } }
-    ]
-  });
-  return { deletedCount: result.deletedCount };
+export const deleteAllResumesByUser = async (
+  userId: string
+): Promise<{ deletedCount: number }> => {
+  const result = await prisma.resume.deleteMany({ where: { userId } });
+  return { deletedCount: result.count };
 };

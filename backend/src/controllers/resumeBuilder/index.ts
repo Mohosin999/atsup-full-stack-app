@@ -17,7 +17,7 @@ export const createTemplate = async (req: AuthRequest, res: Response) => {
     const { name } = req.body;
 
     const template = await createResumeTemplate(
-      req.user._id.toString(),
+      req.user.id,
       name || 'Untitled Resume'
     );
 
@@ -40,7 +40,7 @@ export const getTemplates = async (req: AuthRequest, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 10;
 
     const result = await getResumeTemplates(
-      req.user._id.toString(),
+      req.user.id,
       page,
       limit
     );
@@ -63,7 +63,7 @@ export const getTemplate = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
-    const template = await getResumeTemplateById(req.user._id.toString(), id);
+    const template = await getResumeTemplateById(req.user.id, id);
 
     res.json({
       success: true,
@@ -84,7 +84,7 @@ export const updateTemplate = async (req: AuthRequest, res: Response) => {
     const updates = req.body;
 
     const template = await updateResumeTemplate(
-      req.user._id.toString(),
+      req.user.id,
       id,
       updates
     );
@@ -106,7 +106,7 @@ export const deleteTemplate = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
-    await deleteResumeTemplate(req.user._id.toString(), id);
+    await deleteResumeTemplate(req.user.id, id);
 
     res.json({
       success: true,
@@ -133,7 +133,7 @@ export const generateSection = async (req: AuthRequest, res: Response) => {
     }
 
     const { suggestion, credits } = await generateSectionContent(
-      req.user._id.toString(),
+      req.user.id,
       section,
       context
     );
@@ -165,7 +165,7 @@ export const improveSection = async (req: AuthRequest, res: Response) => {
     }
 
     const { improvement, credits } = await improveResumeSection(
-      req.user._id.toString(),
+      req.user.id,
       section,
       content
     );

@@ -4,7 +4,7 @@ import { getJobById } from "../../services/jobs";
 
 export const getSingleJob = async (req: AuthRequest, res: Response) => {
   try {
-    const job = await getJobById(req.params.id, req.user._id.toString());
+    const job = await getJobById(req.params.id, req.user.id);
 
     if (!job) {
       return res.status(404).json({

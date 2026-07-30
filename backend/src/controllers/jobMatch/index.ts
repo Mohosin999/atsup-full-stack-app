@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../middlewares';
-import { User } from '../../models/User';
 import {
   calculateJobMatch,
   getJobMatchHistory,
@@ -27,7 +26,7 @@ export const analyzeJobMatch = async (req: AuthRequest, res: Response) => {
     }
 
     const { jobMatch, credits } = await calculateJobMatch(
-      req.user._id.toString(),
+      req.user.id,
       resumeId,
       jobDescription,
       jobTitle,
@@ -55,7 +54,7 @@ export const getJobMatches = async (req: AuthRequest, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 10;
 
     const result = await getJobMatchHistory(
-      req.user._id.toString(),
+      req.user.id,
       page,
       limit
     );
@@ -78,7 +77,7 @@ export const getJobMatch = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
-    const match = await getJobMatchById(req.user._id.toString(), id);
+    const match = await getJobMatchById(req.user.id, id);
 
     res.json({
       success: true,
@@ -100,7 +99,7 @@ export const deleteJobMatchController = async (
   try {
     const { id } = req.params;
 
-    await deleteJobMatch(req.user._id.toString(), id);
+    await deleteJobMatch(req.user.id, id);
 
     res.json({
       success: true,

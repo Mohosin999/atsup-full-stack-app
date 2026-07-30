@@ -1,73 +1,70 @@
-version: "3.8"
+# version: "3.8"
 
-services:
-  # ---------- MongoDB ----------
-  mongo:
-    image: mongo:7.0
-    container_name: cvcoach-mongo
-    restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${ROOT_PASSWORD}
-      AUTH: admin
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    networks:
-      - cvcoach-network
+# services:
+#   # ---------- PostgreSQL ----------
+#   postgres:
+#     image: postgres:16-alpine
+#     container_name: cvcoach-postgres
+#     restart: unless-stopped
+#     environment:
+#       POSTGRES_USER: ${ROOT_USERNAME}
+#       POSTGRES_PASSWORD: ${ROOT_PASSWORD}
+#       POSTGRES_DB: ${DATABASE_NAME}
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     networks:
+#       - cvcoach-network
 
-  # ---------- MongoDB Express (Web UI) ----------
-  mongo-express:
-    image: mongo-express:latest
-    container_name: cvcoach-mongo-express
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ROOT_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ROOT_PASSWORD}
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin123
-    depends_on:
-      - mongo
-    networks:
-      - cvcoach-network
+#   # ---------- pgAdmin (Web UI) ----------
+#   pgadmin:
+#     image: dpage/pgadmin4:latest
+#     container_name: cvcoach-pgadmin
+#     restart: unless-stopped
+#     ports:
+#       - "8081:80"
+#     environment:
+#       PGADMIN_DEFAULT_EMAIL: ${ROOT_USERNAME}
+#       PGADMIN_DEFAULT_PASSWORD: ${ROOT_PASSWORD}
+#     depends_on:
+#       - postgres
+#     networks:
+#       - cvcoach-network
 
-  # ---------- Backend ----------
-  backend:
-    build: ./backend
-    container_name: cvcoach-backend
-    restart: unless-stopped
-    ports:
-      - "5000:5000"
-    env_file:
-      - ./backend/.env
-    environment:
-      MONGODB_URI: ${MONGODB_URI}
-    depends_on:
-      - mongo
-    networks:
-      - cvcoach-network
+#   # ---------- Backend ----------
+#   backend:
+#     build: ./backend
+#     container_name: cvcoach-backend
+#     restart: unless-stopped
+#     ports:
+#       - "5000:5000"
+#     env_file:
+#       - ./backend/.env
+#     environment:
+#       DATABASE_URL: ${DATABASE_URL}
+#     depends_on:
+#       - postgres
+#     networks:
+#       - cvcoach-network
 
-  # ---------- Frontend ----------
-  frontend:
-    build: ./frontend
-    container_name: cvcoach-frontend
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./frontend/.env
-    depends_on:
-      - backend
-    networks:
-      - cvcoach-network
+#   # ---------- Frontend ----------
+#   frontend:
+#     build: ./frontend
+#     container_name: cvcoach-frontend
+#     restart: unless-stopped
+#     ports:
+#       - "3000:3000"
+#     env_file:
+#       - ./frontend/.env
+#     depends_on:
+#       - backend
+#     networks:
+#       - cvcoach-network
 
-networks:
-  cvcoach-network:
-    driver: bridge
+# networks:
+#   cvcoach-network:
+#     driver: bridge
 
-volumes:
-  mongo_data:
+# volumes:
+#   postgres_data:

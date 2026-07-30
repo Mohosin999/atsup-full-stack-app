@@ -5,7 +5,7 @@ dotenv.config();
 interface EnvConfig {
   port: number;
   nodeEnv: string;
-  mongoUri: string;
+  databaseUrl: string;
   jwtSecret: string;
   jwtRefreshSecret: string;
   googleClientId: string;
@@ -26,7 +26,7 @@ const getEnvNumber = (key: string, defaultValue: number): number => {
 export const env: EnvConfig = {
   port: getEnvNumber('PORT', 5000),
   nodeEnv: process.env.NODE_ENV || 'development',
-  mongoUri: process.env.MONGODB_URI || '',
+  databaseUrl: process.env.DATABASE_URL || '',
   jwtSecret: process.env.JWT_SECRET || '',
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || '',
   googleClientId: process.env.GOOGLE_CLIENT_ID || '',

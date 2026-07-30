@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../middlewares';
-import { User } from '../../models/User';
+import { prisma } from '../../lib/prisma';
 import {
   createResumeBuildHistory,
   getResumeBuildHistory,
@@ -22,27 +22,46 @@ export const saveResumeBuild = async (req: AuthRequest, res: Response) => {
     }
 
     // Check user credits (Resume Build costs 1 credit)
-    const user = await User.findById(req.user._id);
-    if (!user || user.subscription.credits < 1) {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        subscription: true,
+      },
+    });
+
+    const credits = (user?.subscription as any)?.credits ?? 0;
+    if (!user || credits < 1) {
       return res.status(403).json({
         success: false,
-        message: `Insufficient credits. This task requires 1 credit. You have ${user?.subscription.credits || 0} credits.`,
+        message: `Insufficient credits. This task requires 1 credit. You have ${credits} credits.`,
       });
     }
 
     const build = await createResumeBuildHistory(
-      req.user._id.toString(),
+      req.user.id,
       resumeContent
     );
 
     // Deduct 1 credit for Resume Build
-    user.subscription.credits -= 1;
-    await user.save();
+    const updated = await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        subscription: {
+          ...((user.subscription as any) || {}),
+          credits: credits - 1,
+        },
+      },
+      select: {
+        subscription: true,
+      },
+    });
+
+    const remainingCredits = (updated.subscription as any)?.credits ?? 0;
 
     res.status(201).json({
       success: true,
       data: build,
-      credits: user.subscription.credits,
+      credits: remainingCredits,
       message: "✅ Credit deducted successfully! Task: Resume Build, Credits deducted: 1",
     });
   } catch (error: any) {
@@ -60,7 +79,7 @@ export const getResumeBuilds = async (req: AuthRequest, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 3;
 
     const result = await getResumeBuildHistory(
-      req.user._id.toString(),
+      req.user.id,
       page,
       limit
     );
@@ -83,7 +102,7 @@ export const getResumeBuild = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
-    const build = await getResumeBuildHistoryById(req.user._id.toString(), id);
+    const build = await getResumeBuildHistoryById(req.user.id, id);
 
     res.json({
       success: true,
@@ -105,7 +124,7 @@ export const deleteResumeBuildController = async (
   try {
     const { id } = req.params;
 
-    await deleteResumeBuildHistory(req.user._id.toString(), id);
+    await deleteResumeBuildHistory(req.user.id, id);
 
     res.json({
       success: true,
@@ -125,7 +144,7 @@ export const deleteAllResumeBuildsController = async (
   res: Response
 ) => {
   try {
-    await deleteAllResumeBuildHistory(req.user._id.toString());
+    await deleteAllResumeBuildHistory(req.user.id);
 
     res.json({
       success: true,
@@ -153,7 +172,7 @@ export const updateResumeBuildController = async (req: AuthRequest, res: Respons
     }
 
     const build = await updateResumeBuildHistory(
-      req.user._id.toString(),
+      req.user.id,
       id,
       resumeContent
     );

@@ -1,4 +1,4 @@
-import { JobMatchHistory } from '../../models/JobMatchHistory';
+import { prisma } from '../../lib/prisma';
 import { analyzeJobMatch as analyzeWithGemini } from '../aiAnalysis/gemini';
 import { ResumeContent } from '../../types';
 
@@ -8,24 +8,23 @@ export const createJobMatchHistory = async (
   resumeContent: ResumeContent,
   jobDescription: string
 ) => {
-  const analysis = await analyzeWithGemini(
-    resumeContent,
-    jobDescription
-  );
+  const analysis = await analyzeWithGemini(resumeContent, jobDescription);
 
   const title = `${resumeName} – Job Match v${Date.now().toString(36).slice(-4)}`;
 
-  const jobMatchHistory = await JobMatchHistory.create({
-    userId,
-    title,
-    resumeName,
-    jobDescription,
-    matchPercentage: analysis.matchPercentage,
-    breakdown: analysis.breakdown,
-    missingSkills: analysis.missingSkills,
-    missingKeywords: analysis.missingKeywords,
-    suggestions: analysis.suggestions,
-    resumeContent,
+  const jobMatchHistory = await prisma.jobMatchHistory.create({
+    data: {
+      userId,
+      title,
+      resumeName,
+      jobDescription,
+      matchPercentage: analysis.matchPercentage,
+      breakdown: analysis.breakdown,
+      missingSkills: analysis.missingSkills,
+      missingKeywords: analysis.missingKeywords,
+      suggestions: analysis.suggestions,
+      resumeContent,
+    },
   });
 
   return jobMatchHistory;
@@ -35,11 +34,13 @@ export const getJobMatchHistory = async (userId: string, page = 1, limit = 10) =
   const skip = (page - 1) * limit;
 
   const [matches, total] = await Promise.all([
-    JobMatchHistory.find({ userId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
-    JobMatchHistory.countDocuments({ userId }),
+    prisma.jobMatchHistory.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+    prisma.jobMatchHistory.count({ where: { userId } }),
   ]);
 
   return {
@@ -54,9 +55,8 @@ export const getJobMatchHistory = async (userId: string, page = 1, limit = 10) =
 };
 
 export const getJobMatchHistoryById = async (userId: string, historyId: string) => {
-  const match = await JobMatchHistory.findOne({
-    _id: historyId,
-    userId,
+  const match = await prisma.jobMatchHistory.findFirst({
+    where: { id: historyId, userId },
   });
 
   if (!match) {
@@ -67,19 +67,19 @@ export const getJobMatchHistoryById = async (userId: string, historyId: string) 
 };
 
 export const deleteJobMatchHistory = async (userId: string, historyId: string) => {
-  const result = await JobMatchHistory.deleteOne({
-    _id: historyId,
-    userId,
+  const existing = await prisma.jobMatchHistory.findFirst({
+    where: { id: historyId, userId },
   });
 
-  if (result.deletedCount === 0) {
+  if (!existing) {
     throw new Error('Job Match history not found');
   }
 
+  await prisma.jobMatchHistory.delete({ where: { id: historyId } });
   return { success: true };
 };
 
 export const deleteAllJobMatchHistory = async (userId: string) => {
-  await JobMatchHistory.deleteMany({ userId });
+  await prisma.jobMatchHistory.deleteMany({ where: { userId } });
   return { success: true };
 };

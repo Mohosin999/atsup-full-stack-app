@@ -1,5 +1,4 @@
-import { JobMatch } from '../../models/JobMatch';
-import { Resume } from '../../models/Resume';
+import { prisma } from '../../lib/prisma';
 import { analyzeJobMatch as analyzeWithGemini } from '../aiAnalysis/gemini';
 import { useUserCredits, getUserCredits } from '../users';
 
@@ -10,44 +9,41 @@ export const calculateJobMatch = async (
   jobTitle?: string,
   company?: string
 ) => {
-  const resume = await Resume.findOne({
-    _id: resumeId,
-    userId,
+  const resume = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
   });
 
   if (!resume) {
     throw new Error('Resume not found');
   }
 
-  // Check credits before analysis (Job Match costs 1 credit)
   const currentCredits = await getUserCredits(userId);
   if (currentCredits < 1) {
     throw new Error(`Insufficient credits. This task requires 1 credit. You have ${currentCredits} credits.`);
   }
 
-  // Deduct 1 credit for Job Match Analysis
   const { credits } = await useUserCredits(userId, 1);
 
-  // Analyze with Gemini AI
   const analysis = await analyzeWithGemini(
-    resume.content,
+    resume.content as any,
     jobDescription,
     jobTitle,
     company
   );
 
-  // Save the analysis result
-  const jobMatch = await JobMatch.create({
-    userId,
-    resumeId,
-    jobDescription,
-    jobTitle,
-    company,
-    matchPercentage: analysis.matchPercentage,
-    breakdown: analysis.breakdown,
-    missingSkills: analysis.missingSkills,
-    missingKeywords: analysis.missingKeywords,
-    suggestions: analysis.suggestions,
+  const jobMatch = await prisma.jobMatch.create({
+    data: {
+      userId,
+      resumeId,
+      jobDescription,
+      jobTitle,
+      company,
+      matchPercentage: analysis.matchPercentage,
+      breakdown: analysis.breakdown,
+      missingSkills: analysis.missingSkills,
+      missingKeywords: analysis.missingKeywords,
+      suggestions: analysis.suggestions,
+    },
   });
 
   return { jobMatch, credits };
@@ -57,12 +53,34 @@ export const getJobMatchHistory = async (userId: string, page = 1, limit = 10) =
   const skip = (page - 1) * limit;
 
   const [matches, total] = await Promise.all([
-    JobMatch.find({ userId })
-      .populate('resumeId', 'metadata.filename content.personalInfo.fullName')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
-    JobMatch.countDocuments({ userId }),
+    prisma.jobMatch.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+      select: {
+        id: true,
+        userId: true,
+        resumeId: true,
+        jobDescription: true,
+        jobTitle: true,
+        company: true,
+        matchPercentage: true,
+        breakdown: true,
+        missingSkills: true,
+        missingKeywords: true,
+        suggestions: true,
+        createdAt: true,
+        updatedAt: true,
+        resume: {
+          select: {
+            metadata: true,
+            content: true,
+          },
+        },
+      },
+    }),
+    prisma.jobMatch.count({ where: { userId } }),
   ]);
 
   return {
@@ -77,10 +95,30 @@ export const getJobMatchHistory = async (userId: string, page = 1, limit = 10) =
 };
 
 export const getJobMatchById = async (userId: string, matchId: string) => {
-  const match = await JobMatch.findOne({
-    _id: matchId,
-    userId,
-  }).populate('resumeId', 'metadata.filename content');
+  const match = await prisma.jobMatch.findFirst({
+    where: { id: matchId, userId },
+    select: {
+      id: true,
+      userId: true,
+      resumeId: true,
+      jobDescription: true,
+      jobTitle: true,
+      company: true,
+      matchPercentage: true,
+      breakdown: true,
+      missingSkills: true,
+      missingKeywords: true,
+      suggestions: true,
+      createdAt: true,
+      updatedAt: true,
+      resume: {
+        select: {
+          metadata: true,
+          content: true,
+        },
+      },
+    },
+  });
 
   if (!match) {
     throw new Error('Job Match not found');
@@ -90,14 +128,14 @@ export const getJobMatchById = async (userId: string, matchId: string) => {
 };
 
 export const deleteJobMatch = async (userId: string, matchId: string) => {
-  const result = await JobMatch.deleteOne({
-    _id: matchId,
-    userId,
+  const existing = await prisma.jobMatch.findFirst({
+    where: { id: matchId, userId },
   });
 
-  if (result.deletedCount === 0) {
+  if (!existing) {
     throw new Error('Job Match not found');
   }
 
+  await prisma.jobMatch.delete({ where: { id: matchId } });
   return { success: true };
 };

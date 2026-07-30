@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Stripe from "stripe";
-import { User } from "../../models/User";
-import { Payment } from "../../models/Payment";
+import { prisma } from '../../lib/prisma';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2024-06-20" as any,
@@ -14,7 +13,7 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
   try {
     console.log("=== Payment Verification Started ===");
     console.log("Query params:", req.query);
-    console.log("User:", (req.user as any)?._id);
+    console.log("User:", (req.user as any)?.id);
     
     const { session_id } = req.query;
 
@@ -55,7 +54,9 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
     console.log(`Plan: ${planKey}, Credits to add: ${creditsNum}`);
 
     // Check if payment already processed
-    const existingPayment = await Payment.findOne({ stripeSessionId: session_id });
+    const existingPayment = await prisma.payment.findFirst({
+      where: { stripeSessionId: session_id as string },
+    });
     if (existingPayment) {
       console.log("Payment already processed for this session");
       // Still return success with credits info, but don't process again
@@ -68,7 +69,13 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
     }
 
     console.log("Fetching user:", userId);
-    const user = await User.findById(userId);
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        subscription: true,
+        email: true,
+      },
+    });
     if (!user) {
       console.error("User not found:", userId);
       return res.status(404).json({ message: "User not found" });
@@ -78,24 +85,37 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
     console.log(`Payment amount: $${amount}`);
 
     // Update user subscription
-    const oldCredits = user.subscription.credits;
-    user.subscription.plan = planKey as "free" | "pro" | "enterprise";
-    user.subscription.credits += creditsNum;
-    user.subscription.expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    await user.save();
+    const oldCredits = (user.subscription as any)?.credits ?? 0;
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        subscription: {
+          ...((user.subscription as any) || {}),
+          plan: planKey as "free" | "pro" | "enterprise",
+          credits: oldCredits + creditsNum,
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        },
+      },
+      select: {
+        subscription: true,
+      },
+    });
 
-    console.log(`User ${userId} updated: ${oldCredits} → ${user.subscription.credits} credits`);
+    const newCredits = (updated.subscription as any)?.credits ?? 0;
+    console.log(`User ${userId} updated: ${oldCredits} → ${newCredits} credits`);
 
-    await Payment.create({
-      user: userId,
-      email: email || user.email,
-      amount,
-      currency: session.currency || "usd",
-      status: "completed",
-      paymentMethod: "stripe",
-      planId,
-      credits: creditsNum,
-      stripeSessionId: session_id,
+    await prisma.payment.create({
+      data: {
+        user: { connect: { id: userId } },
+        email: email || user.email,
+        amount,
+        currency: session.currency || "usd",
+        status: "completed",
+        paymentMethod: "stripe",
+        planId,
+        credits: creditsNum,
+        stripeSessionId: session_id as string,
+      },
     });
 
     console.log(`✅ Payment verified: User ${userId} received ${creditsNum} credits for ${planId} plan`);

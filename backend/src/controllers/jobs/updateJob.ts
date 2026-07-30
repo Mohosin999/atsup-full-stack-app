@@ -22,7 +22,7 @@ export const updateJob = async (req: AuthRequest, res: Response) => {
 
     const job = await updateJobById(
       req.params.id,
-      req.user._id.toString(),
+      req.user.id,
       value
     );
 

@@ -1,12 +1,11 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../types';
-import { Analysis } from '../../models/Analysis';
+import { prisma } from '../../lib/prisma';
 
 export const deleteAnalysis = async (req: AuthRequest, res: Response) => {
   try {
-    const analysis = await Analysis.findOneAndDelete({
-      _id: req.params.id,
-      userId: req.user._id,
+    const analysis = await prisma.analysis.findFirst({
+      where: { id: req.params.id, userId: req.user.id },
     });
 
     if (!analysis) {
@@ -15,6 +14,10 @@ export const deleteAnalysis = async (req: AuthRequest, res: Response) => {
         message: "Analysis not found",
       });
     }
+
+    await prisma.analysis.delete({
+      where: { id: req.params.id },
+    });
 
     return res.json({
       success: true,

@@ -4,7 +4,7 @@ import { deleteAllResumesByUser } from "../../services/resumes";
 
 export const deleteAllResumes = async (req: AuthRequest, res: Response) => {
   try {
-    const result = await deleteAllResumesByUser(req.user._id.toString());
+    const result = await deleteAllResumesByUser(req.user.id);
 
     return res.json({
       success: true,

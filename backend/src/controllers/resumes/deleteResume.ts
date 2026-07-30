@@ -6,7 +6,7 @@ export const deleteResume = async (req: AuthRequest, res: Response) => {
   try {
     const resume = await deleteResumeById(
       req.params.id,
-      req.user._id.toString()
+      req.user.id
     );
 
     if (!resume) {

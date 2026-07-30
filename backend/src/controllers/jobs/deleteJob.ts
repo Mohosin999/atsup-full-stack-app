@@ -4,7 +4,7 @@ import { deleteJobById } from "../../services/jobs";
 
 export const deleteJob = async (req: AuthRequest, res: Response) => {
   try {
-    const job = await deleteJobById(req.params.id, req.user._id.toString());
+    const job = await deleteJobById(req.params.id, req.user.id);
 
     if (!job) {
       return res.status(404).json({

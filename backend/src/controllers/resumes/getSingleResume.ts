@@ -4,7 +4,7 @@ import { getResumeById } from "../../services/resumes";
 
 export const getSingleResume = async (req: AuthRequest, res: Response) => {
   try {
-    const resume = await getResumeById(req.params.id, req.user._id.toString());
+    const resume = await getResumeById(req.params.id, req.user.id);
 
     if (!resume) {
       return res.status(404).json({

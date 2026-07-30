@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../middlewares';
-import { User } from '../../models/User';
+import { prisma } from '../../lib/prisma';
 import {
   createAtsScoreHistory,
   getAtsScoreHistory,
@@ -21,28 +21,47 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
     }
 
     // Check user credits (ATS Score costs 1 credit)
-    const user = await User.findById(req.user._id);
-    if (!user || user.subscription.credits < 1) {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        subscription: true,
+      },
+    });
+
+    const credits = (user?.subscription as any)?.credits ?? 0;
+    if (!user || credits < 1) {
       return res.status(403).json({
         success: false,
-        message: `Insufficient credits. This task requires 1 credit. You have ${user?.subscription.credits || 0} credits.`,
+        message: `Insufficient credits. This task requires 1 credit. You have ${credits} credits.`,
       });
     }
 
     const score = await createAtsScoreHistory(
-      req.user._id.toString(),
+      req.user.id,
       resumeName || 'Untitled Resume',
       resumeContent
     );
 
     // Deduct 1 credit for ATS Score Analysis
-    user.subscription.credits -= 1;
-    await user.save();
+    const updated = await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        subscription: {
+          ...((user.subscription as any) || {}),
+          credits: credits - 1,
+        },
+      },
+      select: {
+        subscription: true,
+      },
+    });
+
+    const remainingCredits = (updated.subscription as any)?.credits ?? 0;
 
     res.status(201).json({
       success: true,
       data: score,
-      credits: user.subscription.credits,
+      credits: remainingCredits,
       message: "✅ Credit deducted successfully! Task: ATS Score Analysis, Credits deducted: 1",
     });
   } catch (error: any) {
@@ -61,7 +80,7 @@ export const getAtsScores = async (req: AuthRequest, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 3;
 
     const result = await getAtsScoreHistory(
-      req.user._id.toString(),
+      req.user.id,
       page,
       limit
     );
@@ -84,7 +103,7 @@ export const getAtsScore = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
-    const score = await getAtsScoreHistoryById(req.user._id.toString(), id);
+    const score = await getAtsScoreHistoryById(req.user.id, id);
 
     res.json({
       success: true,
@@ -106,7 +125,7 @@ export const deleteAtsScoreController = async (
   try {
     const { id } = req.params;
 
-    await deleteAtsScoreHistory(req.user._id.toString(), id);
+    await deleteAtsScoreHistory(req.user.id, id);
 
     res.json({
       success: true,
@@ -126,7 +145,7 @@ export const deleteAllAtsScoresController = async (
   res: Response
 ) => {
   try {
-    await deleteAllAtsScoreHistory(req.user._id.toString());
+    await deleteAllAtsScoreHistory(req.user.id);
 
     res.json({
       success: true,

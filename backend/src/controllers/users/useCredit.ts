@@ -4,7 +4,7 @@ import { useUserCredit } from "../../services/users";
 
 export const useCredit = async (req: AuthRequest, res: Response) => {
   try {
-    const credits = await useUserCredit(req.user._id.toString());
+    const credits = await useUserCredit(req.user.id);
 
     res.json({
       success: true,

@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../middlewares';
-import { User } from '../../models/User';
 import {
   calculateAtsScore,
   getAtsScoreHistory,
@@ -19,7 +18,7 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const { atsScore, credits } = await calculateAtsScore(req.user._id.toString(), resumeId);
+    const { atsScore, credits } = await calculateAtsScore(req.user.id, resumeId);
 
     res.status(201).json({
       success: true,
@@ -42,7 +41,7 @@ export const getAtsScores = async (req: AuthRequest, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 10;
 
     const result = await getAtsScoreHistory(
-      req.user._id.toString(),
+      req.user.id,
       page,
       limit
     );
@@ -65,7 +64,7 @@ export const getAtsScore = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
-    const score = await getAtsScoreById(req.user._id.toString(), id);
+    const score = await getAtsScoreById(req.user.id, id);
 
     res.json({
       success: true,
@@ -87,7 +86,7 @@ export const deleteAtsScoreController = async (
   try {
     const { id } = req.params;
 
-    await deleteAtsScore(req.user._id.toString(), id);
+    await deleteAtsScore(req.user.id, id);
 
     res.json({
       success: true,

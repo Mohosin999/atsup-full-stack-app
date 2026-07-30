@@ -4,7 +4,7 @@ import { findUserById } from "../../services/auth";
 
 export const getMe = async (req: AuthRequest, res: Response) => {
   try {
-    const user = await findUserById(req.user._id.toString());
+    const user = await findUserById(req.user.id);
 
     res.json({
       success: true,

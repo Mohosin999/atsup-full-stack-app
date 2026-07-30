@@ -17,7 +17,7 @@ export const uploadResume = [
       }
 
       const resume = await createResumeFromUpload(
-        req.user._id.toString(),
+        req.user.id,
         req.file
       );
 

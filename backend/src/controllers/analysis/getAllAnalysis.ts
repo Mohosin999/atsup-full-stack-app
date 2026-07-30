@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import { Analysis } from '../../models/Analysis';
 import { AuthRequest } from '../../types';
+import { prisma } from '../../lib/prisma';
 
 export const getAllAnalysis = async (req: AuthRequest, res: Response) => {
   try {
@@ -8,13 +8,24 @@ export const getAllAnalysis = async (req: AuthRequest, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 3;
     const skip = (page - 1) * limit;
 
-    const analyses = await Analysis.find({ userId: req.user._id })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate("resumeId", "metadata content.personalInfo");
+    const analyses = await prisma.analysis.findMany({
+      where: { userId: req.user.id },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+      include: {
+        resume: {
+          select: {
+            metadata: true,
+            content: true,
+          },
+        },
+      },
+    });
 
-    const total = await Analysis.countDocuments({ userId: req.user._id });
+    const total = await prisma.analysis.count({
+      where: { userId: req.user.id },
+    });
 
     return res.json({
       success: true,

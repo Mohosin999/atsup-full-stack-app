@@ -8,7 +8,7 @@ export const getAllResumes = async (req: AuthRequest, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 10;
     const sourceType = req.query.sourceType as 'uploaded' | 'builder' | undefined;
 
-    const result = await getAllResumesByUser(req.user._id.toString(), {
+    const result = await getAllResumesByUser(req.user.id, {
       page,
       limit,
       sourceType,

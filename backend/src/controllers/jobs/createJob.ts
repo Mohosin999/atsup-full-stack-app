@@ -20,7 +20,7 @@ export const createJob = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const job = await createJobService(value, req.user._id.toString());
+    const job = await createJobService(value, req.user.id);
 
     res.status(201).json({
       success: true,

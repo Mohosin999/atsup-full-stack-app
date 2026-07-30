@@ -1,5 +1,4 @@
-import { AtsScore } from '../../models/AtsScore';
-import { Resume } from '../../models/Resume';
+import { prisma } from '../../lib/prisma';
 import { analyzeAtsScore as analyzeWithGemini } from '../aiAnalysis/gemini';
 import { ResumeContent } from '../../types';
 import { useUserCredits, getUserCredits } from '../users';
@@ -20,39 +19,35 @@ export const calculateAtsScore = async (
   userId: string,
   resumeId: string
 ) => {
-  const resume = await Resume.findOne({
-    _id: resumeId,
-    userId,
+  const resume = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
   });
 
   if (!resume) {
     throw new Error('Resume not found');
   }
 
-  // Check credits before analysis (ATS Score costs 1 credit)
   const currentCredits = await getUserCredits(userId);
   if (currentCredits < 1) {
     throw new Error(`Insufficient credits. This task requires 1 credit. You have ${currentCredits} credits.`);
   }
 
-  // Deduct 1 credit for ATS Score Analysis
   const { credits } = await useUserCredits(userId, 1);
 
-  // Analyze with Gemini AI
-  const analysis = await analyzeWithGemini(resume.content);
+  const analysis = await analyzeWithGemini(resume.content as any);
 
-  // Sanitize spelling grammar errors to match allowed enum values
   const sanitizedSpellingGrammar = sanitizeSpellingGrammar(analysis.spellingGrammar);
 
-  // Save the analysis result
-  const atsScore = await AtsScore.create({
-    userId,
-    resumeId,
-    overallScore: analysis.overallScore,
-    sectionScores: analysis.sectionScores,
-    spellingGrammar: sanitizedSpellingGrammar,
-    atsFriendliness: analysis.atsFriendliness,
-    suggestions: analysis.suggestions,
+  const atsScore = await prisma.atsScore.create({
+    data: {
+      userId,
+      resumeId,
+      overallScore: analysis.overallScore,
+      sectionScores: analysis.sectionScores,
+      spellingGrammar: sanitizedSpellingGrammar,
+      atsFriendliness: analysis.atsFriendliness,
+      suggestions: analysis.suggestions,
+    },
   });
 
   return { atsScore, credits };
@@ -62,12 +57,31 @@ export const getAtsScoreHistory = async (userId: string, page = 1, limit = 10) =
   const skip = (page - 1) * limit;
 
   const [scores, total] = await Promise.all([
-    AtsScore.find({ userId })
-      .populate('resumeId', 'metadata.filename content.personalInfo.fullName')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
-    AtsScore.countDocuments({ userId }),
+    prisma.atsScore.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+      select: {
+        id: true,
+        userId: true,
+        resumeId: true,
+        overallScore: true,
+        sectionScores: true,
+        spellingGrammar: true,
+        atsFriendliness: true,
+        suggestions: true,
+        createdAt: true,
+        updatedAt: true,
+        resume: {
+          select: {
+            metadata: true,
+            content: true,
+          },
+        },
+      },
+    }),
+    prisma.atsScore.count({ where: { userId } }),
   ]);
 
   return {
@@ -82,10 +96,27 @@ export const getAtsScoreHistory = async (userId: string, page = 1, limit = 10) =
 };
 
 export const getAtsScoreById = async (userId: string, scoreId: string) => {
-  const score = await AtsScore.findOne({
-    _id: scoreId,
-    userId,
-  }).populate('resumeId', 'metadata.filename content');
+  const score = await prisma.atsScore.findFirst({
+    where: { id: scoreId, userId },
+    select: {
+      id: true,
+      userId: true,
+      resumeId: true,
+      overallScore: true,
+      sectionScores: true,
+      spellingGrammar: true,
+      atsFriendliness: true,
+      suggestions: true,
+      createdAt: true,
+      updatedAt: true,
+      resume: {
+        select: {
+          metadata: true,
+          content: true,
+        },
+      },
+    },
+  });
 
   if (!score) {
     throw new Error('ATS Score not found');
@@ -95,14 +126,14 @@ export const getAtsScoreById = async (userId: string, scoreId: string) => {
 };
 
 export const deleteAtsScore = async (userId: string, scoreId: string) => {
-  const result = await AtsScore.deleteOne({
-    _id: scoreId,
-    userId,
+  const existing = await prisma.atsScore.findFirst({
+    where: { id: scoreId, userId },
   });
 
-  if (result.deletedCount === 0) {
+  if (!existing) {
     throw new Error('ATS Score not found');
   }
 
+  await prisma.atsScore.delete({ where: { id: scoreId } });
   return { success: true };
 };

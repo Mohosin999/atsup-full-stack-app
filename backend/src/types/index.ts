@@ -82,6 +82,7 @@ export interface ResumeContent {
     date?: string;
   }>;
   skills: string[];
+  [key: string]: any;
 }
 
 // ============================================================================

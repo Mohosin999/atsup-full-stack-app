@@ -1,14 +1,12 @@
 import { Response } from "express";
 import { AuthRequest } from "../../types";
-import { Analysis } from "../../models/Analysis";
-import { Resume } from "../../models/Resume";
-import { User } from "../../models/User";
 import { resumeAnalysisService } from "../../services/analysis/analysisService";
+import { prisma } from "../../lib/prisma";
 
 export const generateAnalysis = async (req: AuthRequest, res: Response) => {
   try {
     const { resumeId, jobDescription } = req.body;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     if (!resumeId) {
       return res.status(400).json({
@@ -17,9 +15,8 @@ export const generateAnalysis = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const resume = await Resume.findOne({
-      _id: resumeId,
-      userId,
+    const resume = await prisma.resume.findFirst({
+      where: { id: resumeId, userId },
     });
 
     if (!resume) {
@@ -29,13 +26,24 @@ export const generateAnalysis = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const user = await User.findById(userId);
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const currentCredits = (user.subscription as any)?.credits ?? 0;
 
     // Analysis costs 1 credit
-    if (!user || user.subscription.credits < 1) {
+    if (currentCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: `Insufficient credits. This task requires 1 credit. You have ${user?.subscription.credits || 0} credits.`,
+        message: `Insufficient credits. This task requires 1 credit. You have ${currentCredits} credits.`,
       });
     }
 
@@ -74,7 +82,7 @@ export const generateAnalysis = async (req: AuthRequest, res: Response) => {
 
     // Run professional analysis
     const analysisResult = await resumeAnalysisService.analyze({
-      resume: resume.content,
+      resume: resume.content as any,
       resumeText,
       jobDescription: jobDescription || "",
     });
@@ -85,24 +93,32 @@ export const generateAnalysis = async (req: AuthRequest, res: Response) => {
     const analysisData = transformToAnalysisData(
       analysisResult,
       resumeId,
-      req.user._id.toString(),
+      req.user.id,
       jobDescription || "",
     );
 
     console.log("Creating analysis record...");
 
-    const analysis = await Analysis.create(analysisData);
+    const analysis = await prisma.analysis.create({
+      data: analysisData,
+    });
 
-    console.log("Analysis created successfully:", analysis._id);
+    console.log("Analysis created successfully:", analysis.id);
 
-    // Deduct credit
-    user.subscription.credits -= 1;
-    await user.save();
+    const updatedSubscription = {
+      ...((user.subscription as any) || {}),
+      credits: currentCredits - 1,
+    };
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { subscription: updatedSubscription },
+    });
 
     return res.status(201).json({
       success: true,
       data: analysis,
-      credits: user.subscription.credits,
+      credits: currentCredits - 1,
       message: "✅ Credit deducted successfully! Task: Resume Analysis, Credits deducted: 1",
     });
   } catch (error: any) {

@@ -17,7 +17,7 @@ export const createResumeFromContent = async (
     }
 
     const result = await createResumeFromContentService(
-      req.user._id.toString(),
+      req.user.id,
       content
     );
 

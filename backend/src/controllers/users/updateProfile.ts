@@ -23,7 +23,7 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const user = await updateUserProfile(req.user._id.toString(), value);
+    const user = await updateUserProfile(req.user.id, value);
 
     res.json({
       success: true,

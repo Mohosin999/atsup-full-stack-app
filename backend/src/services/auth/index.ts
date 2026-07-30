@@ -1,10 +1,10 @@
-import bcrypt from "bcryptjs";
-import { User } from "../../models/User";
+import bcrypt from 'bcryptjs';
+import { prisma } from '../../lib/prisma';
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
-} from "../../config/jwt";
+} from '../../config/jwt';
 
 export const createUser = async (userData: {
   name: string;
@@ -15,17 +15,30 @@ export const createUser = async (userData: {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await User.create({
-    name,
-    email: email.toLowerCase(),
-    password: hashedPassword,
-    preferences: {
-      theme: "system",
-      notifications: true,
+  const user = await prisma.user.create({
+    data: {
+      name,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      preferences: {
+        theme: 'system',
+        notifications: true,
+      },
+      subscription: {
+        plan: 'free',
+        credits: 100,
+      },
     },
-    subscription: {
-      plan: "free",
-      credits: 100,
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      googleId: true,
+      picture: true,
+      preferences: true,
+      subscription: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 
@@ -33,11 +46,38 @@ export const createUser = async (userData: {
 };
 
 export const findUserByEmail = async (email: string) => {
-  return User.findOne({ email: email.toLowerCase() });
+  return prisma.user.findUnique({
+    where: { email: email.toLowerCase() },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      password: true,
+      googleId: true,
+      picture: true,
+      preferences: true,
+      subscription: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 };
 
 export const findUserById = async (userId: string) => {
-  return User.findById(userId).select("-__v");
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      googleId: true,
+      picture: true,
+      preferences: true,
+      subscription: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
 };
 
 export const validatePassword = async (

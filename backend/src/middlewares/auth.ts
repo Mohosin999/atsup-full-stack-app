@@ -1,9 +1,21 @@
 import { Response, NextFunction } from 'express';
 import { verifyAccessToken } from '../config/jwt';
-import { User } from '../models/User';
+import { prisma } from '../lib/prisma';
 import { AuthRequest } from '../types';
 
-export const authenticate = (
+interface UserRecord {
+  id: string;
+  email: string;
+  name: string;
+  googleId?: string;
+  picture?: string;
+  preferences?: any;
+  subscription?: any;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export const authenticate = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
@@ -26,18 +38,31 @@ export const authenticate = (
 
   try {
     const decoded = verifyAccessToken(token);
-    User.findById(decoded.userId)
-      .then((user) => {
-        if (!user) {
-          return res.status(401).json({
-            success: false,
-            message: 'Unauthorized - User not found',
-          });
-        }
-        req.user = user;
-        next();
-      })
-      .catch(next);
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized - User not found',
+      });
+    }
+
+    const userRecord: UserRecord = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      googleId: user.googleId || undefined,
+      picture: user.picture || undefined,
+      preferences: user.preferences,
+      subscription: user.subscription,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+
+    req.user = userRecord as any;
+    next();
   } catch (error) {
     return res.status(401).json({
       success: false,
@@ -57,9 +82,23 @@ export const optionalAuth = async (
   if (token) {
     try {
       const decoded = verifyAccessToken(token);
-      const user = await User.findById(decoded.userId);
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+      });
+
       if (user) {
-        req.user = user;
+        const userRecord: UserRecord = {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          googleId: user.googleId || undefined,
+          picture: user.picture || undefined,
+          preferences: user.preferences,
+          subscription: user.subscription,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        };
+        req.user = userRecord as any;
       }
     } catch (error) {
       // Token invalid, continue without auth
@@ -81,7 +120,10 @@ export const requireCredits = (
     });
   }
 
-  if (req.user.subscription.credits <= 0) {
+  const subscription = (req.user.subscription as any) || {};
+  const credits = subscription.credits ?? 0;
+
+  if (credits <= 0) {
     return res.status(403).json({
       success: false,
       message: 'Insufficient credits. Please upgrade your plan.',

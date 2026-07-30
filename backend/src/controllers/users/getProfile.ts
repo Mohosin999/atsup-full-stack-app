@@ -4,7 +4,7 @@ import { getUserProfile } from "../../services/users";
 
 export const getProfile = async (req: AuthRequest, res: Response) => {
   try {
-    const user = await getUserProfile(req.user._id.toString());
+    const user = await getUserProfile(req.user.id);
 
     res.json({
       success: true,

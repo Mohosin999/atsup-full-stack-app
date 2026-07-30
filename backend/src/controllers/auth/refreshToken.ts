@@ -30,7 +30,7 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
     }
 
     const newAccessToken = generateNewAccessToken(
-      user._id.toString(),
+      user.id,
       user.email,
     );
 

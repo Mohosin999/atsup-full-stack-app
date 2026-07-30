@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../middlewares';
-import { User } from '../../models/User';
+import { prisma } from '../../lib/prisma';
 import {
   createJobMatchHistory,
   getJobMatchHistory,
@@ -28,29 +28,48 @@ export const analyzeJobMatch = async (req: AuthRequest, res: Response) => {
     }
 
     // Check user credits (Job Match costs 1 credit)
-    const user = await User.findById(req.user._id);
-    if (!user || user.subscription.credits < 1) {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        subscription: true,
+      },
+    });
+
+    const credits = (user?.subscription as any)?.credits ?? 0;
+    if (!user || credits < 1) {
       return res.status(403).json({
         success: false,
-        message: `Insufficient credits. This task requires 1 credit. You have ${user?.subscription.credits || 0} credits.`,
+        message: `Insufficient credits. This task requires 1 credit. You have ${credits} credits.`,
       });
     }
 
     const match = await createJobMatchHistory(
-      req.user._id.toString(),
+      req.user.id,
       resumeName || 'Untitled Resume',
       resumeContent,
       jobDescription
     );
 
     // Deduct 1 credit for Job Match Analysis
-    user.subscription.credits -= 1;
-    await user.save();
+    const updated = await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        subscription: {
+          ...((user.subscription as any) || {}),
+          credits: credits - 1,
+        },
+      },
+      select: {
+        subscription: true,
+      },
+    });
+
+    const remainingCredits = (updated.subscription as any)?.credits ?? 0;
 
     res.status(201).json({
       success: true,
       data: match,
-      credits: user.subscription.credits,
+      credits: remainingCredits,
       message: "✅ Credit deducted successfully! Task: Job Match Analysis, Credits deducted: 1",
     });
   } catch (error: any) {
@@ -69,7 +88,7 @@ export const getJobMatches = async (req: AuthRequest, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 3;
 
     const result = await getJobMatchHistory(
-      req.user._id.toString(),
+      req.user.id,
       page,
       limit
     );
@@ -92,7 +111,7 @@ export const getJobMatch = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
-    const match = await getJobMatchHistoryById(req.user._id.toString(), id);
+    const match = await getJobMatchHistoryById(req.user.id, id);
 
     res.json({
       success: true,
@@ -114,7 +133,7 @@ export const deleteJobMatchController = async (
   try {
     const { id } = req.params;
 
-    await deleteJobMatchHistory(req.user._id.toString(), id);
+    await deleteJobMatchHistory(req.user.id, id);
 
     res.json({
       success: true,
@@ -134,7 +153,7 @@ export const deleteAllJobMatchesController = async (
   res: Response
 ) => {
   try {
-    await deleteAllJobMatchHistory(req.user._id.toString());
+    await deleteAllJobMatchHistory(req.user.id);
 
     res.json({
       success: true,

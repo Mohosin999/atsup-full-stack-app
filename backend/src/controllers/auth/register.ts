@@ -26,7 +26,7 @@ export const register = async (req: AuthRequest, res: Response) => {
     const user = await createUser({ name, email, password });
 
     const { accessToken, refreshToken } = createTokens(
-      user._id.toString(),
+      user.id,
       user.email,
     );
 
@@ -50,7 +50,7 @@ export const register = async (req: AuthRequest, res: Response) => {
       message: 'User registered successfully',
       data: {
         user: {
-          _id: user._id,
+          id: user.id,
           name: user.name,
           email: user.email,
           picture: user.picture,

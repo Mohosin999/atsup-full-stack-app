@@ -4,7 +4,7 @@ import { deleteUserAccount } from "../../services/users";
 
 export const deleteAccount = async (req: AuthRequest, res: Response) => {
   try {
-    await deleteUserAccount(req.user._id.toString());
+    await deleteUserAccount(req.user.id);
 
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");

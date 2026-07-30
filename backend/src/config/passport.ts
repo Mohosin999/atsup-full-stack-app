@@ -4,7 +4,7 @@ import {
   Profile,
   VerifyCallback,
 } from 'passport-google-oauth20';
-import { User } from '../models/User';
+import { prisma } from '../lib/prisma';
 import { env } from '../config/env';
 
 export const configureGoogleStrategy = () => {
@@ -21,30 +21,40 @@ export const configureGoogleStrategy = () => {
       done: VerifyCallback,
     ) => {
       try {
-        let user = await User.findOne({ googleId: profile.id });
+        let user = await prisma.user.findUnique({
+          where: { googleId: profile.id },
+        });
 
         if (!user) {
           const email = profile.emails?.[0]?.value;
 
           if (email) {
-            user = await User.findOne({ email });
+            user = await prisma.user.findUnique({
+              where: { email },
+            });
 
             if (user) {
-              user.googleId = profile.id;
-              user.picture = profile.photos?.[0]?.value;
-              await user.save();
+              await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                  googleId: profile.id,
+                  picture: profile.photos?.[0]?.value,
+                },
+              });
             }
           }
 
           if (!user) {
-            user = await User.create({
-              email: email || `user_${profile.id}@google.local`,
-              name: profile.displayName,
-              googleId: profile.id,
-              picture: profile.photos?.[0]?.value,
-              subscription: {
-                plan: 'free',
-                credits: 100,
+            user = await prisma.user.create({
+              data: {
+                email: email || `user_${profile.id}@google.local`,
+                name: profile.displayName,
+                googleId: profile.id,
+                picture: profile.photos?.[0]?.value,
+                subscription: {
+                  plan: 'free',
+                  credits: 100,
+                },
               },
             });
           }
@@ -64,7 +74,9 @@ passport.serializeUser((user: any, done) => {
 
 passport.deserializeUser(async (id: string, done) => {
   try {
-    const user = await User.findById(id);
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
     done(null, user);
   } catch (error) {
     done(error, null);

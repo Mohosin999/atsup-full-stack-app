@@ -6,7 +6,7 @@ export const updateResume = async (req: AuthRequest, res: Response) => {
   try {
     const resume = await updateResumeById(
       req.params.id,
-      req.user._id.toString(),
+      req.user.id,
       req.body
     );
 

@@ -1,4 +1,4 @@
-import { ResumeBuildHistory } from '../../models/ResumeBuildHistory';
+import { prisma } from '../../lib/prisma';
 import { ResumeContent } from '../../types';
 
 export const createResumeBuildHistory = async (
@@ -7,10 +7,12 @@ export const createResumeBuildHistory = async (
 ) => {
   const title = `${resumeContent.personalInfo?.fullName || 'Resume'} – Resume Builder v${Date.now().toString(36).slice(-4)}`;
 
-  const resumeBuildHistory = await ResumeBuildHistory.create({
-    userId,
-    title,
-    resumeContent,
+  const resumeBuildHistory = await prisma.resumeBuildHistory.create({
+    data: {
+      userId,
+      title,
+      resumeContent,
+    },
   });
 
   return resumeBuildHistory;
@@ -20,11 +22,13 @@ export const getResumeBuildHistory = async (userId: string, page = 1, limit = 10
   const skip = (page - 1) * limit;
 
   const [builds, total] = await Promise.all([
-    ResumeBuildHistory.find({ userId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit),
-    ResumeBuildHistory.countDocuments({ userId }),
+    prisma.resumeBuildHistory.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+    prisma.resumeBuildHistory.count({ where: { userId } }),
   ]);
 
   return {
@@ -39,9 +43,8 @@ export const getResumeBuildHistory = async (userId: string, page = 1, limit = 10
 };
 
 export const getResumeBuildHistoryById = async (userId: string, historyId: string) => {
-  const build = await ResumeBuildHistory.findOne({
-    _id: historyId,
-    userId,
+  const build = await prisma.resumeBuildHistory.findFirst({
+    where: { id: historyId, userId },
   });
 
   if (!build) {
@@ -52,20 +55,20 @@ export const getResumeBuildHistoryById = async (userId: string, historyId: strin
 };
 
 export const deleteResumeBuildHistory = async (userId: string, historyId: string) => {
-  const result = await ResumeBuildHistory.deleteOne({
-    _id: historyId,
-    userId,
+  const existing = await prisma.resumeBuildHistory.findFirst({
+    where: { id: historyId, userId },
   });
 
-  if (result.deletedCount === 0) {
+  if (!existing) {
     throw new Error('Resume Build history not found');
   }
 
+  await prisma.resumeBuildHistory.delete({ where: { id: historyId } });
   return { success: true };
 };
 
 export const deleteAllResumeBuildHistory = async (userId: string) => {
-  await ResumeBuildHistory.deleteMany({ userId });
+  await prisma.resumeBuildHistory.deleteMany({ where: { userId } });
   return { success: true };
 };
 
@@ -74,17 +77,22 @@ export const updateResumeBuildHistory = async (
   historyId: string,
   resumeContent: ResumeContent
 ) => {
-  const title = `${resumeContent.personalInfo?.fullName || 'Resume'} – Resume Builder v${Date.now().toString(36).slice(-4)}`;
+  const existing = await prisma.resumeBuildHistory.findFirst({
+    where: { id: historyId, userId },
+  });
 
-  const build = await ResumeBuildHistory.findOneAndUpdate(
-    { _id: historyId, userId },
-    { title, resumeContent, updatedAt: new Date() },
-    { new: true }
-  );
-
-  if (!build) {
+  if (!existing) {
     throw new Error('Resume Build history not found');
   }
 
-  return build;
+  const title = `${resumeContent.personalInfo?.fullName || 'Resume'} – Resume Builder v${Date.now().toString(36).slice(-4)}`;
+
+  return prisma.resumeBuildHistory.update({
+    where: { id: historyId },
+    data: {
+      title,
+      resumeContent,
+      updatedAt: new Date(),
+    },
+  });
 };

@@ -37,12 +37,12 @@ router.get(
       const user = req.user;
 
       const accessToken = generateAccessToken({
-        userId: user._id.toString(),
+        userId: user.id,
         email: user.email,
       });
 
       const refreshToken = generateRefreshToken({
-        userId: user._id.toString(),
+        userId: user.id,
         email: user.email,
       });
 

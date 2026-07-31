@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ResumeContent, AnalysisResult } from "../../types";
+import { experienceText, projectText } from "../../utils";
 import { env } from "../../config/env";
 
 const COMPREHENSIVE_KEYWORDS = {
@@ -378,7 +379,7 @@ const calculateExperienceRelevanceScore = (
 
   for (const exp of resume.experience) {
     const expText =
-      `${exp.title} ${exp.company} ${exp.description}`.toLowerCase();
+      `${exp.title} ${exp.company} ${experienceText(exp)}`.toLowerCase();
 
     // Count how many JD keywords appear in this experience
     let keywordMatchCount = 0;
@@ -553,7 +554,7 @@ const calculateJobMatchingScore = (
   if (resume.experience && resume.experience.length > 0) {
     let relevantRoles = 0;
     for (const exp of resume.experience) {
-      const expText = `${exp.title} ${exp.description}`.toLowerCase();
+      const expText = `${exp.title} ${experienceText(exp)}`.toLowerCase();
       const matchCount = jdKeywords.filter((k) =>
         expText.includes(k.toLowerCase()),
       ).length;
@@ -568,10 +569,10 @@ const calculateJobMatchingScore = (
   }
 
   const resumeTechFromExp = extractTechFromText(
-    resume.experience?.map((e) => e.description).join(" ") || "",
+    resume.experience?.map(experienceText).join(" ") || "",
   );
   const resumeTechFromProjects = extractTechFromText(
-    resume.projects?.map((p) => p.description).join(" ") || "",
+    resume.projects?.map(projectText).join(" ") || "",
   );
   const allResumeTech = [
     ...new Set([...resumeTechFromExp, ...resumeTechFromProjects]),
@@ -1051,8 +1052,9 @@ const extractSkillsFromResume = (resume: ResumeContent): string[] => {
 
   if (resume.experience && Array.isArray(resume.experience)) {
     resume.experience.forEach((exp) => {
-      if (exp.description) {
-        const descSkills = extractTechFromText(exp.description);
+      const expText = experienceText(exp);
+      if (expText) {
+        const descSkills = extractTechFromText(expText);
         allSkills.push(...descSkills);
       }
     });
@@ -1060,8 +1062,9 @@ const extractSkillsFromResume = (resume: ResumeContent): string[] => {
 
   if (resume.projects && Array.isArray(resume.projects)) {
     resume.projects.forEach((proj) => {
-      if (proj.description) {
-        const projSkills = extractTechFromText(proj.description);
+      const projTextValue = projectText(proj);
+      if (projTextValue) {
+        const projSkills = extractTechFromText(projTextValue);
         allSkills.push(...projSkills);
       }
       if (proj.technologies && Array.isArray(proj.technologies)) {

@@ -16,7 +16,13 @@ export function useResumeContent(
         ...prev,
         personalInfo: {
           ...prev.personalInfo,
-          address: { ...prev.personalInfo.address, [addressField]: value },
+          contact: {
+            ...prev.personalInfo.contact,
+            address: {
+              ...prev.personalInfo.contact?.address,
+              [addressField]: value,
+            },
+          },
         },
       }));
     } else if (field.startsWith("socialLinks.")) {
@@ -25,7 +31,21 @@ export function useResumeContent(
         ...prev,
         personalInfo: {
           ...prev.personalInfo,
-          socialLinks: { ...prev.personalInfo.socialLinks, [socialField]: value },
+          contact: {
+            ...prev.personalInfo.contact,
+            socialLinks: {
+              ...prev.personalInfo.contact?.socialLinks,
+              [socialField]: value,
+            },
+          },
+        },
+      }));
+    } else if (["email", "whatsapp", "linkedIn"].includes(field)) {
+      setContent((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          contact: { ...prev.personalInfo.contact, [field]: value },
         },
       }));
     } else {
@@ -41,7 +61,7 @@ export function useResumeContent(
       ...prev,
       experience: [
         ...prev.experience,
-        { company: "", title: "", topSkills: [], startDate: "", endDate: "", description: "", current: false },
+        { company: "", title: "", topSkills: [], startDate: "", endDate: "", highlights: [], current: false },
       ],
     }));
   }, [setContent]);
@@ -64,7 +84,7 @@ export function useResumeContent(
   const addProject = useCallback(() => {
     setContent((prev) => ({
       ...prev,
-      projects: [...(prev.projects || []), { name: "", description: "", technologies: [], links: {} }],
+      projects: [...(prev.projects || []), { name: "", highlights: [], technologies: [], links: {} }],
     }));
   }, [setContent]);
 
@@ -134,37 +154,20 @@ export function useResumeContent(
     }));
   }, [setContent]);
 
-  const addTechnicalSkill = useCallback((skill: string) => {
+  const addSkill = useCallback((skill: string) => {
     setContent((prev) => {
-      const currentSkills = prev.technicalSkills || [];
+      const currentSkills = prev.skills || [];
       if (skill && !currentSkills.includes(skill)) {
-        return { ...prev, technicalSkills: [...currentSkills, skill] };
+        return { ...prev, skills: [...currentSkills, skill] };
       }
       return prev;
     });
   }, [setContent]);
 
-  const removeTechnicalSkill = useCallback((skill: string) => {
+  const removeSkill = useCallback((skill: string) => {
     setContent((prev) => ({
       ...prev,
-      technicalSkills: (prev.technicalSkills || []).filter((s) => s !== skill),
-    }));
-  }, [setContent]);
-
-  const addSoftSkill = useCallback((skill: string) => {
-    setContent((prev) => {
-      const currentSkills = prev.softSkills || [];
-      if (skill && !currentSkills.includes(skill)) {
-        return { ...prev, softSkills: [...currentSkills, skill] };
-      }
-      return prev;
-    });
-  }, [setContent]);
-
-  const removeSoftSkill = useCallback((skill: string) => {
-    setContent((prev) => ({
-      ...prev,
-      softSkills: (prev.softSkills || []).filter((s) => s !== skill),
+      skills: (prev.skills || []).filter((s) => s !== skill),
     }));
   }, [setContent]);
 
@@ -182,9 +185,7 @@ export function useResumeContent(
     addEducation,
     updateEducation,
     removeEducation,
-    addTechnicalSkill,
-    removeTechnicalSkill,
-    addSoftSkill,
-    removeSoftSkill,
+    addSkill,
+    removeSkill,
   };
 }

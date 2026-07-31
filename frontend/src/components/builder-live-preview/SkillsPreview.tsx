@@ -6,8 +6,7 @@ export function SkillsPreview({
   content: ResumeContent;
   forPdf: boolean;
 }) {
-  const technicalSkills = content.technicalSkills || [];
-  const softSkills = content.softSkills || [];
+  const skills = content.skills || [];
 
   return (
     <div className="mb-2 lg:mb-3 px-2 lg:px-6 pb-4 lg:pb-6">
@@ -15,16 +14,9 @@ export function SkillsPreview({
         SKILLS
       </h2>
       <div className="space-y-1.5">
-        {technicalSkills.length > 0 && (
+        {skills.length > 0 && (
           <p className="text-[9px] lg:text-[10px] text-black">
-            <span className="font-bold"> Technical Skills:</span>{" "}
-            {technicalSkills.join(", ")}
-          </p>
-        )}
-        {softSkills.length > 0 && (
-          <p className="text-[9px] lg:text-[10px] text-black">
-            <span className="font-bold"> Soft Skills:</span>{" "}
-            {softSkills.join(", ")}
+            {skills.join(", ")}
           </p>
         )}
       </div>

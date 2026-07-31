@@ -163,12 +163,9 @@ export default function ResumeBuildHistoryPage() {
                           {item.resumeContent.education.length} Education
                         </span>
                       )}
-                      {(item.resumeContent?.technicalSkills?.length > 0 ||
-                        item.resumeContent?.softSkills?.length > 0) && (
+                      {(item.resumeContent?.skills?.length || 0) > 0 && (
                         <span className="px-3 py-1 bg-green-500/20 border border-green-500/30 text-green-400 rounded-full text-xs">
-                          {(item.resumeContent.technicalSkills?.length || 0) +
-                            (item.resumeContent.softSkills?.length || 0)}{" "}
-                          Skills
+                          {item.resumeContent.skills?.length || 0} Skills
                         </span>
                       )}
                       {item.resumeContent?.projects &&

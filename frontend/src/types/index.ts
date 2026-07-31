@@ -45,18 +45,20 @@ export interface ResumeContent {
   personalInfo: {
     fullName?: string;
     jobTitle?: string;
-    email?: string;
-    whatsapp?: string;
-    address?: {
-      city?: string;
-      division?: string;
-      zipCode?: string;
-    };
-    linkedIn?: string;
-    socialLinks?: {
-      github?: string;
-      portfolio?: string;
-      website?: string;
+    contact?: {
+      email?: string;
+      whatsapp?: string;
+      linkedIn?: string;
+      address?: {
+        city?: string;
+        division?: string;
+        zipCode?: string;
+      };
+      socialLinks?: {
+        github?: string;
+        portfolio?: string;
+        website?: string;
+      };
     };
   };
   summary?: string;
@@ -64,8 +66,12 @@ export interface ResumeContent {
   projects?: Project[];
   achievements?: Achievement[];
   education: Education[];
-  technicalSkills: string[];
-  softSkills: string[];
+  skills: string[];
+  certifications?: {
+    name: string;
+    issuer?: string;
+    date?: string;
+  }[];
 }
 
 export interface Experience {
@@ -76,12 +82,15 @@ export interface Experience {
   startDate: string;
   endDate?: string;
   current?: boolean;
-  description: string;
+  highlights: string[];
 }
 
 export interface Project {
   name: string;
-  description: string;
+  highlights: string[];
+  startDate?: string;
+  endDate?: string;
+  current?: boolean;
   links?: {
     live?: string;
     github?: string;

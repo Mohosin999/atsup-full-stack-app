@@ -165,18 +165,22 @@ export const checkAtsFriendliness = async (content: ResumeContent) => {
     suggestions.push('Add your education background');
   }
 
-  if (!content.personalInfo.email) {
+  if (!content.personalInfo.contact?.email) {
     issues.push('Missing email address');
     suggestions.push('Add a professional email address');
   }
 
-  if (!content.personalInfo.whatsapp && !content.personalInfo.socialLinks?.github) {
+  if (
+    !content.personalInfo.contact?.whatsapp &&
+    !content.personalInfo.contact?.socialLinks?.github
+  ) {
     issues.push('Limited contact information');
     suggestions.push('Add phone number or professional social links');
   }
 
   content.experience?.forEach((exp, index) => {
-    if (!exp.description || exp.description.length < 50) {
+    const expText = (exp.highlights ?? []).join(' ');
+    if (!expText || expText.length < 50) {
       issues.push(`Experience ${index + 1}: Description too short`);
       suggestions.push(`Expand experience ${index + 1} with quantified achievements`);
     }
@@ -193,7 +197,7 @@ export const checkAtsFriendliness = async (content: ResumeContent) => {
       'managed',
     ];
     const hasActionVerb = actionVerbs.some((verb) =>
-      exp.description.toLowerCase().includes(verb)
+      expText.toLowerCase().includes(verb)
     );
     if (!hasActionVerb) {
       issues.push(`Experience ${index + 1}: No action verbs`);

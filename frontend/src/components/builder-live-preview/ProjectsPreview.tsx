@@ -6,7 +6,7 @@ export function ProjectsPreview({
 }: {
   projects: ResumeContent["projects"];
   forPdf: boolean;
-  formatDescription: (desc: string) => React.ReactNode;
+  formatDescription: (highlights: string[]) => React.ReactNode;
 }) {
   if (!projects || projects.length === 0) return null;
 
@@ -44,8 +44,10 @@ export function ProjectsPreview({
               )}
             </div>
           </div>
-          {project.description && (
-            <div className="mt-0.5">{formatDescription(project.description)}</div>
+          {project.highlights && project.highlights.length > 0 && (
+            <div className="mt-0.5">
+              {formatDescription(project.highlights)}
+            </div>
           )}
         </div>
       ))}

@@ -148,7 +148,7 @@ function convertResumeToText(content: any): string {
   if (content.experience && content.experience.length > 0) {
     content.experience.forEach((exp: any) => {
       parts.push(`${exp.title} at ${exp.company}`);
-      parts.push(exp.description || "");
+      parts.push((exp.highlights || []).join(" "));
     });
   }
 
@@ -158,7 +158,7 @@ function convertResumeToText(content: any): string {
 
   if (content.projects && content.projects.length > 0) {
     content.projects.forEach((proj: any) => {
-      parts.push(`${proj.name}: ${proj.description || ""}`);
+      parts.push(`${proj.name}: ${(proj.highlights || []).join(" ")}`);
     });
   }
 

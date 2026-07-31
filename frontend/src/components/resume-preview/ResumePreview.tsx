@@ -12,18 +12,12 @@ interface ResumePreviewProps {
   forPdf?: boolean;
 }
 
-const formatDescription = (desc: string, forPdf?: boolean): React.ReactNode => {
-  if (!desc) return null;
-  if (desc.includes("<") && desc.includes(">")) {
-    return (
-      <div
-        className="ql-editor"
-        style={{ padding: 0, color: forPdf ? "#374151" : undefined }}
-        dangerouslySetInnerHTML={{ __html: desc }}
-      />
-    );
-  }
-  const lines = desc.split("\n").filter((line) => line.trim());
+const formatDescription = (
+  highlights: string[],
+  forPdf?: boolean,
+): React.ReactNode => {
+  const lines = (highlights || []).filter((line) => line.trim());
+  if (lines.length === 0) return null;
   return (
     <ul
       className={`list-outside list-disc pl-4 space-y-0.5 text-sm ${forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-100"}`}
@@ -56,14 +50,14 @@ export default function ResumePreview({
         <ResumeExperience
           experience={content.experience}
           forPdf={forPdf}
-          formatDescription={(desc) => formatDescription(desc, forPdf)}
+          formatDescription={(highlights) => formatDescription(highlights, forPdf)}
         />
       )}
       {content.projects && content.projects.length > 0 && (
         <ResumeProjects
           projects={content.projects}
           forPdf={forPdf}
-          formatDescription={(desc) => formatDescription(desc, forPdf)}
+          formatDescription={(highlights) => formatDescription(highlights, forPdf)}
         />
       )}
       {content.achievements && content.achievements.length > 0 && (
@@ -75,8 +69,7 @@ export default function ResumePreview({
       {content.education.length > 0 && (
         <ResumeEducation education={content.education} forPdf={forPdf} />
       )}
-      {(content.technicalSkills?.length > 0 ||
-        content.softSkills?.length > 0) && (
+      {(content.skills?.length || 0) > 0 && (
         <ResumeSkills content={content} forPdf={forPdf} />
       )}
     </div>

@@ -6,7 +6,7 @@ export function ExperiencePreview({
 }: {
   experience: ResumeContent["experience"];
   forPdf: boolean;
-  formatDescription: (desc: string) => React.ReactNode;
+  formatDescription: (highlights: string[]) => React.ReactNode;
 }) {
   return (
     <div className="mb-2 lg:mb-3 px-2 lg:px-6">
@@ -44,8 +44,8 @@ export function ExperiencePreview({
               )}
             </div>
           </div>
-          {exp.description && (
-            <div className="mt-0.5">{formatDescription(exp.description)}</div>
+          {exp.highlights && exp.highlights.length > 0 && (
+            <div className="mt-0.5">{formatDescription(exp.highlights)}</div>
           )}
         </div>
       ))}

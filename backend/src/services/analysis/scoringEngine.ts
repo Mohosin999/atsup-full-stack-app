@@ -590,7 +590,7 @@ export class SectionCompletenessCalculator extends ScoreCalculator {
     // Bonus for quantified achievements
     if (
       resume.experience?.some((exp: any) =>
-        exp.description?.match(/\d+%|\$\d+|\d+x/),
+        ((exp.highlights || []) as string[]).join(" ").match(/\d+%|\$\d+|\d+x/),
       )
     ) {
       bonus += 5;
@@ -632,7 +632,7 @@ export class ExperienceRelevanceCalculator extends ScoreCalculator {
 
     experience.forEach((exp: any) => {
       const expText =
-        `${exp.title} ${exp.company} ${exp.description}`.toLowerCase();
+        `${exp.title} ${exp.company} ${(exp.highlights || []).join(" ")}`.toLowerCase();
       const matches = jdKeywords.filter((keyword) => {
         const escaped = this.escapeRegex(keyword);
         const regex = new RegExp(`\\b${escaped}\\b`, "i");
@@ -694,7 +694,9 @@ export class ExperienceRelevanceCalculator extends ScoreCalculator {
 
     const jdVerbs = actionVerbs.filter((v) => jdLower.includes(v));
     const resumeVerbs = actionVerbs.filter((v) =>
-      experience.some((exp: any) => exp.description?.toLowerCase().includes(v)),
+      experience.some((exp: any) =>
+        (exp.highlights || []).join(" ").toLowerCase().includes(v),
+      ),
     );
 
     const responsibilityScore =

@@ -19,12 +19,18 @@ export default function ProjectsEditorAI({
 }: ProjectsEditorProps) {
   const [generatingIndex, setGeneratingIndex] = useState<number | null>(null);
 
+  const toHighlights = (content: string): string[] =>
+    content
+      .split("\n")
+      .map((line) => line.replace(/^[•\-\*]\s*/, "").trim())
+      .filter(Boolean);
+
   const handleAIGenerate = async (index: number) => {
     const project = projects[index];
 
     if (!project.name?.trim()) {
       toast.error(
-        "Please provide a Project Name first to generate description.",
+        "Please provide a Project Name first to generate highlights.",
       );
       return;
     }
@@ -40,11 +46,11 @@ export default function ProjectsEditorAI({
       });
 
       const suggestion = response.data.data as AISectionSuggestion;
-      onUpdate(index, "description", suggestion.content);
-      toast.success("Project description generated!");
+      onUpdate(index, "highlights", toHighlights(suggestion.content));
+      toast.success("Project highlights generated!");
     } catch (error: any) {
       toast.error(
-        error.response?.data?.message || "Failed to generate description",
+        error.response?.data?.message || "Failed to generate highlights",
       );
     } finally {
       setGeneratingIndex(null);
@@ -97,7 +103,9 @@ export default function ProjectsEditorAI({
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs text-gray-400">Description *</label>
+                  <label className="text-xs text-gray-400">
+                    Description / Highlights *
+                  </label>
                   <button
                     type="button"
                     onClick={() => handleAIGenerate(index)}
@@ -115,9 +123,9 @@ export default function ProjectsEditorAI({
                   </button>
                 </div>
                 <textarea
-                  value={project.description}
+                  value={(project.highlights || []).join("\n")}
                   onChange={(e) =>
-                    onUpdate(index, "description", e.target.value)
+                    onUpdate(index, "highlights", toHighlights(e.target.value))
                   }
                   className="input w-full text-sm"
                   style={{ minHeight: "200px", height: "auto" }}

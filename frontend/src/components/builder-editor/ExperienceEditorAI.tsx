@@ -19,11 +19,17 @@ export default function ExperienceEditorAI({
 }: ExperienceEditorProps) {
   const [generatingIndex, setGeneratingIndex] = useState<number | null>(null);
 
+  const toHighlights = (content: string): string[] =>
+    content
+      .split("\n")
+      .map((line) => line.replace(/^[•\-\*]\s*/, "").trim())
+      .filter(Boolean);
+
   const handleAIGenerate = async (index: number) => {
     const exp = experience[index];
 
     if (!exp.title?.trim()) {
-      toast.error("Please provide a Job Title first to generate description.");
+      toast.error("Please provide a Job Title first to generate highlights.");
       return;
     }
 
@@ -38,11 +44,11 @@ export default function ExperienceEditorAI({
       });
 
       const suggestion = response.data.data as AISectionSuggestion;
-      onUpdate(index, "description", suggestion.content);
-      toast.success("Experience description generated!");
+      onUpdate(index, "highlights", toHighlights(suggestion.content));
+      toast.success("Experience highlights generated!");
     } catch (error: any) {
       toast.error(
-        error.response?.data?.message || "Failed to generate description",
+        error.response?.data?.message || "Failed to generate highlights",
       );
     } finally {
       setGeneratingIndex(null);
@@ -195,7 +201,9 @@ export default function ExperienceEditorAI({
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="text-xs text-gray-400">Description *</label>
+                <label className="text-xs text-gray-400">
+                  Description / Highlights *
+                </label>
                 <button
                   type="button"
                   onClick={() => handleAIGenerate(index)}
@@ -211,8 +219,10 @@ export default function ExperienceEditorAI({
                 </button>
               </div>
               <textarea
-                value={exp.description}
-                onChange={(e) => onUpdate(index, "description", e.target.value)}
+                value={(exp.highlights || []).join("\n")}
+                onChange={(e) =>
+                  onUpdate(index, "highlights", toHighlights(e.target.value))
+                }
                 className="input w-full text-sm"
                 style={{ minHeight: "200px", height: "auto" }}
                 placeholder="Use (•) bullet points or each line will be a separate bullet point."

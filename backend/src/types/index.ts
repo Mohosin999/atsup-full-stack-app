@@ -37,18 +37,20 @@ export interface ResumeContent {
   personalInfo: {
     fullName?: string;
     jobTitle?: string;
-    email?: string;
-    whatsapp?: string;
-    address?: {
-      city?: string;
-      division?: string;
-      zipCode?: string;
-    };
-    linkedIn?: string;
-    socialLinks?: {
-      github?: string;
-      portfolio?: string;
-      website?: string;
+    contact?: {
+      email?: string;
+      whatsapp?: string;
+      linkedIn?: string;
+      address?: {
+        city?: string;
+        division?: string;
+        zipCode?: string;
+      };
+      socialLinks?: {
+        github?: string;
+        portfolio?: string;
+        website?: string;
+      };
     };
   };
   summary?: string;
@@ -59,17 +61,26 @@ export interface ResumeContent {
     startDate: string;
     endDate?: string;
     current?: boolean;
-    description: string;
+    highlights: string[];
   }>;
   projects?: Array<{
     name: string;
-    description: string;
+    highlights: string[];
+    startDate?: string;
+    endDate?: string;
+    current?: boolean;
     links?: {
       live?: string;
       github?: string;
       caseStudy?: string;
     };
     technologies?: string[];
+  }>;
+  certifications?: Array<{
+    name: string;
+    issuer?: string;
+    date?: string;
+    description?: string;
   }>;
   achievements?: Array<{
     title: string;

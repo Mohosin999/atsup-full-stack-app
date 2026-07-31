@@ -22,9 +22,9 @@ export function PersonalInfoPreview({
 
   // Build location string (comma after city, then spaces)
   const locationParts = [
-    content.personalInfo.address?.city,
-    content.personalInfo.address?.division,
-    content.personalInfo.address?.zipCode,
+    content.personalInfo.contact?.address?.city,
+    content.personalInfo.contact?.address?.division,
+    content.personalInfo.contact?.address?.zipCode,
   ].filter(Boolean);
   const locationString =
     locationParts.length > 0
@@ -55,8 +55,8 @@ export function PersonalInfoPreview({
             <span className="truncate block">
               {[
                 locationString || "",
-                content.personalInfo.whatsapp
-                  ? formatPhoneNumber(content.personalInfo.whatsapp)
+                content.personalInfo.contact?.whatsapp
+                  ? formatPhoneNumber(content.personalInfo.contact.whatsapp)
                   : "",
               ]
                 .filter(Boolean)
@@ -65,31 +65,32 @@ export function PersonalInfoPreview({
           </div>
           {/* Second Line: Email • LinkedIn */}
           <div className="text-[9px] lg:text-[10px] text-black leading-snug mt-0.5 flex items-center justify-end gap-1 flex-wrap">
-            {content.personalInfo.email && (
+            {content.personalInfo.contact?.email && (
               <a
-                href={`mailto:${content.personalInfo.email}`}
+                href={`mailto:${content.personalInfo.contact.email}`}
                 className="text-black truncate max-w-[120px] lg:max-w-none"
                 style={{ color: "#000000" }}
               >
-                {content.personalInfo.email}
+                {content.personalInfo.contact.email}
               </a>
             )}
-            {content.personalInfo.email && content.personalInfo.linkedIn && (
+            {content.personalInfo.contact?.email &&
+              content.personalInfo.contact?.linkedIn && (
               <span className="text-black"> • </span>
             )}
-            {content.personalInfo.linkedIn && (
+            {content.personalInfo.contact?.linkedIn && (
               <a
                 href={
-                  content.personalInfo.linkedIn.startsWith("http")
-                    ? content.personalInfo.linkedIn
-                    : `https://${content.personalInfo.linkedIn}`
+                  content.personalInfo.contact.linkedIn.startsWith("http")
+                    ? content.personalInfo.contact.linkedIn
+                    : `https://${content.personalInfo.contact.linkedIn}`
                 }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-black truncate max-w-[100px] lg:max-w-none"
                 style={{ color: "#000000" }}
               >
-                {formatLinkedIn(content.personalInfo.linkedIn)}
+                {formatLinkedIn(content.personalInfo.contact.linkedIn)}
               </a>
             )}
           </div>

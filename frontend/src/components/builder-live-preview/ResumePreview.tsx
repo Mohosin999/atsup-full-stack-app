@@ -14,31 +14,9 @@ interface ResumePreviewProps {
 }
 
 export function ResumePreview({ content, forPdf = false }: ResumePreviewProps) {
-  const cleanHtmlContent = (html: string) => {
-    return html
-      .replace(/<p[^>]*>/gi, "<p>")
-      .replace(/<span[^>]*>/gi, "<span>")
-      .replace(/<strong[^>]*>/gi, "<strong>")
-      .replace(/<em[^>]*>/gi, "<em>")
-      .replace(/<u[^>]*>/gi, "<u>")
-      .replace(/<ul[^>]*>/gi, "<ul>")
-      .replace(/<ol[^>]*>/gi, "<ol>")
-      .replace(/<li[^>]*>/gi, "<li>")
-      .replace(/<br[^>]*>/gi, "<br>");
-  };
-
-  const formatDescription = (desc: string): React.ReactNode => {
-    if (!desc) return null;
-    if (desc.includes("<") && desc.includes(">")) {
-      return (
-        <div
-          className="ql-editor"
-          style={{ padding: 0, color: "#000000" }}
-          dangerouslySetInnerHTML={{ __html: cleanHtmlContent(desc) }}
-        />
-      );
-    }
-    const lines = desc.split("\n").filter((line) => line.trim());
+  const formatDescription = (highlights: string[]): React.ReactNode => {
+    const lines = (highlights || []).filter((line) => line.trim());
+    if (lines.length === 0) return null;
     return (
       <ul className="list-outside list-disc pl-4 lg:pl-6 space-y-0 lg:space-y-0.5 text-[8px] lg:text-[10px] marker:font-normal text-black">
         {lines.map((line, i) => {
@@ -57,14 +35,13 @@ export function ResumePreview({ content, forPdf = false }: ResumePreviewProps) {
   const hasAnyContent =
     content.personalInfo?.fullName ||
     content.personalInfo?.jobTitle ||
-    content.personalInfo?.email ||
+    content.personalInfo?.contact?.email ||
     content.summary ||
     content.experience?.length > 0 ||
     (content.projects && content.projects.length > 0) ||
     (content.achievements && content.achievements.length > 0) ||
     content.education?.length > 0 ||
-    content.technicalSkills?.length > 0 ||
-    content.softSkills?.length > 0;
+    (content.skills?.length || 0) > 0;
 
   return (
     <div className="text-gray-950 font-sans w-full">
@@ -106,8 +83,7 @@ export function ResumePreview({ content, forPdf = false }: ResumePreviewProps) {
       )}
 
       {/* Skills */}
-      {(content.technicalSkills?.length > 0 ||
-        content.softSkills?.length > 0) && (
+      {(content.skills?.length || 0) > 0 && (
         <SkillsPreview content={content} forPdf={forPdf} />
       )}
 

@@ -13,8 +13,7 @@ export default function ResumeSkills({ content, forPdf }: ResumeSkillsProps) {
   const titleColor = forPdf ? "text-black" : "text-gray-900 dark:text-white";
   const borderColor = forPdf ? "border-gray-700" : "border-gray-700 dark:border-gray-600";
 
-  const technicalSkills = content.technicalSkills || [];
-  const softSkills = content.softSkills || [];
+  const skills = content.skills || [];
 
   return (
     <div className="mb-4">
@@ -22,15 +21,8 @@ export default function ResumeSkills({ content, forPdf }: ResumeSkillsProps) {
         SKILLS
       </h2>
       <div className={`${textColor} text-sm space-y-1`}>
-        {technicalSkills.length > 0 && (
-          <div>
-            <span className="font-semibold">• Technical Skills:</span> {technicalSkills.join(", ")}
-          </div>
-        )}
-        {softSkills.length > 0 && (
-          <div>
-            <span className="font-semibold">• Soft Skills:</span> {softSkills.join(", ")}
-          </div>
+        {skills.length > 0 && (
+          <div>{skills.join(", ")}</div>
         )}
       </div>
     </div>

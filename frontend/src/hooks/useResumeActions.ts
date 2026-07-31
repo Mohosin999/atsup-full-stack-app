@@ -13,19 +13,20 @@ const defaultContent: ResumeContent = {
   personalInfo: {
     fullName: "",
     jobTitle: "",
-    email: "",
-    whatsapp: "",
-    address: { city: "", division: "", zipCode: "" },
-    linkedIn: "",
-    socialLinks: { github: "", portfolio: "", website: "" },
+    contact: {
+      email: "",
+      whatsapp: "",
+      address: { city: "", division: "", zipCode: "" },
+      linkedIn: "",
+      socialLinks: { github: "", portfolio: "", website: "" },
+    },
   },
   summary: "",
   experience: [],
   projects: [],
   achievements: [],
   education: [],
-  technicalSkills: [],
-  softSkills: [],
+  skills: [],
 };
 
 export function useResumeActions() {

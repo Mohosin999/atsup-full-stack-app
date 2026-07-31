@@ -41,19 +41,20 @@ const defaultContent: ResumeContent = {
   personalInfo: {
     fullName: "",
     jobTitle: "",
-    email: "",
-    whatsapp: "",
-    address: { city: "", division: "", zipCode: "" },
-    linkedIn: "",
-    socialLinks: { github: "", portfolio: "", website: "" },
+    contact: {
+      email: "",
+      whatsapp: "",
+      address: { city: "", division: "", zipCode: "" },
+      linkedIn: "",
+      socialLinks: { github: "", portfolio: "", website: "" },
+    },
   },
   summary: "",
   experience: [],
   projects: [],
   achievements: [],
   education: [],
-  technicalSkills: [],
-  softSkills: [],
+  skills: [],
 };
 
 const saveToStorage = (state: BuilderState) => {
@@ -191,7 +192,8 @@ export default function Builder() {
     switch (sectionId) {
       case "personal":
         return (
-          !!content.personalInfo?.fullName && !!content.personalInfo?.email
+          !!content.personalInfo?.fullName &&
+          !!content.personalInfo?.contact?.email
         );
       case "summary":
         return !!content.summary && content.summary.length > 0;
@@ -204,9 +206,7 @@ export default function Builder() {
       case "education":
         return content.education.length > 0;
       case "skills":
-        return (
-          content.technicalSkills.length > 0 || content.softSkills.length > 0
-        );
+        return (content.skills?.length || 0) > 0;
       default:
         return false;
     }
@@ -268,10 +268,7 @@ export default function Builder() {
             value={content.summary || ""}
             onChange={(val) => setContent({ ...content, summary: val })}
             personalInfo={content.personalInfo}
-            skills={[
-              ...(content.technicalSkills || []),
-              ...(content.softSkills || []),
-            ]}
+            skills={content.skills || []}
           />
         );
       case "experience":
@@ -313,12 +310,9 @@ export default function Builder() {
       case "skills":
         return (
           <SkillsEditorAI
-            technicalSkills={content.technicalSkills || []}
-            softSkills={content.softSkills || []}
-            onAddTechnicalSkill={contentActions.addTechnicalSkill}
-            onRemoveTechnicalSkill={contentActions.removeTechnicalSkill}
-            onAddSoftSkill={contentActions.addSoftSkill}
-            onRemoveSoftSkill={contentActions.removeSoftSkill}
+            skills={content.skills || []}
+            onAddSkill={contentActions.addSkill}
+            onRemoveSkill={contentActions.removeSkill}
             jobTitle={content.personalInfo.jobTitle}
           />
         );

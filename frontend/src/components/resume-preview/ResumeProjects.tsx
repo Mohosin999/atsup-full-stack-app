@@ -6,7 +6,7 @@ import { Project } from "../../types";
 interface ResumeProjectsProps {
   projects: Project[];
   forPdf?: boolean;
-  formatDescription: (desc: string) => React.ReactNode;
+  formatDescription: (highlights: string[]) => React.ReactNode;
 }
 
 export default function ResumeProjects({ projects, forPdf, formatDescription }: ResumeProjectsProps) {
@@ -50,7 +50,7 @@ export default function ResumeProjects({ projects, forPdf, formatDescription }: 
             <p className={`text-sm ${textColor} mt-1 italic`}>{proj.technologies.join(", ")}</p>
           )}
           <div className={`${forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-100"} text-sm mt-1`}>
-            {formatDescription(proj.description)}
+            {formatDescription(proj.highlights)}
           </div>
         </div>
       ))}

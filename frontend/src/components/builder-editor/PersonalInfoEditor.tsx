@@ -47,7 +47,7 @@ export default function PersonalInfoEditor({ content, updateField }: PersonalInf
           </label>
           <input
             type="email"
-            value={content.personalInfo.email}
+            value={content.personalInfo.contact?.email}
             onChange={(e) => updateField('email', e.target.value)}
             className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800/50 text-gray-100 focus:outline-none focus:border-transparent transition-all duration-200 placeholder-gray-500"
             placeholder="john@example.com"
@@ -63,7 +63,7 @@ export default function PersonalInfoEditor({ content, updateField }: PersonalInf
             </span>
             <input
               type="tel"
-              value={content.personalInfo.whatsapp?.replace(/^(\+880|880)/, '') || ''}
+              value={content.personalInfo.contact?.whatsapp?.replace(/^(\+880|880)/, '') || ''}
               onChange={(e) => {
                 const value = e.target.value.replace(/[^0-9]/g, '');
                 updateField('whatsapp', `+880${value}`);
@@ -87,7 +87,7 @@ export default function PersonalInfoEditor({ content, updateField }: PersonalInf
             </label>
             <input
               type="text"
-              value={content.personalInfo.address?.city}
+              value={content.personalInfo.contact?.address?.city}
               onChange={(e) => updateField('address.city', e.target.value)}
               className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800/50 text-gray-100 focus:outline-none focus:border-transparent transition-all duration-200 placeholder-gray-500"
               placeholder="Sherpur"
@@ -99,7 +99,7 @@ export default function PersonalInfoEditor({ content, updateField }: PersonalInf
             </label>
             <input
               type="text"
-              value={content.personalInfo.address?.division}
+              value={content.personalInfo.contact?.address?.division}
               onChange={(e) => updateField('address.division', e.target.value)}
               className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800/50 text-gray-100 focus:outline-none focus:border-transparent transition-all duration-200 placeholder-gray-500"
               placeholder="Mymensingh"
@@ -111,7 +111,7 @@ export default function PersonalInfoEditor({ content, updateField }: PersonalInf
             </label>
             <input
               type="text"
-              value={content.personalInfo.address?.zipCode}
+              value={content.personalInfo.contact?.address?.zipCode}
               onChange={(e) => updateField('address.zipCode', e.target.value)}
               className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-800/50 text-gray-100 focus:outline-none focus:border-transparent transition-all duration-200 placeholder-gray-500"
               placeholder="2100"
@@ -127,7 +127,7 @@ export default function PersonalInfoEditor({ content, updateField }: PersonalInf
         </label>
         <input
           type="text"
-          value={content.personalInfo.linkedIn?.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, '').replace(/^linkedin\.com\/in\//, '') || ''}
+          value={content.personalInfo.contact?.linkedIn?.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, '').replace(/^linkedin\.com\/in\//, '') || ''}
           onChange={(e) => {
             const value = e.target.value.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, '').replace(/^linkedin\.com\/in\//, '');
             updateField('linkedIn', value);

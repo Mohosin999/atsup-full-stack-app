@@ -28,9 +28,9 @@ export default function ResumePersonalInfo({
 
   // Build location string (comma after city, then spaces)
   const locationParts = [
-    content.personalInfo.address?.city,
-    content.personalInfo.address?.division,
-    content.personalInfo.address?.zipCode,
+    content.personalInfo.contact?.address?.city,
+    content.personalInfo.contact?.address?.division,
+    content.personalInfo.contact?.address?.zipCode,
   ].filter(Boolean);
   const locationString =
     locationParts.length > 0
@@ -61,8 +61,8 @@ export default function ResumePersonalInfo({
             <span>
               {[
                 locationString || "",
-                content.personalInfo.whatsapp
-                  ? formatPhoneNumber(content.personalInfo.whatsapp)
+                content.personalInfo.contact?.whatsapp
+                  ? formatPhoneNumber(content.personalInfo.contact.whatsapp)
                   : "",
               ]
                 .filter(Boolean)
@@ -73,9 +73,9 @@ export default function ResumePersonalInfo({
           <div className="text-sm text-[#222222] leading-snug mt-0.5">
             <span>
               {[
-                content.personalInfo.email || "",
-                content.personalInfo.linkedIn
-                  ? formatLinkedIn(content.personalInfo.linkedIn)
+                content.personalInfo.contact?.email || "",
+                content.personalInfo.contact?.linkedIn
+                  ? formatLinkedIn(content.personalInfo.contact.linkedIn)
                   : "",
               ]
                 .filter(Boolean)

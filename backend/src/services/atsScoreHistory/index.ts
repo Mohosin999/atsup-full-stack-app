@@ -24,9 +24,9 @@ export const createAtsScoreHistory = async (
 
   const hasContactInfo =
     !analysis.sectionScores.contactInfo.hasContactInfo &&
-    (!!resumeContent.personalInfo?.email ||
+    (!!resumeContent.personalInfo?.contact?.email ||
       !!(resumeContent.personalInfo as any)?.phone ||
-      !!resumeContent.personalInfo?.linkedIn);
+      !!resumeContent.personalInfo?.contact?.linkedIn);
 
   if (!analysis.sectionScores.contactInfo.hasContactInfo && hasContactInfo) {
     analysis.sectionScores.contactInfo.hasContactInfo = true;

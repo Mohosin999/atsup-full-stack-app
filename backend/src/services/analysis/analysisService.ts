@@ -16,6 +16,7 @@ import {
   KeywordGap,
   DEFAULT_ANALYSIS_CONFIG,
 } from "../../types";
+import { experienceText } from "../../utils";
 
 import {
   KeywordMatchingCalculator,
@@ -567,12 +568,13 @@ export class ResumeAnalysisService {
 
     const positions: PositionAnalysis[] = experience.map((exp) => {
       const expText =
-        `${exp.title} ${exp.company} ${exp.description}`.toLowerCase();
+        `${exp.title} ${exp.company} ${experienceText(exp)}`.toLowerCase();
       const keywords = jdLower.split(/\s+/).filter((word) => word.length > 4);
       const matchedKeywords = keywords.filter((k) => expText.includes(k));
 
-      const achievements = (exp.description?.match(/\d+%|\$\d+|\d+x/g) || [])
-        .length;
+      const achievements = (
+        experienceText(exp).match(/\d+%|\$\d+|\d+x/g) || []
+      ).length;
 
       return {
         title: exp.title,

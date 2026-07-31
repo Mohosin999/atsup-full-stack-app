@@ -6,7 +6,7 @@ import { Experience } from "../../types";
 interface ResumeExperienceProps {
   experience: Experience[];
   forPdf?: boolean;
-  formatDescription: (desc: string) => React.ReactNode;
+  formatDescription: (highlights: string[]) => React.ReactNode;
 }
 
 export default function ResumeExperience({
@@ -45,7 +45,7 @@ export default function ResumeExperience({
           <div
             className={`${forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-100"} text-sm mt-1`}
           >
-            {formatDescription(exp.description)}
+            {formatDescription(exp.highlights)}
           </div>
         </div>
       ))}

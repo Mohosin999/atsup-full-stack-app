@@ -433,8 +433,9 @@ export function extractSkillsFromResume(resume: any): string[] {
   // Extract from experience descriptions
   if (Array.isArray(resume.experience)) {
     resume.experience.forEach((exp: any) => {
-      if (exp.description) {
-        const extracted = extractKeywords(exp.description);
+      const expText = (exp.highlights || []).join(" ");
+      if (expText) {
+        const extracted = extractKeywords(expText);
         extracted.technical.keywords.forEach((s) => skills.add(s));
       }
       if (Array.isArray(exp.technologies)) {
@@ -448,8 +449,9 @@ export function extractSkillsFromResume(resume: any): string[] {
   // Extract from projects
   if (Array.isArray(resume.projects)) {
     resume.projects.forEach((proj: any) => {
-      if (proj.description) {
-        const extracted = extractKeywords(proj.description);
+      const projText = (proj.highlights || []).join(" ");
+      if (projText) {
+        const extracted = extractKeywords(projText);
         extracted.technical.keywords.forEach((s) => skills.add(s));
       }
       if (Array.isArray(proj.technologies)) {

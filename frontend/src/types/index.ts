@@ -47,7 +47,7 @@ export interface ResumeContent {
     jobTitle?: string;
     contact?: {
       email?: string;
-      whatsapp?: string;
+      phone?: string;
       linkedIn?: string;
       address?: {
         city?: string;
@@ -67,6 +67,9 @@ export interface ResumeContent {
   achievements?: Achievement[];
   education: Education[];
   skills: string[];
+  hardSkills?: string[];
+  softSkills?: string[];
+  keywords?: string[];
   certifications?: {
     name: string;
     issuer?: string;
@@ -265,6 +268,23 @@ export interface AtsCheckResult {
   isAtsFriendly: boolean;
 }
 
+export type MatchStatus = "matched" | "partial" | "missing";
+
+export interface MatchItemResult {
+  item: string;
+  status: MatchStatus;
+  jdCount: number;
+  resumeCount: number;
+}
+
+export interface MatchCategoryResult {
+  score: number;
+  matched: string[];
+  partial: string[];
+  missing: string[];
+  items: MatchItemResult[];
+}
+
 // ATS Score History Types
 export interface AtsScoreHistory {
   _id: string;
@@ -278,6 +298,12 @@ export interface AtsScoreHistory {
     projects: { score: number; feedback: string };
     skills: { score: number; feedback: string };
     contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
+    matchBreakdown?: {
+      hardSkills: MatchCategoryResult;
+      softSkills: MatchCategoryResult;
+      keywords: MatchCategoryResult;
+      actionVerbs: MatchCategoryResult;
+    };
   };
   spellingGrammar: {
     score: number;

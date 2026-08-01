@@ -12,318 +12,22 @@ export interface KeywordGroup {
   frequency: Record<string, number>;
 }
 
-/**
- * Comprehensive skill taxonomy for categorization
- */
-export const SKILL_TAXONOMY = {
-  programmingLanguages: [
-    "javascript",
-    "typescript",
-    "python",
-    "java",
-    "c++",
-    "c#",
-    "ruby",
-    "go",
-    "rust",
-    "php",
-    "swift",
-    "kotlin",
-    "scala",
-    "r",
-    "matlab",
-    "sql",
-    "html",
-    "css",
-    "dart",
-    "shell",
-    "bash",
-    "perl",
-    "lua",
-  ],
-  frontendFrameworks: [
-    "react",
-    "angular",
-    "vue",
-    "svelte",
-    "next.js",
-    "nuxt",
-    "gatsby",
-    "remix",
-    "solid",
-    "qwik",
-    "ember",
-    "backbone",
-  ],
-  backendFrameworks: [
-    "express",
-    "fastify",
-    "nestjs",
-    "django",
-    "flask",
-    "fastapi",
-    "spring",
-    "rails",
-    "laravel",
-    "symfony",
-    "asp.net",
-    "gin",
-    "fiber",
-  ],
-  databases: [
-    "mongodb",
-    "postgresql",
-    "mysql",
-    "redis",
-    "sqlite",
-    "elasticsearch",
-    "dynamodb",
-    "cassandra",
-    "mariadb",
-    "oracle",
-    "mssql",
-    "firebase",
-    "supabase",
-    "prisma",
-    "mongoose",
-    "sequelize",
-    "typeorm",
-  ],
-  cloudPlatforms: [
-    "aws",
-    "azure",
-    "gcp",
-    "digitalocean",
-    "heroku",
-    "vercel",
-    "netlify",
-    "cloudflare",
-    "linode",
-    "vultr",
-    "ibm cloud",
-    "oracle cloud",
-  ],
-  devopsTools: [
-    "docker",
-    "kubernetes",
-    "jenkins",
-    "gitlab ci",
-    "github actions",
-    "circleci",
-    "travis ci",
-    "ansible",
-    "terraform",
-    "puppet",
-    "chef",
-    "prometheus",
-    "grafana",
-    "datadog",
-    "new relic",
-  ],
-  testingTools: [
-    "jest",
-    "mocha",
-    "cypress",
-    "playwright",
-    "selenium",
-    "vitest",
-    "testing library",
-    "jasmine",
-    "pytest",
-    "junit",
-    "postman",
-  ],
-  versionControl: ["git", "github", "gitlab", "bitbucket", "svn", "mercurial"],
-  methodologies: [
-    "agile",
-    "scrum",
-    "kanban",
-    "lean",
-    "devops",
-    "ci/cd",
-    "tdd",
-    "bdd",
-    "microservices",
-    "serverless",
-    "event-driven",
-    "rest",
-    "graphql",
-  ],
-  softSkills: [
-    "leadership",
-    "communication",
-    "teamwork",
-    "problem solving",
-    "critical thinking",
-    "time management",
-    "adaptability",
-    "collaboration",
-    "mentoring",
-    "presentation",
-    "negotiation",
-    "conflict resolution",
-  ],
-};
+import {
+  SKILLS,
+  SOFT_SKILLS,
+  ACTION_VERBS,
+  KEYWORDS,
+  type SkillList,
+} from "./skillDefinitions";
 
 /**
- * Action verbs commonly used in job descriptions
+ * Backward-compatible taxonomy combining technical and soft skills.
+ * Prefer importing SKILLS / SOFT_SKILLS / ACTION_VERBS / KEYWORDS
+ * from skillDefinitions directly.
  */
-export const ACTION_VERBS = [
-  // Technical Actions
-  "developed",
-  "designed",
-  "implemented",
-  "architected",
-  "engineered",
-  "programmed",
-  "coded",
-  "debugged",
-  "tested",
-  "deployed",
+export const SKILL_TAXONOMY = { ...SKILLS, softSkills: SOFT_SKILLS };
 
-  // Leadership Actions
-  "led",
-  "managed",
-  "directed",
-  "supervised",
-  "mentored",
-  "coordinated",
-  "facilitated",
-  "guided",
-  "trained",
-  "delegated",
 
-  // Improvement Actions
-  "optimized",
-  "improved",
-  "enhanced",
-  "refactored",
-  "streamlined",
-  "automated",
-  "modernized",
-  "upgraded",
-  "migrated",
-
-  // Creation Actions
-  "created",
-  "built",
-  "established",
-  "founded",
-  "initiated",
-  "launched",
-  "introduced",
-  "pioneered",
-  "conceptualized",
-
-  // Analysis Actions
-  "analyzed",
-  "evaluated",
-  "assessed",
-  "investigated",
-  "researched",
-  "identified",
-  "diagnosed",
-  "audited",
-
-  // Communication Actions
-  "communicated",
-  "presented",
-  "documented",
-  "reported",
-  "collaborated",
-  "negotiated",
-  "persuaded",
-  "influenced",
-
-  // Achievement Actions
-  "achieved",
-  "delivered",
-  "exceeded",
-  "accomplished",
-  "attained",
-  "secured",
-  "won",
-  "earned",
-];
-
-/**
- * Industry-specific terms by domain
- */
-export const INDUSTRY_TERMS = {
-  softwareDevelopment: [
-    "sdlc",
-    "code review",
-    "version control",
-    "branching",
-    "merging",
-    "pull request",
-    "continuous integration",
-    "continuous deployment",
-    "api",
-    "microservice",
-    "monolith",
-    "serverless",
-    "cloud-native",
-  ],
-  webDevelopment: [
-    "responsive",
-    "spa",
-    "ssr",
-    "ssg",
-    "pwa",
-    "seo",
-    "accessibility",
-    "wcag",
-    "cross-browser",
-    "mobile-first",
-    "performance optimization",
-  ],
-  dataEngineering: [
-    "etl",
-    "data pipeline",
-    "data warehouse",
-    "data lake",
-    "big data",
-    "streaming",
-    "batch processing",
-    "data modeling",
-    "data governance",
-  ],
-  machineLearning: [
-    "machine learning",
-    "deep learning",
-    "neural network",
-    "nlp",
-    "cv",
-    "model training",
-    "feature engineering",
-    "hyperparameter tuning",
-  ],
-  cybersecurity: [
-    "security",
-    "encryption",
-    "authentication",
-    "authorization",
-    "oauth",
-    "jwt",
-    "ssl",
-    "tls",
-    "penetration testing",
-    "vulnerability assessment",
-  ],
-  projectManagement: [
-    "stakeholder",
-    "roadmap",
-    "milestone",
-    "deliverable",
-    "sprint",
-    "backlog",
-    "retrospective",
-    "standup",
-    "planning",
-    "estimation",
-  ],
-};
 
 /**
  * Extract keywords from text
@@ -340,45 +44,33 @@ export function extractKeywords(text: string): ExtractedKeywords {
   };
 
   // Extract technical skills
-  Object.entries(SKILL_TAXONOMY).forEach(([category, skills]) => {
-    if (category === "softSkills") return;
-
-    const matchedSkills = skills.filter((skill) => {
-      const escaped = escapeRegex(skill);
-      const regex = new RegExp(`\\b${escaped}\\b`, "i");
-      return regex.test(textLower);
-    });
+  Object.entries(SKILLS).forEach(([category, skills]) => {
+    const matchedSkills = matchSkills(textLower, skills);
 
     if (matchedSkills.length > 0) {
-      result.technical.categories[category] = matchedSkills;
-      result.technical.keywords.push(...matchedSkills);
-      matchedSkills.forEach((skill) => {
-        result.technical.frequency[skill] = countOccurrences(textLower, skill);
+      const names = matchedSkills.map((m) => m.name);
+      result.technical.categories[category] = names;
+      result.technical.keywords.push(...names);
+      matchedSkills.forEach(({ name, entry }) => {
+        result.technical.frequency[name] = countSkillOccurrences(textLower, entry);
       });
     }
   });
 
   // Extract soft skills
-  const matchedSoftSkills = SKILL_TAXONOMY.softSkills.filter((skill) => {
-    const escaped = escapeRegex(skill);
-    const regex = new RegExp(`\\b${escaped}\\b`, "i");
-    return regex.test(textLower);
-  });
+  const matchedSoftSkills = matchSkills(textLower, SOFT_SKILLS);
 
   if (matchedSoftSkills.length > 0) {
-    result.soft.keywords = matchedSoftSkills;
-    result.soft.categories["interpersonal"] = matchedSoftSkills;
-    matchedSoftSkills.forEach((skill) => {
-      result.soft.frequency[skill] = countOccurrences(textLower, skill);
+    const names = matchedSoftSkills.map((m) => m.name);
+    result.soft.keywords = names;
+    result.soft.categories["interpersonal"] = names;
+    matchedSoftSkills.forEach(({ name, entry }) => {
+      result.soft.frequency[name] = countSkillOccurrences(textLower, entry);
     });
   }
 
   // Extract action verbs
-  const matchedVerbs = ACTION_VERBS.filter((verb) => {
-    const escaped = escapeRegex(verb);
-    const regex = new RegExp(`\\b${escaped}\\b`, "i");
-    return regex.test(textLower);
-  });
+  const matchedVerbs = matchActionVerbs(textLower, ACTION_VERBS);
 
   if (matchedVerbs.length > 0) {
     result.action.keywords = matchedVerbs;
@@ -387,19 +79,19 @@ export function extractKeywords(text: string): ExtractedKeywords {
     });
   }
 
-  // Extract industry terms
-  Object.entries(INDUSTRY_TERMS).forEach(([domain, terms]) => {
-    const matchedTerms = terms.filter((term) => {
-      const escaped = escapeRegex(term);
-      const regex = new RegExp(`\\b${escaped}\\b`, "i");
-      return regex.test(textLower);
-    });
+  // Extract industry keywords
+  Object.entries(KEYWORDS).forEach(([domain, terms]) => {
+    const matchedSkills = matchSkills(textLower, terms);
+    const names = matchedSkills.map((m) => m.name);
 
-    if (matchedTerms.length > 0) {
-      result.industry.categories[domain] = matchedTerms;
-      result.industry.keywords.push(...matchedTerms);
-      matchedTerms.forEach((term) => {
-        result.industry.frequency[term] = countOccurrences(textLower, term);
+    if (names.length > 0) {
+      result.industry.categories[domain] = names;
+      result.industry.keywords.push(...names);
+      matchedSkills.forEach(({ name, entry }) => {
+        result.industry.frequency[name] = countSkillOccurrences(
+          textLower,
+          entry,
+        );
       });
     }
   });
@@ -535,6 +227,150 @@ export function parseJobDescription(jdText: string): {
     actionVerbs: keywords.action.keywords,
     experienceYears,
   };
+}
+
+interface SkillEntry {
+  name: string;
+  aliases: string[];
+}
+
+interface MatchedSkill {
+  name: string;
+  entry: SkillEntry;
+}
+
+function normalizeSkillEntry(entry: string | string[]): SkillEntry {
+  if (typeof entry === "string") {
+    return { name: entry, aliases: [] };
+  }
+  return { name: entry[0], aliases: entry.slice(1) };
+}
+
+function matchSkills(
+  textLower: string,
+  skills: (string | string[])[],
+): MatchedSkill[] {
+  const matched: MatchedSkill[] = [];
+
+  skills.forEach((entry) => {
+    const normalized = normalizeSkillEntry(entry);
+    const isMatch =
+      variantRegex(normalized.name, false).test(textLower) ||
+      normalized.aliases.some((alias) => variantRegex(alias, true).test(textLower));
+
+    if (isMatch) {
+      matched.push({ name: normalized.name, entry: normalized });
+    }
+  });
+
+  return matched;
+}
+
+/**
+ * Return canonical names of all entries in `list` whose canonical name or
+ * any alias appears in the text.
+ */
+export function matchSkillList(textLower: string, list: SkillList): string[] {
+  return matchSkills(textLower, list).map((m) => m.name);
+}
+
+/**
+ * Return all action verbs from `verbs` that appear in the text, allowing
+ * inflected forms (ed/ing/es/s).
+ */
+export function matchActionVerbs(textLower: string, verbs: string[]): string[] {
+  return verbs.filter((verb) => {
+    const escaped = escapeRegex(verb);
+    const regex = new RegExp(`\\b${escaped}(?:ed|ing|es|s)?\\b`, "i");
+    return regex.test(textLower);
+  });
+}
+
+/**
+ * Find the canonical name + all aliases for a skill across SKILLS,
+ * SOFT_SKILLS and KEYWORDS. Falls back to `[canonical]` if unknown.
+ */
+export function getSkillVariants(canonical: string): string[] {
+  const findIn = (list: SkillList): string[] | null => {
+    for (const entry of list) {
+      if (typeof entry === "string") {
+        if (entry === canonical) return [entry];
+      } else if (entry[0] === canonical) {
+        return entry;
+      }
+    }
+    return null;
+  };
+
+  for (const category of Object.values(SKILLS)) {
+    const found = findIn(category);
+    if (found) return found;
+  }
+  const softFound = findIn(SOFT_SKILLS);
+  if (softFound) return softFound;
+  for (const category of Object.values(KEYWORDS)) {
+    const found = findIn(category);
+    if (found) return found;
+  }
+  return [canonical];
+}
+
+/**
+ * Count occurrences of the given variants (canonical first, then aliases)
+ * in the text, using the same boundary rules as matching.
+ */
+export function countVariantsInText(text: string, variants: string[]): number {
+  const textLower = text.toLowerCase();
+  return variants.reduce((total, variant, index) => {
+    const isAlias = index > 0;
+    const escaped = escapeRegex(variant);
+    const pattern = isAlias
+      ? `(?<![\\w.-])${escaped}(?![\\w-])`
+      : `\\b${escaped}\\b`;
+    const matches = textLower.match(new RegExp(pattern, "gi"));
+    return total + (matches ? matches.length : 0);
+  }, 0);
+}
+
+/**
+ * Count how many times a skill (and any of its aliases) appears in the text.
+ */
+export function countSkillInText(text: string, canonical: string): number {
+  return countVariantsInText(text, getSkillVariants(canonical));
+}
+
+/**
+ * Count how many times an action verb (including inflections) appears in text.
+ */
+export function countActionVerbInText(text: string, verb: string): number {
+  const escaped = escapeRegex(verb);
+  const matches = text
+    .toLowerCase()
+    .match(new RegExp(`\\b${escaped}(?:ed|ing|es|s)?\\b`, "gi"));
+  return matches ? matches.length : 0;
+}
+
+function variantRegex(variant: string, isAlias: boolean): RegExp {
+  const escaped = escapeRegex(variant);
+  const pattern = isAlias
+    ? `(?<![\\w.-])${escaped}(?![\\w-])`
+    : `\\b${escaped}\\b`;
+  return new RegExp(pattern, "i");
+}
+
+function countVariant(textLower: string, variant: string, isAlias: boolean): number {
+  const matches = textLower.match(variantRegex(variant, isAlias));
+  return matches ? matches.length : 0;
+}
+
+function countSkillOccurrences(textLower: string, entry: SkillEntry): number {
+  return (
+    countVariant(textLower, entry.name, false) +
+    entry.aliases.reduce(
+      (total, alias) => total + countVariant(textLower, alias, true),
+      0,
+    )
+  );
 }
 
 function escapeRegex(string: string): string {

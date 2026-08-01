@@ -1,32 +1,21 @@
 import { prisma } from '../../lib/prisma';
-import { analyzeAtsScore as analyzeWithGemini } from '../aiAnalysis/gemini';
 import { ResumeContent } from '../../types';
-
-const validErrorTypes = ['spelling', 'grammar', 'punctuation', 'formatting', 'redundancy'];
-
-const sanitizeSpellingGrammar = (spellingGrammar: any) => {
-  return {
-    ...spellingGrammar,
-    errors: spellingGrammar.errors.map((error: any) => ({
-      ...error,
-      type: validErrorTypes.includes(error.type) ? error.type : 'formatting',
-    })),
-  };
-};
+import { calculateLocalMatchScore } from '../atsScoreEngine';
+import { StructuredJD } from '../jdParser';
 
 export const createAtsScoreHistory = async (
   userId: string,
   resumeName: string,
   resumeContent: ResumeContent,
-  jobDescription?: string
+  jobDescription?: string,
+  structuredJD?: StructuredJD | null
 ) => {
-  const analysis = await analyzeWithGemini(resumeContent, jobDescription);
+  const analysis = calculateLocalMatchScore(resumeContent, structuredJD, jobDescription);
 
   const hasContactInfo =
-    !analysis.sectionScores.contactInfo.hasContactInfo &&
-    (!!resumeContent.personalInfo?.contact?.email ||
-      !!(resumeContent.personalInfo as any)?.phone ||
-      !!resumeContent.personalInfo?.contact?.linkedIn);
+    !!resumeContent.personalInfo?.contact?.email ||
+    !!(resumeContent.personalInfo as any)?.phone ||
+    !!resumeContent.personalInfo?.contact?.linkedIn;
 
   if (!analysis.sectionScores.contactInfo.hasContactInfo && hasContactInfo) {
     analysis.sectionScores.contactInfo.hasContactInfo = true;
@@ -34,16 +23,17 @@ export const createAtsScoreHistory = async (
 
   const title = `${resumeName || 'Resume'} – ATS Score v${Date.now().toString(36).slice(-4)}`;
 
-  const sanitizedSpellingGrammar = sanitizeSpellingGrammar(analysis.spellingGrammar);
-
   const atsScoreHistory = await prisma.atsScoreHistory.create({
     data: {
       userId,
       title,
       resumeName,
       overallScore: analysis.overallScore,
-      sectionScores: analysis.sectionScores,
-      spellingGrammar: sanitizedSpellingGrammar,
+      sectionScores: {
+        ...analysis.sectionScores,
+        ...(analysis.matchBreakdown ? { matchBreakdown: analysis.matchBreakdown } : {}),
+      } as any,
+      spellingGrammar: analysis.spellingGrammar as any,
       atsFriendliness: analysis.atsFriendliness,
       suggestions: analysis.suggestions,
       resumeContent,

@@ -39,7 +39,7 @@ export interface ResumeContent {
     jobTitle?: string;
     contact?: {
       email?: string;
-      whatsapp?: string;
+      phone?: string;
       linkedIn?: string;
       address?: {
         city?: string;
@@ -93,6 +93,9 @@ export interface ResumeContent {
     date?: string;
   }>;
   skills: string[];
+  hardSkills?: string[];
+  softSkills?: string[];
+  keywords?: string[];
   [key: string]: any;
 }
 
@@ -197,6 +200,7 @@ export interface ScoreBreakdown {
   jobMatch: {
     skillsMatch: ScoreComponent;
     keywordsMatch: ScoreComponent;
+    softSkillsMatch: ScoreComponent;
   };
 }
 

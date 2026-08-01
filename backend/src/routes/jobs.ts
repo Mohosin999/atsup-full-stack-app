@@ -7,9 +7,12 @@ import {
   updateJob,
   deleteJob,
   fetchFromUrl,
+  parseJobDescription,
 } from "../controllers/jobs";
 
 const router = Router();
+
+router.post("/parse", authenticate, parseJobDescription);
 
 router.post("/fetch-from-url", authenticate, fetchFromUrl);
 

@@ -55,8 +55,8 @@ export function PersonalInfoPreview({
             <span className="truncate block">
               {[
                 locationString || "",
-                content.personalInfo.contact?.whatsapp
-                  ? formatPhoneNumber(content.personalInfo.contact.whatsapp)
+                content.personalInfo.contact?.phone
+                  ? formatPhoneNumber(content.personalInfo.contact.phone)
                   : "",
               ]
                 .filter(Boolean)

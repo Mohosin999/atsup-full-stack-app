@@ -93,10 +93,11 @@ export const jobApi = {
   create: (data: { title: string; company?: string; description: string }) => api.post('/jobs', data),
   update: (id: string, data: any) => api.put(`/jobs/${id}`, data),
   delete: (id: string) => api.delete(`/jobs/${id}`),
+  parse: (description: string) => api.post('/jobs/parse', { description }),
 };
 
 export const atsScoreApi = {
-  analyze: (data: { resumeName: string; resumeContent: any; jobDescription?: string }) =>
+  analyze: (data: { resumeName: string; resumeContent: any; jobDescription?: string; structuredJD?: any }) =>
     api.post('/ats-score-history/analyze', data),
   getAll: (page = 1, limit = 3) => api.get(`/ats-score-history?page=${page}&limit=${limit}`),
   getById: (id: string) => api.get(`/ats-score-history/${id}`),

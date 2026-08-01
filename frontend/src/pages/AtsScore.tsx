@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Upload, CheckCircle, XCircle, Scan } from "lucide-react";
+import { Upload, CheckCircle, XCircle, Scan, Sparkles } from "lucide-react";
 import { toast } from "react-toastify";
-import { atsScoreApi, resumeParserApi } from "../api/api";
+import { atsScoreApi, resumeParserApi, jobApi } from "../api/api";
 import { useAppDispatch } from "../hooks/redux";
 import { setUserCredits } from "../store/slices/authSlice";
 import BackButton from "../components/ui/BackButton";
@@ -11,6 +11,7 @@ import ScoreCard from "../components/ui/ScoreCard";
 import SectionScoreCard from "../components/SectionScoreCard";
 import SuggestionList from "../components/SuggestionList";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import JobMatchBreakdown from "../components/JobMatchBreakdown";
 import { AtsScoreHistory, ResumeContent } from "../types";
 
 type Step = "upload" | "jobDescription";
@@ -25,9 +26,12 @@ export default function AtsScorePage() {
     null,
   );
   const [jobDescription, setJobDescription] = useState("");
+  const [structuredJD, setStructuredJD] = useState<any | null>(null);
+  const [parsingJD, setParsingJD] = useState(false);
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AtsScoreHistory | null>(null);
+  const parseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (analysisId) {
@@ -38,8 +42,35 @@ export default function AtsScorePage() {
       setResumeName("");
       setResumeContent(null);
       setJobDescription("");
+      setStructuredJD(null);
+      setParsingJD(false);
     }
   }, [analysisId]);
+
+  const handleJobDescriptionChange = useCallback((value: string) => {
+    setJobDescription(value);
+
+    if (parseTimer.current) clearTimeout(parseTimer.current);
+
+    if (value.trim().length < 20) {
+      setStructuredJD(null);
+      setParsingJD(false);
+      return;
+    }
+
+    setParsingJD(true);
+    parseTimer.current = setTimeout(async () => {
+      try {
+        const response = await jobApi.parse(value.trim());
+        setStructuredJD(response.data.data);
+        console.log("STRUCTURED JD:", response.data.data);
+      } catch (error) {
+        setStructuredJD(null);
+      } finally {
+        setParsingJD(false);
+      }
+    }, 600);
+  }, []);
 
   const loadAnalysis = async (id: string) => {
     setLoading(true);
@@ -87,12 +118,15 @@ export default function AtsScorePage() {
         resumeName,
         resumeContent,
         jobDescription: jobDescription.trim() || undefined,
+        structuredJD,
       });
       setResult(response.data.data);
 
       if (response.data.credits !== undefined) {
         dispatch(setUserCredits(response.data.credits));
-        toast.success(`ATS analysis completed! 1 credit deducted. New balance: ${response.data.credits}`);
+        toast.success(
+          `ATS analysis completed! 1 credit deducted. New balance: ${response.data.credits}`,
+        );
       } else {
         toast.success("ATS analysis completed");
       }
@@ -109,6 +143,8 @@ export default function AtsScorePage() {
     setResumeName("");
     setResumeContent(null);
     setJobDescription("");
+    setStructuredJD(null);
+    setParsingJD(false);
   };
 
   return (
@@ -142,7 +178,9 @@ export default function AtsScorePage() {
               className={`bg-gray-800 rounded-lg p-6 ${step !== "upload" ? "opacity-60" : ""}`}
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step === "upload" ? "bg-green-500 text-white" : resumeContent ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step === "upload" ? "bg-green-500 text-white" : resumeContent ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
+                >
                   {resumeContent ? <CheckCircle className="w-5 h-5" /> : "1"}
                 </div>
                 <h2 className="text-xl font-semibold text-white">
@@ -196,7 +234,9 @@ export default function AtsScorePage() {
               className={`bg-gray-800 rounded-lg p-6 ${step !== "jobDescription" ? "opacity-60" : ""}`}
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step === "jobDescription" ? "bg-green-500 text-white" : jobDescription ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}>
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step === "jobDescription" ? "bg-green-500 text-white" : jobDescription ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
+                >
                   {jobDescription ? <CheckCircle className="w-5 h-5" /> : "2"}
                 </div>
                 <h2 className="text-xl font-semibold text-white">
@@ -206,12 +246,46 @@ export default function AtsScorePage() {
 
               <textarea
                 value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
+                onChange={(e) => handleJobDescriptionChange(e.target.value)}
                 placeholder="Paste the job description here (optional, but recommended for better analysis)..."
                 rows={10}
                 disabled={step !== "jobDescription"}
                 className="w-full bg-gray-700 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
               />
+
+              {parsingJD && (
+                <div className="mt-3 flex items-center gap-2 text-sm text-gray-400">
+                  <LoadingSpinner /> Converting job description to structured
+                  format...
+                </div>
+              )}
+
+              {structuredJD && !parsingJD && (
+                <div className="mt-3 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-400 mb-2">
+                    <Sparkles className="w-4 h-4" />
+                    <span className="font-medium">
+                      Structured job description detected
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
+                      {structuredJD.jobTitle || "Title"}
+                    </span>
+                    <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
+                      {structuredJD.hardSkills.length} hard skills
+                    </span>
+                    <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
+                      {structuredJD.keywords.length} keywords
+                    </span>
+                    {structuredJD.experienceYearsRequired > 0 && (
+                      <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
+                        {structuredJD.experienceYearsRequired}+ yrs
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
             </motion.div>
 
             {/* Scan Button */}
@@ -323,6 +397,12 @@ export default function AtsScorePage() {
                 />
               </div>
             </motion.div>
+
+            {result.sectionScores.matchBreakdown && (
+              <JobMatchBreakdown
+                matchBreakdown={result.sectionScores.matchBreakdown}
+              />
+            )}
 
             {result.spellingGrammar.errors.length > 0 && (
               <motion.div

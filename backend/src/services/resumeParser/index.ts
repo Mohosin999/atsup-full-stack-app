@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { ResumeContent } from "../../types";
+import { extractHardSoftSkills, extractKeywordsFromText } from "../jdParser";
 
 export const parseResumeFile = async (
   filePath: string,
@@ -213,7 +214,7 @@ const parseDates = (line: string) => {
 // Fixed-template resume parser
 // ============================================================================
 
-const parseTextToResume = (text: string): ResumeContent => {
+export const parseTextToResume = (text: string): ResumeContent => {
   const lines = text
     .split("\n")
     .map((line) => line.trim())
@@ -237,7 +238,7 @@ const parseTextToResume = (text: string): ResumeContent => {
 
   content.personalInfo.contact = {};
   if (emailMatch) content.personalInfo.contact.email = emailMatch[0];
-  if (phoneMatch) content.personalInfo.contact.whatsapp = phoneMatch[0];
+  if (phoneMatch) content.personalInfo.contact.phone = phoneMatch[0];
   if (linkedinMatch) content.personalInfo.contact.linkedIn = linkedinMatch[0];
   if (urlMatch) content.personalInfo.contact.socialLinks = { portfolio: urlMatch[0] };
 
@@ -539,13 +540,37 @@ const parseTextToResume = (text: string): ResumeContent => {
   // --- Fallback: if no skills found, scan text for known skills ---
   if (content.skills.length === 0) {
     for (const skill of commonSkills) {
-      if (text.toLowerCase().includes(skill.toLowerCase())) {
+      const escaped = skill.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      if (new RegExp(`\\b${escaped}\\b`, "i").test(text)) {
         if (!content.skills.includes(skill)) {
           content.skills.push(skill);
         }
       }
     }
   }
+
+  // --- Extract hard skills and soft skills from the full resume text ---
+  const resumeText = [
+    content.personalInfo?.fullName,
+    content.personalInfo?.jobTitle,
+    content.summary,
+    ...(content.experience || []).map(
+      (exp: any) => `${exp.title || ""} ${exp.company || ""} ${(exp.highlights || []).join(" ")}`,
+    ),
+    ...(content.skills || []),
+    ...(content.projects || []).map(
+      (proj: any) => `${proj.name || ""} ${(proj.highlights || []).join(" ")} ${(proj.technologies || []).join(" ")}`,
+    ),
+    ...(content.certifications || []).map((cert: any) => cert.name || ""),
+    ...(content.achievements || []).map((ach: any) => `${ach.title || ""} ${ach.description || ""}`),
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const { hardSkills, softSkills } = extractHardSoftSkills(resumeText);
+  content.hardSkills = hardSkills;
+  content.softSkills = softSkills;
+  content.keywords = extractKeywordsFromText(resumeText, hardSkills, softSkills);
 
   return content;
 };

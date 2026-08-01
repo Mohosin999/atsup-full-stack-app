@@ -15,7 +15,7 @@ const defaultContent: ResumeContent = {
     jobTitle: "",
     contact: {
       email: "",
-      whatsapp: "",
+      phone: "",
       address: { city: "", division: "", zipCode: "" },
       linkedIn: "",
       socialLinks: { github: "", portfolio: "", website: "" },

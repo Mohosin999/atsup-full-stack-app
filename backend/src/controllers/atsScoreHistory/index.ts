@@ -1,22 +1,22 @@
-import { Response } from 'express';
-import { AuthRequest } from '../../middlewares';
-import { prisma } from '../../lib/prisma';
+import { Response } from "express";
+import { AuthRequest } from "../../middlewares";
+import { prisma } from "../../lib/prisma";
 import {
   createAtsScoreHistory,
   getAtsScoreHistory,
   getAtsScoreHistoryById,
   deleteAtsScoreHistory,
   deleteAllAtsScoreHistory,
-} from '../../services/atsScoreHistory';
+} from "../../services/atsScoreHistory";
 
 export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
   try {
-    const { resumeName, resumeContent, jobDescription } = req.body;
+    const { resumeName, resumeContent, jobDescription, structuredJD } = req.body;
 
     if (!resumeContent) {
       return res.status(400).json({
         success: false,
-        message: 'Resume content is required',
+        message: "Resume content is required",
       });
     }
 
@@ -38,9 +38,10 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
 
     const score = await createAtsScoreHistory(
       req.user.id,
-      resumeName || 'Untitled Resume',
+      resumeName || "Untitled Resume",
       resumeContent,
-      jobDescription
+      jobDescription,
+      structuredJD || null,
     );
 
     // Deduct 1 credit for ATS Score Analysis
@@ -63,14 +64,15 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       success: true,
       data: score,
       credits: remainingCredits,
-      message: "✅ Credit deducted successfully! Task: ATS Score Analysis, Credits deducted: 1",
+      message:
+        "✅ Credit deducted successfully! Task: ATS Score Analysis, Credits deducted: 1",
     });
   } catch (error: any) {
-    console.error('ATS Score analysis error:', error);
-    const status = error.message.includes('Insufficient credits') ? 403 : 500;
+    console.error("ATS Score analysis error:", error);
+    const status = error.message.includes("Insufficient credits") ? 403 : 500;
     res.status(status).json({
       success: false,
-      message: error.message || 'Failed to analyze ATS score',
+      message: error.message || "Failed to analyze ATS score",
     });
   }
 };
@@ -80,11 +82,7 @@ export const getAtsScores = async (req: AuthRequest, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 3;
 
-    const result = await getAtsScoreHistory(
-      req.user.id,
-      page,
-      limit
-    );
+    const result = await getAtsScoreHistory(req.user.id, page, limit);
 
     res.json({
       success: true,
@@ -92,10 +90,10 @@ export const getAtsScores = async (req: AuthRequest, res: Response) => {
       pagination: result.pagination,
     });
   } catch (error: any) {
-    console.error('Get ATS scores error:', error);
+    console.error("Get ATS scores error:", error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to get ATS scores',
+      message: error.message || "Failed to get ATS scores",
     });
   }
 };
@@ -111,17 +109,17 @@ export const getAtsScore = async (req: AuthRequest, res: Response) => {
       data: score,
     });
   } catch (error: any) {
-    console.error('Get ATS score error:', error);
+    console.error("Get ATS score error:", error);
     res.status(404).json({
       success: false,
-      message: error.message || 'ATS Score not found',
+      message: error.message || "ATS Score not found",
     });
   }
 };
 
 export const deleteAtsScoreController = async (
   req: AuthRequest,
-  res: Response
+  res: Response,
 ) => {
   try {
     const { id } = req.params;
@@ -130,33 +128,33 @@ export const deleteAtsScoreController = async (
 
     res.json({
       success: true,
-      message: 'ATS Score deleted successfully',
+      message: "ATS Score deleted successfully",
     });
   } catch (error: any) {
-    console.error('Delete ATS score error:', error);
+    console.error("Delete ATS score error:", error);
     res.status(404).json({
       success: false,
-      message: error.message || 'Failed to delete ATS Score',
+      message: error.message || "Failed to delete ATS Score",
     });
   }
 };
 
 export const deleteAllAtsScoresController = async (
   req: AuthRequest,
-  res: Response
+  res: Response,
 ) => {
   try {
     await deleteAllAtsScoreHistory(req.user.id);
 
     res.json({
       success: true,
-      message: 'All ATS Scores deleted successfully',
+      message: "All ATS Scores deleted successfully",
     });
   } catch (error: any) {
-    console.error('Delete all ATS scores error:', error);
+    console.error("Delete all ATS scores error:", error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to delete ATS Scores',
+      message: error.message || "Failed to delete ATS Scores",
     });
   }
 };

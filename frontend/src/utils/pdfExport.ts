@@ -430,8 +430,8 @@
 //     parts.push(locationParts.join(", "));
 //   }
 
-//   if (content.personalInfo.whatsapp) {
-//     const phone = content.personalInfo.whatsapp.replace(/^(\+880|880)/, "");
+//   if (content.personalInfo.phone) {
+//     const phone = content.personalInfo.phone.replace(/^(\+880|880)/, "");
 //     parts.push(`(+880) ${phone}`);
 //   }
 
@@ -938,8 +938,8 @@ function buildContactInfo(content: ResumeContent): string {
     parts.push(locationParts.join(", "));
   }
 
-  if (content.personalInfo.contact?.whatsapp) {
-    const phone = content.personalInfo.contact.whatsapp.replace(/^(\+880|880)/, "");
+  if (content.personalInfo.contact?.phone) {
+    const phone = content.personalInfo.contact.phone.replace(/^(\+880|880)/, "");
     parts.push(`(+880) ${phone}`);
   }
 

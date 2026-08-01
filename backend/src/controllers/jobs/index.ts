@@ -4,6 +4,7 @@ import { getSingleJob } from "./getSingleJob";
 import { updateJob } from "./updateJob";
 import { deleteJob } from "./deleteJob";
 import { fetchFromUrl } from "./fetchFromUrl";
+import { parseJobDescription } from "./parseJobDescription";
 
 export {
   getAllJobs,
@@ -12,4 +13,5 @@ export {
   updateJob,
   deleteJob,
   fetchFromUrl,
+  parseJobDescription,
 };

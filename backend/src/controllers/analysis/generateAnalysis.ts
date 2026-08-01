@@ -233,6 +233,10 @@ function transformToAnalysisData(
         score: result.scoreBreakdown.jobMatch.keywordsMatch.score,
         details: result.scoreBreakdown.jobMatch.keywordsMatch.details,
       },
+      softSkillsMatch: {
+        score: result.scoreBreakdown.jobMatch.softSkillsMatch.score,
+        details: result.scoreBreakdown.jobMatch.softSkillsMatch.details,
+      },
     },
     feedback: {
       overall: generateOverallFeedback(result),

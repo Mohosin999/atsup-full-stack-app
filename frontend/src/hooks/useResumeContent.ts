@@ -40,7 +40,7 @@ export function useResumeContent(
           },
         },
       }));
-    } else if (["email", "whatsapp", "linkedIn"].includes(field)) {
+    } else if (["email", "phone", "linkedIn"].includes(field)) {
       setContent((prev) => ({
         ...prev,
         personalInfo: {

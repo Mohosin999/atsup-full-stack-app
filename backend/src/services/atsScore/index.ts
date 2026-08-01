@@ -1,19 +1,7 @@
 import { prisma } from '../../lib/prisma';
-import { analyzeAtsScore as analyzeWithGemini } from '../aiAnalysis/gemini';
 import { ResumeContent } from '../../types';
+import { calculateLocalMatchScore } from '../atsScoreEngine';
 import { useUserCredits, getUserCredits } from '../users';
-
-const validErrorTypes = ['spelling', 'grammar', 'punctuation', 'formatting', 'redundancy'];
-
-const sanitizeSpellingGrammar = (spellingGrammar: any) => {
-  return {
-    ...spellingGrammar,
-    errors: spellingGrammar.errors.map((error: any) => ({
-      ...error,
-      type: validErrorTypes.includes(error.type) ? error.type : 'formatting',
-    })),
-  };
-};
 
 export const calculateAtsScore = async (
   userId: string,
@@ -34,17 +22,18 @@ export const calculateAtsScore = async (
 
   const { credits } = await useUserCredits(userId, 1);
 
-  const analysis = await analyzeWithGemini(resume.content as any);
-
-  const sanitizedSpellingGrammar = sanitizeSpellingGrammar(analysis.spellingGrammar);
+  const analysis = calculateLocalMatchScore(resume.content as ResumeContent);
 
   const atsScore = await prisma.atsScore.create({
     data: {
       userId,
       resumeId,
       overallScore: analysis.overallScore,
-      sectionScores: analysis.sectionScores,
-      spellingGrammar: sanitizedSpellingGrammar,
+      sectionScores: {
+        ...analysis.sectionScores,
+        ...(analysis.matchBreakdown ? { matchBreakdown: analysis.matchBreakdown } : {}),
+      } as any,
+      spellingGrammar: analysis.spellingGrammar as any,
       atsFriendliness: analysis.atsFriendliness,
       suggestions: analysis.suggestions,
     },

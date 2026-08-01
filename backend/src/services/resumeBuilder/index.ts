@@ -171,7 +171,7 @@ export const checkAtsFriendliness = async (content: ResumeContent) => {
   }
 
   if (
-    !content.personalInfo.contact?.whatsapp &&
+    !content.personalInfo.contact?.phone &&
     !content.personalInfo.contact?.socialLinks?.github
   ) {
     issues.push('Limited contact information');

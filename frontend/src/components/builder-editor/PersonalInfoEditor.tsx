@@ -63,10 +63,10 @@ export default function PersonalInfoEditor({ content, updateField }: PersonalInf
             </span>
             <input
               type="tel"
-              value={content.personalInfo.contact?.whatsapp?.replace(/^(\+880|880)/, '') || ''}
+              value={content.personalInfo.contact?.phone?.replace(/^(\+880|880)/, '') || ''}
               onChange={(e) => {
                 const value = e.target.value.replace(/[^0-9]/g, '');
-                updateField('whatsapp', `+880${value}`);
+                updateField('phone', `+880${value}`);
               }}
               className="w-full px-4 py-2 border border-gray-600 rounded-r-lg bg-gray-800/50 text-gray-100 focus:outline-none focus:border-transparent transition-all duration-200 placeholder-gray-500"
               placeholder="1234567890"

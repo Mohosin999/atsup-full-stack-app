@@ -201,13 +201,13 @@ export class ResumeAnalysisService {
     jobDescription: string;
     skillsAnalysis?: any;
   }): ScoreBreakdown["jobMatch"] {
-    const { resume, resumeText, parsedJD, skillsAnalysis } = input;
+    const { resume, resumeText, parsedJD, jobDescription, skillsAnalysis } = input;
     const resumeSkills = extractSkillsFromResume(resume);
 
     const requiredSkills = parsedJD?.requiredSkills || [];
     const jdKeywords = parsedJD?.keywords || [];
 
-    // Skills Match (50%) - use skillsAnalysis if available for accurate count
+    // Skills Match (40%)
     const matchedCount = skillsAnalysis?.matchedSkills?.length ?? 0;
     const missingCount = skillsAnalysis?.missingSkills?.length ?? 0;
     const totalRequired = matchedCount + missingCount;
@@ -218,7 +218,7 @@ export class ResumeAnalysisService {
         : requiredSkills.length > 0
           ? Math.round((matchedCount / Math.max(1, requiredSkills.length)) * 100)
           : resumeSkills.length > 0 ? 70 : 50,
-      weight: 50,
+      weight: 40,
       maxScore: 100,
       details: totalRequired > 0
         ? `${matchedCount}/${totalRequired} skills matched`
@@ -228,7 +228,7 @@ export class ResumeAnalysisService {
       factors: [],
     };
 
-    // Keywords Match (50%) - use keywordAnalysis if available
+    // Keywords Match (40%)
     const foundKeywords = skillsAnalysis?.additionalSkills?.length 
       ? resumeSkills.filter((s: string) => 
           !requiredSkills.some((rs: string) => rs.toLowerCase().includes(s.toLowerCase()))
@@ -246,7 +246,7 @@ export class ResumeAnalysisService {
       score: jdKeywords.length > 0
         ? Math.round((matchedKeywords.length / jdKeywords.length) * 100)
         : 50,
-      weight: 50,
+      weight: 40,
       maxScore: 100,
       details: jdKeywords.length > 0
         ? `${matchedKeywords.length}/${jdKeywords.length} keywords matched`
@@ -254,9 +254,40 @@ export class ResumeAnalysisService {
       factors: [],
     };
 
+    // Soft Skills Match (20%)
+    const resumeSoftSkills = (resume?.softSkills || []).map((s: string) =>
+      s.toLowerCase().trim(),
+    );
+    const jdSoftSkills =
+      parsedJD?.softSkills?.length
+        ? parsedJD.softSkills
+        : extractKeywords(jobDescription).soft.keywords;
+    const matchedSoftSkills = jdSoftSkills.filter((jdSoft: string) =>
+      resumeSoftSkills.some(
+        (r: string) =>
+          r.includes(jdSoft.toLowerCase()) ||
+          jdSoft.toLowerCase().includes(r),
+      ),
+    );
+
+    const softSkillsMatch = {
+      score: jdSoftSkills.length > 0
+        ? Math.round((matchedSoftSkills.length / jdSoftSkills.length) * 100)
+        : resumeSoftSkills.length > 0 ? 70 : 50,
+      weight: 20,
+      maxScore: 100,
+      details: jdSoftSkills.length > 0
+        ? `${matchedSoftSkills.length}/${jdSoftSkills.length} soft skills matched`
+        : resumeSoftSkills.length > 0
+          ? `Found ${resumeSoftSkills.length} resume soft skills`
+          : `No soft skills found`,
+      factors: [],
+    };
+
     return {
       skillsMatch,
       keywordsMatch,
+      softSkillsMatch,
     };
   }
 
@@ -282,13 +313,15 @@ export class ResumeAnalysisService {
   private calculateWeightedJobMatchScore(
     breakdown: ScoreBreakdown["jobMatch"],
   ): number {
-    const skillsWeight = breakdown.skillsMatch.weight || 50;
-    const keywordsWeight = breakdown.keywordsMatch.weight || 50;
-    const totalWeight = skillsWeight + keywordsWeight;
+    const skillsWeight = breakdown.skillsMatch.weight || 40;
+    const keywordsWeight = breakdown.keywordsMatch.weight || 40;
+    const softSkillsWeight = breakdown.softSkillsMatch.weight || 20;
+    const totalWeight = skillsWeight + keywordsWeight + softSkillsWeight;
 
     return Math.round(
       breakdown.skillsMatch.score * (skillsWeight / totalWeight) +
-        breakdown.keywordsMatch.score * (keywordsWeight / totalWeight),
+        breakdown.keywordsMatch.score * (keywordsWeight / totalWeight) +
+        breakdown.softSkillsMatch.score * (softSkillsWeight / totalWeight),
     );
   }
 
@@ -518,7 +551,10 @@ export class ResumeAnalysisService {
     categories.forEach((category) => {
       const taxonomySkills =
         SKILL_TAXONOMY[category as keyof typeof SKILL_TAXONOMY] || [];
-      const required = taxonomySkills.filter((s) =>
+      const canonicalSkills = taxonomySkills.map((entry) =>
+        typeof entry === "string" ? entry : entry[0],
+      );
+      const required = canonicalSkills.filter((s) =>
         parsedJD.requiredSkills.includes(s),
       );
       const matched = required.filter((s) =>
@@ -933,7 +969,11 @@ export class ResumeAnalysisService {
   private categorizeSkill(skill: string): any {
     const lower = skill.toLowerCase();
     for (const [category, skills] of Object.entries(SKILL_TAXONOMY)) {
-      if (skills.some((s) => lower.includes(s) || s.includes(lower))) {
+      const matched = skills.some((entry) => {
+        const variants = typeof entry === "string" ? [entry] : entry;
+        return variants.some((s) => lower.includes(s) || s.includes(lower));
+      });
+      if (matched) {
         return category.replace(/([A-Z])/g, " $1").trim();
       }
     }

@@ -79,6 +79,7 @@ export const SKILLS: CategorySkills = {
     "mariadb",
     "oracle",
     "mssql",
+    "nosql",
     "firebase",
     "supabase",
   ],

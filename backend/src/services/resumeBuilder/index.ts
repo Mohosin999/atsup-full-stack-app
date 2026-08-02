@@ -184,27 +184,6 @@ export const checkAtsFriendliness = async (content: ResumeContent) => {
       issues.push(`Experience ${index + 1}: Description too short`);
       suggestions.push(`Expand experience ${index + 1} with quantified achievements`);
     }
-
-    const actionVerbs = [
-      'developed',
-      'created',
-      'implemented',
-      'designed',
-      'built',
-      'optimized',
-      'improved',
-      'led',
-      'managed',
-    ];
-    const hasActionVerb = actionVerbs.some((verb) =>
-      expText.toLowerCase().includes(verb)
-    );
-    if (!hasActionVerb) {
-      issues.push(`Experience ${index + 1}: No action verbs`);
-      suggestions.push(
-        `Start bullet points with strong action verbs for experience ${index + 1}`
-      );
-    }
   });
 
   const atsScore = Math.max(0, 100 - issues.length * 10);

@@ -736,30 +736,6 @@ const calculateJobMatchingScore = (
 
   const yearsExperienceAlignment = { score: yearsScore, details: yearsDetails };
 
-  const jdActionVerbs =
-    jdText.match(
-      /\b(managed|led|developed|designed|implemented|created|built|optimized|improved|increased)\b/gi,
-    ) || [];
-  const resumeActionVerbs =
-    resumeText.match(
-      /\b(managed|led|developed|designed|implemented|created|built|optimized|improved|increased)\b/gi,
-    ) || [];
-  const verbSimilarity =
-    jdActionVerbs.length > 0
-      ? Math.round(
-          (resumeActionVerbs.length / jdActionVerbs.length) *
-            Math.min(100, resumeActionVerbs.length * 10),
-        )
-      : 50;
-
-  const roleResponsibilitySimilarity = {
-    score: Math.min(100, verbSimilarity + 20),
-    details:
-      resumeActionVerbs.length > 0
-        ? "Responsibilities align with job description"
-        : "Use more action verbs matching job requirements",
-  };
-
   const breakdown = {
     requiredSkillsMatch: requiredSkillsMatch as any,
     relevantWorkExperience,
@@ -767,17 +743,15 @@ const calculateJobMatchingScore = (
     toolsFrameworks,
     industryRelevance,
     yearsExperienceAlignment,
-    roleResponsibilitySimilarity,
   };
 
   const weights = {
-    requiredSkillsMatch: 0.25,
+    requiredSkillsMatch: 0.3,
     relevantWorkExperience: 0.2,
     technologiesUsed: 0.15,
     toolsFrameworks: 0.15,
     industryRelevance: 0.1,
     yearsExperienceAlignment: 0.1,
-    roleResponsibilitySimilarity: 0.05,
   };
 
   const overallScore = Math.round(
@@ -786,8 +760,7 @@ const calculateJobMatchingScore = (
       technologiesUsed.score * weights.technologiesUsed +
       toolsFrameworks.score * weights.toolsFrameworks +
       industryRelevance.score * weights.industryRelevance +
-      yearsExperienceAlignment.score * weights.yearsExperienceAlignment +
-      roleResponsibilitySimilarity.score * weights.roleResponsibilitySimilarity,
+      yearsExperienceAlignment.score * weights.yearsExperienceAlignment,
   );
 
   return { overallScore, breakdown };
@@ -865,10 +838,6 @@ export const analyzeResume = async (
         toolsFrameworks: { score: 0, details: "No job description provided" },
         industryRelevance: { score: 0, details: "No job description provided" },
         yearsExperienceAlignment: {
-          score: 0,
-          details: "No job description provided",
-        },
-        roleResponsibilitySimilarity: {
           score: 0,
           details: "No job description provided",
         },
@@ -1448,7 +1417,7 @@ const fallbackAnalysis = (
       "Include testing experience in your project or work history",
     ],
     resumeImprovements: [
-      "Improve bullet point structure - use action verbs at the start",
+      "Improve bullet point structure - make each point specific and impactful",
       "Add measurable impact - include numbers and percentages where possible",
       "Improve project descriptions with specific technologies used",
       "Ensure consistent formatting throughout the resume",
@@ -1467,10 +1436,6 @@ const fallbackAnalysis = (
       toolsFrameworks: { score: 0, details: "No job description provided" },
       industryRelevance: { score: 0, details: "No job description provided" },
       yearsExperienceAlignment: {
-        score: 0,
-        details: "No job description provided",
-      },
-      roleResponsibilitySimilarity: {
         score: 0,
         details: "No job description provided",
       },

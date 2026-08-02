@@ -62,6 +62,7 @@ export interface ResumeContent {
     endDate?: string;
     current?: boolean;
     highlights: string[];
+    measurableImpacts?: string[];
   }>;
   projects?: Array<{
     name: string;
@@ -95,7 +96,8 @@ export interface ResumeContent {
   skills: string[];
   hardSkills?: string[];
   softSkills?: string[];
-  keywords?: string[];
+  actionVerbs?: string[];
+  measurableResults?: string[];
   [key: string]: any;
 }
 
@@ -117,7 +119,6 @@ export interface AnalysisResult {
     toolsFrameworks: { score: number; details: string };
     industryRelevance: { score: number; details: string };
     yearsExperienceAlignment: { score: number; details: string };
-    roleResponsibilitySimilarity: { score: number; details: string };
   };
   feedback: {
     overall: string;
@@ -363,8 +364,6 @@ export interface ResponsibilityMatch {
   matchedResponsibilities: number;
   totalResponsibilities: number;
   matchPercentage: number;
-  matchedActionVerbs: string[];
-  missingActionVerbs: string[];
 }
 
 export interface EmploymentGap {
@@ -513,7 +512,7 @@ export interface ParsedJobDescription {
   qualifications: string[];
   benefits?: string[];
   keywords: string[];
-  actionVerbs: string[];
+  actionVerbs?: string[];
   industryTerms: string[];
 }
 

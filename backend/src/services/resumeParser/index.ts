@@ -2,6 +2,8 @@ import fs from "fs";
 import path from "path";
 import { ResumeContent } from "../../types";
 import { extractHardSoftSkills, extractKeywordsFromText } from "../jdParser";
+import { extractMeasurableResults } from "../analysis/skillDefinitions";
+import { matchActionVerbs } from "../analysis/keywordExtractor";
 
 export const parseResumeFile = async (
   filePath: string,
@@ -228,6 +230,7 @@ export const parseTextToResume = (text: string): ResumeContent => {
     projects: [],
     certifications: [],
     achievements: [],
+    actionVerbs: [],
   };
 
   // --- Personal info (regex scan over whole text) ---
@@ -305,6 +308,11 @@ export const parseTextToResume = (text: string): ResumeContent => {
           fragments.length > 0 ? [...bullets, fragments.join(" ")] : bullets;
       }
       desc.length = 0;
+    }
+    if (currentType === "experience") {
+      currentEntry.measurableImpacts = extractMeasurableResults(
+        (currentEntry.highlights || []).join(" "),
+      );
     }
     currentEntry = null;
     currentType = null;
@@ -568,9 +576,20 @@ export const parseTextToResume = (text: string): ResumeContent => {
     .join("\n");
 
   const { hardSkills, softSkills } = extractHardSoftSkills(resumeText);
-  content.hardSkills = hardSkills;
+  content.hardSkills = [
+    ...new Set([
+      ...hardSkills,
+      ...extractKeywordsFromText(resumeText, hardSkills, softSkills),
+    ]),
+  ];
   content.softSkills = softSkills;
-  content.keywords = extractKeywordsFromText(resumeText, hardSkills, softSkills);
+
+  content.actionVerbs = matchActionVerbs(resumeText);
+
+  const measurableResults = (content.experience || [])
+    .flatMap((exp: any) => exp.measurableImpacts || [])
+    .filter(Boolean);
+  content.measurableResults = [...new Set(measurableResults)];
 
   return content;
 };

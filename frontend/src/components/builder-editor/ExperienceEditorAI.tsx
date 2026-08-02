@@ -228,8 +228,8 @@ export default function ExperienceEditorAI({
                 placeholder="Use (•) bullet points or each line will be a separate bullet point."
               />
               <p className="text-xs text-gray-400 mt-1">
-                Tip: Use action verbs and quantify achievements (e.g., "Improved
-                performance by 40%")
+                Tip: Quantify your achievements (e.g., "Improved performance by
+                40%")
               </p>
             </div>
           </div>

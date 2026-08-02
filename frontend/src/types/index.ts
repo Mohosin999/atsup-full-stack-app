@@ -69,7 +69,9 @@ export interface ResumeContent {
   skills: string[];
   hardSkills?: string[];
   softSkills?: string[];
+  actionVerbs?: string[];
   keywords?: string[];
+  measurableResults?: string[];
   certifications?: {
     name: string;
     issuer?: string;
@@ -86,6 +88,7 @@ export interface Experience {
   endDate?: string;
   current?: boolean;
   highlights: string[];
+  measurableImpacts?: string[];
 }
 
 export interface Project {
@@ -227,6 +230,12 @@ export interface AtsScore {
     projects: { score: number; feedback: string };
     skills: { score: number; feedback: string };
     contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
+    measurableResults: {
+      score: number;
+      feedback: string;
+      count: number;
+      found: string[];
+    };
   };
   spellingGrammar: {
     score: number;
@@ -298,10 +307,15 @@ export interface AtsScoreHistory {
     projects: { score: number; feedback: string };
     skills: { score: number; feedback: string };
     contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
+    measurableResults: {
+      score: number;
+      feedback: string;
+      count: number;
+      found: string[];
+    };
     matchBreakdown?: {
       hardSkills: MatchCategoryResult;
       softSkills: MatchCategoryResult;
-      keywords: MatchCategoryResult;
       actionVerbs: MatchCategoryResult;
     };
   };

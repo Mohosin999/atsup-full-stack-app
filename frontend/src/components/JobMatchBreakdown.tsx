@@ -83,13 +83,13 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
 }) => {
   if (!matchBreakdown) return null;
 
-  const { hardSkills, softSkills, keywords } = matchBreakdown;
+  const { hardSkills, softSkills, actionVerbs } = matchBreakdown;
 
   const categoryConfigs = [
     {
       label: "Hard Skills",
       color: "bg-green-500",
-      hint: "Technical skills the job asks for",
+      hint: "Technical skills and keywords the job asks for",
       category: hardSkills,
     },
     {
@@ -99,10 +99,10 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
       category: softSkills,
     },
     {
-      label: "Keywords",
+      label: "Action Verbs",
       color: "bg-purple-500",
-      hint: "Domain terms used in the job description",
-      category: keywords,
+      hint: "Action verbs the job description emphasizes",
+      category: actionVerbs,
     },
   ];
 

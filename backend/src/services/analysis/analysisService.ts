@@ -179,7 +179,6 @@ export class ResumeAnalysisService {
       resume,
       jdText: input.parsedJD.rawText || "",
       jdKeywords: jdKeywords.all,
-      jdResponsibilities: [],
     });
 
     return {
@@ -665,8 +664,6 @@ export class ResumeAnalysisService {
         matchedResponsibilities: 0,
         totalResponsibilities: 0,
         matchPercentage: 50,
-        matchedActionVerbs: [],
-        missingActionVerbs: [],
       },
       gaps: [],
     };

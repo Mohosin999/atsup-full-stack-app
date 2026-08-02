@@ -614,12 +614,10 @@ export class ExperienceRelevanceCalculator extends ScoreCalculator {
     resume: any;
     jdText: string;
     jdKeywords: string[];
-    jdResponsibilities: string[];
   }): ScoreComponent {
-    const { resume, jdText, jdKeywords, jdResponsibilities } = data;
+    const { resume, jdText, jdKeywords } = data;
     const factors: ScoringFactor[] = [];
 
-    const jdLower = jdText.toLowerCase();
     const experience = resume.experience || [];
 
     console.log("[ExperienceRelevance] Experience array:", experience);
@@ -653,11 +651,11 @@ export class ExperienceRelevanceCalculator extends ScoreCalculator {
     factors.push({
       name: "Experience Keywords",
       score: this.normalizeScore(keywordMatchScore),
-      weight: 40,
+      weight: 55,
       description: `${totalKeywordMatches} keyword matches across ${experience.length} positions`,
     });
 
-    // Factor 2: Years of Experience (30% weight)
+    // Factor 2: Years of Experience (45% weight)
     const yearsExp = this.calculateYearsOfExperience(experience);
     const jdYears = this.extractJDYears(jdText);
 
@@ -674,48 +672,8 @@ export class ExperienceRelevanceCalculator extends ScoreCalculator {
     factors.push({
       name: "Experience Duration",
       score: this.normalizeScore(yearsScore),
-      weight: 30,
+      weight: 45,
       description: `${yearsExp} years experience${jdYears > 0 ? ` (JD requires ${jdYears}+)` : ""}`,
-    });
-
-    // Factor 3: Responsibility Match (30% weight)
-    const actionVerbs = [
-      "managed",
-      "led",
-      "developed",
-      "designed",
-      "implemented",
-      "created",
-      "built",
-      "optimized",
-      "improved",
-      "increased",
-    ];
-
-    const jdVerbs = actionVerbs.filter((v) => jdLower.includes(v));
-    const resumeVerbs = actionVerbs.filter((v) =>
-      experience.some((exp: any) =>
-        (exp.highlights || []).join(" ").toLowerCase().includes(v),
-      ),
-    );
-
-    const responsibilityScore =
-      experience.length === 0
-        ? 0
-        : jdVerbs.length > 0
-          ? (resumeVerbs.filter((v) => jdVerbs.includes(v)).length /
-              jdVerbs.length) *
-            100
-          : resumeVerbs.length > 0
-            ? 80
-            : 50;
-
-    factors.push({
-      name: "Responsibility Alignment",
-      score: this.normalizeScore(responsibilityScore),
-      weight: 30,
-      description: `${resumeVerbs.filter((v) => jdVerbs.includes(v)).length}/${jdVerbs.length} action verbs matched`,
-      evidence: resumeVerbs,
     });
 
     // Calculate total score
@@ -734,7 +692,7 @@ export class ExperienceRelevanceCalculator extends ScoreCalculator {
       this.config.weights.experienceRelevance,
       experience.length === 0
         ? "No work experience provided"
-        : `${yearsExp} years | ${totalKeywordMatches} keyword matches | ${resumeVerbs.filter((v) => jdVerbs.includes(v)).length}/${jdVerbs.length} responsibilities`,
+        : `${yearsExp} years | ${totalKeywordMatches} keyword matches`,
       factors,
     );
   }

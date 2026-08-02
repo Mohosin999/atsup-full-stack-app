@@ -276,8 +276,13 @@ export default function AtsScorePage() {
                       {structuredJD.hardSkills.length} hard skills
                     </span>
                     <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                      {structuredJD.keywords.length} keywords
+                      {structuredJD.softSkills.length} soft skills
                     </span>
+                    {structuredJD.actionVerbs?.length > 0 && (
+                      <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
+                        {structuredJD.actionVerbs.length} action verbs
+                      </span>
+                    )}
                     {structuredJD.experienceYearsRequired > 0 && (
                       <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
                         {structuredJD.experienceYearsRequired}+ yrs
@@ -393,6 +398,16 @@ export default function AtsScorePage() {
                   feedback={result.sectionScores.contactInfo.feedback}
                   hasContactInfo={
                     result.sectionScores.contactInfo.hasContactInfo
+                  }
+                />
+                <SectionScoreCard
+                  sectionName="Measurable Results"
+                  score={
+                    result.sectionScores.measurableResults?.score ?? 0
+                  }
+                  feedback={
+                    result.sectionScores.measurableResults?.feedback ??
+                    "No measurable result data available."
                   }
                 />
               </div>

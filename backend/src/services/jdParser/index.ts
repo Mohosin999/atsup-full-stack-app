@@ -1,11 +1,10 @@
 import {
   extractKeywords,
-  matchActionVerbs,
   matchSkillList,
+  matchActionVerbs,
 } from "../analysis/keywordExtractor";
 import {
   SOFT_SKILLS,
-  ACTION_VERBS,
   KEYWORDS,
   type SkillList,
 } from "../analysis/skillDefinitions";
@@ -16,7 +15,6 @@ export interface StructuredJD {
   location: string;
   hardSkills: string[];
   softSkills: string[];
-  keywords: string[];
   actionVerbs: string[];
   // Combined degree + field in one string, e.g. "Science|Bachelor of Science (BS)"
   educationRequirement: string | null;
@@ -81,25 +79,19 @@ export const parseJobDescriptionToStructured = (
 
   const { hardSkills, softSkills } = extractHardSoftSkills(text);
 
-  const actionVerbs = extractActionVerbs(textLower);
-
   const keywords = extractKeywordsList(textLower, hardSkills, softSkills);
 
   return {
     jobTitle: detectJobTitle(lines),
     company: detectCompany(text),
     location: detectLocation(text),
-    hardSkills,
+    hardSkills: [...new Set([...hardSkills, ...keywords])],
     softSkills,
-    keywords,
-    actionVerbs,
+    actionVerbs: matchActionVerbs(text),
     educationRequirement: detectEducation(text),
     experienceYearsRequired: detectYears(textLower),
   };
 };
-
-const extractActionVerbs = (textLower: string): string[] =>
-  matchActionVerbs(textLower, ACTION_VERBS);
 
 export const extractKeywordsFromText = (
   text: string,

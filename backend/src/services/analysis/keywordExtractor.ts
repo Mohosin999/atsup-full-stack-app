@@ -1,7 +1,6 @@
 export interface ExtractedKeywords {
   technical: KeywordGroup;
   soft: KeywordGroup;
-  action: KeywordGroup;
   industry: KeywordGroup;
   all: string[];
 }
@@ -22,7 +21,7 @@ import {
 
 /**
  * Backward-compatible taxonomy combining technical and soft skills.
- * Prefer importing SKILLS / SOFT_SKILLS / ACTION_VERBS / KEYWORDS
+ * Prefer importing SKILLS / SOFT_SKILLS / KEYWORDS
  * from skillDefinitions directly.
  */
 export const SKILL_TAXONOMY = { ...SKILLS, softSkills: SOFT_SKILLS };
@@ -38,7 +37,6 @@ export function extractKeywords(text: string): ExtractedKeywords {
   const result: ExtractedKeywords = {
     technical: { keywords: [], categories: {}, frequency: {} },
     soft: { keywords: [], categories: {}, frequency: {} },
-    action: { keywords: [], categories: {}, frequency: {} },
     industry: { keywords: [], categories: {}, frequency: {} },
     all: [],
   };
@@ -69,16 +67,6 @@ export function extractKeywords(text: string): ExtractedKeywords {
     });
   }
 
-  // Extract action verbs
-  const matchedVerbs = matchActionVerbs(textLower, ACTION_VERBS);
-
-  if (matchedVerbs.length > 0) {
-    result.action.keywords = matchedVerbs;
-    matchedVerbs.forEach((verb) => {
-      result.action.frequency[verb] = countOccurrences(textLower, verb);
-    });
-  }
-
   // Extract industry keywords
   Object.entries(KEYWORDS).forEach(([domain, terms]) => {
     const matchedSkills = matchSkills(textLower, terms);
@@ -100,7 +88,6 @@ export function extractKeywords(text: string): ExtractedKeywords {
   result.all = [
     ...result.technical.keywords,
     ...result.soft.keywords,
-    ...result.action.keywords,
     ...result.industry.keywords,
   ];
 
@@ -164,7 +151,6 @@ export function parseJobDescription(jdText: string): {
   requiredSkills: string[];
   preferredSkills: string[];
   keywords: string[];
-  actionVerbs: string[];
   experienceYears: number;
 } {
   const keywords = extractKeywords(jdText);
@@ -224,7 +210,6 @@ export function parseJobDescription(jdText: string): {
     requiredSkills: [...new Set(requiredSkills)],
     preferredSkills: [...new Set(preferredSkills)],
     keywords: keywords.all,
-    actionVerbs: keywords.action.keywords,
     experienceYears,
   };
 }
@@ -275,18 +260,6 @@ export function matchSkillList(textLower: string, list: SkillList): string[] {
 }
 
 /**
- * Return all action verbs from `verbs` that appear in the text, allowing
- * inflected forms (ed/ing/es/s).
- */
-export function matchActionVerbs(textLower: string, verbs: string[]): string[] {
-  return verbs.filter((verb) => {
-    const escaped = escapeRegex(verb);
-    const regex = new RegExp(`\\b${escaped}(?:ed|ing|es|s)?\\b`, "i");
-    return regex.test(textLower);
-  });
-}
-
-/**
  * Find the canonical name + all aliases for a skill across SKILLS,
  * SOFT_SKILLS and KEYWORDS. Falls back to `[canonical]` if unknown.
  */
@@ -316,6 +289,93 @@ export function getSkillVariants(canonical: string): string[] {
 }
 
 /**
+ * Generate inflected forms for a base action verb so that "develop"
+ * also matches "develops", "developed", "developing"; verbs ending in
+ * "e" also match "optimized" / "creating" (drop the trailing "e").
+ */
+const actionVerbInflections = (base: string): string[] => {
+  const forms = new Set<string>([base]);
+
+  const addWordBoundaryCandidates = (candidates: string[]) => {
+    candidates.forEach((c) => forms.add(c));
+  };
+
+  addWordBoundaryCandidates([`${base}s`, `${base}es`]);
+
+  if (base.endsWith("e")) {
+    const stem = base.slice(0, -1);
+    addWordBoundaryCandidates([
+      `${base}d`,
+      `${base}ing`,
+      `${stem}ing`,
+    ]);
+  } else {
+    addWordBoundaryCandidates([`${base}ed`, `${base}ing`]);
+  }
+
+  return Array.from(forms);
+};
+
+const isWholeWord = (text: string, word: string): boolean => {
+  const escaped = escapeRegex(word);
+  return new RegExp(`(?<![\\w-])${escaped}(?![\\w-])`, "i").test(text);
+};
+
+/**
+ * Return canonical names of all action verbs present in the text.
+ * Base forms also match their inflected forms (ed/d/ing/es/s with
+ * trailing-e handling); aliases (irregular / spelling-change forms)
+ * match as whole words.
+ */
+export function matchActionVerbs(text: string): string[] {
+  if (!text || !text.trim()) return [];
+  const matched: string[] = [];
+
+  ACTION_VERBS.forEach((entry) => {
+    const normalized = normalizeSkillEntry(entry);
+    const isMatch =
+      actionVerbInflections(normalized.name).some((form) =>
+        isWholeWord(text, form),
+      ) ||
+      normalized.aliases.some((alias) => isWholeWord(text, alias));
+    if (isMatch) matched.push(normalized.name);
+  });
+
+  return matched;
+}
+
+/**
+ * Count how many times an action verb (base form + inflections + aliases)
+ * appears in the text.
+ */
+export function countActionVerbInText(text: string, canonical: string): number {
+  if (!text || !text.trim()) return 0;
+
+  const entry = ACTION_VERBS.find((e) =>
+    typeof e === "string" ? e === canonical : e[0] === canonical,
+  );
+  if (!entry) return 0;
+
+  const normalized = normalizeSkillEntry(entry);
+  const textLower = text.toLowerCase();
+
+  const forms = actionVerbInflections(normalized.name).map((f) => f.toLowerCase());
+  const aliases = normalized.aliases.map((a) => a.toLowerCase());
+
+  const countIn = (word: string): number =>
+    (
+      textLower.match(
+        new RegExp(`(?<![\\w.-])${escapeRegex(word)}(?![\\w-])`, "gi"),
+      ) || []
+    ).length;
+
+  return [...new Set([...forms, ...aliases])].reduce(
+    (total, word) => total + countIn(word),
+    0,
+  );
+}
+
+/**
  * Count occurrences of the given variants (canonical first, then aliases)
  * in the text, using the same boundary rules as matching.
  */
@@ -337,17 +397,6 @@ export function countVariantsInText(text: string, variants: string[]): number {
  */
 export function countSkillInText(text: string, canonical: string): number {
   return countVariantsInText(text, getSkillVariants(canonical));
-}
-
-/**
- * Count how many times an action verb (including inflections) appears in text.
- */
-export function countActionVerbInText(text: string, verb: string): number {
-  const escaped = escapeRegex(verb);
-  const matches = text
-    .toLowerCase()
-    .match(new RegExp(`\\b${escaped}(?:ed|ing|es|s)?\\b`, "gi"));
-  return matches ? matches.length : 0;
 }
 
 function variantRegex(variant: string, isAlias: boolean): RegExp {
@@ -375,11 +424,4 @@ function countSkillOccurrences(textLower: string, entry: SkillEntry): number {
 
 function escapeRegex(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function countOccurrences(text: string, substring: string): number {
-  const escaped = escapeRegex(substring);
-  const regex = new RegExp(escaped, "gi");
-  const matches = text.match(regex);
-  return matches ? matches.length : 0;
 }

@@ -4,7 +4,7 @@ import { JWTPayload } from "../types";
 
 export const generateAccessToken = (payload: JWTPayload): string => {
   return jwt.sign(payload, env.jwtSecret, {
-    expiresIn: "15m",
+    expiresIn: "7d",
   });
 };
 

@@ -568,7 +568,7 @@ function generateATSSuggestions(result: any, atsBreakdown: any): string[] {
 
   if (!result.sectionAnalysis?.experience?.present) {
     suggestions.push(
-      "Add work experience with detailed descriptions using action verbs",
+      "Add work experience with detailed descriptions of your responsibilities and achievements",
     );
   }
 
@@ -624,13 +624,6 @@ function generateJobMatchSuggestions(result: any): string[] {
   if (result.scoreBreakdown?.jobMatch?.experienceAlignment?.score < 60) {
     suggestions.push(
       "Emphasize relevant experience that matches the job requirements",
-    );
-  }
-
-  // Responsibility match
-  if (result.scoreBreakdown?.jobMatch?.responsibilityMatch?.score < 60) {
-    suggestions.push(
-      "Use similar action verbs and responsibility language from the job description",
     );
   }
 

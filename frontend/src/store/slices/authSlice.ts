@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../api/api';
 import { User } from '../../types';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
@@ -35,7 +35,7 @@ export const tokenRefresh = createAsyncThunk<void, void, { rejectValue: string }
   'auth/refreshToken',
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post(`${API_URL}/auth/refresh`, {}, { withCredentials: true });
+      await api.post('/auth/refresh');
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to refresh token');
     }
@@ -46,9 +46,7 @@ export const fetchUser = createAsyncThunk<User | null, void, { rejectValue: stri
   'auth/fetchUser',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/auth/me`, {
-        withCredentials: true,
-      });
+      const response = await api.get('/auth/me');
       const user = response.data.data;
       localStorage.setItem('user', JSON.stringify(user));
       return user;
@@ -63,7 +61,7 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+      await api.post('/auth/logout');
     } catch (error: any) {
       console.error('Logout error:', error);
       return rejectWithValue(error.response?.data?.message || 'Failed to logout');

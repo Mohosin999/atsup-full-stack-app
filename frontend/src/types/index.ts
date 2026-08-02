@@ -294,6 +294,48 @@ export interface MatchCategoryResult {
   items: MatchItemResult[];
 }
 
+// 5-category ATS scoring (Searchability 30% / Hard Skills 35% / Soft Skills
+// 15% / Recruiter Tips 10% / Formatting 10%)
+export type CheckStatus = "passed" | "partial" | "failed" | "na";
+
+export interface CategoryCheck {
+  label: string;
+  status: CheckStatus;
+  detail: string;
+  weight: number;
+}
+
+export interface CategorySubgroup {
+  key: string;
+  title: string;
+  score: number;
+  weight: number;
+  summary: string;
+  checks: CategoryCheck[];
+}
+
+export interface CategoryResult {
+  key: string;
+  title: string;
+  score: number;
+  weight: number;
+  summary: string;
+  checks: CategoryCheck[];
+  strengths: string[];
+  improvements: string[];
+  subgroups?: CategorySubgroup[];
+  matched?: string[];
+  missing?: string[];
+}
+
+export interface CategoriesResult {
+  searchability: CategoryResult;
+  hardSkills: CategoryResult;
+  softSkills: CategoryResult;
+  recruiterTips: CategoryResult;
+  formatting: CategoryResult;
+}
+
 // ATS Score History Types
 export interface AtsScoreHistory {
   _id: string;
@@ -318,6 +360,7 @@ export interface AtsScoreHistory {
       softSkills: MatchCategoryResult;
       actionVerbs: MatchCategoryResult;
     };
+    categories?: CategoriesResult;
   };
   spellingGrammar: {
     score: number;

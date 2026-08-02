@@ -331,7 +331,9 @@ export function matchActionVerbs(text: string): string[] {
   if (!text || !text.trim()) return [];
   const matched: string[] = [];
 
-  ACTION_VERBS.forEach((entry) => {
+  const allActionVerbs: SkillList = Object.values(ACTION_VERBS).flat();
+
+  allActionVerbs.forEach((entry) => {
     const normalized = normalizeSkillEntry(entry);
     const isMatch =
       actionVerbInflections(normalized.name).some((form) =>
@@ -351,9 +353,11 @@ export function matchActionVerbs(text: string): string[] {
 export function countActionVerbInText(text: string, canonical: string): number {
   if (!text || !text.trim()) return 0;
 
-  const entry = ACTION_VERBS.find((e) =>
-    typeof e === "string" ? e === canonical : e[0] === canonical,
-  );
+  const entry = Object.values(ACTION_VERBS)
+    .flat()
+    .find((e) =>
+      typeof e === "string" ? e === canonical : e[0] === canonical,
+    );
   if (!entry) return 0;
 
   const normalized = normalizeSkillEntry(entry);

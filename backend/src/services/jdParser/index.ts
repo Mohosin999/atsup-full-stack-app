@@ -118,23 +118,47 @@ const extractKeywordsList = (
     .slice(0, 25);
 };
 
+const stripTitlePrefix = (s: string): string =>
+  s
+    .replace(
+      /^(?:job\s*)?(?:title|position|role|designation|post(?:ing|ed)?|vacancy|opening|apply(?:ing)?\s*(?:for|as)?|hiring(?:ing)?\s*(?:for|as)?)(?:\s*[::\-–—]\s*)?/i,
+      "",
+    )
+    .trim();
+
 const detectJobTitle = (lines: string[]): string => {
-  for (const line of lines.slice(0, 5)) {
-    if (
-      line.length <= 80 &&
-      TITLE_KEYWORDS.test(line) &&
-      !/^(about|responsibilit|requirement|qualification|benefit|company|location|salary|role|overview|summary|description)/i.test(
-        line,
-      )
-    ) {
-      return line
-      .split(/[|•]/)[0]
-      .trim()
-      .replace(/\s+at\s+[A-Z][A-Za-z0-9&.' -]*$/i, "")
-      .trim();
+  for (const line of lines) {
+    // 1. Explicit label: Job Title: X  /  Position: X  /  Role: X
+    const m = line.match(
+      /^(?:job\s*)?(?:title|position|role)\s*[::\-–—]\s*(.+)$/i,
+    );
+    if (m && m[1]) {
+      const t = stripTitlePrefix(m[1])
+        .split(/[|•]/)[0]
+        .trim()
+        .replace(/^\s*(?:a|an|the)\s+/i, "")
+        .replace(/\s+at\s+[A-Z][A-Za-z0-9&.' -]*$/i, "")
+        .trim();
+      if (t) return t.slice(0, 100);
+    }
+
+    // 2. Boilerplate phrase (no colon needed):
+    //    we are looking for X  /  we're looking for X  /  we're seeking X
+    //    we're hiring X  /  we are hiring X
+    const p = line.match(
+      /\b(?:we are looking for|we're looking for|we're seeking|we're hiring|we are hiring)\s+(.+?)(?:[.;]|\s+responsibilit|\s+requirement|$)/i,
+    );
+    if (p && p[1]) {
+      const t = stripTitlePrefix(p[1])
+        .split(/[|•]/)[0]
+        .trim()
+        .replace(/^\s*(?:a|an|the)\s+/i, "")
+        .replace(/\s+at\s+[A-Z][A-Za-z0-9&.' -]*$/i, "")
+        .trim();
+      if (t) return t.slice(0, 100);
     }
   }
-  return lines[0] ? lines[0].slice(0, 100) : "";
+  return "";
 };
 
 const detectCompany = (text: string): string => {

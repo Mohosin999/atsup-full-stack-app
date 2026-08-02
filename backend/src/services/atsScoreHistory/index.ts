@@ -32,6 +32,7 @@ export const createAtsScoreHistory = async (
       sectionScores: {
         ...analysis.sectionScores,
         ...(analysis.matchBreakdown ? { matchBreakdown: analysis.matchBreakdown } : {}),
+        categories: analysis.categories,
       } as any,
       spellingGrammar: analysis.spellingGrammar as any,
       atsFriendliness: analysis.atsFriendliness,

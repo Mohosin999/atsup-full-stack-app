@@ -12,6 +12,8 @@ import SectionScoreCard from "../components/SectionScoreCard";
 import SuggestionList from "../components/SuggestionList";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import JobMatchBreakdown from "../components/JobMatchBreakdown";
+import CategoryChecklist from "../components/ats-result/CategoryChecklist";
+import FeedbackCard from "../components/ats-result/FeedbackCard";
 import { AtsScoreHistory, ResumeContent } from "../types";
 
 type Step = "upload" | "jobDescription";
@@ -319,153 +321,298 @@ export default function AtsScorePage() {
           </div>
         ) : (
           <div className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
-            >
-              <div className="md:col-span-1">
-                <ScoreCard
-                  score={result.overallScore}
-                  label="Overall ATS Score"
-                  size="lg"
-                  showProgress
-                />
-              </div>
-              <div className="md:col-span-2 bg-gray-800 rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-white mb-4">
-                  Summary
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-white">
+                  {result.resumeName}
                 </h2>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-gray-700/50 rounded-lg p-4">
-                    <p className="text-gray-400 text-sm mb-1">
-                      ATS Friendliness
-                    </p>
-                    <p className="text-2xl font-bold text-white">
-                      {result.atsFriendliness}%
-                    </p>
-                  </div>
-                  <div className="bg-gray-700/50 rounded-lg p-4">
-                    <p className="text-gray-400 text-sm mb-1">
-                      Spelling & Grammar
-                    </p>
-                    <p className="text-2xl font-bold text-white">
-                      {result.spellingGrammar.score}%
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={handleReset}
-                  className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors"
-                >
-                  Analyze Another Resume
-                </button>
+                <p className="text-sm text-gray-400">
+                  Analyzed {new Date(result.createdAt).toLocaleDateString()} · ATS
+                  compatibility report
+                </p>
               </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <h2 className="text-xl font-semibold text-white mb-4">
-                Section Breakdown
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <SectionScoreCard
-                  sectionName="Summary"
-                  score={result.sectionScores.summary.score}
-                  feedback={result.sectionScores.summary.feedback}
-                />
-                <SectionScoreCard
-                  sectionName="Experience"
-                  score={result.sectionScores.experience.score}
-                  feedback={result.sectionScores.experience.feedback}
-                />
-                <SectionScoreCard
-                  sectionName="Projects"
-                  score={result.sectionScores.projects.score}
-                  feedback={result.sectionScores.projects.feedback}
-                />
-                <SectionScoreCard
-                  sectionName="Skills"
-                  score={result.sectionScores.skills.score}
-                  feedback={result.sectionScores.skills.feedback}
-                />
-                <SectionScoreCard
-                  sectionName="Contact Info"
-                  score={result.sectionScores.contactInfo.score}
-                  feedback={result.sectionScores.contactInfo.feedback}
-                  hasContactInfo={
-                    result.sectionScores.contactInfo.hasContactInfo
-                  }
-                />
-                <SectionScoreCard
-                  sectionName="Measurable Results"
-                  score={
-                    result.sectionScores.measurableResults?.score ?? 0
-                  }
-                  feedback={
-                    result.sectionScores.measurableResults?.feedback ??
-                    "No measurable result data available."
-                  }
-                />
-              </div>
-            </motion.div>
-
-            {result.sectionScores.matchBreakdown && (
-              <JobMatchBreakdown
-                matchBreakdown={result.sectionScores.matchBreakdown}
-              />
-            )}
-
-            {result.spellingGrammar.errors.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+              <button
+                onClick={handleReset}
+                className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors"
               >
-                <h2 className="text-xl font-semibold text-white mb-4">
-                  Spelling & Grammar Errors
-                </h2>
-                <div className="bg-gray-800 rounded-lg p-6">
-                  <div className="space-y-3">
-                    {result.spellingGrammar.errors.map((error, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-red-900/20 border border-red-500/30 rounded-lg p-4"
-                      >
-                        <div className="flex items-start gap-3">
-                          <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
-                          <div>
-                            <p className="text-red-400 font-medium">
-                              {error.message}
-                            </p>
-                            <p className="text-sm text-gray-400 mt-1">
-                              Suggestion: {error.suggestion}
-                            </p>
-                          </div>
+                Analyze Another Resume
+              </button>
+            </div>
+
+            {result.sectionScores.categories ? (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {/* LEFT: score circle + checklist of what was checked */}
+                <div className="lg:col-span-4">
+                  <CategoryChecklist
+                    overallScore={result.overallScore}
+                    categories={result.sectionScores.categories}
+                  />
+                </div>
+
+                {/* RIGHT: feedback cards column (wider) */}
+                <div className="lg:col-span-8 space-y-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4">
+                      <p className="text-gray-400 text-xs mb-1">
+                        ATS Friendliness
+                      </p>
+                      <p className="text-xl font-bold text-white">
+                        {result.atsFriendliness}%
+                      </p>
+                    </div>
+                    <div className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4">
+                      <p className="text-gray-400 text-xs mb-1">
+                        Spelling & Grammar
+                      </p>
+                      <p className="text-xl font-bold text-white">
+                        {result.spellingGrammar.score}%
+                      </p>
+                    </div>
+                    <div className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4">
+                      <p className="text-gray-400 text-xs mb-1">
+                        Measurable Results
+                      </p>
+                      <p className="text-xl font-bold text-white">
+                        {result.sectionScores.measurableResults.count} / 5+
+                      </p>
+                    </div>
+                    <div className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4">
+                      <p className="text-gray-400 text-xs mb-1">
+                        Action Verbs Used
+                      </p>
+                      <p className="text-xl font-bold text-white">
+                        {
+                          result.sectionScores.categories.recruiterTips.checks.find(
+                            (c) => c.label === "Action verbs",
+                          )?.status === "passed"
+                            ? "Good"
+                            : "Needs work"
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  {(
+                    [
+                      "searchability",
+                      "hardSkills",
+                      "softSkills",
+                      "recruiterTips",
+                      "formatting",
+                    ] as const
+                  ).map((key, idx) => (
+                    <FeedbackCard
+                      key={key}
+                      category={result.sectionScores.categories![key]}
+                      index={idx}
+                    />
+                  ))}
+
+                  {result.sectionScores.matchBreakdown && (
+                    <JobMatchBreakdown
+                      matchBreakdown={result.sectionScores.matchBreakdown}
+                    />
+                  )}
+
+                  {result.spellingGrammar.errors.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      <h2 className="text-xl font-semibold text-white mb-4">
+                        Spelling & Grammar Errors
+                      </h2>
+                      <div className="bg-gray-800 rounded-lg p-6">
+                        <div className="space-y-3">
+                          {result.spellingGrammar.errors.map((error, idx) => (
+                            <div
+                              key={idx}
+                              className="bg-red-900/20 border border-red-500/30 rounded-lg p-4"
+                            >
+                              <div className="flex items-start gap-3">
+                                <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
+                                <div>
+                                  <p className="text-red-400 font-medium">
+                                    {error.message}
+                                  </p>
+                                  <p className="text-sm text-gray-400 mt-1">
+                                    Suggestion: {error.suggestion}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            )}
+                    </motion.div>
+                  )}
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <h2 className="text-xl font-semibold text-white mb-4">
-                Improvement Suggestions
-              </h2>
-              <SuggestionList
-                suggestions={result.suggestions}
-                title="AI Suggestions"
-              />
-            </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <h2 className="text-xl font-semibold text-white mb-4">
+                      Improvement Suggestions
+                    </h2>
+                    <SuggestionList
+                      suggestions={result.suggestions}
+                      title="Suggested Improvements"
+                    />
+                  </motion.div>
+                </div>
+              </div>
+            ) : (
+              /* ---------- Legacy result layout (old analyses) ---------- */
+              <div className="space-y-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                >
+                  <div className="md:col-span-1">
+                    <ScoreCard
+                      score={result.overallScore}
+                      label="Overall ATS Score"
+                      size="lg"
+                      showProgress
+                    />
+                  </div>
+                  <div className="md:col-span-2 bg-gray-800 rounded-lg p-6">
+                    <h2 className="text-xl font-semibold text-white mb-4">
+                      Summary
+                    </h2>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="bg-gray-700/50 rounded-lg p-4">
+                        <p className="text-gray-400 text-sm mb-1">
+                          ATS Friendliness
+                        </p>
+                        <p className="text-2xl font-bold text-white">
+                          {result.atsFriendliness}%
+                        </p>
+                      </div>
+                      <div className="bg-gray-700/50 rounded-lg p-4">
+                        <p className="text-gray-400 text-sm mb-1">
+                          Spelling & Grammar
+                        </p>
+                        <p className="text-2xl font-bold text-white">
+                          {result.spellingGrammar.score}%
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleReset}
+                      className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors"
+                    >
+                      Analyze Another Resume
+                    </button>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <h2 className="text-xl font-semibold text-white mb-4">
+                    Section Breakdown
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <SectionScoreCard
+                      sectionName="Summary"
+                      score={result.sectionScores.summary.score}
+                      feedback={result.sectionScores.summary.feedback}
+                    />
+                    <SectionScoreCard
+                      sectionName="Experience"
+                      score={result.sectionScores.experience.score}
+                      feedback={result.sectionScores.experience.feedback}
+                    />
+                    <SectionScoreCard
+                      sectionName="Projects"
+                      score={result.sectionScores.projects.score}
+                      feedback={result.sectionScores.projects.feedback}
+                    />
+                    <SectionScoreCard
+                      sectionName="Skills"
+                      score={result.sectionScores.skills.score}
+                      feedback={result.sectionScores.skills.feedback}
+                    />
+                    <SectionScoreCard
+                      sectionName="Contact Info"
+                      score={result.sectionScores.contactInfo.score}
+                      feedback={result.sectionScores.contactInfo.feedback}
+                      hasContactInfo={
+                        result.sectionScores.contactInfo.hasContactInfo
+                      }
+                    />
+                    <SectionScoreCard
+                      sectionName="Measurable Results"
+                      score={
+                        result.sectionScores.measurableResults?.score ?? 0
+                      }
+                      feedback={
+                        result.sectionScores.measurableResults?.feedback ??
+                        "No measurable result data available."
+                      }
+                    />
+                  </div>
+                </motion.div>
+
+                {result.sectionScores.matchBreakdown && (
+                  <JobMatchBreakdown
+                    matchBreakdown={result.sectionScores.matchBreakdown}
+                  />
+                )}
+
+                {result.spellingGrammar.errors.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <h2 className="text-xl font-semibold text-white mb-4">
+                      Spelling & Grammar Errors
+                    </h2>
+                    <div className="bg-gray-800 rounded-lg p-6">
+                      <div className="space-y-3">
+                        {result.spellingGrammar.errors.map((error, idx) => (
+                          <div
+                            key={idx}
+                            className="bg-red-900/20 border border-red-500/30 rounded-lg p-4"
+                          >
+                            <div className="flex items-start gap-3">
+                              <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
+                              <div>
+                                <p className="text-red-400 font-medium">
+                                  {error.message}
+                                </p>
+                                <p className="text-sm text-gray-400 mt-1">
+                                  Suggestion: {error.suggestion}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <h2 className="text-xl font-semibold text-white mb-4">
+                    Improvement Suggestions
+                  </h2>
+                  <SuggestionList
+                    suggestions={result.suggestions}
+                    title="Suggested Improvements"
+                  />
+                </motion.div>
+              </div>
+            )}
           </div>
         )}
       </div>

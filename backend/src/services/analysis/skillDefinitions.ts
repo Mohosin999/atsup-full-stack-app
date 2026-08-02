@@ -16,62 +16,62 @@ export const MEASURABLE_RESULTS: MeasurableResultPattern[] = [
   {
     label: "performance boost",
     // উদাহরণ: "improved application load time by 40%", "boosted api response speed by 2x", "reduced page render time from 3.2s to 800ms"
-    pattern: String.raw`\b(?:improved|grew|boosted|optimized|optimizing|speeded up|accelerated|increased|increasing|enhanced|enhancing|upgraded|reduced|reducing)\s+[\w\s-]{1,40}?\s*(?:performance|speed|load time|response time|throughput|latency|rendering|efficiency|query time|build time)\s+(?:by|to|of|from)?\s*(?:\d+(?:\.\d+)?\s?%|\d+(?:\.\d+)?\s?x|\d+(?:\.\d+)?\s?(?:ms|s|sec|seconds))\b`,
+    pattern: String.raw`\b(?:improved|grew|boosted|optimized|optimizing|speeded up|accelerated|increased|increasing|enhanced|enhancing|upgraded|reduced|reducing)\s+[\w\s-]{0,40}?\s*(?:performance|speed|load time|response time|throughput|latency|rendering|efficiency|query time|build time)\s+(?:by|to|of|from)?\s*(?:\d+(?:\.\d+)?\s?%|\d+(?:\.\d+)?\s?x|\d+(?:\.\d+)?\s?(?:ms|s|sec|seconds))(?!\w)`,
   },
   {
     label: "cost reduction",
     // উদাহরণ: "reduced cloud infrastructure cost by 30%", "cut aws billing by $5k", "saved $12k/year by migrating to serverless"
-    pattern: String.raw`\b(?:reduced|reducing|cut|cutting|saved|saving|lowered|lowering|decreased|decreasing|minimized|slashed)\s+[\w\s-]{1,40}?\s*(?:cost|costs|expense|expenses|billing|spend|budget|infrastructure cost|cloud spend|aws|server cost)\s+(?:by|to|of)?\s*(?:\d+(?:\.\d+)?\s?%|(?:\$|usd)\s?\d[\d,]*(?:\.\d+)?(?:[kmbt])?)\b`,
+    pattern: String.raw`\b(?:reduced|reducing|cut|cutting|saved|saving|lowered|lowering|decreased|decreasing|minimized|slashed)\s+[\w\s-]{0,40}?\s*(?:cost|costs|expense|expenses|billing|spend|budget|infrastructure cost|cloud spend|aws|server cost)\s+(?:by|to|of)?\s*(?:\d+(?:\.\d+)?\s?%|(?:\$|usd)\s?\d[\d,]*(?:\.\d+)?(?:[kmbt])?)(?!\w)`,
   },
   {
     label: "time saved development",
     // উদাহরণ: "saved 15 hours per week by automating deployments", "reduced build time by 50%", "cut release cycle from 2 weeks to 3 days"
-    pattern: String.raw`\b(?:saved|saving|reduced|reducing|cut|cutting)\s+(?:about|around|up to\s+)?\d+(?:\.\d+)?\s*(?:hr|hrs|hour|hours|day|days|wk|wks|week|weeks|%)\s+[\w\s-]{1,30}?\s*(?:by|per|in)?\s*(?:automating|automation|ci/cd|pipeline|development|build time|testing|deployment|release cycle|onboarding)\b`,
+    pattern: String.raw`\b(?:saved|saving|reduced|reducing|cut|cutting)\s+(?:about|around|up to\s+)?\d+(?:\.\d+)?\s*(?:hr|hrs|hour|hours|day|days|wk|wks|week|weeks|%)\s+[\w\s-]{0,30}?\s*(?:by|per|in)?\s*(?:automating|automation|ci/cd|pipeline|development|build time|testing|deployment|release cycle|onboarding)(?!\w)`,
   },
   {
     label: "scale and traffic handle",
     // উদাহরণ: "scaled system to handle 10m daily active users", "managed architecture supporting 50k requests per second", "processed 1B+ transactions per month"
-    pattern: String.raw`\b(?:scaled|scaling|handled|handling|supported|supporting|managed|managing|processed|processing)\s+[\w\s-]{1,20}?\s*(?:to|up to)?\s*\d[\d,]*(?:\.\d+)?\s*(?:k|m|b|k/s|m/s)?\s*(?:users|dau|mau|requests|req/sec|rps|queries|qps|transactions|api calls|concurrent users|visitors|traffic|data)\b`,
+    pattern: String.raw`\b(?:scaled|scaling|handled|handling|supported|supporting|managed|managing|processed|processing)\s+[\w\s-]{0,20}?\s*(?:to|up to)?\s*\d[\d,]*(?:\.\d+)?\s*(?:k|m|b|k/s|m/s)?\s*(?:users|dau|mau|requests|req/sec|rps|queries|qps|transactions|api calls|concurrent users|visitors|traffic|data)(?!\w)`,
   },
   {
     label: "code quality and bugs",
     // উদাহরণ: "reduced production bugs by 45%", "decreased critical incidents by 70%", "cut average bug resolution time from 4 days to 8 hours"
-    pattern: String.raw`\b(?:reduced|reducing|decreased|dropped|cut|cutting|lowered)\s+[\w\s-]{1,30}?\s*(?:bugs|errors|crashes|incidents|tickets|downtime|issues|crash rate|resolution time)\s+(?:by|to|of|from)?\s*\d+(?:\.\d+)?\s?%\b`,
+    pattern: String.raw`\b(?:reduced|reducing|decreased|dropped|cut|cutting|lowered)\s+[\w\s-]{0,30}?\s*(?:bugs|errors|crashes|incidents|tickets|downtime|issues|crash rate|resolution time)\s+(?:by|to|of|from)?\s*\d+(?:\.\d+)?\s?%(?!\w)`,
   },
   {
     label: "test coverage increase",
     // উদাহরণ: "increased unit test coverage from 60% to 85%", "raised integration test coverage to 90%"
-    pattern: String.raw`\b(?:increased|increasing|raised|raising|improved|improving)\s+[\w\s-]{1,30}?\s*(?:test coverage|code coverage|unit test coverage|integration test coverage|e2e coverage)\s+(?:by|to|from|of)?\s*\d+(?:\.\d+)?\s?%\b`,
+    pattern: String.raw`\b(?:increased|increasing|raised|raising|improved|improving)\s+[\w\s-]{0,30}?\s*(?:test coverage|code coverage|unit test coverage|integration test coverage|e2e coverage)\s+(?:by|to|from|of)?\s*\d+(?:\.\d+)?\s?%(?!\w)`,
   },
   {
     label: "system uptime availability",
     // উদাহরণ: "maintained 99.99% system uptime", "ensured 99.9% api availability", "achieved zero downtime deployments for 12 months"
-    pattern: String.raw`\b(?:maintained|maintaining|ensured|ensuring|achieved|achieving|guaranteed)\s+\d+(?:\.\d+)?\s?%\s+[\w\s-]{1,20}?\s*(?:uptime|availability|sla)\b`,
+    pattern: String.raw`\b(?:maintained|maintaining|ensured|ensuring|achieved|achieving|guaranteed)\s+\d+(?:\.\d+)?\s?%\s+[\w\s-]{0,20}?\s*(?:uptime|availability|sla)(?!\w)`,
   },
   {
     label: "team productivity",
     // উদাহরণ: "boosted team delivery speed by 25%", "increased sprint completion rate from 70% to 95%", "onboarded 5 new engineers"
-    pattern: String.raw`\b(?:boosted|increased|improved|accelerated)\s+[\w\s-]{1,30}?\s*(?:delivery|productivity|velocity|output|efficiency|sprint completion)\s+(?:by|to|of|from)?\s*\d+(?:\.\d+)?\s?%\b`,
+    pattern: String.raw`\b(?:boosted|increased|improved|accelerated)\s+[\w\s-]{0,30}?\s*(?:delivery|productivity|velocity|output|efficiency|sprint completion)\s+(?:by|to|of|from)?\s*\d+(?:\.\d+)?\s?%(?!\w)`,
   },
   {
     label: "reliability and mttr",
     // উদাহরণ: "reduced mean time to recovery from 45 min to 8 min", "improved mttr by 80%"
-    pattern: String.raw`\b(?:reduced|reducing|improved|improving|decreased|cut)\s+[\w\s-]{1,30}?\s*(?:mttr|mean time to recovery|mean time to resolve|incident recovery time)\s+(?:by|to|of|from)?\s*(?:\d+(?:\.\d+)?\s?%|\d+(?:\.\d+)?\s*(?:min|mins|minutes|hr|hrs|hours))\b`,
+    pattern: String.raw`\b(?:reduced|reducing|improved|improving|decreased|cut)\s+[\w\s-]{0,30}?\s*(?:mttr|mean time to recovery|mean time to resolve|incident recovery time)\s+(?:by|to|of|from)?\s*(?:\d+(?:\.\d+)?\s?%|\d+(?:\.\d+)?\s*(?:min|mins|minutes|hr|hrs|hours))(?!\w)`,
   },
   {
     label: "migration modernization",
     // উদাহরণ: "migrated legacy monolith to microservices resulting in 40% faster feature delivery", "refactored codebase reducing technical debt by 30%"
-    pattern: String.raw`\b(?:migrated|migrating|refactored|refactoring|modernized|modernizing)\s+[\w\s-]{1,40}?\s*(?:to|into)?\s*[\w\s-]{1,30}?\s*(?:resulting in|leading to|achieving)?\s*(?:\d+(?:\.\d+)?\s?%|\d+(?:\.\d+)?\s?x)\s*(?:faster|improvement|reduction)?\b`,
+    pattern: String.raw`\b(?:migrated|migrating|refactored|refactoring|modernized|modernizing)\s+[\w\s-]{0,40}?\s*(?:to|into)?\s*[\w\s-]{0,30}?\s*(?:resulting in|leading to|achieving)?\s*(?:\d+(?:\.\d+)?\s?%|\d+(?:\.\d+)?\s?x)\s*(?:faster|improvement|reduction)?(?!\w)`,
   },
   {
     label: "security improvement",
     // উদাহরণ: "reduced critical security vulnerabilities by 100%", "implemented scanning that caught 15+ high-severity issues"
-    pattern: String.raw`\b(?:reduced|reducing|eliminated|fixed|resolved)\s+[\w\s-]{1,30}?\s*(?:security vulnerabilities|critical vulnerabilities|high-severity issues|security issues)\s+(?:by|to|of)?\s*\d+(?:\.\d+)?\s?%\b`,
+    pattern: String.raw`\b(?:reduced|reducing|eliminated|fixed|resolved)\s+[\w\s-]{0,30}?\s*(?:security vulnerabilities|critical vulnerabilities|high-severity issues|security issues)\s+(?:by|to|of)?\s*\d+(?:\.\d+)?\s?%(?!\w)`,
   },
   {
     label: "business user impact",
     // উদাহরণ: "improved conversion rate by 18%", "increased user retention by 12%", "enabled new revenue stream generating $25k/month"
-    pattern: String.raw`\b(?:improved|increased|boosted|grew|enhanced)\s+[\w\s-]{1,30}?\s*(?:conversion rate|user retention|revenue|signups|engagement)\s+(?:by|to|of)?\s*(?:\d+(?:\.\d+)?\s?%|(?:\$|usd)\s?\d[\d,]*(?:\.\d+)?(?:[kmbt])?)\b`,
+    pattern: String.raw`\b(?:improved|increased|boosted|grew|enhanced)\s+[\w\s-]{0,30}?\s*(?:conversion rate|sales|user retention|revenue|signups|engagement)\s+(?:by|to|of)?\s*(?:\d+(?:\.\d+)?\s?%|(?:\$|usd)\s?\d[\d,]*(?:\.\d+)?(?:[kmbt])?)(?!\w)`,
   },
 ];
 

@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { env } from "../../config/env";
 import { ResumeContent } from "../../types";
 
@@ -125,7 +125,7 @@ RESEARCH THE FOLLOWING DETAILS:
 1. Personal info (full name, job title, contact: address, email, phone, LinkedIn link, portfolio link, GitHub link)
 2. Professional summary
 3. Work experience (role, company, location, startDate, endDate, responsibilities as bullet points)
-4. Education (degree, field of study, education level, startDate, endDate)
+4. Education (degree, field of study, education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's"), startDate, endDate)
 5. Skills:
    - hardSkills: ONLY keywords (technologies, programming languages, tools, frameworks) - just the keyword names
    - softSkills: ONLY soft skills (communication, leadership, teamwork, etc.) - keep them separate from hard skills
@@ -145,9 +145,9 @@ RESEARCH THE FOLLOWING DETAILS:
     - hasImages: true if images/photos are present
     - hasIcons: true if icons/graphics are present
     - hasMultiColumn: true if the resume uses a multi-column layout
-17. fontCheck: analyze the given PDF very carefully and answer the following questions correctly:
+17. fontCheck: analyze the given PDF very carefully and answer the following questions correctly. I must need these answer correctly:
     - isStandardFont: true if a standard/ATS-friendly font is used (Arial, Calibri, Times New Roman, Helvetica, Georgia, Verdana, etc.)
-    - fontName: the primary font name
+    - fontName: the primary font name of resume text.
     - isReadableSize: true if the font size is readable (typically 10-12pt body text)
 
 STRICT RULES:
@@ -235,8 +235,8 @@ JSON STRUCTURE:
 }
 `;
 
-const genAI = new GoogleGenerativeAI(env.geminiApiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+const genAI = new GoogleGenAI({ apiKey: env.geminiApiKey });
+const MODEL = "gemini-3.1-flash-lite";
 
 // AI Career Assistant System Prompt - Credit-Based Usage
 // COMMENTED OUT: Unused, AI limit tai ei function gulo active na
@@ -389,11 +389,11 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
   parts.push({ text: textPart });
 
   try {
-    const result = await model.generateContent({
+    const result = await genAI.models.generateContent({
+      model: MODEL,
       contents: [{ role: "user", parts }],
     });
-    const response = await result.response;
-    const text = response.text();
+    const text = result.text ?? "";
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
@@ -551,11 +551,11 @@ Research this job description thoroughly and return ONLY the valid JSON structur
 `;
 
   try {
-    const result = await model.generateContent({
+    const result = await genAI.models.generateContent({
+      model: MODEL,
       contents: [{ role: "user", parts: [{ text: textPart }] }],
     });
-    const response = await result.response;
-    const text = response.text();
+    const text = result.text ?? "";
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
@@ -621,9 +621,11 @@ Return ONLY valid JSON.
 `;
 
   try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const result = await genAI.models.generateContent({
+      model: MODEL,
+      contents: prompt,
+    });
+    const text = result.text ?? "";
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {

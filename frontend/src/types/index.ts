@@ -383,6 +383,7 @@ export interface CategoriesResult {
 
 // ATS Score History Types
 export interface AtsScoreHistory {
+  id: string;
   _id: string;
   userId: string;
   title: string;

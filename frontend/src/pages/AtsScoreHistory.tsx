@@ -138,7 +138,7 @@ export default function AtsScoreHistoryPage() {
           <div className="space-y-4">
             {history.map((item, index) => (
               <motion.div
-                key={item._id}
+                key={item.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -199,7 +199,7 @@ export default function AtsScoreHistoryPage() {
 
                     <div className="mt-4 flex gap-3">
                       <button
-                        onClick={() => navigate(`/ats-score/${item._id}`)}
+                        onClick={() => navigate(`/ats-score/${item.id}`)}
                         className="px-4 py-2 bg-violet-500/20 border border-violet-500/30 text-violet-400 rounded-lg hover:bg-violet-500/30 transition-colors"
                       >
                         View Details
@@ -208,7 +208,7 @@ export default function AtsScoreHistoryPage() {
                   </div>
 
                   <button
-                    onClick={() => setDeleteId(item._id)}
+                    onClick={() => setDeleteId(item.id)}
                     className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-5 h-5" />

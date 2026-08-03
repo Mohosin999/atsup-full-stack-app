@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Upload, CheckCircle, XCircle, Scan, Sparkles } from "lucide-react";
+import { Upload, CheckCircle, XCircle, Scan } from "lucide-react";
 import { toast } from "react-toastify";
 import { atsScoreApi, resumeParserApi, jobApi } from "../api/api";
 import { useAppDispatch } from "../hooks/redux";
@@ -14,61 +14,68 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 import JobMatchBreakdown from "../components/JobMatchBreakdown";
 import CategoryChecklist from "../components/ats-result/CategoryChecklist";
 import FeedbackCard from "../components/ats-result/FeedbackCard";
-import { AtsScoreHistory, AIResumeResearch } from "../types";
+import AnalysisProgressModal, {
+  PipelineStep,
+} from "../components/ui/AnalysisProgressModal";
+import { AtsScoreHistory } from "../types";
+
+const PIPELINE_STEPS: PipelineStep[] = [
+  { id: "resume", label: "Resume Analysis" },
+  { id: "jd", label: "Job Description Analysis" },
+  { id: "ats", label: "ATS Score Calculation" },
+];
+
+const PIPELINE_MESSAGES = [
+  "Sending resume to AI...",
+  "Converting resume to JSON...",
+  "Resume JSON received",
+  "Sending job description to AI...",
+  "Converting job description to JSON...",
+  "Job description JSON received",
+  "Calculating ATS score...",
+  "Analysis complete!",
+];
 
 export default function AtsScorePage() {
   const navigate = useNavigate();
   const { id: analysisId } = useParams<{ id: string }>();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const [resumeName, setResumeName] = useState("");
-  const [aiResearch, setAiResearch] = useState<AIResumeResearch | null>(null);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
-  const [structuredJD, setStructuredJD] = useState<any | null>(null);
-  const [parsingJD, setParsingJD] = useState(false);
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AtsScoreHistory | null>(null);
-  const parseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [pipelineOpen, setPipelineOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+  const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
 
-  const bothFieldsReady = !!aiResearch && !!structuredJD;
+  const bothFieldsReady = !!resumeFile && !!jobDescription.trim();
 
   useEffect(() => {
     if (analysisId) {
-      loadAnalysis(analysisId);
+      const preloaded = (location.state as
+        | { result?: AtsScoreHistory }
+        | undefined)?.result;
+      if (preloaded && preloaded.id === analysisId) {
+        setResult(preloaded);
+        setResumeName(preloaded.resumeName);
+      } else {
+        loadAnalysis(analysisId);
+      }
     } else {
       setResult(null);
       setResumeName("");
-      setAiResearch(null);
+      setResumeFile(null);
       setJobDescription("");
-      setStructuredJD(null);
-      setParsingJD(false);
     }
   }, [analysisId]);
 
-  const handleJobDescriptionChange = useCallback((value: string) => {
+  const handleJobDescriptionChange = (value: string) => {
     setJobDescription(value);
-
-    if (parseTimer.current) clearTimeout(parseTimer.current);
-
-    if (value.trim().length < 20) {
-      setStructuredJD(null);
-      setParsingJD(false);
-      return;
-    }
-
-    setParsingJD(true);
-    parseTimer.current = setTimeout(async () => {
-      try {
-        const response = await jobApi.parse(value.trim());
-        setStructuredJD(response.data.data);
-        console.log("STRUCTURED JD:", response.data.data);
-      } catch (error) {
-        setStructuredJD(null);
-      } finally {
-        setParsingJD(false);
-      }
-    }, 600);
-  }, []);
+  };
 
   const loadAnalysis = async (id: string) => {
     setLoading(true);
@@ -77,7 +84,6 @@ export default function AtsScorePage() {
       if (response.data.data) {
         setResult(response.data.data);
         setResumeName(response.data.data.resumeName);
-        setAiResearch(response.data.data.aiResearch);
       }
     } catch (error) {
       toast.error("Failed to load analysis");
@@ -87,60 +93,99 @@ export default function AtsScorePage() {
     }
   };
 
-  const handleFileUpload = async (file: File) => {
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append("resume", file);
-      const response = await resumeParserApi.parse(formData);
-      console.log("Parsed Resume Data:", response.data.data);
-      setResumeName(response.data.data.resumeName);
-      setAiResearch(response.data.data.aiResearch || null);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to upload resume");
-    } finally {
-      setLoading(false);
-    }
+  const handleFileUpload = (file: File) => {
+    setResumeFile(file);
+    setResumeName(file.name);
   };
 
+  const showMessage = (index: number, delay = 950) =>
+    new Promise<void>((resolve) => {
+      setCurrentMessage(PIPELINE_MESSAGES[index]);
+      window.setTimeout(resolve, delay);
+    });
+
   const handleAnalyze = async () => {
-    if (!aiResearch) {
+    if (!resumeFile) {
       toast.error("Please upload a resume");
       return;
     }
+    if (!jobDescription.trim()) {
+      toast.error("Please paste a job description");
+      return;
+    }
+
+    setPipelineOpen(true);
+    setAnalyzing(true);
+    setActiveStep(0);
+    setCompletedSteps([]);
+    setCurrentMessage(PIPELINE_MESSAGES[0]);
 
     try {
-      setAnalyzing(true);
+      setCurrentMessage(PIPELINE_MESSAGES[0]);
+      const formData = new FormData();
+      formData.append("resume", resumeFile);
+      const parseResponse = await resumeParserApi.parse(formData);
+      const aiResearch = parseResponse.data.data?.aiResearch;
+      if (!aiResearch) {
+        throw new Error("AI returned no resume data");
+      }
+
+      await showMessage(1);
+      await showMessage(2);
+      setCompletedSteps(["resume"]);
+      setActiveStep(1);
+
+      setCurrentMessage(PIPELINE_MESSAGES[3]);
+      const jdResponse = await jobApi.parse(jobDescription.trim());
+      const structuredJD = jdResponse.data.data;
+      if (!structuredJD) {
+        throw new Error("AI returned no job description data");
+      }
+
+      await showMessage(4);
+      await showMessage(5);
+      setCompletedSteps(["resume", "jd"]);
+      setActiveStep(2);
+
+      setCurrentMessage(PIPELINE_MESSAGES[6]);
       const response = await atsScoreApi.analyze({
         resumeName,
         aiResearch,
-        jobDescription: jobDescription.trim() || undefined,
+        jobDescription: jobDescription.trim(),
         structuredJD,
       });
-      setResult(response.data.data);
 
       if (response.data.credits !== undefined) {
         dispatch(setUserCredits(response.data.credits));
-        toast.success(
-          `ATS analysis completed! 1 credit deducted. New balance: ${response.data.credits}`,
-        );
-      } else {
-        toast.success("ATS analysis completed");
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to analyze resume");
-    } finally {
+
+      await showMessage(7, 1600);
+      setCompletedSteps(["resume", "jd", "ats"]);
+
+      await new Promise((r) => window.setTimeout(r, 600));
+      setPipelineOpen(false);
       setAnalyzing(false);
+      navigate(`/ats-score/${response.data.data.id}`, {
+        state: { result: response.data.data },
+      });
+    } catch (error: any) {
+      console.error("Analysis pipeline error:", error);
+      setPipelineOpen(false);
+      setAnalyzing(false);
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to analyze resume",
+      );
     }
   };
 
   const handleReset = () => {
     setResult(null);
     setResumeName("");
-    setAiResearch(null);
+    setResumeFile(null);
     setJobDescription("");
-    setStructuredJD(null);
-    setParsingJD(false);
+    if (analysisId) navigate("/ats-score");
   };
 
   return (
@@ -175,9 +220,9 @@ export default function AtsScorePage() {
             >
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${aiResearch ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${resumeFile ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
                 >
-                  {aiResearch ? <CheckCircle className="w-5 h-5" /> : "1"}
+                  {resumeFile ? <CheckCircle className="w-5 h-5" /> : "1"}
                 </div>
                 <h2 className="text-xl font-semibold text-white">
                   Upload Resume
@@ -205,14 +250,14 @@ export default function AtsScorePage() {
                   type="file"
                   className="hidden"
                   accept=".pdf"
-                  onChange={async (e) => {
+                  onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) await handleFileUpload(file);
+                    if (file) handleFileUpload(file);
                   }}
                 />
               </label>
 
-              {aiResearch && (
+              {resumeFile && (
                 <div className="mt-4 p-4 bg-green-900/20 border border-green-500/30 rounded-lg">
                   <div className="flex items-center gap-2 text-green-400">
                     <CheckCircle className="w-5 h-5" />
@@ -247,45 +292,6 @@ export default function AtsScorePage() {
                 rows={10}
                 className="w-full bg-gray-700 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
               />
-
-              {parsingJD && (
-                <div className="mt-3 flex items-center gap-2 text-sm text-gray-400">
-                  <LoadingSpinner /> Converting job description to structured
-                  format...
-                </div>
-              )}
-
-              {structuredJD && !parsingJD && (
-                <div className="mt-3 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
-                  <div className="flex items-center gap-2 text-green-400 mb-2">
-                    <Sparkles className="w-4 h-4" />
-                    <span className="font-medium">
-                      Structured job description detected
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-2 text-xs">
-                    <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                      {structuredJD.jobTitle || "Title"}
-                    </span>
-                    <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                      {structuredJD.skills?.hardSkills?.length || 0} hard skills
-                    </span>
-                    <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                      {structuredJD.skills?.softSkills?.length || 0} soft skills
-                    </span>
-                    {structuredJD.education?.degree && (
-                      <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                        {structuredJD.education.degree}
-                      </span>
-                    )}
-                    {structuredJD.yearsOfExperience && (
-                      <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                        {structuredJD.yearsOfExperience}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
             </motion.div>
 
             {/* Scan Button */}
@@ -314,9 +320,9 @@ export default function AtsScorePage() {
                 {!bothFieldsReady && (
                   <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block z-10">
                     <div className="bg-gray-700 text-white text-sm rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
-                      {!aiResearch && !structuredJD && "Upload resume and paste job description"}
-                      {!aiResearch && structuredJD && "Upload resume to continue"}
-                      {aiResearch && !structuredJD && "Paste job description to continue"}
+                      {!resumeFile && !jobDescription.trim() && "Upload resume and paste job description"}
+                      {!resumeFile && jobDescription.trim() && "Upload resume to continue"}
+                      {resumeFile && !jobDescription.trim() && "Paste job description to continue"}
                     </div>
                   </div>
                 )}
@@ -620,6 +626,14 @@ export default function AtsScorePage() {
           </div>
         )}
       </div>
+
+      <AnalysisProgressModal
+        isOpen={pipelineOpen}
+        steps={PIPELINE_STEPS}
+        activeStep={activeStep}
+        completedSteps={completedSteps}
+        currentMessage={currentMessage}
+      />
     </div>
   );
 }

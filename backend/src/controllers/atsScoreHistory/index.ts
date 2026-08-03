@@ -32,6 +32,12 @@ const mapAIJobToStructuredJD = (aiJD: any) => {
 
 const mapAIResearchToResumeContent = (ai: any) => {
   if (!ai) return null;
+
+  const addressParts = (ai.personal_info?.contact?.address || "")
+    .split(/[,|-]/)
+    .map((part: string) => part.trim())
+    .filter(Boolean);
+
   return {
     personalInfo: {
       fullName: ai.personal_info?.fullName || "",
@@ -40,6 +46,15 @@ const mapAIResearchToResumeContent = (ai: any) => {
         email: ai.personal_info?.contact?.email || "",
         phone: ai.personal_info?.contact?.phone || "",
         linkedIn: ai.personal_info?.contact?.links?.linkedin || "",
+        address:
+          addressParts.length === 1
+            ? { city: addressParts[0] }
+            : addressParts.length > 1
+              ? {
+                  city: addressParts[0],
+                  division: addressParts[addressParts.length - 1],
+                }
+              : undefined,
       },
     },
     summary: ai.summary || "",

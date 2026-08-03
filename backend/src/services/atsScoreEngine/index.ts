@@ -377,10 +377,13 @@ const scoreFromSubgroups = (subgroups: CategorySubgroup[]): number => {
 
 const buildContactInfoSubgroup = (resume: ResumeContent): CategorySubgroup => {
   const contact = resume.personalInfo?.contact || {};
-  const address = contact.address || {};
+  const address: any = contact.address;
   const hasEmail = !!contact.email;
   const hasPhone = !!contact.phone || !!(resume.personalInfo as any)?.phone;
-  const hasAddress = !!(address.city || address.division || address.zipCode);
+  const hasAddress =
+    typeof address === "string"
+      ? address.trim().length > 0
+      : !!(address && (address.city || address.division || address.zipCode));
 
   const checks: CategoryCheck[] = [
     {

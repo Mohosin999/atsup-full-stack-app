@@ -10,11 +10,19 @@ import { env } from "../config/env";
 
 export const applyMiddleware = (app: Application): void => {
   app.use(
+    /** ----------------------------------------------
+     * Security Headers (Helmet)
+     * Protects against common web vulnerabilities
+     ------------------------------------------------*/
     helmet({
       crossOriginResourcePolicy: { policy: "cross-origin" },
     }),
   );
 
+  /** --------------------------------------------------
+   * CORS Configuration
+   * Allows requests only from trusted frontend origins
+   ----------------------------------------------------*/
   app.use(
     cors({
       origin: [
@@ -38,8 +46,12 @@ export const applyMiddleware = (app: Application): void => {
 
   passport.use(configureGoogleStrategy());
 
+  /** -------------------------------------------------
+   * API Rate Limiting
+   * Limits the number of requests per minute
+   ----------------------------------------------------*/
   const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
+    windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100,
     message: { message: "Too many requests, please try again later." },
     standardHeaders: true,

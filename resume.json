@@ -1,0 +1,76 @@
+{
+  "personal_info": {
+    "fullName": "",
+    "jobTitle": "",
+    "contact": {
+      "address": "",
+      "email": "",
+      "phone": "",
+      "links": {
+        "linkedin": "",
+        "portfolio": "",
+        "github": ""
+      }
+    }
+  },
+  "summary": "",
+  "experience": [
+    {
+      "role": "",
+      "company": "",
+      "location": "",
+      "startDate": "",
+      "endDate": "",
+      "responsibilities": [""]
+    }
+  ],
+  "education": [
+    {
+      "degree": "",
+      "field": "",
+      "education_level": "",
+      "startDate": "",
+      "endDate": ""
+    }
+  ],
+  "skills": {
+    "hardSkills": [""],
+    "softSkills": [""]
+  },
+  "projects": [
+    {
+      "name": "",
+      "description": [""],
+      "link": ""
+    }
+  ],
+  "certifications": [
+    {
+      "name": "",
+      "issuer": "",
+      "date": "",
+      "link": ""
+    }
+  ],
+  "yearsOfExperience": "",
+  "measurableResults": [""],
+  "resumeTone": "bad",
+  "wordCount": "",
+  "educationSection": true,
+  "experienceSection": true,
+  "workHistory": true,
+  "dateFormatting": true,
+  "layout": {
+    "isSingleColumn": true,
+    "hasTables": false,
+    "hasImages": false,
+    "hasIcons": false,
+    "hasMultiColumn": false
+  },
+  "fontCheck": {
+    "isStandardFont": true,
+    "fontName": "",
+    "isReadableSize": true,
+    "hasMixedFonts": false
+  }
+}

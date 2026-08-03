@@ -5,7 +5,6 @@ import ConfirmModal from "../components/ui/ConfirmModal";
 import {
   allFeatures,
   analysisSteps,
-  creationSteps,
   testimonials,
 } from "../constants/landingData";
 import FloatingOrbs from "../components/home-page/FloatingOrbs";
@@ -20,9 +19,6 @@ import Footer from "../components/Footer";
 export default function HomePage() {
   const dispatch = useAppDispatch();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [activeTab, setActiveTab] = useState<
-    "analysis" | "creation"
-  >("analysis");
 
   const handleLogout = async () => {
     setShowLogoutConfirm(false);
@@ -40,15 +36,7 @@ export default function HomePage() {
           />
           <StatsSection />
           <FeaturesSection features={allFeatures} />
-          <HowItWorksSection
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            steps={
-              activeTab === "analysis"
-                ? analysisSteps
-                : creationSteps
-            }
-          />
+          <HowItWorksSection steps={analysisSteps} />
           <TestimonialsSection testimonials={testimonials} />
           <CTASection />
         </main>

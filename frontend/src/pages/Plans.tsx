@@ -35,7 +35,6 @@ const plans: Plan[] = [
     credits: 100,
     features: [
       "100 Resume Analyses",
-      "Resume Builder",
       "Basic AI Suggestions",
       "PDF Export",
       "Email Support",

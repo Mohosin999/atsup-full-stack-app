@@ -28,11 +28,6 @@ export type User = Prisma.UserModel
  */
 export type Resume = Prisma.ResumeModel
 /**
- * Model ResumeTemplate
- * 
- */
-export type ResumeTemplate = Prisma.ResumeTemplateModel
-/**
  * Model Analysis
  * 
  */
@@ -57,8 +52,3 @@ export type JobDescription = Prisma.JobDescriptionModel
  * 
  */
 export type Payment = Prisma.PaymentModel
-/**
- * Model ResumeBuildHistory
- * 
- */
-export type ResumeBuildHistory = Prisma.ResumeBuildHistoryModel

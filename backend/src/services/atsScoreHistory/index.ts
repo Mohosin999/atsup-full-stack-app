@@ -8,9 +8,10 @@ export const createAtsScoreHistory = async (
   resumeName: string,
   resumeContent: ResumeContent,
   jobDescription?: string,
-  structuredJD?: StructuredJD | null
+  structuredJD?: StructuredJD | null,
+  aiResearch?: any | null
 ) => {
-  const analysis = calculateLocalMatchScore(resumeContent, structuredJD, jobDescription);
+  const analysis = calculateLocalMatchScore(resumeContent, structuredJD);
 
   const hasContactInfo =
     !!resumeContent.personalInfo?.contact?.email ||
@@ -38,6 +39,7 @@ export const createAtsScoreHistory = async (
       atsFriendliness: analysis.atsFriendliness,
       suggestions: analysis.suggestions,
       resumeContent,
+      aiResearch,
     },
   });
 

@@ -9,16 +9,103 @@ import {
   deleteAllAtsScoreHistory,
 } from "../../services/atsScoreHistory";
 
+const mapAIJobToStructuredJD = (aiJD: any) => {
+  if (!aiJD || !aiJD.skills) return null;
+
+  const educationParts = [aiJD.education?.field, aiJD.education?.degree].filter(Boolean);
+  const educationRequirement = educationParts.length > 0 ? educationParts.join("|") : null;
+
+  const yearsMatch = (aiJD.yearsOfExperience || "").match(/(\d+)/);
+  const experienceYearsRequired = yearsMatch ? parseInt(yearsMatch[1], 10) : 0;
+
+  return {
+    jobTitle: aiJD.jobTitle || "",
+    company: "",
+    location: "",
+    hardSkills: aiJD.skills?.hardSkills || [],
+    softSkills: aiJD.skills?.softSkills || [],
+    actionVerbs: [] as string[],
+    educationRequirement,
+    experienceYearsRequired,
+  };
+};
+
+const mapAIResearchToResumeContent = (ai: any) => {
+  if (!ai) return null;
+  return {
+    personalInfo: {
+      fullName: ai.personal_info?.fullName || "",
+      jobTitle: ai.personal_info?.jobTitle || "",
+      contact: {
+        email: ai.personal_info?.contact?.email || "",
+        phone: ai.personal_info?.contact?.phone || "",
+        linkedIn: ai.personal_info?.contact?.links?.linkedin || "",
+      },
+    },
+    summary: ai.summary || "",
+    experience: (ai.experience || []).map((exp: any) => ({
+      title: exp.role || "",
+      company: exp.company || "",
+      location: exp.location || "",
+      startDate: exp.startDate || "",
+      endDate: exp.endDate || "",
+      highlights: exp.responsibilities || [],
+    })),
+    education: (ai.education || []).map((edu: any) => ({
+      degree: edu.degree || "",
+      field: edu.field || "",
+      institution: "",
+      education_level: edu.education_level || "",
+      startDate: edu.startDate || "",
+      endDate: edu.endDate || "",
+    })),
+    skills: [
+      ...(ai.skills?.hardSkills || []),
+      ...(ai.skills?.softSkills || []),
+    ],
+    hardSkills: ai.skills?.hardSkills || [],
+    softSkills: ai.skills?.softSkills || [],
+    projects: (ai.projects || []).map((proj: any) => ({
+      name: proj.name || "",
+      highlights: proj.description || [],
+      link: proj.link || "",
+    })),
+    certifications: (ai.certifications || []).map((cert: any) => ({
+      name: cert.name || "",
+      issuer: cert.issuer || "",
+      date: cert.date || "",
+      link: cert.link || "",
+    })),
+  };
+};
+
 export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
   try {
-    const { resumeName, resumeContent, jobDescription, structuredJD } = req.body;
+    const { resumeName, jobDescription, structuredJD, aiResearch } = req.body;
 
-    if (!resumeContent) {
+    if (!aiResearch) {
       return res.status(400).json({
         success: false,
-        message: "Resume content is required",
+        message: "Resume research data is required",
       });
     }
+
+    const resumeContent = mapAIResearchToResumeContent(aiResearch) || {
+      personalInfo: { fullName: "", jobTitle: "", contact: {} },
+      summary: "",
+      experience: [],
+      education: [],
+      skills: [],
+      hardSkills: [],
+      softSkills: [],
+      projects: [],
+      certifications: [],
+    };
+
+    // Map AI JD format → StructuredJD if needed
+    const finalStructuredJD = structuredJD?.skills
+      ? mapAIJobToStructuredJD(structuredJD)
+      : structuredJD;
 
     // Check user credits (ATS Score costs 1 credit)
     const user = await prisma.user.findUnique({
@@ -41,7 +128,8 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       resumeName || "Untitled Resume",
       resumeContent,
       jobDescription,
-      structuredJD || null,
+      finalStructuredJD || null,
+      aiResearch || null,
     );
 
     // Deduct 1 credit for ATS Score Analysis

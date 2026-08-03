@@ -5,11 +5,9 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
-import Builder from "./pages/Builder";
 import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScore";
 import AtsScoreHistory from "./pages/AtsScoreHistory";
-import ResumeBuildHistory from "./pages/ResumeBuildHistory";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
@@ -70,22 +68,6 @@ function App() {
           }
         />
         <Route
-          path="/builder"
-          element={
-            <PrivateRoute>
-              <Builder />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/builder/:id"
-          element={
-            <PrivateRoute>
-              <Builder />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path="/plans"
           element={
             <PrivateRoute>
@@ -114,14 +96,6 @@ function App() {
           element={
             <PrivateRoute>
               <AtsScoreHistory />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/resume-build-history"
-          element={
-            <PrivateRoute>
-              <ResumeBuildHistory />
             </PrivateRoute>
           }
         />

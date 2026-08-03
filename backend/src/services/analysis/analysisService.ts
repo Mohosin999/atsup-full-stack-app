@@ -28,8 +28,6 @@ import {
 import {
   extractKeywords,
   extractSkillsFromResume,
-  parseJobDescription,
-  SKILL_TAXONOMY,
 } from "./keywordExtractor";
 
 interface AnalysisInput {
@@ -66,7 +64,7 @@ export class ResumeAnalysisService {
     // Extract keywords from both documents
     const resumeKeywords = extractKeywords(resumeText);
     const jdKeywords = extractKeywords(jobDescription);
-    const parsedJD = parseJobDescription(jobDescription);
+    const parsedJD = { requiredSkills: [], preferredSkills: [], keywords: jdKeywords.all, experienceYears: 0 };
 
     // Generate detailed analysis FIRST (so we can use it for job match scoring)
     const sectionAnalysis = this.analyzeSections(resume, resumeKeywords);
@@ -548,29 +546,15 @@ export class ResumeAnalysisService {
     ];
 
     categories.forEach((category) => {
-      const taxonomySkills =
-        SKILL_TAXONOMY[category as keyof typeof SKILL_TAXONOMY] || [];
-      const canonicalSkills = taxonomySkills.map((entry) =>
-        typeof entry === "string" ? entry : entry[0],
-      );
-      const required = canonicalSkills.filter((s) =>
-        parsedJD.requiredSkills.includes(s),
-      );
-      const matched = required.filter((s) =>
-        resumeSkills.some((rs) => rs.includes(s.toLowerCase())),
-      );
-
-      categoryBreakdown.push({
+      const categoryBreakdownItem = {
         category: this.getCategoryName(category),
-        required: required.length,
-        matched: matched.length,
-        missing: required.length - matched.length,
-        matchPercentage:
-          required.length > 0
-            ? Math.round((matched.length / required.length) * 100)
-            : 100,
-        skills: matched,
-      });
+        required: 0,
+        matched: 0,
+        missing: 0,
+        matchPercentage: 100,
+        skills: [],
+      };
+      categoryBreakdown.push(categoryBreakdownItem);
     });
 
     return {
@@ -964,16 +948,6 @@ export class ResumeAnalysisService {
   }
 
   private categorizeSkill(skill: string): any {
-    const lower = skill.toLowerCase();
-    for (const [category, skills] of Object.entries(SKILL_TAXONOMY)) {
-      const matched = skills.some((entry) => {
-        const variants = typeof entry === "string" ? [entry] : entry;
-        return variants.some((s) => lower.includes(s) || s.includes(lower));
-      });
-      if (matched) {
-        return category.replace(/([A-Z])/g, " $1").trim();
-      }
-    }
     return "Domain Knowledge";
   }
 

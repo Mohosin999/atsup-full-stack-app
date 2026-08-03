@@ -53,13 +53,11 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Resume: 'Resume',
-  ResumeTemplate: 'ResumeTemplate',
   Analysis: 'Analysis',
   AtsScore: 'AtsScore',
   AtsScoreHistory: 'AtsScoreHistory',
   JobDescription: 'JobDescription',
-  Payment: 'Payment',
-  ResumeBuildHistory: 'ResumeBuildHistory'
+  Payment: 'Payment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -108,20 +106,6 @@ export const ResumeScalarFieldEnum = {
 } as const
 
 export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
-
-
-export const ResumeTemplateScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  name: 'name',
-  isAtsFriendly: 'isAtsFriendly',
-  content: 'content',
-  isDraft: 'isDraft',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ResumeTemplateScalarFieldEnum = (typeof ResumeTemplateScalarFieldEnum)[keyof typeof ResumeTemplateScalarFieldEnum]
 
 
 export const AnalysisScalarFieldEnum = {
@@ -180,6 +164,7 @@ export const AtsScoreHistoryScalarFieldEnum = {
   atsFriendliness: 'atsFriendliness',
   suggestions: 'suggestions',
   resumeContent: 'resumeContent',
+  aiResearch: 'aiResearch',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -215,18 +200,6 @@ export const PaymentScalarFieldEnum = {
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
-
-
-export const ResumeBuildHistoryScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  title: 'title',
-  resumeContent: 'resumeContent',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ResumeBuildHistoryScalarFieldEnum = (typeof ResumeBuildHistoryScalarFieldEnum)[keyof typeof ResumeBuildHistoryScalarFieldEnum]
 
 
 export const SortOrder = {

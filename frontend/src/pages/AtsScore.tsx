@@ -14,19 +14,14 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 import JobMatchBreakdown from "../components/JobMatchBreakdown";
 import CategoryChecklist from "../components/ats-result/CategoryChecklist";
 import FeedbackCard from "../components/ats-result/FeedbackCard";
-import { AtsScoreHistory, ResumeContent } from "../types";
-
-type Step = "upload" | "jobDescription";
+import { AtsScoreHistory, AIResumeResearch } from "../types";
 
 export default function AtsScorePage() {
   const navigate = useNavigate();
   const { id: analysisId } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  const [step, setStep] = useState<Step>("upload");
   const [resumeName, setResumeName] = useState("");
-  const [resumeContent, setResumeContent] = useState<ResumeContent | null>(
-    null,
-  );
+  const [aiResearch, setAiResearch] = useState<AIResumeResearch | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [structuredJD, setStructuredJD] = useState<any | null>(null);
   const [parsingJD, setParsingJD] = useState(false);
@@ -35,14 +30,15 @@ export default function AtsScorePage() {
   const [result, setResult] = useState<AtsScoreHistory | null>(null);
   const parseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const bothFieldsReady = !!aiResearch && !!structuredJD;
+
   useEffect(() => {
     if (analysisId) {
       loadAnalysis(analysisId);
     } else {
       setResult(null);
-      setStep("upload");
       setResumeName("");
-      setResumeContent(null);
+      setAiResearch(null);
       setJobDescription("");
       setStructuredJD(null);
       setParsingJD(false);
@@ -81,7 +77,7 @@ export default function AtsScorePage() {
       if (response.data.data) {
         setResult(response.data.data);
         setResumeName(response.data.data.resumeName);
-        setResumeContent(response.data.data.resumeContent);
+        setAiResearch(response.data.data.aiResearch);
       }
     } catch (error) {
       toast.error("Failed to load analysis");
@@ -99,8 +95,7 @@ export default function AtsScorePage() {
       const response = await resumeParserApi.parse(formData);
       console.log("Parsed Resume Data:", response.data.data);
       setResumeName(response.data.data.resumeName);
-      setResumeContent(response.data.data.resumeContent);
-      setStep("jobDescription");
+      setAiResearch(response.data.data.aiResearch || null);
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to upload resume");
     } finally {
@@ -109,7 +104,7 @@ export default function AtsScorePage() {
   };
 
   const handleAnalyze = async () => {
-    if (!resumeContent) {
+    if (!aiResearch) {
       toast.error("Please upload a resume");
       return;
     }
@@ -118,7 +113,7 @@ export default function AtsScorePage() {
       setAnalyzing(true);
       const response = await atsScoreApi.analyze({
         resumeName,
-        resumeContent,
+        aiResearch,
         jobDescription: jobDescription.trim() || undefined,
         structuredJD,
       });
@@ -141,9 +136,8 @@ export default function AtsScorePage() {
 
   const handleReset = () => {
     setResult(null);
-    setStep("upload");
     setResumeName("");
-    setResumeContent(null);
+    setAiResearch(null);
     setJobDescription("");
     setStructuredJD(null);
     setParsingJD(false);
@@ -177,13 +171,13 @@ export default function AtsScorePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className={`bg-gray-800 rounded-lg p-6 ${step !== "upload" ? "opacity-60" : ""}`}
+              className="bg-gray-800 rounded-lg p-6"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step === "upload" ? "bg-green-500 text-white" : resumeContent ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${aiResearch ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
                 >
-                  {resumeContent ? <CheckCircle className="w-5 h-5" /> : "1"}
+                  {aiResearch ? <CheckCircle className="w-5 h-5" /> : "1"}
                 </div>
                 <h2 className="text-xl font-semibold text-white">
                   Upload Resume
@@ -218,7 +212,7 @@ export default function AtsScorePage() {
                 />
               </label>
 
-              {resumeContent && (
+              {aiResearch && (
                 <div className="mt-4 p-4 bg-green-900/20 border border-green-500/30 rounded-lg">
                   <div className="flex items-center gap-2 text-green-400">
                     <CheckCircle className="w-5 h-5" />
@@ -233,11 +227,11 @@ export default function AtsScorePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className={`bg-gray-800 rounded-lg p-6 ${step !== "jobDescription" ? "opacity-60" : ""}`}
+              className="bg-gray-800 rounded-lg p-6"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step === "jobDescription" ? "bg-green-500 text-white" : jobDescription ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
                 >
                   {jobDescription ? <CheckCircle className="w-5 h-5" /> : "2"}
                 </div>
@@ -249,10 +243,9 @@ export default function AtsScorePage() {
               <textarea
                 value={jobDescription}
                 onChange={(e) => handleJobDescriptionChange(e.target.value)}
-                placeholder="Paste the job description here (optional, but recommended for better analysis)..."
+                placeholder="Paste the job description here..."
                 rows={10}
-                disabled={step !== "jobDescription"}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
               />
 
               {parsingJD && (
@@ -275,19 +268,19 @@ export default function AtsScorePage() {
                       {structuredJD.jobTitle || "Title"}
                     </span>
                     <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                      {structuredJD.hardSkills.length} hard skills
+                      {structuredJD.skills?.hardSkills?.length || 0} hard skills
                     </span>
                     <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                      {structuredJD.softSkills.length} soft skills
+                      {structuredJD.skills?.softSkills?.length || 0} soft skills
                     </span>
-                    {structuredJD.actionVerbs?.length > 0 && (
+                    {structuredJD.education?.degree && (
                       <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                        {structuredJD.actionVerbs.length} action verbs
+                        {structuredJD.education.degree}
                       </span>
                     )}
-                    {structuredJD.experienceYearsRequired > 0 && (
+                    {structuredJD.yearsOfExperience && (
                       <span className="bg-gray-700 text-green-300 px-2 py-1 rounded">
-                        {structuredJD.experienceYearsRequired}+ yrs
+                        {structuredJD.yearsOfExperience}
                       </span>
                     )}
                   </div>
@@ -301,22 +294,33 @@ export default function AtsScorePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <button
-                onClick={handleAnalyze}
-                disabled={!resumeContent || analyzing}
-                className="w-full h-14 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-green-500/25"
-              >
-                {analyzing ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <LoadingSpinner /> Scanning...
-                  </span>
-                ) : (
-                  <>
-                    <Scan className="w-5 h-5" />
-                    Scan Resume
-                  </>
+              <div className="relative group">
+                <button
+                  onClick={handleAnalyze}
+                  disabled={!bothFieldsReady || analyzing}
+                  className="w-full h-14 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-green-500/25"
+                >
+                  {analyzing ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <LoadingSpinner /> Scanning...
+                    </span>
+                  ) : (
+                    <>
+                      <Scan className="w-5 h-5" />
+                      Scan Resume
+                    </>
+                  )}
+                </button>
+                {!bothFieldsReady && (
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block z-10">
+                    <div className="bg-gray-700 text-white text-sm rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
+                      {!aiResearch && !structuredJD && "Upload resume and paste job description"}
+                      {!aiResearch && structuredJD && "Upload resume to continue"}
+                      {aiResearch && !structuredJD && "Paste job description to continue"}
+                    </div>
+                  </div>
                 )}
-              </button>
+              </div>
             </motion.div>
           </div>
         ) : (

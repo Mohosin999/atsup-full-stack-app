@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { AuthRequest } from "../../middlewares";
-import { parseJobDescriptionToStructured } from "../../services/jdParser";
+import { researchJobDescription } from "../../services/aiAnalysis/gemini";
 
 export const parseJobDescription = async (req: AuthRequest, res: Response) => {
   try {
@@ -14,11 +14,11 @@ export const parseJobDescription = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const structured = parseJobDescriptionToStructured(description);
+    const aiResult = await researchJobDescription(description.trim());
 
     res.status(200).json({
       success: true,
-      data: structured,
+      data: aiResult,
     });
   } catch (error: any) {
     console.error("Job description parse error:", error);

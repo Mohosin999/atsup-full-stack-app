@@ -41,8 +41,76 @@ export interface Resume {
   updatedAt: string;
 }
 
-export interface ResumeContent {
-  personalInfo: {
+export interface AIResumeResearch {
+  personal_info: {
+    fullName: string;
+    jobTitle: string;
+    contact: {
+      address: string;
+      email: string;
+      phone: string;
+      links: {
+        linkedin: string;
+        portfolio: string;
+        github: string;
+      };
+    };
+  };
+  summary: string;
+  experience: Array<{
+    role: string;
+    company: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    responsibilities: string[];
+  }>;
+  education: Array<{
+    degree: string;
+    field: string;
+    education_level: string;
+    startDate: string;
+    endDate: string;
+  }>;
+  skills: {
+    hardSkills: string[];
+    softSkills: string[];
+  };
+  projects: Array<{
+    name: string;
+    description: string[];
+    link: string;
+  }>;
+  certifications: Array<{
+    name: string;
+    issuer: string;
+    date: string;
+    link: string;
+  }>;
+  yearsOfExperience: string;
+  measurableResults: string[];
+  resumeTone: string;
+  wordCount: string;
+  educationSection: boolean;
+  experienceSection: boolean;
+  workHistory: boolean;
+  dateFormatting: boolean;
+  layout: {
+    isSingleColumn: boolean;
+    hasTables: boolean;
+    hasImages: boolean;
+    hasIcons: boolean;
+    hasMultiColumn: boolean;
+  };
+  fontCheck: {
+    isStandardFont: boolean;
+    fontName: string;
+    isReadableSize: boolean;
+    hasMixedFonts: boolean;
+  };
+}
+
+export interface ResumeContent {  personalInfo: {
     fullName?: string;
     jobTitle?: string;
     contact?: {
@@ -247,29 +315,6 @@ export interface AtsScore {
   updatedAt: string;
 }
 
-// Resume Builder Types
-export interface ResumeTemplate {
-  _id: string;
-  userId: string;
-  name: string;
-  isAtsFriendly: boolean;
-  content: ResumeContent;
-  isDraft: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface AISectionSuggestion {
-  section: string;
-  content: string;
-  tips: string[];
-}
-
-export interface SectionImprovement {
-  improved: string;
-  changes: string[];
-}
-
 export interface AtsCheckResult {
   atsScore: number;
   issues: string[];
@@ -368,16 +413,6 @@ export interface AtsScoreHistory {
   };
   atsFriendliness: number;
   suggestions: string[];
-  resumeContent: ResumeContent;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Resume Build History Types
-export interface ResumeBuildHistory {
-  _id: string;
-  userId: string;
-  title: string;
   resumeContent: ResumeContent;
   createdAt: string;
   updatedAt: string;

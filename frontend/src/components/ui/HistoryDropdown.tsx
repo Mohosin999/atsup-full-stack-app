@@ -4,7 +4,7 @@ History Dropdown Component
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ChevronDown, FileSearch, FileText } from "lucide-react";
+import { ChevronDown, FileSearch } from "lucide-react";
 
 export default function HistoryDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,15 +31,6 @@ export default function HistoryDropdown() {
       gradient: "from-purple-500 to-blue-500",
       bgLight: "hover:bg-purple-500/20",
       activePath: "/ats-score-history",
-    },
-    {
-      title: "Resume Build History",
-      description: "View all your built resumes",
-      icon: FileText,
-      path: "/resume-build-history",
-      gradient: "from-orange-500 to-amber-500",
-      bgLight: "hover:bg-orange-500/20",
-      activePath: "/resume-build-history",
     },
   ];
 

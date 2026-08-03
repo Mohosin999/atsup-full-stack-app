@@ -1,7 +1,6 @@
 import { ResumeContent } from "../../types";
 import {
   StructuredJD,
-  parseJobDescriptionToStructured,
 } from "../jdParser";
 import {
   extractSkillsFromResume,
@@ -10,7 +9,6 @@ import {
   matchActionVerbs,
   countActionVerbInText,
 } from "../analysis/keywordExtractor";
-import { MEASURABLE_RESULTS } from "../analysis/skillDefinitions";
 
 export interface LocalSectionScore {
   score: number;
@@ -255,23 +253,12 @@ const experienceYearsScore = (
 const countMeasurableResults = (
   resume: ResumeContent,
 ): { count: number; found: string[] } => {
-  const text = (resume.experience || [])
+  const highlights = (resume.experience || [])
     .flatMap((exp) => exp.highlights || [])
-    .join(" ");
+    .filter((h: string) => /\d+%|\d+x|\$|\d+\s*(?:hours?|hrs?|days?|weeks?|months?|years?)/i.test(h));
 
-  if (!text.trim()) return { count: 0, found: [] };
-
-  const matches: string[] = [];
-  MEASURABLE_RESULTS.forEach(({ pattern }) => {
-    const regex = new RegExp(pattern, "gi");
-    let match: RegExpExecArray | null;
-    while ((match = regex.exec(text)) !== null) {
-      matches.push(match[0].trim());
-    }
-  });
-
-  const found = [...new Set(matches)].slice(0, 5);
-  return { count: matches.length, found };
+  const found = highlights.slice(0, 5);
+  return { count: highlights.length, found };
 };
 
 const measurableResultsScore = (count: number): number => {
@@ -1052,9 +1039,8 @@ const buildFormatting = (
 export const calculateLocalMatchScore = (
   resume: ResumeContent,
   structuredJD?: StructuredJD | null,
-  rawJD?: string,
 ): LocalAtsResult => {
-  const jd = structuredJD || (rawJD ? parseJobDescriptionToStructured(rawJD) : null);
+  const jd = structuredJD || null;
 
   const resumeText = toResumeText(resume);
   const resumeSkills = extractSkillsFromResume(resume);

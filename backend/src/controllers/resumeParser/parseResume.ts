@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../middlewares';
 import { parseResumeFile } from '../../services/resumeParser';
+import { researchResume } from '../../services/aiAnalysis/gemini';
 import fs from 'fs';
 import path from 'path';
 
@@ -17,15 +18,29 @@ export const parseResume = async (req: AuthRequest, res: Response) => {
     const originalName = req.file.originalname;
 
     try {
-      const resumeContent = await parseResumeFile(filePath, req.file.mimetype);
+      const parsed = await parseResumeFile(filePath, req.file.mimetype);
+
+      const fileBuffer = fs.readFileSync(filePath);
+      const fileBase64 = fileBuffer.toString('base64');
 
       fs.unlinkSync(filePath);
+
+      let aiResearch = null;
+      try {
+        aiResearch = await researchResume(
+          parsed.text,
+          fileBase64,
+          req.file.mimetype,
+        );
+      } catch (aiError: any) {
+        console.error('AI research failed, falling back to parsed data:', aiError);
+      }
 
       return res.status(200).json({
         success: true,
         data: {
           resumeName: originalName,
-          resumeContent,
+          aiResearch,
         },
       });
     } catch (parseError: any) {

@@ -1,352 +1,602 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { env } from '../../config/env';
-import { ResumeContent } from '../../types';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { env } from "../../config/env";
+import { ResumeContent } from "../../types";
+
+export interface AIResumeResearchResult {
+  personal_info: {
+    fullName: string;
+    jobTitle: string;
+    contact: {
+      address: string;
+      email: string;
+      phone: string;
+      links: {
+        linkedin: string;
+        portfolio: string;
+        github: string;
+      };
+    };
+  };
+  summary: string;
+  experience: Array<{
+    role: string;
+    company: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    responsibilities: string[];
+  }>;
+  education: Array<{
+    degree: string;
+    field: string;
+    education_level: string;
+    startDate: string;
+    endDate: string;
+  }>;
+  skills: {
+    hardSkills: string[];
+    softSkills: string[];
+  };
+  projects: Array<{
+    name: string;
+    description: string[];
+    link: string;
+  }>;
+  certifications: Array<{
+    name: string;
+    issuer: string;
+    date: string;
+    link: string;
+  }>;
+  yearsOfExperience: string;
+  measurableResults: string[];
+  resumeTone: string;
+  wordCount: string;
+  educationSection: boolean;
+  experienceSection: boolean;
+  workHistory: boolean;
+  dateFormatting: boolean;
+  layout: {
+    isSingleColumn: boolean;
+    hasTables: boolean;
+    hasImages: boolean;
+    hasIcons: boolean;
+    hasMultiColumn: boolean;
+  };
+  fontCheck: {
+    isStandardFont: boolean;
+    fontName: string;
+    isReadableSize: boolean;
+    hasMixedFonts: boolean;
+  };
+}
+
+export const RESUME_RESEARCH_TEMPLATE: AIResumeResearchResult = {
+  personal_info: {
+    fullName: "",
+    jobTitle: "",
+    contact: {
+      address: "",
+      email: "",
+      phone: "",
+      links: {
+        linkedin: "",
+        portfolio: "",
+        github: "",
+      },
+    },
+  },
+  summary: "",
+  experience: [],
+  education: [],
+  skills: {
+    hardSkills: [],
+    softSkills: [],
+  },
+  projects: [],
+  certifications: [],
+  yearsOfExperience: "",
+  measurableResults: [],
+  resumeTone: "bad",
+  wordCount: "",
+  educationSection: false,
+  experienceSection: false,
+  workHistory: false,
+  dateFormatting: false,
+  layout: {
+    isSingleColumn: true,
+    hasTables: false,
+    hasImages: false,
+    hasIcons: false,
+    hasMultiColumn: false,
+  },
+  fontCheck: {
+    isStandardFont: true,
+    fontName: "",
+    isReadableSize: true,
+    hasMixedFonts: false,
+  },
+};
+
+const RESEARCH_PROMPT = `
+You are an expert AI resume researcher. Your task is to analyze the provided resume VERY carefully and extract all information from it accurately.
+
+RESEARCH THE FOLLOWING DETAILS:
+1. Personal info (full name, job title, contact: address, email, phone, LinkedIn link, portfolio link, GitHub link)
+2. Professional summary
+3. Work experience (role, company, location, startDate, endDate, responsibilities as bullet points)
+4. Education (degree, field of study, education level, startDate, endDate)
+5. Skills:
+   - hardSkills: ONLY keywords (technologies, programming languages, tools, frameworks) - just the keyword names
+   - softSkills: ONLY soft skills (communication, leadership, teamwork, etc.) - keep them separate from hard skills
+6. Projects (name, description as bullet points, link)
+7. Certifications (name, issuer, date, link)
+8. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
+9. measurableResults: ONLY the measurable IMPACTS/achievements from work experience that demonstrate a business or technical outcome (e.g. "reduced load time by 40%", "increased sales by 30%", "saved 10 hours/week", "improved performance by 2x", "cut costs by $50k"). These must show a quantified result tied to time, money, percentage, speed, scale, or performance. Do NOT include role scope statements or non-impact items (e.g. "led a team of 5 engineers", "managed 3 projects", "worked with 10 clients") unless they show a measurable outcome. If a result has no number, percentage, money, time or scale value, do NOT include it.
+10. resumeTone: assess the overall tone and quality of the resume writing. Use one of: "good", "bad", "professional", "weak".
+11. wordCount: total number of words in the resume.
+12. educationSection: true if an education section exists.
+13. experienceSection: true if an experience/work section exists.
+14. workHistory: true if there is AT LEAST ONE work experience entry.
+15. dateFormatting: true if dates use "MM/YY or MM/YYYY or Month YYYY" format (e.g. 03/19, 03/2019, Mar 2019 or March 2019). false otherwise.
+16. layout: analyze the given PDF very carefully and answer the following questions correctly:
+    - isSingleColumn: true if the resume uses a single column layout
+    - hasTables: true if tables are used in the layout
+    - hasImages: true if images/photos are present
+    - hasIcons: true if icons/graphics are present
+    - hasMultiColumn: true if the resume uses a multi-column layout
+17. fontCheck: analyze the given PDF very carefully and answer the following questions correctly:
+    - isStandardFont: true if a standard/ATS-friendly font is used (Arial, Calibri, Times New Roman, Helvetica, Georgia, Verdana, etc.)
+    - fontName: the primary font name
+    - isReadableSize: true if the font size is readable (typically 10-12pt body text)
+
+STRICT RULES:
+- NO field is required. If a piece of information is NOT present in the resume, set it to empty: "" for strings, [] for arrays, false for booleans.
+- Do NOT invent or hallucinate information. Only extract what is actually present in the resume.
+- hardSkills must ONLY contain pure keyword names, never descriptions or phrases.
+- measurableResults must ONLY contain quantified IMPACT results with numbers/percentages/money/time/scale. Exclude role-scope statements that have no measurable outcome.
+- Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
+
+JSON STRUCTURE:
+{
+  "personal_info": {
+    "fullName": "",
+    "jobTitle": "",
+    "contact": {
+      "address": "",
+      "email": "",
+      "phone": "",
+      "links": {
+        "linkedin": "",
+        "portfolio": "",
+        "github": ""
+      }
+    }
+  },
+  "summary": "",
+  "experience": [
+    {
+      "role": "",
+      "company": "",
+      "location": "",
+      "startDate": "",
+      "endDate": "",
+      "responsibilities": [""]
+    }
+  ],
+  "education": [
+    {
+      "degree": "",
+      "field": "",
+      "education_level": "",
+      "startDate": "",
+      "endDate": ""
+    }
+  ],
+  "skills": {
+    "hardSkills": [""],
+    "softSkills": [""]
+  },
+  "projects": [
+    {
+      "name": "",
+      "description": [""],
+      "link": ""
+    }
+  ],
+  "certifications": [
+    {
+      "name": "",
+      "issuer": "",
+      "date": "",
+      "link": ""
+    }
+  ],
+  "yearsOfExperience": "",
+  "measurableResults": [""],
+  "resumeTone": "bad",
+  "wordCount": "",
+  "educationSection": true,
+  "experienceSection": true,
+  "workHistory": true,
+  "dateFormatting": true,
+  "layout": {
+    "isSingleColumn": true,
+    "hasTables": false,
+    "hasImages": false,
+    "hasIcons": false,
+    "hasMultiColumn": false
+  },
+  "fontCheck": {
+    "isStandardFont": true,
+    "fontName": "",
+    "isReadableSize": true,
+  }
+}
+`;
 
 const genAI = new GoogleGenerativeAI(env.geminiApiKey);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 // AI Career Assistant System Prompt - Credit-Based Usage
-const AI_CAREER_ASSISTANT_PROMPT = `
-You are a professional AI Career Assistant with a strict real-time credit-based usage system.
+// COMMENTED OUT: Unused, AI limit tai ei function gulo active na
+// const AI_CAREER_ASSISTANT_PROMPT = `
+// You are a professional AI Career Assistant with a strict real-time credit-based usage system.
+// ...
 
-User has limited credits. The system automatically deducts credits before you generate content.
+// COMMENTED OUT: Unused interfaces (AI limit tai ei function gulo active na)
+// export interface AtsAnalysisResult {
+//   overallScore: number;
+//   sectionScores: {
+//     summary: { score: number; feedback: string };
+//     experience: { score: number; feedback: string };
+//     projects: { score: number; feedback: string };
+//     skills: { score: number; feedback: string };
+//     contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
+//   };
+//   spellingGrammar: {
+//     score: number;
+//     errors: Array<{ type: string; message: string; suggestion: string }>;
+//   };
+//   atsFriendliness: number;
+//   suggestions: string[];
+// }
 
-Credit deduction rules (already handled by the system):
-• Resume Build → 1 credit (already deducted)
-• ATS Score Analysis / ATS Check → 1 credit (already deducted)
-• Job Match Analysis / Job Fit Score → 1 credit (already deducted)
-• Generate Section Content → 1 credit (already deducted)
-• Improve Resume Section → 1 credit (already deducted)
-• Resume Rewrite and Resume Optimization → 0 credits (FREE, no deduction)
+// export interface JobMatchResult {
+//   matchPercentage: number;
+//   breakdown: {
+//     keywords: { score: number; matched: string[]; missing: string[] };
+//     skills: { score: number; matched: string[]; missing: string[] };
+//     education: { score: number; details: string };
+//     experience: { score: number; yearsMatched: number; yearsRequired?: number };
+//   };
+//   missingSkills: string[];
+//   missingKeywords: string[];
+//   suggestions: string[];
+// }
 
-Your responsibilities:
-1. Provide high-quality, professional career assistance
-2. Be concise and actionable in your responses
-3. Focus on delivering value for the credits spent
-4. For paid tasks, the system has already deducted credits - just provide the best result
-5. For FREE tasks (Resume Rewrite/Optimization), provide help without any credit mention
+// export interface AISectionSuggestion {
+//   section: string;
+//   content: string;
+//   tips: string[];
+// }
 
-Always be transparent and helpful. Maximize user's success with their credits.
-`;
+// COMMENTED OUT: analyzeAtsScore - AI limit tai, ATS score rule-based engine diye hoy
+// export const analyzeAtsScore = async (
+//   resume: ResumeContent,
+//   jobDescription?: string,
+// ): Promise<AtsAnalysisResult> => {
+//   const resumeText = JSON.stringify(resume, null, 2);
+//   const jobDescriptionSection = jobDescription
+//     ? `\n\nTarget Job Description:\n${jobDescription}\n\nUse the job description to provide more targeted feedback on keyword matching, skills relevance, and experience alignment.`
+//     : "";
+//   const prompt = `Analyze this resume for ATS...`;
+//   try {
+//     const result = await model.generateContent(prompt);
+//     const response = await result.response;
+//     const text = response.text();
+//     const jsonMatch = text.match(/\{[\s\S]*\}/);
+//     if (!jsonMatch) throw new Error("Invalid response format from AI");
+//     const analysis = JSON.parse(jsonMatch[0]);
+//     return analysis;
+//   } catch (error) {
+//     console.error("ATS Analysis error:", error);
+//     throw new Error("Failed to analyze resume ATS score");
+//   }
+// };
 
-export interface AtsAnalysisResult {
-  overallScore: number;
-  sectionScores: {
-    summary: { score: number; feedback: string };
-    experience: { score: number; feedback: string };
-    projects: { score: number; feedback: string };
-    skills: { score: number; feedback: string };
-    contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
-  };
-  spellingGrammar: {
-    score: number;
-    errors: Array<{ type: string; message: string; suggestion: string }>;
-  };
-  atsFriendliness: number;
-  suggestions: string[];
-}
+// COMMENTED OUT: analyzeJobMatch - AI limit tai
+// export const analyzeJobMatch = async (
+//   resume: ResumeContent,
+//   jobDescription: string,
+//   jobTitle?: string,
+//   company?: string,
+// ): Promise<JobMatchResult> => {
+//   const resumeText = JSON.stringify(resume, null, 2);
+//   const prompt = `Analyze how well this resume matches...`;
+//   try {
+//     const result = await model.generateContent(prompt);
+//     const response = await result.response;
+//     const text = response.text();
+//     const jsonMatch = text.match(/\{[\s\S]*\}/);
+//     if (!jsonMatch) throw new Error("Invalid response format from AI");
+//     const analysis = JSON.parse(jsonMatch[0]);
+//     return analysis;
+//   } catch (error) {
+//     console.error("Job Match Analysis error:", error);
+//     throw new Error("Failed to analyze job match");
+//   }
+// };
 
-export interface JobMatchResult {
-  matchPercentage: number;
-  breakdown: {
-    keywords: { score: number; matched: string[]; missing: string[] };
-    skills: { score: number; matched: string[]; missing: string[] };
-    education: { score: number; details: string };
-    experience: { score: number; yearsMatched: number; yearsRequired?: number };
-  };
-  missingSkills: string[];
-  missingKeywords: string[];
-  suggestions: string[];
-}
+// COMMENTED OUT: generateSectionContent - AI limit tai
+// export const generateSectionContent = async (
+//   section: string,
+//   context?: {
+//     jobTitle?: string;
+//     industry?: string;
+//     experience?: string;
+//     skills?: string[];
+//   },
+// ): Promise<AISectionSuggestion> => {
+//   const contextStr = context ? `Context: ...` : "";
+//   let prompt: string;
+//   if (section === "Work Experience") {
+//     prompt = `Generate exactly 3 bullet points...`;
+//   } else if (section === "Project Description") {
+//     prompt = `Generate exactly 3 bullet points...`;
+//   } else if (section === "Technical Skills") {
+//     prompt = `Generate exactly 10 technical skills...`;
+//   } else {
+//     prompt = `Generate a professional ${section}...`;
+//   }
+//   try {
+//     const result = await model.generateContent(prompt);
+//     const response = await result.response;
+//     const text = response.text();
+//     const jsonMatch = text.match(/\{[\s\S]*\}/);
+//     if (!jsonMatch) throw new Error("Invalid response format from AI");
+//     const suggestion = JSON.parse(jsonMatch[0]);
+//     return suggestion;
+//   } catch (error) {
+//     console.error("Section Generation error:", error);
+//     throw new Error("Failed to generate section content");
+//   }
+// };
 
-export interface AISectionSuggestion {
-  section: string;
-  content: string;
-  tips: string[];
-}
+export const researchResume = async (
+  resumeText: string,
+  fileBase64?: string,
+  mimeType?: string,
+): Promise<AIResumeResearchResult> => {
+  const parts: any[] = [];
 
-export const analyzeAtsScore = async (
-  resume: ResumeContent,
-  jobDescription?: string
-): Promise<AtsAnalysisResult> => {
-  const resumeText = JSON.stringify(resume, null, 2);
+  const textPart = `${RESEARCH_PROMPT}
 
-  const jobDescriptionSection = jobDescription
-    ? `\n\nTarget Job Description:\n${jobDescription}\n\nUse the job description to provide more targeted feedback on keyword matching, skills relevance, and experience alignment.`
-    : '';
-
-  const prompt = `
-Analyze this resume for ATS (Applicant Tracking System) compatibility and provide a detailed assessment.
-
-Resume Content:
+FULL RESUME CONTENT:
 ${resumeText}
-${jobDescriptionSection}
 
-Provide your analysis in the following JSON format ONLY (no additional text):
-{
-  "overallScore": number (0-100),
-  "sectionScores": {
-    "summary": { "score": number (0-100), "feedback": string },
-    "experience": { "score": number (0-100), "feedback": string },
-    "projects": { "score": number (0-100), "feedback": string },
-    "skills": { "score": number (0-100), "feedback": string },
-    "contactInfo": { "score": number (0-100), "feedback": string, "hasContactInfo": boolean }
-  },
-  "spellingGrammar": {
-    "score": number (0-100),
-    "errors": [
-      { "type": "spelling" | "grammar" | "punctuation" | "formatting" | "redundancy" | "content/formatting" | "grammar/punctuation", "message": string, "suggestion": string }
-    ]
-  },
-  "atsFriendliness": number (0-100),
-  "suggestions": [string]
-}
-
-IMPORTANT: For the spellingGrammar.errors[].type field, ONLY use these exact values:
-- "spelling"
-- "grammar"
-- "punctuation"
-- "formatting"
-- "redundancy"
-
-Do NOT use "content/formatting" or "grammar/punctuation" - these will cause validation errors.
-
-Return ONLY valid JSON.
+Research this resume thoroughly and return ONLY the valid JSON structure specified above.
 `;
+
+  if (fileBase64 && mimeType) {
+    parts.push({
+      inlineData: {
+        mimeType,
+        data: fileBase64,
+      },
+    });
+  }
+  parts.push({ text: textPart });
 
   try {
-    const result = await model.generateContent(prompt);
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts }],
+    });
     const response = await result.response;
     const text = response.text();
 
-    // Extract JSON from the response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('Invalid response format from AI');
+      throw new Error("Invalid response format from AI");
     }
 
-    const analysis = JSON.parse(jsonMatch[0]);
-    return analysis;
+    const raw = JSON.parse(jsonMatch[0]);
+    return normalizeResearchResult(raw);
   } catch (error) {
-    console.error('ATS Analysis error:', error);
-    throw new Error('Failed to analyze resume ATS score');
+    console.error("Resume research error:", error);
+    throw new Error("Failed to research resume");
   }
 };
 
-export const analyzeJobMatch = async (
-  resume: ResumeContent,
-  jobDescription: string,
-  jobTitle?: string,
-  company?: string
-): Promise<JobMatchResult> => {
-  const resumeText = JSON.stringify(resume, null, 2);
+const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
+  const str = (v: any, fallback = "") =>
+    typeof v === "string"
+      ? v
+      : v === null || v === undefined
+        ? fallback
+        : String(v);
+  const bool = (v: any, fallback = false) =>
+    typeof v === "boolean" ? v : v === undefined || v === null ? fallback : !!v;
+  const arr = (v: any) => (Array.isArray(v) ? v : []);
 
-  const prompt = `
-Analyze how well this resume matches the job description.
+  return {
+    personal_info: {
+      fullName: str(raw?.personal_info?.fullName),
+      jobTitle: str(raw?.personal_info?.jobTitle),
+      contact: {
+        address: str(raw?.personal_info?.contact?.address),
+        email: str(raw?.personal_info?.contact?.email),
+        phone: str(raw?.personal_info?.contact?.phone),
+        links: {
+          linkedin: str(raw?.personal_info?.contact?.links?.linkedin),
+          portfolio: str(raw?.personal_info?.contact?.links?.portfolio),
+          github: str(raw?.personal_info?.contact?.links?.github),
+        },
+      },
+    },
+    summary: str(raw?.summary),
+    experience: arr(raw?.experience).map((exp: any) => ({
+      role: str(exp?.role),
+      company: str(exp?.company),
+      location: str(exp?.location),
+      startDate: str(exp?.startDate),
+      endDate: str(exp?.endDate),
+      responsibilities: arr(exp?.responsibilities).map((v: any) => str(v)),
+    })),
+    education: arr(raw?.education).map((edu: any) => ({
+      degree: str(edu?.degree),
+      field: str(edu?.field),
+      education_level: str(edu?.education_level),
+      startDate: str(edu?.startDate),
+      endDate: str(edu?.endDate),
+    })),
+    skills: {
+      hardSkills: arr(raw?.skills?.hardSkills).map((v: any) => str(v)),
+      softSkills: arr(raw?.skills?.softSkills).map((v: any) => str(v)),
+    },
+    projects: arr(raw?.projects).map((proj: any) => ({
+      name: str(proj?.name),
+      description: arr(proj?.description).map((v: any) => str(v)),
+      link: str(proj?.link),
+    })),
+    certifications: arr(raw?.certifications).map((cert: any) => ({
+      name: str(cert?.name),
+      issuer: str(cert?.issuer),
+      date: str(cert?.date),
+      link: str(cert?.link),
+    })),
+    yearsOfExperience: str(raw?.yearsOfExperience),
+    measurableResults: arr(raw?.measurableResults).map((v: any) => str(v)),
+    resumeTone: str(raw?.resumeTone, "bad"),
+    wordCount: str(raw?.wordCount),
+    educationSection: bool(raw?.educationSection),
+    experienceSection: bool(raw?.experienceSection),
+    workHistory: bool(raw?.workHistory),
+    dateFormatting: bool(raw?.dateFormatting),
+    layout: {
+      isSingleColumn: bool(raw?.layout?.isSingleColumn, true),
+      hasTables: bool(raw?.layout?.hasTables),
+      hasImages: bool(raw?.layout?.hasImages),
+      hasIcons: bool(raw?.layout?.hasIcons),
+      hasMultiColumn: bool(raw?.layout?.hasMultiColumn),
+    },
+    fontCheck: {
+      isStandardFont: bool(raw?.fontCheck?.isStandardFont, true),
+      fontName: str(raw?.fontCheck?.fontName),
+      isReadableSize: bool(raw?.fontCheck?.isReadableSize, true),
+      hasMixedFonts: bool(raw?.fontCheck?.hasMixedFonts),
+    },
+  };
+};
 
-Resume Content:
-${resumeText}
-
-Job Title: ${jobTitle || 'Not specified'}
-Company: ${company || 'Not specified'}
-
-Job Description:
-${jobDescription}
-
-Provide your analysis in the following JSON format ONLY (no additional text):
-{
-  "matchPercentage": number (0-100),
-  "breakdown": {
-    "keywords": { "score": number (0-100), "matched": [string], "missing": [string] },
-    "skills": { "score": number (0-100), "matched": [string], "missing": [string] },
-    "education": { "score": number (0-100), "details": string },
-    "experience": { "score": number (0-100), "yearsMatched": number, "yearsRequired": number }
-  },
-  "missingSkills": [string],
-  "missingKeywords": [string],
-  "suggestions": [string]
+export interface AIJobResearchResult {
+  jobTitle: string;
+  education: {
+    degree: string;
+    field: string;
+    education_level: string;
+  };
+  skills: {
+    hardSkills: string[];
+    softSkills: string[];
+  };
+  yearsOfExperience: string;
 }
 
-Evaluation criteria:
-1. Keywords: Match important keywords from JD in resume
-2. Skills: Compare required/preferred skills with resume skills
-3. Education: Check if education requirements are met
-4. Experience: Match years of experience and relevance
+const JD_RESEARCH_PROMPT = `
+You are an expert AI job description researcher. Analyze the provided job description VERY carefully and extract all information accurately.
 
-Return ONLY valid JSON.
+RESEARCH THE FOLLOWING DETAILS:
+1. jobTitle: The job title/position being offered (e.g. "Senior Software Engineer", "Data Analyst")
+2. education: Required education background:
+   - degree: The specific degree name (e.g. "Bachelor of Science", "Bachelor's")
+   - field: The field of study (e.g. "Computer Science", "Engineering")
+   - education_level: The education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's")
+3. skills:
+   - hardSkills: ONLY technical/keyword skills required (programming languages, tools, frameworks, technologies). Just the keyword names, no descriptions.
+   - softSkills: ONLY soft/interpersonal skills (communication, leadership, teamwork, etc.). Keep separate from hardSkills.
+4. yearsOfExperience: Total years of experience required (e.g. "3-5 years", "5+ years", "2 years")
+
+STRICT RULES:
+- NO field is required. If a piece of information is NOT present in the job description, set it to empty: "" for strings, [] for arrays.
+- Do NOT invent or hallucinate information. Only extract what is actually present.
+- hardSkills must ONLY contain pure keyword names, never descriptions or phrases.
+- Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
+
+JSON STRUCTURE:
+{
+  "jobTitle": "",
+  "education": {
+    "degree": "",
+    "field": "",
+    "education_level": ""
+  },
+  "skills": {
+    "hardSkills": [""],
+    "softSkills": [""]
+  },
+  "yearsOfExperience": ""
+}
+`;
+
+export const researchJobDescription = async (
+  jdText: string,
+): Promise<AIJobResearchResult> => {
+  const textPart = `${JD_RESEARCH_PROMPT}
+
+FULL JOB DESCRIPTION:
+${jdText}
+
+Research this job description thoroughly and return ONLY the valid JSON structure specified above.
 `;
 
   try {
-    const result = await model.generateContent(prompt);
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: textPart }] }],
+    });
     const response = await result.response;
     const text = response.text();
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('Invalid response format from AI');
+      throw new Error("Invalid response format from AI");
     }
 
-    const analysis = JSON.parse(jsonMatch[0]);
-    return analysis;
+    const raw = JSON.parse(jsonMatch[0]);
+    return normalizeJDResearchResult(raw);
   } catch (error) {
-    console.error('Job Match Analysis error:', error);
-    throw new Error('Failed to analyze job match');
+    console.error("Job description research error:", error);
+    throw new Error("Failed to research job description");
   }
 };
 
-export const generateSectionContent = async (
-  section: string,
-  context?: {
-    jobTitle?: string;
-    industry?: string;
-    experience?: string;
-    skills?: string[];
-  }
-): Promise<AISectionSuggestion> => {
-  const contextStr = context
-    ? `
-Context:
-- Job Title: ${context.jobTitle || 'Not specified'}
-- Industry: ${context.industry || 'Not specified'}
-- Experience: ${context.experience || 'Not specified'}
-- Skills: ${context.skills?.join(', ') || 'Not specified'}
-`
-    : '';
+const normalizeJDResearchResult = (raw: any): AIJobResearchResult => {
+  const str = (v: any, fallback = "") =>
+    typeof v === "string"
+      ? v
+      : v === null || v === undefined
+        ? fallback
+        : String(v);
+  const arr = (v: any) => (Array.isArray(v) ? v : []);
 
-  let prompt: string;
-
-  if (section === 'Work Experience') {
-    prompt = `
-Generate exactly 3 bullet points for a ${context?.jobTitle || 'professional'} position.
-
-${contextStr}
-
-Follow this exact format (3 bullet points, each on its own line starting with •):
-Example: "• Led development of customer-facing web applications using React and Node.js, improving user engagement by 35%
-• Collaborated with cross-functional teams to deliver 15+ projects on time and within budget
-• Mentored junior developers and conducted code reviews to ensure code quality standards"
-
-The content should be:
-- Exactly 3 bullet points
-- Each bullet point on a separate line starting with •
-- ATS-friendly (no tables, images, or complex formatting)
-- Professional and compelling
-- Focus on quantifiable achievements and key responsibilities
-- Use action verbs (Led, Developed, Managed, Improved, etc.)
-
-Provide your response in the following JSON format ONLY:
-{
-  "section": "${section}",
-  "content": string (the generated content with 3 bullet points separated by newlines, each starting with •),
-  "tips": [string] (tips for customizing this section)
-}
-
-Return ONLY valid JSON.
-`;
-  } else if (section === 'Project Description') {
-    prompt = `
-Generate exactly 3 bullet points for a project: "${context?.jobTitle || 'Project Name'}".
-${context?.skills && context.skills.length > 0 ? `Technologies used: ${context.skills.join(', ')}.` : ''}
-
-${contextStr}
-
-Follow this exact format (3 bullet points, each on its own line starting with •):
-Example: "• Developed a full-stack e-commerce platform using React, Node.js, and MongoDB with payment integration
-• Implemented user authentication and authorization using JWT for secure access control
-• Deployed application on AWS with CI/CD pipeline, reducing deployment time by 50%"
-
-The content should be:
-- Exactly 3 bullet points
-- Each bullet point on a separate line starting with •
-- ATS-friendly (no tables, images, or complex formatting)
-- Professional and compelling
-- Focus on key features, technologies used, and measurable outcomes
-- Use action verbs (Developed, Implemented, Designed, Built, Created, etc.)
-
-Provide your response in the following JSON format ONLY:
-{
-  "section": "${section}",
-  "content": string (the generated content with 3 bullet points separated by newlines, each starting with •),
-  "tips": [string] (tips for customizing this section)
-}
-
-Return ONLY valid JSON.
-`;
-  } else if (section === 'Technical Skills') {
-    prompt = `
-Generate exactly 10 technical skills for a ${context?.jobTitle || 'Software Developer'}.
-
-${contextStr}
-
-Follow this exact format (10 skills separated by commas, no bullet points):
-Example: "React, JavaScript, Node.js, TypeScript, MongoDB, Docker, AWS, Git, REST APIs, GraphQL"
-
-The skills should be:
-- Exactly 10 skills
-- Only use direct technology names, frameworks, or tools
-- NO phrases like "with hands", "experience in", "developing skills", "proficiency in"
-- NO descriptions, only pure skill names like: React, Python, Docker, AWS, Git, SQL, etc.
-- Each skill should be a single technology, framework, or tool name
-
-Provide your response in the following JSON format ONLY:
-{
-  "section": "${section}",
-  "content": string (exactly 10 skills separated by commas, no bullet points),
-  "tips": [string] (tips for customizing this section)
-}
-
-Return ONLY valid JSON.
-`;
-  } else {
-    prompt = `
-Generate a professional ${section} for a ${context?.jobTitle || 'professional'} based on their job title and skills.
-
-${contextStr}
-
-Follow this exact format (4-5 sentences, each sentence on its own line):
-Example: "A self-motivated front-end developer with 4+ years of experience, skilled in building high-performance and scalable web applications using React, Next.js, and TypeScript. Experienced in developing RESTful APIs using Node.js and Express, JSON data handling, and integrating AI solutions using OpenAI and Gemini APIs. Quick learner with strong problem-solving and debugging skills."
-
-The content should be:
-- Exactly 4-5 complete sentences
-- Each sentence on a separate line
-- ATS-friendly (no tables, images, or complex formatting)
-- Professional and compelling
-- First sentence: Experience level and primary expertise
-- Middle sentences: Key skills and technical competencies
-- Final sentence: Personal qualities or soft skills
-
-Provide your response in the following JSON format ONLY:
-{
-  "section": "${section}",
-  "content": string (the generated content with sentences separated by newlines),
-  "tips": [string] (tips for customizing this section)
-}
-
-Return ONLY valid JSON.
-`;
-  }
-
-  try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('Invalid response format from AI');
-    }
-
-    const suggestion = JSON.parse(jsonMatch[0]);
-    return suggestion;
-  } catch (error) {
-    console.error('Section Generation error:', error);
-    throw new Error('Failed to generate section content');
-  }
+  return {
+    jobTitle: str(raw?.jobTitle),
+    education: {
+      degree: str(raw?.education?.degree),
+      field: str(raw?.education?.field),
+      education_level: str(raw?.education?.education_level),
+    },
+    skills: {
+      hardSkills: arr(raw?.skills?.hardSkills).map((v: any) => str(v)),
+      softSkills: arr(raw?.skills?.softSkills).map((v: any) => str(v)),
+    },
+    yearsOfExperience: str(raw?.yearsOfExperience),
+  };
 };
 
 export const improveResumeSection = async (
   section: string,
-  currentContent: string
+  currentContent: string,
 ): Promise<{ improved: string; changes: string[] }> => {
   const prompt = `
 Improve the following resume ${section} section to be more impactful and ATS-friendly.
@@ -377,13 +627,13 @@ Return ONLY valid JSON.
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('Invalid response format from AI');
+      throw new Error("Invalid response format from AI");
     }
 
     const improvement = JSON.parse(jsonMatch[0]);
     return improvement;
   } catch (error) {
-    console.error('Section Improvement error:', error);
-    throw new Error('Failed to improve section content');
+    console.error("Section Improvement error:", error);
+    throw new Error("Failed to improve section content");
   }
 };

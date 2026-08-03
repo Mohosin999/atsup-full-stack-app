@@ -1,6 +1,4 @@
 import { prisma } from '../../lib/prisma';
-import { parseResumeFile } from '../resumeParser';
-import { ResumeContent } from '../../types';
 import { findUserById } from '../auth';
 
 interface PaginationOptions {
@@ -85,7 +83,8 @@ export const createResumeFromUpload = async (
   userId: string,
   file: UploadedFile
 ) => {
-  const parsedContent = await parseResumeFile(file.path, file.mimetype);
+  const { parseResumeFile } = await import('../resumeParser');
+  const parsed = await parseResumeFile(file.path, file.mimetype);
 
   const resume = await prisma.resume.create({
     data: {
@@ -97,7 +96,7 @@ export const createResumeFromUpload = async (
         size: file.size,
         path: file.path,
       },
-      content: parsedContent,
+      content: { rawText: parsed.text } as any,
       metadata: {
         filename: file.filename,
         originalName: file.originalname,
@@ -125,7 +124,7 @@ export const createResumeFromUpload = async (
 
 export const createResumeFromContent = async (
   userId: string,
-  content: ResumeContent
+  content: any
 ) => {
   const user = await findUserById(userId);
 

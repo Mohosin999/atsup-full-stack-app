@@ -220,8 +220,6 @@ export type UserWhereInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryListRelationFilter
   jobDescriptions?: Prisma.JobDescriptionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryListRelationFilter
-  resumeTemplates?: Prisma.ResumeTemplateListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -241,8 +239,6 @@ export type UserOrderByWithRelationInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryOrderByRelationAggregateInput
   jobDescriptions?: Prisma.JobDescriptionOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryOrderByRelationAggregateInput
-  resumeTemplates?: Prisma.ResumeTemplateOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -265,8 +261,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   atsScoreHistories?: Prisma.AtsScoreHistoryListRelationFilter
   jobDescriptions?: Prisma.JobDescriptionListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryListRelationFilter
-  resumeTemplates?: Prisma.ResumeTemplateListRelationFilter
 }, "id" | "email" | "googleId">
 
 export type UserOrderByWithAggregationInput = {
@@ -318,8 +312,6 @@ export type UserCreateInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -339,8 +331,6 @@ export type UserUncheckedCreateInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -360,8 +350,6 @@ export type UserUpdateInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -381,8 +369,6 @@ export type UserUncheckedUpdateInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -490,20 +476,6 @@ export type UserUpdateOneRequiredWithoutResumesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResumesInput, Prisma.UserUpdateWithoutResumesInput>, Prisma.UserUncheckedUpdateWithoutResumesInput>
 }
 
-export type UserCreateNestedOneWithoutResumeTemplatesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutResumeTemplatesInput, Prisma.UserUncheckedCreateWithoutResumeTemplatesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumeTemplatesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutResumeTemplatesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutResumeTemplatesInput, Prisma.UserUncheckedCreateWithoutResumeTemplatesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumeTemplatesInput
-  upsert?: Prisma.UserUpsertWithoutResumeTemplatesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResumeTemplatesInput, Prisma.UserUpdateWithoutResumeTemplatesInput>, Prisma.UserUncheckedUpdateWithoutResumeTemplatesInput>
-}
-
 export type UserCreateNestedOneWithoutAnalysesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAnalysesInput, Prisma.UserUncheckedCreateWithoutAnalysesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAnalysesInput
@@ -574,20 +546,6 @@ export type UserUpdateOneRequiredWithoutPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentsInput, Prisma.UserUpdateWithoutPaymentsInput>, Prisma.UserUncheckedUpdateWithoutPaymentsInput>
 }
 
-export type UserCreateNestedOneWithoutResumeBuildHistoriesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutResumeBuildHistoriesInput, Prisma.UserUncheckedCreateWithoutResumeBuildHistoriesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumeBuildHistoriesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutResumeBuildHistoriesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutResumeBuildHistoriesInput, Prisma.UserUncheckedCreateWithoutResumeBuildHistoriesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumeBuildHistoriesInput
-  upsert?: Prisma.UserUpsertWithoutResumeBuildHistoriesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResumeBuildHistoriesInput, Prisma.UserUpdateWithoutResumeBuildHistoriesInput>, Prisma.UserUncheckedUpdateWithoutResumeBuildHistoriesInput>
-}
-
 export type UserCreateWithoutResumesInput = {
   id?: string
   email: string
@@ -604,8 +562,6 @@ export type UserCreateWithoutResumesInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutResumesInput = {
@@ -624,8 +580,6 @@ export type UserUncheckedCreateWithoutResumesInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutResumesInput = {
@@ -660,8 +614,6 @@ export type UserUpdateWithoutResumesInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResumesInput = {
@@ -680,104 +632,6 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutResumeTemplatesInput = {
-  id?: string
-  email: string
-  name: string
-  googleId?: string | null
-  password?: string | null
-  picture?: string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
-  analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
-  atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
-  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutResumeTemplatesInput = {
-  id?: string
-  email: string
-  name: string
-  googleId?: string | null
-  password?: string | null
-  picture?: string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
-  analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
-  atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
-  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutResumeTemplatesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutResumeTemplatesInput, Prisma.UserUncheckedCreateWithoutResumeTemplatesInput>
-}
-
-export type UserUpsertWithoutResumeTemplatesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutResumeTemplatesInput, Prisma.UserUncheckedUpdateWithoutResumeTemplatesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutResumeTemplatesInput, Prisma.UserUncheckedCreateWithoutResumeTemplatesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutResumeTemplatesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutResumeTemplatesInput, Prisma.UserUncheckedUpdateWithoutResumeTemplatesInput>
-}
-
-export type UserUpdateWithoutResumeTemplatesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
-  analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
-  atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
-  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutResumeTemplatesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
-  analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
-  atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
-  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAnalysesInput = {
@@ -796,8 +650,6 @@ export type UserCreateWithoutAnalysesInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAnalysesInput = {
@@ -816,8 +668,6 @@ export type UserUncheckedCreateWithoutAnalysesInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAnalysesInput = {
@@ -852,8 +702,6 @@ export type UserUpdateWithoutAnalysesInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAnalysesInput = {
@@ -872,8 +720,6 @@ export type UserUncheckedUpdateWithoutAnalysesInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAtsScoresInput = {
@@ -892,8 +738,6 @@ export type UserCreateWithoutAtsScoresInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAtsScoresInput = {
@@ -912,8 +756,6 @@ export type UserUncheckedCreateWithoutAtsScoresInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAtsScoresInput = {
@@ -948,8 +790,6 @@ export type UserUpdateWithoutAtsScoresInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAtsScoresInput = {
@@ -968,8 +808,6 @@ export type UserUncheckedUpdateWithoutAtsScoresInput = {
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAtsScoreHistoriesInput = {
@@ -988,8 +826,6 @@ export type UserCreateWithoutAtsScoreHistoriesInput = {
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAtsScoreHistoriesInput = {
@@ -1008,8 +844,6 @@ export type UserUncheckedCreateWithoutAtsScoreHistoriesInput = {
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAtsScoreHistoriesInput = {
@@ -1044,8 +878,6 @@ export type UserUpdateWithoutAtsScoreHistoriesInput = {
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAtsScoreHistoriesInput = {
@@ -1064,8 +896,6 @@ export type UserUncheckedUpdateWithoutAtsScoreHistoriesInput = {
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutJobDescriptionsInput = {
@@ -1084,8 +914,6 @@ export type UserCreateWithoutJobDescriptionsInput = {
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutJobDescriptionsInput = {
@@ -1104,8 +932,6 @@ export type UserUncheckedCreateWithoutJobDescriptionsInput = {
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutJobDescriptionsInput = {
@@ -1140,8 +966,6 @@ export type UserUpdateWithoutJobDescriptionsInput = {
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutJobDescriptionsInput = {
@@ -1160,8 +984,6 @@ export type UserUncheckedUpdateWithoutJobDescriptionsInput = {
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPaymentsInput = {
@@ -1180,8 +1002,6 @@ export type UserCreateWithoutPaymentsInput = {
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPaymentsInput = {
@@ -1200,8 +1020,6 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPaymentsInput = {
@@ -1236,8 +1054,6 @@ export type UserUpdateWithoutPaymentsInput = {
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPaymentsInput = {
@@ -1256,104 +1072,6 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
   jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
-  resumeBuildHistories?: Prisma.ResumeBuildHistoryUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutResumeBuildHistoriesInput = {
-  id?: string
-  email: string
-  name: string
-  googleId?: string | null
-  password?: string | null
-  picture?: string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
-  analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
-  atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
-  jobDescriptions?: Prisma.JobDescriptionCreateNestedManyWithoutUserInput
-  payments?: Prisma.PaymentCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutResumeBuildHistoriesInput = {
-  id?: string
-  email: string
-  name: string
-  googleId?: string | null
-  password?: string | null
-  picture?: string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
-  analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
-  atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedCreateNestedManyWithoutUserInput
-  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutUserInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutResumeBuildHistoriesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutResumeBuildHistoriesInput, Prisma.UserUncheckedCreateWithoutResumeBuildHistoriesInput>
-}
-
-export type UserUpsertWithoutResumeBuildHistoriesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutResumeBuildHistoriesInput, Prisma.UserUncheckedUpdateWithoutResumeBuildHistoriesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutResumeBuildHistoriesInput, Prisma.UserUncheckedCreateWithoutResumeBuildHistoriesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutResumeBuildHistoriesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutResumeBuildHistoriesInput, Prisma.UserUncheckedUpdateWithoutResumeBuildHistoriesInput>
-}
-
-export type UserUpdateWithoutResumeBuildHistoriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
-  analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
-  atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUpdateManyWithoutUserNestedInput
-  payments?: Prisma.PaymentUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutResumeBuildHistoriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  picture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferences?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  subscription?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
-  analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
-  atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
-  atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
-  jobDescriptions?: Prisma.JobDescriptionUncheckedUpdateManyWithoutUserNestedInput
-  payments?: Prisma.PaymentUncheckedUpdateManyWithoutUserNestedInput
-  resumeTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1368,8 +1086,6 @@ export type UserCountOutputType = {
   atsScoreHistories: number
   jobDescriptions: number
   payments: number
-  resumeBuildHistories: number
-  resumeTemplates: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1379,8 +1095,6 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   atsScoreHistories?: boolean | UserCountOutputTypeCountAtsScoreHistoriesArgs
   jobDescriptions?: boolean | UserCountOutputTypeCountJobDescriptionsArgs
   payments?: boolean | UserCountOutputTypeCountPaymentsArgs
-  resumeBuildHistories?: boolean | UserCountOutputTypeCountResumeBuildHistoriesArgs
-  resumeTemplates?: boolean | UserCountOutputTypeCountResumeTemplatesArgs
 }
 
 /**
@@ -1435,20 +1149,6 @@ export type UserCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.PaymentWhereInput
 }
 
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountResumeBuildHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ResumeBuildHistoryWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountResumeTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ResumeTemplateWhereInput
-}
-
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1467,8 +1167,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   atsScoreHistories?: boolean | Prisma.User$atsScoreHistoriesArgs<ExtArgs>
   jobDescriptions?: boolean | Prisma.User$jobDescriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
-  resumeBuildHistories?: boolean | Prisma.User$resumeBuildHistoriesArgs<ExtArgs>
-  resumeTemplates?: boolean | Prisma.User$resumeTemplatesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1519,8 +1217,6 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   atsScoreHistories?: boolean | Prisma.User$atsScoreHistoriesArgs<ExtArgs>
   jobDescriptions?: boolean | Prisma.User$jobDescriptionsArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
-  resumeBuildHistories?: boolean | Prisma.User$resumeBuildHistoriesArgs<ExtArgs>
-  resumeTemplates?: boolean | Prisma.User$resumeTemplatesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1535,8 +1231,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     atsScoreHistories: Prisma.$AtsScoreHistoryPayload<ExtArgs>[]
     jobDescriptions: Prisma.$JobDescriptionPayload<ExtArgs>[]
     payments: Prisma.$PaymentPayload<ExtArgs>[]
-    resumeBuildHistories: Prisma.$ResumeBuildHistoryPayload<ExtArgs>[]
-    resumeTemplates: Prisma.$ResumeTemplatePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1949,8 +1643,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   atsScoreHistories<T extends Prisma.User$atsScoreHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$atsScoreHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AtsScoreHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   jobDescriptions<T extends Prisma.User$jobDescriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobDescriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobDescriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.User$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  resumeBuildHistories<T extends Prisma.User$resumeBuildHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resumeBuildHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeBuildHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  resumeTemplates<T extends Prisma.User$resumeTemplatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resumeTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2524,54 +2216,6 @@ export type User$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
-}
-
-/**
- * User.resumeBuildHistories
- */
-export type User$resumeBuildHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ResumeBuildHistory
-   */
-  select?: Prisma.ResumeBuildHistorySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ResumeBuildHistory
-   */
-  omit?: Prisma.ResumeBuildHistoryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ResumeBuildHistoryInclude<ExtArgs> | null
-  where?: Prisma.ResumeBuildHistoryWhereInput
-  orderBy?: Prisma.ResumeBuildHistoryOrderByWithRelationInput | Prisma.ResumeBuildHistoryOrderByWithRelationInput[]
-  cursor?: Prisma.ResumeBuildHistoryWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ResumeBuildHistoryScalarFieldEnum | Prisma.ResumeBuildHistoryScalarFieldEnum[]
-}
-
-/**
- * User.resumeTemplates
- */
-export type User$resumeTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ResumeTemplate
-   */
-  select?: Prisma.ResumeTemplateSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ResumeTemplate
-   */
-  omit?: Prisma.ResumeTemplateOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ResumeTemplateInclude<ExtArgs> | null
-  where?: Prisma.ResumeTemplateWhereInput
-  orderBy?: Prisma.ResumeTemplateOrderByWithRelationInput | Prisma.ResumeTemplateOrderByWithRelationInput[]
-  cursor?: Prisma.ResumeTemplateWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ResumeTemplateScalarFieldEnum | Prisma.ResumeTemplateScalarFieldEnum[]
 }
 
 /**

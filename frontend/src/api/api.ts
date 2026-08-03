@@ -96,7 +96,7 @@ export const jobApi = {
 };
 
 export const atsScoreApi = {
-  analyze: (data: { resumeName: string; resumeContent: any; jobDescription?: string; structuredJD?: any }) =>
+  analyze: (data: { resumeName: string; aiResearch?: any; jobDescription?: string; structuredJD?: any }) =>
     api.post('/ats-score-history/analyze', data),
   getAll: (page = 1, limit = 3) => api.get(`/ats-score-history?page=${page}&limit=${limit}`),
   getById: (id: string) => api.get(`/ats-score-history/${id}`),
@@ -104,30 +104,10 @@ export const atsScoreApi = {
   deleteAll: () => api.delete('/ats-score-history'),
 };
 
-export const resumeBuildHistoryApi = {
-  save: (data: { resumeContent: any; resumeName?: string }) => api.post('/resume-build-history', data),
-  getAll: (page = 1, limit = 3) => api.get(`/resume-build-history?page=${page}&limit=${limit}`),
-  getById: (id: string) => api.get(`/resume-build-history/${id}`),
-  update: (id: string, data: { resumeContent: any }) => api.put(`/resume-build-history/${id}`, data),
-  delete: (id: string) => api.delete(`/resume-build-history/${id}`),
-  deleteAll: () => api.delete('/resume-build-history'),
-};
-
 export const resumeParserApi = {
   parse: (formData: FormData) => api.post('/resume-parser/parse', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
-};
-
-export const resumeBuilderApi = {
-  createTemplate: (data: { name?: string }) => api.post('/resume-builder/templates', data),
-  getTemplates: (page = 1, limit = 10) => api.get(`/resume-builder/templates?page=${page}&limit=${limit}`),
-  getTemplate: (id: string) => api.get(`/resume-builder/templates/${id}`),
-  updateTemplate: (id: string, data: any) => api.put(`/resume-builder/templates/${id}`, data),
-  deleteTemplate: (id: string) => api.delete(`/resume-builder/templates/${id}`),
-  generateSection: (data: { section: string; context?: any }) => api.post('/resume-builder/generate-section', data),
-  improveSection: (data: { section: string; content: string }) => api.post('/resume-builder/improve-section', data),
-  checkAts: (data: { content: any }) => api.post('/resume-builder/check-ats', data),
 };
 
 export default api;

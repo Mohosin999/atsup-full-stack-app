@@ -22,7 +22,6 @@ interface NavLink {
 const NAV_LINKS: NavLink[] = [
   { path: "/dashboard", label: "Dashboard" },
   { path: "/ats-score", label: "ATS Score" },
-  { path: "/builder", label: "Builder" },
 ];
 
 export default function Navbar() {

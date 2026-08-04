@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScore";
 import AtsScoreHistory from "./pages/AtsScoreHistory";
+import ResumeBuilder from "./pages/ResumeBuilder";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
@@ -96,6 +97,14 @@ function App() {
           element={
             <PrivateRoute>
               <AtsScoreHistory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/resume-builder"
+          element={
+            <PrivateRoute>
+              <ResumeBuilder />
             </PrivateRoute>
           }
         />

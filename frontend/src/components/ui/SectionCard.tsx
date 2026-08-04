@@ -18,27 +18,27 @@ export default function SectionCard({ id, title, icon: Icon, expanded, onToggle,
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 overflow-hidden transition-shadow hover:shadow-md"
+      className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-shadow hover:shadow-md"
     >
       <button 
         onClick={() => onToggle(id)} 
-        className="w-full flex items-center justify-between p-4 hover:bg-gray-700/50 transition-colors bg-gradient-to-r from-gray-800 to-gray-800/50"
+        className="w-full flex items-center justify-between p-4 hover:bg-gray-100 transition-colors bg-gradient-to-r from-gray-50 to-gray-100"
       >
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
             expanded 
               ? 'bg-blue-600 text-white' 
-              : 'bg-gray-700 text-gray-400'
+              : 'bg-gray-100 text-gray-600'
           }`}>
             <Icon className="w-5 h-5" />
           </div>
           <div className="text-left">
-            <span className="font-semibold text-white block">{title}</span>
+            <span className="font-semibold text-gray-900 block">{title}</span>
           </div>
         </div>
         {expanded ? 
           <ChevronUp className="w-5 h-5 text-blue-500" /> : 
-          <ChevronDown className="w-5 h-5 text-gray-400" />
+          <ChevronDown className="w-5 h-5 text-gray-600" />
         }
       </button>
       <AnimatePresence>
@@ -47,7 +47,7 @@ export default function SectionCard({ id, title, icon: Icon, expanded, onToggle,
             initial={{ height: 0, opacity: 0 }} 
             animate={{ height: 'auto', opacity: 1 }} 
             exit={{ height: 0, opacity: 0 }}
-            className="border-t border-gray-700"
+            className="border-t border-gray-200"
           >
             <div className="p-5">
               {children}

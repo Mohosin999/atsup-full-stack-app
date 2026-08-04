@@ -16,10 +16,10 @@ const getScoreColor = (score: number) => {
 };
 
 const getBadge = (score: number) => {
-  if (score >= 80) return { label: "Excellent", class: "bg-green-500/15 text-green-400 border-green-500/30" };
-  if (score >= 60) return { label: "Good", class: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30" };
-  if (score >= 40) return { label: "Fair", class: "bg-orange-500/15 text-orange-400 border-orange-500/30" };
-  return { label: "Needs Work", class: "bg-red-500/15 text-red-400 border-red-500/30" };
+  if (score >= 80) return { label: "Excellent", class: "bg-green-50 text-green-700 border-green-200" };
+  if (score >= 60) return { label: "Good", class: "bg-yellow-50 text-yellow-700 border-yellow-200" };
+  if (score >= 40) return { label: "Fair", class: "bg-orange-50 text-orange-700 border-orange-200" };
+  return { label: "Needs Work", class: "bg-red-50 text-red-700 border-red-200" };
 };
 
 const ScoreCircle: React.FC<ScoreCircleProps> = ({
@@ -53,7 +53,7 @@ const ScoreCircle: React.FC<ScoreCircleProps> = ({
             cy={sizePx / 2}
             r={radius}
             fill="none"
-            stroke="rgba(255,255,255,0.08)"
+            stroke="rgba(0,0,0,0.08)"
             strokeWidth={strokeWidth}
           />
           <motion.circle
@@ -75,17 +75,17 @@ const ScoreCircle: React.FC<ScoreCircleProps> = ({
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.4 }}
-            className={`${textSize} font-bold text-white`}
+            className={`${textSize} font-bold text-gray-900`}
           >
             {score}
-            <span className="text-2xl font-semibold text-gray-400">%</span>
+            <span className="text-2xl font-semibold text-gray-600">%</span>
           </motion.span>
           <span className={`mt-1 px-2 py-0.5 text-[11px] font-medium rounded-full border ${badge.class}`}>
             {badge.label}
           </span>
         </div>
       </div>
-      <p className="mt-3 text-sm font-medium text-gray-300">{label}</p>
+      <p className="mt-3 text-sm font-medium text-gray-700">{label}</p>
       {sublabel && <p className="text-xs text-gray-500">{sublabel}</p>}
     </div>
   );

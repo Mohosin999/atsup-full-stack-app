@@ -9,9 +9,9 @@ interface ResumeSkillsProps {
 }
 
 export default function ResumeSkills({ content, forPdf }: ResumeSkillsProps) {
-  const textColor = forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-100";
+  const textColor = forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-800";
   const titleColor = forPdf ? "text-black" : "text-gray-900 dark:text-white";
-  const borderColor = forPdf ? "border-gray-700" : "border-gray-700 dark:border-gray-600";
+  const borderColor = forPdf ? "border-gray-200" : "border-gray-200 dark:border-gray-300";
 
   const skills = content.skills || [];
 

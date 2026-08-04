@@ -50,7 +50,7 @@ const SectionScoreCard: React.FC<SectionScoreCardProps> = ({
         </div>
         <span className="text-2xl font-bold">{score}%</span>
       </div>
-      <p className="text-sm text-gray-700 dark:text-gray-300">{feedback}</p>
+      <p className="text-sm text-gray-700 dark:text-gray-700">{feedback}</p>
     </motion.div>
   );
 };

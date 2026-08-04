@@ -110,7 +110,19 @@ export interface AIResumeResearch {
   };
 }
 
-export interface ResumeContent {  personalInfo: {
+export interface SkillCategory {
+  name: string;
+  skills: string[];
+}
+
+export interface Certification {
+  name: string;
+  issuer?: string;
+  date?: string;
+}
+
+export interface ResumeContent {
+  personalInfo: {
     fullName?: string;
     jobTitle?: string;
     contact?: {
@@ -119,6 +131,7 @@ export interface ResumeContent {  personalInfo: {
       linkedIn?: string;
       address?: {
         city?: string;
+        state?: string;
         division?: string;
         zipCode?: string;
       };
@@ -135,16 +148,13 @@ export interface ResumeContent {  personalInfo: {
   achievements?: Achievement[];
   education: Education[];
   skills: string[];
+  skillCategories?: SkillCategory[];
   hardSkills?: string[];
   softSkills?: string[];
   actionVerbs?: string[];
   keywords?: string[];
   measurableResults?: string[];
-  certifications?: {
-    name: string;
-    issuer?: string;
-    date?: string;
-  }[];
+  certifications?: Certification[];
 }
 
 export interface Experience {

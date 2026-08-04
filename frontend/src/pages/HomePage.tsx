@@ -27,7 +27,7 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900/95 to-gray-900 overflow-hidden relative">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 overflow-hidden relative">
         <FloatingOrbs />
         <main className="relative z-10">
           <HeroSection

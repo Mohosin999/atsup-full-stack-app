@@ -34,17 +34,17 @@ export default function TestimonialsSection({
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-green-900/50 rounded-full text-green-400 text-sm font-semibold mb-4 border border-green-700/50"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full text-green-700 text-sm font-semibold mb-4 border border-green-200"
           >
             <Star className="w-4 h-4" /> Success Stories
           </motion.div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-white">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">
             Loved by{" "}
-            <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
               Thousands
             </span>
           </h2>
-          <p className="mt-4 text-base md:text-lg text-gray-300">
+          <p className="mt-4 text-base md:text-lg text-gray-700">
             See what our users have to say
           </p>
         </motion.div>
@@ -60,7 +60,7 @@ export default function TestimonialsSection({
               key={testimonial.name}
               variants={fadeInUp}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="group bg-gray-800/50 backdrop-blur rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:shadow-green-500/20 border border-gray-700 hover:border-green-600 transition-all duration-300"
+              className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:shadow-green-500/20 border border-gray-200 hover:border-green-600 transition-all duration-300"
             >
               <div className="flex gap-1 mb-6">
                 {[...Array(testimonial.rating)].map((_, i) => (
@@ -71,11 +71,11 @@ export default function TestimonialsSection({
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 + i * 0.05 }}
                   >
-                    <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+                    <Star className="w-5 h-5 fill-amber-400 text-amber-600" />
                   </motion.div>
                 ))}
               </div>
-              <p className="text-gray-300 mb-6 leading-relaxed italic">
+              <p className="text-gray-700 mb-6 leading-relaxed italic">
                 "{testimonial.content}"
               </p>
               <div className="flex items-center gap-4">
@@ -83,8 +83,8 @@ export default function TestimonialsSection({
                   {testimonial.name.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-bold text-white">{testimonial.name}</p>
-                  <p className="text-sm text-gray-300">{testimonial.role}</p>
+                  <p className="font-bold text-gray-900">{testimonial.name}</p>
+                  <p className="text-sm text-gray-700">{testimonial.role}</p>
                 </div>
               </div>
             </motion.div>

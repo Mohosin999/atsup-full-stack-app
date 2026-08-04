@@ -38,7 +38,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-20 pb-12 text-">
+    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mt-6 mb-1">
           <BackButton />
@@ -68,7 +68,7 @@ const WelcomeHeader = ({ user, credits }: { user: any; credits: number }) => (
     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
       Welcome back, {user?.name?.split(" ")[0] || "User"}!
     </h1>
-    <p className="text-gray-600 dark:text-gray-400 mt-1">
+    <p className="text-gray-600 dark:text-gray-600 mt-1">
       Analyze your resume and check your job application readiness
     </p>
     {credits > 0 && (
@@ -104,13 +104,13 @@ const QuickStats = ({
       </div>
     ) : (
       <div className="space-y-4">
-        <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-100 rounded-lg">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              <Zap className="w-5 h-5 text-amber-600 dark:text-amber-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500 dark:text-gray-600">
                 Available Credits
               </p>
               <p className="font-semibold text-gray-900 dark:text-white">
@@ -120,13 +120,13 @@ const QuickStats = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-100 rounded-lg">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
               <FileCheck className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500 dark:text-gray-600">
                 ATS Analyses
               </p>
               <p className="font-semibold text-gray-900 dark:text-white">
@@ -143,7 +143,7 @@ const QuickStats = ({
         <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
           Need More Credits?
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+        <p className="text-sm text-gray-600 dark:text-gray-600 mb-3">
           Get more credits to analyze more resumes.
         </p>
         <Link

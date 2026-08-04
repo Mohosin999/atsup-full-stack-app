@@ -11,11 +11,11 @@ interface ResumeSummaryProps {
 export default function ResumeSummary({ content, forPdf }: ResumeSummaryProps) {
   const textColor = forPdf
     ? "text-gray-900"
-    : "text-gray-900 dark:text-gray-100";
+    : "text-gray-900 dark:text-gray-800";
   const titleColor = forPdf ? "text-black" : "text-gray-900 dark:text-white";
   const borderColor = forPdf
-    ? "border-gray-700"
-    : "border-gray-700 dark:border-gray-600";
+    ? "border-gray-200"
+    : "border-gray-200 dark:border-gray-300";
 
   const cleanHtmlContent = (html: string) => {
     return html

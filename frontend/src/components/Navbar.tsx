@@ -21,6 +21,7 @@ interface NavLink {
 
 const NAV_LINKS: NavLink[] = [
   { path: "/dashboard", label: "Dashboard" },
+  { path: "/resume-builder", label: "Resume Builder" },
   { path: "/ats-score", label: "ATS Score" },
 ];
 
@@ -40,12 +41,12 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-gray-900/80 backdrop-blur-md border-b border-gray-600">
+      <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-white/80 backdrop-blur-md border-b border-gray-300">
         <div className="section-container">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-2">
               <img src="/favicon.svg" alt="CVCoach" className="w-8 h-8" />
-              <span className="text-xl font-bold text-white">
+              <span className="text-xl font-bold text-gray-900">
                 CV<span className="text-primary">Coach</span>
               </span>
             </Link>
@@ -83,9 +84,9 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   >
                     {mobileMenuOpen ? (
-                      <X className="w-6 h-6 text-white" />
+                      <X className="w-6 h-6 text-gray-900" />
                     ) : (
-                      <Menu className="w-6 h-6 text-white" />
+                      <Menu className="w-6 h-6 text-gray-900" />
                     )}
                   </button>
                 </>
@@ -106,7 +107,7 @@ export default function Navbar() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="md:hidden absolute top-16 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-b border-gray-800 py-6 px-4"
+              className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 py-6 px-4"
             >
               <div className="flex flex-col gap-4">
                 <Link

@@ -104,34 +104,34 @@ export default function PaymentSuccess() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center pt-20">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-50 flex items-center justify-center pt-20">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
           <Loader className="w-16 h-16 text-primary mx-auto mb-4 animate-spin" />
-          <p className="text-gray-600 dark:text-gray-400">Verifying payment...</p>
+          <p className="text-gray-600 dark:text-gray-600">Verifying payment...</p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center pt-20 pb-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-50 flex items-center justify-center pt-20 pb-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full mx-4"
       >
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
+        <div className="bg-white dark:bg-white rounded-2xl shadow-lg p-8 text-center">
           {success ? (
             <>
               <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 Payment Successful!
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-gray-600 dark:text-gray-600 mb-8">
                 Thank you for your purchase. Your credits have been added to your account.
               </p>
               <Link
@@ -147,7 +147,7 @@ export default function PaymentSuccess() {
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 Payment Failed
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-gray-600 dark:text-gray-600 mb-8">
                 Something went wrong with your payment. Please try again.
               </p>
               <Link

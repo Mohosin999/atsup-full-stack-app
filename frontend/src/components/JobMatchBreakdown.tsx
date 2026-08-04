@@ -30,18 +30,18 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   const matchedCount = category.matched.length;
 
   return (
-    <div className="bg-gray-800 rounded-lg p-5">
+    <div className="bg-white rounded-lg p-5">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="font-semibold text-white flex items-center gap-2">
+        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full ${color}`} />
           {title}
         </h3>
-        <span className="text-xl font-bold text-white">{category.score}%</span>
+        <span className="text-xl font-bold text-gray-900">{category.score}%</span>
       </div>
-      <p className="text-xs text-gray-400 mb-3">{hint}</p>
+      <p className="text-xs text-gray-600 mb-3">{hint}</p>
 
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+        <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${category.score}%` }}
@@ -49,7 +49,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
             className={`h-full ${color}`}
           />
         </div>
-        <span className="text-xs text-gray-400">
+        <span className="text-xs text-gray-600">
           {matchedCount}/{total} matched
         </span>
       </div>
@@ -58,7 +58,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         {category.matched.map((item) => (
           <span
             key={item}
-            className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-green-500/10 text-green-400 border-green-500/30"
+            className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-green-500/10 text-green-600 border-green-500/30"
           >
             <CheckCircle className="w-3 h-3" />
             {item}
@@ -67,7 +67,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         {category.missing.map((item) => (
           <span
             key={item}
-            className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-red-500/10 text-red-400 border-red-500/30"
+            className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-red-500/10 text-red-600 border-red-500/30"
           >
             <XCircle className="w-3 h-3" />
             {item}
@@ -130,20 +130,20 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
   const verdict =
     avgScore >= 80
       ? {
-          icon: <Sparkles className="w-5 h-5 text-green-400" />,
+          icon: <Sparkles className="w-5 h-5 text-green-600" />,
           text: "Excellent match! Your resume aligns strongly with this job description.",
-          color: "text-green-400",
+          color: "text-green-600",
         }
       : avgScore >= 60
         ? {
-            icon: <Target className="w-5 h-5 text-yellow-400" />,
+            icon: <Target className="w-5 h-5 text-yellow-600" />,
             text: "Good match. A few tweaks will make your resume stand out for this role.",
-            color: "text-yellow-400",
+            color: "text-yellow-600",
           }
         : {
-            icon: <AlertCircle className="w-5 h-5 text-red-400" />,
+            icon: <AlertCircle className="w-5 h-5 text-red-600" />,
             text: "Your resume needs work to compete for this role. Focus on the gaps below.",
-            color: "text-red-400",
+            color: "text-red-600",
           };
 
   return (
@@ -153,28 +153,28 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
       className="space-y-4"
     >
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+        <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
           <Target className="w-5 h-5 text-green-500" />
           Job Description Match
         </h2>
         <div className="flex items-center gap-2">
-          <span className="text-3xl font-bold text-white">{avgScore}%</span>
-          <span className="text-sm text-gray-400">overall match</span>
+          <span className="text-3xl font-bold text-gray-900">{avgScore}%</span>
+          <span className="text-sm text-gray-600">overall match</span>
         </div>
       </div>
 
-      <div className="bg-gray-800 rounded-lg p-4 flex items-center gap-3">
+      <div className="bg-white rounded-lg p-4 flex items-center gap-3">
         {verdict.icon}
         <p className={`font-medium ${verdict.color}`}>{verdict.text}</p>
       </div>
 
       {matchedTotal > 0 && (
-        <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-green-400 mb-2">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center gap-2 text-green-600 mb-2">
             <CheckCircle className="w-4 h-4" />
             <span className="font-medium">What you did well</span>
           </div>
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-gray-700">
             You matched {matchedTotal} of {totalItems} items from the job
             description.
           </p>
@@ -182,12 +182,12 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
       )}
 
       {allMissing.length > 0 && (
-        <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-yellow-400 mb-2">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-center gap-2 text-yellow-600 mb-2">
             <Target className="w-4 h-4" />
             <span className="font-medium">How to improve</span>
           </div>
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-gray-700">
             {allMissing.slice(0, 5).join(", ")} are required by the job but
             missing from your resume. Add them to your skills section and
             provide examples where you used them.

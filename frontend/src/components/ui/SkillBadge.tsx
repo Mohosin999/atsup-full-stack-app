@@ -9,11 +9,11 @@ interface SkillBadgeProps {
 const getTypeClasses = (type: 'matched' | 'missing' | 'neutral') => {
   switch (type) {
     case 'matched':
-      return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800';
+      return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-600 border-green-200 dark:border-green-800';
     case 'missing':
-      return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800';
+      return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-600 border-red-200 dark:border-red-800';
     default:
-      return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600';
+      return 'bg-gray-100 dark:bg-gray-100 text-gray-700 dark:text-gray-700 border-gray-200 dark:border-gray-300';
   }
 };
 
@@ -57,7 +57,7 @@ export const SkillList: React.FC<SkillListProps> = ({
 }) => {
   if (!skills || skills.length === 0) {
     return (
-      <p className="text-sm text-gray-500 dark:text-gray-400">
+      <p className="text-sm text-gray-500 dark:text-gray-600">
         No skills to display
       </p>
     );
@@ -72,7 +72,7 @@ export const SkillList: React.FC<SkillListProps> = ({
         <SkillBadge key={skill} skill={skill} type={type} />
       ))}
       {remaining > 0 && (
-        <span className="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">
+        <span className="px-2 py-1 text-xs text-gray-500 dark:text-gray-600">
           +{remaining} more
         </span>
       )}

@@ -34,7 +34,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-900/50 to-emerald-900/50 rounded-full text-green-400 text-sm font-semibold mb-8 border border-green-700/50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full text-green-700 text-sm font-semibold mb-8 border border-green-200"
             >
               <Sparkles className="w-4 h-4" /> Powered by AI
               <span className="flex h-2 w-2">
@@ -46,16 +46,16 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-4xl md:text-5xl font-bold text-white leading-tight"
+              className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
             >
               Turning Resume into{" "}
-              <span className="text-lime-400">Opportunities with AI</span>
+              <span className="text-green-600">Opportunities with AI</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="mt-8 text-base md:text-lg text-gray-300 max-w-xl"
+              className="mt-8 text-base md:text-lg text-gray-700 max-w-xl"
             >
               Analyze your resume against job descriptions and receive
               actionable feedback. Build a professionally formatted resume with
@@ -91,15 +91,15 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 1 + i * 0.1 }}
-                    className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 border-2 border-gray-900 flex items-center justify-center text-white text-xs font-bold"
+                    className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold"
                   >
                     <Users className="w-5 h-5" />
                   </motion.div>
                 ))}
               </div>
               <div className="text-sm">
-                <p className="font-bold text-white">10,000+</p>
-                <p className="text-gray-300">Happy Users</p>
+                <p className="font-bold text-gray-900">10,000+</p>
+                <p className="text-gray-700">Happy Users</p>
               </div>
             </motion.div>
             <motion.div
@@ -118,7 +118,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 1.3 + 0.1 }}
-                  className="flex items-center gap-2 text-sm text-gray-300"
+                  className="flex items-center gap-2 text-sm text-gray-700"
                 >
                   <item.icon className="w-4 h-4 text-green-500" /> {item.text}
                 </motion.div>

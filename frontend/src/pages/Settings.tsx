@@ -44,7 +44,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-20 pb-12">
+    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mt-6 mb-1">
           <BackButton />
@@ -54,8 +54,8 @@ export default function Settings() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-2xl font-bold text-white">Settings</h1>
-          <p className="text-gray-400 mt-1">Manage your account preferences</p>
+          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+          <p className="text-gray-600 mt-1">Manage your account preferences</p>
         </motion.div>
         <div className="space-y-6">
           <ProfileSection user={user} name={name} setName={setName} />
@@ -100,13 +100,13 @@ const ProfileSection = ({
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.1 }}
-    className="bg-gray-800 rounded-xl border border-gray-700 p-6"
+    className="bg-white rounded-xl border border-gray-200 p-6"
   >
     <div className="flex items-center gap-3 mb-6">
       <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
         <User className="w-5 h-5 text-primary" />
       </div>
-      <h2 className="text-lg font-semibold text-white">Profile Information</h2>
+      <h2 className="text-lg font-semibold text-gray-900">Profile Information</h2>
     </div>
     <div className="flex items-center gap-4 mb-6">
       {user?.picture ? (
@@ -121,20 +121,20 @@ const ProfileSection = ({
         </div>
       )}
       <div>
-        <p className="font-medium text-white">{user?.name}</p>
-        <p className="text-sm text-gray-400">{user?.email}</p>
+        <p className="font-medium text-gray-900">{user?.name}</p>
+        <p className="text-sm text-gray-600">{user?.email}</p>
       </div>
     </div>
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-1.5">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
           Display Name
         </label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:border-transparent transition-all duration-200"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:border-transparent transition-all duration-200"
         />
       </div>
     </div>
@@ -146,18 +146,18 @@ const SubscriptionSection = ({ user }: { user: any }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.2 }}
-    className="bg-gray-800 rounded-xl border border-gray-700 p-6"
+    className="bg-white rounded-xl border border-gray-200 p-6"
   >
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
-        <h2 className="text-lg font-semibold text-white">Subscription</h2>
-        <p className="text-sm text-gray-400 mt-1">
+        <h2 className="text-lg font-semibold text-gray-900">Subscription</h2>
+        <p className="text-sm text-gray-600 mt-1">
           Current plan:{" "}
           <span className="font-medium capitalize">
             {user?.subscription.plan}
           </span>
         </p>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-gray-600">
           Credits remaining:{" "}
           <span className="font-medium">{user?.subscription.credits}</span>
         </p>
@@ -176,15 +176,15 @@ const DangerZone = ({ onDelete }: { onDelete: () => void }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.3 }}
-    className="bg-gray-800 rounded-xl border border-red-900/50 p-6"
+    className="bg-white rounded-xl border border-red-300 p-6"
   >
     <div className="flex items-center gap-3 mb-6">
       <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center">
         <Trash2 className="w-5 h-5 text-red-500" />
       </div>
-      <h2 className="text-lg font-semibold text-white">Danger Zone</h2>
+      <h2 className="text-lg font-semibold text-gray-900">Danger Zone</h2>
     </div>
-    <p className="text-sm text-gray-400 mb-4">
+    <p className="text-sm text-gray-600 mb-4">
       Once you delete your account, there is no going back. Please be certain.
     </p>
     <button

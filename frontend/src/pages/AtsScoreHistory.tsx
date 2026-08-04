@@ -63,8 +63,8 @@ export default function AtsScoreHistoryPage() {
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return "text-violet-400";
-    if (score >= 60) return "text-yellow-400";
-    return "text-red-400";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
   };
 
   const getScoreBg = (score: number) => {
@@ -74,12 +74,12 @@ export default function AtsScoreHistoryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-20 pb-12">
+    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="mt-6 mb-4">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             Back
@@ -92,17 +92,17 @@ export default function AtsScoreHistoryPage() {
           className="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
         >
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               ATS Score History
             </h1>
-            <p className="text-gray-400">
+            <p className="text-gray-600">
               View all your past ATS score analyses
             </p>
           </div>
           {history.length > 0 && (
             <button
               onClick={() => setClearAllOpen(true)}
-              className="px-4 py-2 bg-red-500/20 border border-red-500/30 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors flex items-center gap-2"
             >
               <Trash2 className="w-4 h-4" />
               Clear All
@@ -119,10 +119,10 @@ export default function AtsScoreHistoryPage() {
             <div className="w-16 h-16 rounded-2xl bg-violet-500/20 flex items-center justify-center mb-4">
               <FileText className="w-8 h-8 text-violet-400" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
               No ATS Score History
             </h3>
-            <p className="text-gray-400 mb-6 max-w-md">
+            <p className="text-gray-600 mb-6 max-w-md">
               Your ATS score analyses will appear here once you analyze your
               first resume.
             </p>
@@ -142,14 +142,14 @@ export default function AtsScoreHistoryPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-800 rounded-xl border border-gray-700 p-6 hover:border-gray-600 transition-colors"
+                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-gray-300 transition-colors"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-white mb-1">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
                       {item.resumeName}
                     </h3>
-                    <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
+                    <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         {new Date(item.createdAt).toLocaleDateString()}
@@ -160,7 +160,7 @@ export default function AtsScoreHistoryPage() {
                       <div
                         className={`p-3 rounded-lg border ${getScoreBg(item.overallScore)}`}
                       >
-                        <p className="text-xs text-gray-400 mb-1">Overall</p>
+                        <p className="text-xs text-gray-600 mb-1">Overall</p>
                         <p
                           className={`text-xl font-bold ${getScoreColor(item.overallScore)}`}
                         >
@@ -170,7 +170,7 @@ export default function AtsScoreHistoryPage() {
                       <div
                         className={`p-3 rounded-lg border ${getScoreBg(item.atsFriendliness)}`}
                       >
-                        <p className="text-xs text-gray-400 mb-1">
+                        <p className="text-xs text-gray-600 mb-1">
                           ATS Friendly
                         </p>
                         <p
@@ -182,16 +182,16 @@ export default function AtsScoreHistoryPage() {
                       <div
                         className={`p-3 rounded-lg border ${getScoreBg(item.spellingGrammar.score)}`}
                       >
-                        <p className="text-xs text-gray-400 mb-1">Grammar</p>
+                        <p className="text-xs text-gray-600 mb-1">Grammar</p>
                         <p
                           className={`text-xl font-bold ${getScoreColor(item.spellingGrammar.score)}`}
                         >
                           {item.spellingGrammar.score}%
                         </p>
                       </div>
-                      <div className="p-3 rounded-lg border bg-gray-700/50 border-gray-600/50">
-                        <p className="text-xs text-gray-400 mb-1">Errors</p>
-                        <p className="text-xl font-bold text-white">
+                      <div className="p-3 rounded-lg border bg-gray-100 border-gray-300/50">
+                        <p className="text-xs text-gray-600 mb-1">Errors</p>
+                        <p className="text-xl font-bold text-gray-900">
                           {item.spellingGrammar.errors.length}
                         </p>
                       </div>
@@ -209,7 +209,7 @@ export default function AtsScoreHistoryPage() {
 
                   <button
                     onClick={() => setDeleteId(item.id)}
-                    className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-5 h-5" />
                   </button>

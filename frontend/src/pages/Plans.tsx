@@ -126,7 +126,7 @@ export default function Plans() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20 pb-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-50 pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mt-6 mb-1">
           <BackButton />
@@ -140,7 +140,7 @@ export default function Plans() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Choose Your Plan
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-600 max-w-2xl mx-auto">
             Get more credits to analyze your resumes and land your dream job.
             Upgrade anytime as your needs grow.
           </p>
@@ -153,7 +153,7 @@ export default function Plans() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden ${
+              className={`relative bg-white dark:bg-white rounded-2xl shadow-lg overflow-hidden ${
                 plan.popular ? "ring-2 ring-primary" : ""
               }`}
             >
@@ -184,7 +184,7 @@ export default function Plans() {
                     ${plan.price}
                   </span>
                   {plan.price > 0 && (
-                    <span className="text-gray-500 dark:text-gray-400">
+                    <span className="text-gray-500 dark:text-gray-600">
                       /month
                     </span>
                   )}
@@ -196,7 +196,7 @@ export default function Plans() {
                     <span className="text-2xl font-bold text-gray-900 dark:text-white">
                       {plan.credits}
                     </span>
-                    <span className="text-gray-500 dark:text-gray-400">
+                    <span className="text-gray-500 dark:text-gray-600">
                       credits
                     </span>
                   </div>
@@ -206,7 +206,7 @@ export default function Plans() {
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2">
                       <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-600 dark:text-gray-300 text-sm">
+                      <span className="text-gray-600 dark:text-gray-700 text-sm">
                         {feature}
                       </span>
                     </li>
@@ -219,7 +219,7 @@ export default function Plans() {
                   className={`w-full py-3 rounded-xl font-medium transition-colors ${
                     plan.popular
                       ? "gradient-btn"
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600"
+                      : "bg-gray-100 dark:bg-gray-100 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-200"
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {loading === plan.id ? (

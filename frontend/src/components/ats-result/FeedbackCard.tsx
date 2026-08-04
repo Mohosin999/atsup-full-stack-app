@@ -30,17 +30,17 @@ const CATEGORY_META: Record<
   },
   hardSkills: {
     icon: <Wrench className="w-5 h-5" />,
-    iconColor: "bg-green-500/15 text-green-400",
+    iconColor: "bg-green-500/15 text-green-600",
     accent: "border-green-500/40",
   },
   softSkills: {
     icon: <Users className="w-5 h-5" />,
-    iconColor: "bg-purple-500/15 text-purple-400",
+    iconColor: "bg-purple-500/15 text-purple-600",
     accent: "border-purple-500/40",
   },
   recruiterTips: {
     icon: <UserCheck className="w-5 h-5" />,
-    iconColor: "bg-orange-500/15 text-orange-400",
+    iconColor: "bg-orange-500/15 text-orange-600",
     accent: "border-orange-500/40",
   },
   formatting: {
@@ -51,10 +51,10 @@ const CATEGORY_META: Record<
 };
 
 const getScoreColor = (score: number) => {
-  if (score >= 80) return "text-green-400";
-  if (score >= 60) return "text-yellow-400";
-  if (score >= 40) return "text-orange-400";
-  return "text-red-400";
+  if (score >= 80) return "text-green-600";
+  if (score >= 60) return "text-yellow-600";
+  if (score >= 40) return "text-orange-600";
+  return "text-red-600";
 };
 
 const STATUS_ICON: Record<
@@ -63,17 +63,17 @@ const STATUS_ICON: Record<
 > = {
   passed: {
     icon: <CheckCircle2 className="w-5 h-5" />,
-    color: "text-green-400",
+    color: "text-green-600",
     mark: "✓",
   },
   partial: {
     icon: <AlertTriangle className="w-5 h-5" />,
-    color: "text-amber-400",
+    color: "text-amber-600",
     mark: "!",
   },
   failed: {
     icon: <XCircle className="w-5 h-5" />,
-    color: "text-red-400",
+    color: "text-red-600",
     mark: "✗",
   },
   na: {
@@ -91,10 +91,10 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
   const passed = active.filter((c) => c.status === "passed").length;
 
   return (
-    <div className="rounded-xl border border-gray-700/60 bg-gray-900/30 overflow-hidden">
-      <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-700/20 border-b border-gray-700/60">
+    <div className="rounded-xl border border-gray-200/60 bg-gray-100 overflow-hidden">
+      <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-50 border-b border-gray-200/60">
         <div className="min-w-0">
-          <h4 className="text-sm font-semibold text-white leading-tight">
+          <h4 className="text-sm font-semibold text-gray-900 leading-tight">
             {subgroup.title}
           </h4>
           <p className="text-[11px] text-gray-500">
@@ -115,12 +115,12 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
               <span
                 className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center border ${
                   check.status === "passed"
-                    ? "border-green-500/40 bg-green-500/15 text-green-400"
+                    ? "border-green-500/40 bg-green-500/15 text-green-600"
                     : check.status === "failed"
-                      ? "border-red-500/40 bg-red-500/15 text-red-400"
+                      ? "border-red-500/40 bg-red-500/15 text-red-600"
                       : check.status === "partial"
-                        ? "border-amber-500/40 bg-amber-500/15 text-amber-400"
-                        : "border-gray-600/40 bg-gray-700/30 text-gray-500"
+                        ? "border-amber-500/40 bg-amber-500/15 text-amber-600"
+                        : "border-gray-300/40 bg-gray-50 text-gray-500"
                 }`}
               >
                 <span className="text-[10px] font-bold leading-none">
@@ -128,10 +128,10 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
                 </span>
               </span>
               <div className="min-w-0">
-                <p className="text-[13px] font-medium text-gray-200 leading-snug">
+                <p className="text-[13px] font-medium text-gray-700 leading-snug">
                   {check.label}
                 </p>
-                <p className="text-xs text-gray-400 leading-snug mt-0.5">
+                <p className="text-xs text-gray-600 leading-snug mt-0.5">
                   {check.detail}
                 </p>
               </div>
@@ -159,7 +159,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className={`rounded-2xl bg-gray-800/60 border ${meta.accent} p-5 backdrop-blur-sm`}
+      className={`rounded-2xl bg-white/80 border ${meta.accent} p-5 backdrop-blur-sm`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -168,7 +168,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
             {meta.icon}
           </div>
           <div>
-            <h3 className="font-semibold text-white leading-tight">
+            <h3 className="font-semibold text-gray-900 leading-tight">
               {category.title}
             </h3>
             <p className="text-xs text-gray-500">
@@ -182,7 +182,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
       </div>
 
       {/* Summary */}
-      <p className="text-sm text-gray-400 mb-4">{category.summary}</p>
+      <p className="text-sm text-gray-600 mb-4">{category.summary}</p>
 
       {/* Sub-group breakdown (e.g. Searchability) */}
       {hasSubgroups && (
@@ -199,7 +199,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
           {category.matched?.map((item) => (
             <span
               key={`m-${item}`}
-              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border bg-green-500/10 text-green-400 border-green-500/30"
+              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border bg-green-500/10 text-green-600 border-green-500/30"
             >
               <Check className="w-3 h-3" />
               {item}
@@ -208,7 +208,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
           {category.missing?.map((item) => (
             <span
               key={`x-${item}`}
-              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border bg-red-500/10 text-red-400 border-red-500/30"
+              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border bg-red-500/10 text-red-600 border-red-500/30"
             >
               <Plus className="w-3 h-3" />
               {item}
@@ -220,7 +220,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
       {/* Strengths */}
       {!hasSubgroups && category.strengths.length > 0 && (
         <div className="mb-3">
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-green-400 mb-2">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-green-600 mb-2">
             <CheckCircle2 className="w-3.5 h-3.5" />
             What you did well
           </p>
@@ -228,7 +228,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
             {category.strengths.slice(0, 4).map((s, i) => (
               <li
                 key={i}
-                className="flex items-start gap-2 text-[13px] text-gray-300"
+                className="flex items-start gap-2 text-[13px] text-gray-700"
               >
                 <span className="text-green-500 mt-0.5">✓</span>
                 {s}
@@ -241,7 +241,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
       {/* Improvements */}
       {!hasSubgroups && category.improvements.length > 0 && (
         <div>
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-amber-400 mb-2">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-amber-600 mb-2">
             <AlertTriangle className="w-3.5 h-3.5" />
             How to improve
           </p>
@@ -249,7 +249,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
             {category.improvements.slice(0, 4).map((s, i) => (
               <li
                 key={i}
-                className="flex items-start gap-2 text-[13px] text-gray-300"
+                className="flex items-start gap-2 text-[13px] text-gray-700"
               >
                 <span className="text-amber-500 mt-0.5">→</span>
                 {s}

@@ -20,7 +20,7 @@ const formatDescription = (
   if (lines.length === 0) return null;
   return (
     <ul
-      className={`list-outside list-disc pl-4 space-y-0.5 text-sm ${forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-100"}`}
+      className={`list-outside list-disc pl-4 space-y-0.5 text-sm ${forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-800"}`}
     >
       {lines.map((line, i) => {
         const cleanLine = line.replace(/^[•\-\*]\s*/, "").trim();
@@ -35,10 +35,10 @@ export default function ResumePreview({
   content,
   forPdf = false,
 }: ResumePreviewProps) {
-  const bgColor = forPdf ? "bg-white" : "bg-white dark:bg-gray-800";
+  const bgColor = forPdf ? "bg-white" : "bg-white dark:bg-white";
   const textColor = forPdf
     ? "text-gray-900"
-    : "text-gray-900 dark:text-gray-100 text-sm font-sans";
+    : "text-gray-900 dark:text-gray-800 text-sm font-sans";
 
   return (
     <div

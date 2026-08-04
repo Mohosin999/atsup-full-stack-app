@@ -189,7 +189,7 @@ export default function AtsScorePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-20 pb-12">
+    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="mt-6 mb-4">
           <BackButton />
@@ -200,10 +200,10 @@ export default function AtsScorePage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             ATS Score Check
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-600">
             Analyze your resume for ATS (Applicant Tracking System)
             compatibility
           </p>
@@ -216,27 +216,27 @@ export default function AtsScorePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-gray-800 rounded-lg p-6"
+              className="bg-white rounded-lg p-6"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${resumeFile ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${resumeFile ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
                 >
                   {resumeFile ? <CheckCircle className="w-5 h-5" /> : "1"}
                 </div>
-                <h2 className="text-xl font-semibold text-white">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Upload Resume
                 </h2>
               </div>
 
-              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-700 border-dashed rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 transition-colors">
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-200 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-100 transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   {loading ? (
                     <LoadingSpinner />
                   ) : (
                     <>
-                      <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-400">
+                      <Upload className="w-8 h-8 text-gray-600 mb-2" />
+                      <p className="text-sm text-gray-600">
                         <span className="font-semibold">Click to upload</span>{" "}
                         or drag and drop
                       </p>
@@ -258,8 +258,8 @@ export default function AtsScorePage() {
               </label>
 
               {resumeFile && (
-                <div className="mt-4 p-4 bg-green-900/20 border border-green-500/30 rounded-lg">
-                  <div className="flex items-center gap-2 text-green-400">
+                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-600">
                     <CheckCircle className="w-5 h-5" />
                     <span className="font-medium">Selected: {resumeName}</span>
                   </div>
@@ -272,15 +272,15 @@ export default function AtsScorePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gray-800 rounded-lg p-6"
+              className="bg-white rounded-lg p-6"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription ? "bg-green-500/20 text-green-400" : "bg-gray-700 text-gray-400"}`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
                 >
                   {jobDescription ? <CheckCircle className="w-5 h-5" /> : "2"}
                 </div>
-                <h2 className="text-xl font-semibold text-white">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Paste Job Description
                 </h2>
               </div>
@@ -290,7 +290,7 @@ export default function AtsScorePage() {
                 onChange={(e) => handleJobDescriptionChange(e.target.value)}
                 placeholder="Paste the job description here..."
                 rows={10}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                className="w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
               />
             </motion.div>
 
@@ -319,7 +319,7 @@ export default function AtsScorePage() {
                 </button>
                 {!bothFieldsReady && (
                   <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block z-10">
-                    <div className="bg-gray-700 text-white text-sm rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
+                    <div className="bg-gray-100 text-gray-900 text-sm rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
                       {!resumeFile && !jobDescription.trim() && "Upload resume and paste job description"}
                       {!resumeFile && jobDescription.trim() && "Upload resume to continue"}
                       {resumeFile && !jobDescription.trim() && "Paste job description to continue"}
@@ -333,17 +333,17 @@ export default function AtsScorePage() {
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-semibold text-white">
+                <h2 className="text-xl font-semibold text-gray-900">
                   {result.resumeName}
                 </h2>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-600">
                   Analyzed {new Date(result.createdAt).toLocaleDateString()} · ATS
                   compatibility report
                 </p>
               </div>
               <button
                 onClick={handleReset}
-                className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-900 py-2 px-4 rounded-lg transition-colors"
               >
                 Analyze Another Resume
               </button>
@@ -362,35 +362,35 @@ export default function AtsScorePage() {
                 {/* RIGHT: feedback cards column (wider) */}
                 <div className="lg:col-span-8 space-y-4">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4">
-                      <p className="text-gray-400 text-xs mb-1">
+                    <div className="bg-white/80 border border-gray-200/60 rounded-xl p-4">
+                      <p className="text-gray-600 text-xs mb-1">
                         ATS Friendliness
                       </p>
-                      <p className="text-xl font-bold text-white">
+                      <p className="text-xl font-bold text-gray-900">
                         {result.atsFriendliness}%
                       </p>
                     </div>
-                    <div className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4">
-                      <p className="text-gray-400 text-xs mb-1">
+                    <div className="bg-white/80 border border-gray-200/60 rounded-xl p-4">
+                      <p className="text-gray-600 text-xs mb-1">
                         Spelling & Grammar
                       </p>
-                      <p className="text-xl font-bold text-white">
+                      <p className="text-xl font-bold text-gray-900">
                         {result.spellingGrammar.score}%
                       </p>
                     </div>
-                    <div className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4">
-                      <p className="text-gray-400 text-xs mb-1">
+                    <div className="bg-white/80 border border-gray-200/60 rounded-xl p-4">
+                      <p className="text-gray-600 text-xs mb-1">
                         Measurable Results
                       </p>
-                      <p className="text-xl font-bold text-white">
+                      <p className="text-xl font-bold text-gray-900">
                         {result.sectionScores.measurableResults.count} / 5+
                       </p>
                     </div>
-                    <div className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-4">
-                      <p className="text-gray-400 text-xs mb-1">
+                    <div className="bg-white/80 border border-gray-200/60 rounded-xl p-4">
+                      <p className="text-gray-600 text-xs mb-1">
                         Action Verbs Used
                       </p>
-                      <p className="text-xl font-bold text-white">
+                      <p className="text-xl font-bold text-gray-900">
                         {
                           result.sectionScores.categories.recruiterTips.checks.find(
                             (c) => c.label === "Action verbs",
@@ -429,23 +429,23 @@ export default function AtsScorePage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                     >
-                      <h2 className="text-xl font-semibold text-white mb-4">
+                      <h2 className="text-xl font-semibold text-gray-900 mb-4">
                         Spelling & Grammar Errors
                       </h2>
-                      <div className="bg-gray-800 rounded-lg p-6">
+                      <div className="bg-white rounded-lg p-6">
                         <div className="space-y-3">
                           {result.spellingGrammar.errors.map((error, idx) => (
                             <div
                               key={idx}
-                              className="bg-red-900/20 border border-red-500/30 rounded-lg p-4"
+                              className="bg-red-50 border border-red-200 rounded-lg p-4"
                             >
                               <div className="flex items-start gap-3">
                                 <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
                                 <div>
-                                  <p className="text-red-400 font-medium">
+                                  <p className="text-red-600 font-medium">
                                     {error.message}
                                   </p>
-                                  <p className="text-sm text-gray-400 mt-1">
+                                  <p className="text-sm text-gray-600 mt-1">
                                     Suggestion: {error.suggestion}
                                   </p>
                                 </div>
@@ -461,7 +461,7 @@ export default function AtsScorePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                   >
-                    <h2 className="text-xl font-semibold text-white mb-4">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">
                       Improvement Suggestions
                     </h2>
                     <SuggestionList
@@ -487,31 +487,31 @@ export default function AtsScorePage() {
                       showProgress
                     />
                   </div>
-                  <div className="md:col-span-2 bg-gray-800 rounded-lg p-6">
-                    <h2 className="text-xl font-semibold text-white mb-4">
+                  <div className="md:col-span-2 bg-white rounded-lg p-6">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">
                       Summary
                     </h2>
                     <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div className="bg-gray-700/50 rounded-lg p-4">
-                        <p className="text-gray-400 text-sm mb-1">
+                      <div className="bg-gray-100 rounded-lg p-4">
+                        <p className="text-gray-600 text-sm mb-1">
                           ATS Friendliness
                         </p>
-                        <p className="text-2xl font-bold text-white">
+                        <p className="text-2xl font-bold text-gray-900">
                           {result.atsFriendliness}%
                         </p>
                       </div>
-                      <div className="bg-gray-700/50 rounded-lg p-4">
-                        <p className="text-gray-400 text-sm mb-1">
+                      <div className="bg-gray-100 rounded-lg p-4">
+                        <p className="text-gray-600 text-sm mb-1">
                           Spelling & Grammar
                         </p>
-                        <p className="text-2xl font-bold text-white">
+                        <p className="text-2xl font-bold text-gray-900">
                           {result.spellingGrammar.score}%
                         </p>
                       </div>
                     </div>
                     <button
                       onClick={handleReset}
-                      className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors"
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-900 py-2 px-4 rounded-lg transition-colors"
                     >
                       Analyze Another Resume
                     </button>
@@ -523,7 +523,7 @@ export default function AtsScorePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <h2 className="text-xl font-semibold text-white mb-4">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Section Breakdown
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -580,23 +580,23 @@ export default function AtsScorePage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    <h2 className="text-xl font-semibold text-white mb-4">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">
                       Spelling & Grammar Errors
                     </h2>
-                    <div className="bg-gray-800 rounded-lg p-6">
+                    <div className="bg-white rounded-lg p-6">
                       <div className="space-y-3">
                         {result.spellingGrammar.errors.map((error, idx) => (
                           <div
                             key={idx}
-                            className="bg-red-900/20 border border-red-500/30 rounded-lg p-4"
+                            className="bg-red-50 border border-red-200 rounded-lg p-4"
                           >
                             <div className="flex items-start gap-3">
                               <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
                               <div>
-                                <p className="text-red-400 font-medium">
+                                <p className="text-red-600 font-medium">
                                   {error.message}
                                 </p>
-                                <p className="text-sm text-gray-400 mt-1">
+                                <p className="text-sm text-gray-600 mt-1">
                                   Suggestion: {error.suggestion}
                                 </p>
                               </div>
@@ -613,7 +613,7 @@ export default function AtsScorePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  <h2 className="text-xl font-semibold text-white mb-4">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Improvement Suggestions
                   </h2>
                   <SuggestionList

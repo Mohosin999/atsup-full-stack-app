@@ -1,8 +1,8 @@
 import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
-import { routes } from "./routes";
-import { errorHandler } from "./middlewares/errorHandler";
-import { applyMiddleware } from "./middlewares/middlewareConfig";
+import { moduleRoutes } from "./modules";
+import { errorHandler } from "./shared/middlewares/errorHandler";
+import { applyMiddleware } from "./shared/middlewares/middlewareConfig";
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ app.get("/health", (_req: Request, res: Response) => {
   });
 });
 
-routes.forEach(({ path, router }) => {
+moduleRoutes.forEach(({ path, router }) => {
   app.use(path, router);
 });
 

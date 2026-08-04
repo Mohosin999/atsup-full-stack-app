@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma';
-import { env } from '../config/env';
+import { env } from '../shared/config/env';
 
 const connectDB = async () => {
   try {

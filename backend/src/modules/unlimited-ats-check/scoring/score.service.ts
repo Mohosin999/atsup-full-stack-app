@@ -1,4 +1,4 @@
-import { calculateLocalMatchScore } from "../../ats-score-check/scoring/subservices/engine.service";
+import { calculateLocalMatchScore } from "../../ats-score-check/scoring";
 import { ResumeContent } from "../../../shared/types";
 import { DictionaryStructuredJD } from "../parsers/jdParser";
 

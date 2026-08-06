@@ -23,6 +23,9 @@ const parsePDF = async (filePath: string): Promise<ParsedResume> => {
     const pdf = require("pdf-parse");
     const dataBuffer = fs.readFileSync(filePath);
     const data = await pdf(dataBuffer);
+
+    console.log(data.text);
+
     return { text: data.text };
   } catch (error) {
     console.error("PDF parsing error:", error);

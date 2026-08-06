@@ -76,8 +76,6 @@ export const handleWebhookEvent = async (
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!webhookSecret) {
-    console.log(' Webhook secret not configured, skipping verification (testing mode)');
-    console.log(' Payment will be processed via /payment/verify endpoint instead');
     return { received: true, skipped: true };
   }
 
@@ -91,7 +89,7 @@ export const handleWebhookEvent = async (
         break;
       }
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        break;
     }
 
     return { received: true };

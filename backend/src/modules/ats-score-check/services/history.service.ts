@@ -1,7 +1,7 @@
-import { prisma } from '../../../../lib/prisma';
-import { ResumeContent } from '../../../../shared/types';
-import { calculateLocalMatchScore } from './engine.service';
-import { StructuredJD } from '../../../job-match/subservices/jdParser.service';
+import { prisma } from "../../../lib/prisma";
+import { ResumeContent } from "../../../shared/types";
+import { StructuredJD } from "../atsScoreCheck.types";
+import { calculateAtsScore } from "./scoring.service";
 
 export const createAtsScoreHistory = async (
   userId: string,
@@ -9,9 +9,9 @@ export const createAtsScoreHistory = async (
   resumeContent: ResumeContent,
   jobDescription?: string,
   structuredJD?: StructuredJD | null,
-  aiResearch?: any | null
+  aiResearch?: any | null,
 ) => {
-  const analysis = calculateLocalMatchScore(resumeContent, structuredJD);
+  const analysis = calculateAtsScore(resumeContent, structuredJD);
 
   const hasContactInfo =
     !!resumeContent.personalInfo?.contact?.email ||
@@ -22,9 +22,9 @@ export const createAtsScoreHistory = async (
     analysis.sectionScores.contactInfo.hasContactInfo = true;
   }
 
-  const title = `${resumeName || 'Resume'} – ATS Score v${Date.now().toString(36).slice(-4)}`;
+  const title = `${resumeName || "Resume"} – ATS Score v${Date.now().toString(36).slice(-4)}`;
 
-  const atsScoreHistory = await prisma.atsScoreHistory.create({
+  return prisma.atsScoreHistory.create({
     data: {
       userId,
       title,
@@ -32,7 +32,9 @@ export const createAtsScoreHistory = async (
       overallScore: analysis.overallScore,
       sectionScores: {
         ...analysis.sectionScores,
-        ...(analysis.matchBreakdown ? { matchBreakdown: analysis.matchBreakdown } : {}),
+        ...(analysis.matchBreakdown
+          ? { matchBreakdown: analysis.matchBreakdown }
+          : {}),
         categories: analysis.categories,
       } as any,
       spellingGrammar: analysis.spellingGrammar as any,
@@ -42,17 +44,19 @@ export const createAtsScoreHistory = async (
       aiResearch,
     },
   });
-
-  return atsScoreHistory;
 };
 
-export const getAtsScoreHistory = async (userId: string, page = 1, limit = 10) => {
+export const getAtsScoreHistory = async (
+  userId: string,
+  page = 1,
+  limit = 10,
+) => {
   const skip = (page - 1) * limit;
 
   const [scores, total] = await Promise.all([
     prisma.atsScoreHistory.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip,
       take: limit,
     }),
@@ -70,25 +74,31 @@ export const getAtsScoreHistory = async (userId: string, page = 1, limit = 10) =
   };
 };
 
-export const getAtsScoreHistoryById = async (userId: string, historyId: string) => {
+export const getAtsScoreHistoryById = async (
+  userId: string,
+  historyId: string,
+) => {
   const score = await prisma.atsScoreHistory.findFirst({
     where: { id: historyId, userId },
   });
 
   if (!score) {
-    throw new Error('ATS Score history not found');
+    throw new Error("ATS Score history not found");
   }
 
   return score;
 };
 
-export const deleteAtsScoreHistory = async (userId: string, historyId: string) => {
+export const deleteAtsScoreHistory = async (
+  userId: string,
+  historyId: string,
+) => {
   const existing = await prisma.atsScoreHistory.findFirst({
     where: { id: historyId, userId },
   });
 
   if (!existing) {
-    throw new Error('ATS Score history not found');
+    throw new Error("ATS Score history not found");
   }
 
   await prisma.atsScoreHistory.delete({ where: { id: historyId } });

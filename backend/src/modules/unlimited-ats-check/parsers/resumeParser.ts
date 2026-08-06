@@ -22,8 +22,37 @@ import {
 } from "../dictionaries/regex-helpers";
 import { matchDictionary } from "../dictionaries/matcher";
 import { splitResumeSections, ResumeSection } from "./resumeSections";
-import { ParsedPdfResult } from "../pdf/pdfParser.service";
 import { ResumeContent } from "../../../shared/types";
+
+interface LayoutInfo {
+  isSingleColumn: boolean;
+  hasTables: boolean;
+  hasImages: boolean;
+  hasIcons: boolean;
+  hasMultiColumn: boolean;
+}
+
+interface FontCheckInfo {
+  isStandardFont: boolean;
+  fontName: string;
+  isReadableSize: boolean;
+  hasMixedFonts: boolean;
+}
+
+const DEFAULT_LAYOUT: LayoutInfo = {
+  isSingleColumn: true,
+  hasTables: false,
+  hasImages: false,
+  hasIcons: false,
+  hasMultiColumn: false,
+};
+
+const DEFAULT_FONT_CHECK: FontCheckInfo = {
+  isStandardFont: false,
+  fontName: "",
+  isReadableSize: false,
+  hasMixedFonts: false,
+};
 
 /** The resume.json shape returned to the client (mirrors root resume.json). */
 export interface DictionaryResumeJson {
@@ -80,8 +109,8 @@ export interface DictionaryResumeJson {
   experienceSection: boolean;
   workHistory: boolean;
   dateFormatting: boolean;
-  layout: ParsedPdfResult["layout"];
-  fontCheck: ParsedPdfResult["fontCheck"];
+  layout: LayoutInfo;
+  fontCheck: FontCheckInfo;
 }
 
 export interface ResumeParseOutput {
@@ -90,6 +119,13 @@ export interface ResumeParseOutput {
 }
 
 const cleanLine = (l: string): string => l.trim();
+
+/** True if the line looks like an employment/location continuation rather than a role. */
+const isLocationLike = (role: string): boolean => {
+  const lower = role.toLowerCase();
+  if (/^(freelance|self[- ]employed|remote|contract|independent|part[- ]time|full[- ]time)/.test(lower)) return true;
+  return /(?:dhaka|chittagong|khulna|rajshahi|sylhet|barishal|rangpur|mymensingh|bangladesh|usa|uk|new york|london|remote)/i.test(role);
+};
 
 const sanitizeName = (name: string): string => {
   const trimmed = name.trim();
@@ -129,25 +165,237 @@ const detectSectionPresence = (
 
 const isDateOnly = (s: string): boolean => NORMAL_DATE_RE.test(s.trim());
 
-export const parseResumeByDictionary = (
-  pdf: ParsedPdfResult,
-): ResumeParseOutput => {
-  const text = pdf.text;
-  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-  const sections = splitResumeSections(text);
+const isTitleCaseLine = (l: string): boolean =>
+  l.length <= 45 &&
+  !/[.!,?;]+$/.test(l) &&
+  /^[A-Z][A-Za-z0-9+#.&/:()-]+\s*([A-Z][A-Za-z0-9+#.&/:()-]+\s*)*$/.test(l);
 
-  const sectionLines = (key: string): string[] =>
-    sections.find((s) => s.key === key)?.lines ?? [];
+const isProjectNameLine = (l: string): boolean =>
+  isTitleCaseLine(l) &&
+  !/^(summary|work experience|professional experience|technical skills|soft skills|education|projects|skills|certifications?|experience|contact|references?|languages|interests|hobbies|achievements?|awards)/i.test(l) &&
+  !isEducationLine(l);
+
+// ============================================================================
+// Content-based section segmentation.
+//
+// PDF text extraction often dumps section headings at the very END (or out of
+// order), so heading-position parsing is unreliable. Instead we walk the lines
+// in order and bucket each line into a logical section using content signals:
+// contact info, date ranges, degree keywords, skill lines, bullets, etc.
+// ============================================================================
+
+interface ResumeSegments {
+  header: string[];
+  summary: string[];
+  experience: string[];
+  skills: string[];
+  education: string[];
+  projects: string[];
+  certifications: string[];
+}
+
+type Bucket = keyof ResumeSegments;
+
+const BULLET_RE = /^(?:[•·▪*\-–—o]|\d+[.)])\s*/;
+
+const isContactLine = (l: string): boolean =>
+  /@/.test(l) ||
+  /^\+?\d[\d\s.-]{6,}$/.test(l) ||
+  /linkedin|github|\.com|http|www\./i.test(l);
+
+const isLocationLine = (l: string): boolean =>
+  /(dhaka|chittagong|khulna|rajshahi|sylhet|barishal|barisal|rangpur|mymensingh|bangladesh|usa|uk|new york|london|san francisco|toronto|sydney|berlin|india|dubai|california|texas|remote)/i.test(
+    l,
+  );
+
+const isEducationLine = (l: string): boolean =>
+  /(university|college|school|institute|bachelor|master|degree|science|arts|engineering|gpa|honours|diploma|b\.sc|m\.sc|ph\.?d|hsc|ssc)/i.test(
+    l,
+  );
+
+const isSectionHeading = (l: string): { key: Bucket } | null => {
+  const t = l.toLowerCase().trim();
+  if (t.length > 40) return null;
+  if (/^(professional\s+|career\s+|executive\s+)?summary$|^objective$|^about me$/i.test(t)) return { key: "summary" };
+  if (/^(work experience|professional experience|relevant experience|employment history|career history|work history|experience|experience history|career experience)$/i.test(t)) return { key: "experience" };
+  if (/^(technical skills|core competencies|core skills|key skills|skill set|technologies|tech stack|areas of expertise|soft skills|skills|professional skills)$/i.test(t)) return { key: "skills" };
+  if (/^(education|academic background|academic qualifications|educational background|qualifications)$/i.test(t)) return { key: "education" };
+  if (/^(projects|personal projects|key projects|academic projects|project experience|featured projects)$/i.test(t)) return { key: "projects" };
+  if (/^(certifications?|licenses?|licenses & certifications|licenses and certifications|professional certifications|courses|training)$/i.test(t)) return { key: "certifications" };
+  return null;
+};
+
+const isSummarySentence = (l: string): boolean => {
+  if (l.length < 40) return false;
+  if (/\b(?:responsible|passionate|motivated|graduate|professional|developer|engineer|experience)\b/i.test(l)) return true;
+  return false;
+};
+
+const pushBucket = (seg: ResumeSegments, key: Bucket, line: string): void => {
+  (seg[key] as string[]).push(line);
+};
+
+/**
+ * Walk resume lines top-to-bottom and bucket each into a section.
+ * Handles the common case where headings are missing/out-of-order by relying on
+ * content cues. Keeps the document reading order for reliability.
+ */
+export const segmentResume = (lines: string[]): ResumeSegments => {
+  const seg: ResumeSegments = {
+    header: [],
+    summary: [],
+    experience: [],
+    skills: [],
+    education: [],
+    projects: [],
+    certifications: [],
+  };
+
+  let phase: Bucket = "header";
+
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i].trim();
+    if (!l) continue;
+
+    // A lone section heading switches phase.
+    const heading = isSectionHeading(l);
+    if (heading) {
+      phase = heading.key;
+      continue;
+    }
+
+    const bullet = BULLET_RE.test(l);
+
+    // --- Header phase: personal info block (until summary sentence). ---
+    if (phase === "header") {
+      // If this looks like the summary paragraph, move into summary phase.
+      if (isSummarySentence(l) && !isContactLine(l)) {
+        phase = "summary";
+        pushBucket(seg, "summary", l);
+        continue;
+      }
+      // A date range like "Jan 2024 – Feb 2025" signals the experience start.
+      if (DATE_RANGE_RE.test(l)) {
+        phase = "experience";
+        pushBucket(seg, "experience", l);
+        continue;
+      }
+      // Education content appearing early (e.g. degree right under header).
+      if (isEducationLine(l) && l.length < 60) {
+        phase = "education";
+        pushBucket(seg, "education", l);
+        continue;
+      }
+      pushBucket(seg, "header", l);
+      continue;
+    }
+
+    // --- Summary phase: own the paragraph. ---
+    if (phase === "summary") {
+      // A short title-case line (role title) ends the summary and starts
+      // the experience section. E.g. "Frontend Developer".
+      if (
+        !bullet &&
+        !isContactLine(l) &&
+        !DATE_RANGE_RE.test(l) &&
+        isTitleCaseLine(l)
+      ) {
+        phase = "experience";
+        pushBucket(seg, "experience", l);
+        continue;
+      }
+      // Summary continues until we hit anything structural.
+      if (DATE_RANGE_RE.test(l) || isContactLine(l) || bullet) {
+        phase = "experience";
+        if (DATE_RANGE_RE.test(l) || bullet) pushBucket(seg, "experience", l);
+        continue;
+      }
+      pushBucket(seg, "summary", l);
+      continue;
+    }
+
+    // --- Experience phase. ---
+    if (phase === "experience") {
+      if (isEducationLine(l) && l.length < 60 && !DATE_RANGE_RE.test(l)) {
+        phase = "education";
+        pushBucket(seg, "education", l);
+        continue;
+      }
+      if (/^projects?\b/i.test(l) && l.length < 30) {
+        phase = "projects";
+        pushBucket(seg, "projects", l);
+        continue;
+      }
+      pushBucket(seg, "experience", l);
+      continue;
+    }
+
+    // --- Skills phase. ---
+    if (phase === "skills") {
+      if (isEducationLine(l) && l.length < 60) {
+        phase = "education";
+        pushBucket(seg, "education", l);
+        continue;
+      }
+      if (/^projects?\b/i.test(l) && l.length < 30) {
+        phase = "projects";
+        pushBucket(seg, "projects", l);
+        continue;
+      }
+      if (/^(certifications?|licenses?|courses?|training)$/i.test(l)) {
+        phase = "certifications";
+        continue;
+      }
+      pushBucket(seg, "skills", l);
+      continue;
+    }
+
+    // --- Education phase. ---
+    if (phase === "education") {
+      // A project name followed by a date/description that has no degree
+      // keywords starts the projects section.
+      if (isProjectNameLine(l) && lines[i + 1] && DATE_RANGE_RE.test(lines[i + 1].trim())) {
+        phase = "projects";
+        pushBucket(seg, "projects", l);
+        continue;
+      }
+      if (/^(certifications?|licenses?|courses?|training)$/i.test(l)) {
+        phase = "certifications";
+        continue;
+      }
+      pushBucket(seg, "education", l);
+      continue;
+    }
+
+    // --- Projects phase. ---
+    if (phase === "projects") {
+      if (/^(certifications?|licenses?|courses?|training)$/i.test(l)) {
+        phase = "certifications";
+        continue;
+      }
+      pushBucket(seg, "projects", l);
+      continue;
+    }
+
+    // --- Certifications phase. ---
+    pushBucket(seg, "certifications", l);
+  }
+
+  return seg;
+};
+
+export const parseResumeByDictionary = (
+  text: string,
+): ResumeParseOutput => {
+  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  const segmented = segmentResume(lines);
 
   const allText = text;
 
-  // ---- Personal info (header block = lines before first section) ----
-  const firstSectionIndex = sections.length > 0 ? sections[0].startIndex : 0;
-  const headerLines = lines.slice(0, firstSectionIndex);
+  // ---- Personal info (header block) ----
+  const headerText = segmented.header.join(" ");
 
-  const headerText = headerLines.join(" ");
-
-  const fullName = sanitizeName(headerLines[0] ?? "");
+  const fullName = sanitizeName(segmented.header[0] ?? "");
   const email = extractEmail(headerText);
   const phone = extractPhone(headerText);
   const linkedin = extractLinkedIn(headerText);
@@ -155,7 +403,7 @@ export const parseResumeByDictionary = (
   const portfolio = extractPortfolio(headerText);
 
   // Address = remaining header line that contains a city/division word.
-  const address = headerLines
+  const address = segmented.header
     .filter(
       (l) =>
         !l.includes("@") &&
@@ -170,29 +418,32 @@ export const parseResumeByDictionary = (
     ) ?? "";
 
   // Job title: try header, then summary.
-  let jobTitle = detectJobTitle(headerText) || detectJobTitle(sectionLines("summary").join("\n") || allText);
+  const headerTitleLine =
+    segmented.header.slice(1).find(
+      (l) => !isContactLine(l) && !isLocationLine(l) && isTitleCaseLine(l),
+    ) || "";
+  let jobTitle =
+    headerTitleLine ||
+    detectJobTitle(headerText) ||
+    detectJobTitle(segmented.summary.join("\n") || allText);
 
   // ---- Summary ----
-  const summary = sectionLines("summary").join(" ");
+  const summary = segmented.summary.join(" ");
 
   // ---- Experience ----
-  const experienceLines = sectionLines("experience");
-  const experience = parseExperience(experienceLines);
+  const experience = parseExperience(segmented.experience);
 
   // ---- Projects ----
-  const projectLines = sectionLines("projects");
-  const projects = parseProjects(projectLines);
+  const projects = parseProjects(segmented.projects);
 
   // ---- Education ----
-  const educationLines = sectionLines("education");
-  const education = parseEducation(educationLines);
+  const education = parseEducation(segmented.education);
 
   // ---- Certifications ----
-  const certLines = sectionLines("certifications");
-  const certifications = parseCertifications(certLines);
+  const certifications = parseCertifications(segmented.certifications);
 
   // ---- Skills ----
-  const skillsSectionText = sectionLines("skills").join("\n");
+  const skillsSectionText = segmented.skills.join("\n");
   const skillsAllText = skillsSectionText || allText;
   const hardSkills = matchDictionary(skillsAllText, HARD_SKILLS_DICTIONARY)
     .filter((s) => !HARD_SKILL_STOPWORDS.has(s.toLowerCase()));
@@ -204,12 +455,12 @@ export const parseResumeByDictionary = (
   const actionVerbs = matchDictionary(allText, ACTION_VERBS_DICTIONARY);
   const yearsOfExperience = extractExperienceYears(allText);
 
-  const educationSection = detectSectionPresence(sections, "education");
-  const experienceSection = detectSectionPresence(sections, "experience");
+  const educationSection = segmented.education.length > 0;
+  const experienceSection = segmented.experience.length > 0;
   const workHistory = experience.length > 0;
 
   // Date formatting check across experience lines.
-  const dateFormatting = detectDateFormatting(experienceLines);
+  const dateFormatting = detectDateFormatting(segmented.experience);
 
   const resumeTone = inferTone(allText, actionVerbs.length, measurableResults.length);
 
@@ -236,10 +487,10 @@ export const parseResumeByDictionary = (
     wordCount: String(wordCount),
     educationSection,
     experienceSection,
-    workHistory,
+workHistory,
     dateFormatting,
-    layout: pdf.layout,
-    fontCheck: pdf.fontCheck,
+    layout: DEFAULT_LAYOUT,
+    fontCheck: DEFAULT_FONT_CHECK,
   };
 
   const content: ResumeContent = mapToResumeContent(json);
@@ -263,23 +514,77 @@ interface RawExperience {
 const parseExperience = (lines: string[]): RawExperience[] => {
   const entries: RawExperience[] = [];
   let current: RawExperience | null = null;
+  let pendingDates: { start: string; end: string } | null = null;
 
   const startNew = (role: string, company: string, location: string, start: string, end: string) => {
     if (current) entries.push(current);
     current = { role, company, location, startDate: start, endDate: end, responsibilities: [] };
+    pendingDates = null;
   };
 
   for (const rawLine of lines) {
     const line = cleanLine(rawLine);
     if (!line) continue;
 
-    const bullet = /^[•·▪o*\-–—•]+\s*/;
+    const bullet = /^[•·▪*\-–—]+\s*/;
     const isBullet = bullet.test(line) || /^\d+[.)]\s+/.test(line);
+
+    // Pure date-range line (e.g. "Jan 2021 - Present", "2018 - 2020").
+    if (!isBullet && DATE_RANGE_RE.test(line)) {
+      const m = line.match(DATE_RANGE_RE)!;
+      const range = { start: m[1], end: m[2] };
+      if (current) {
+        current.startDate = current.startDate || range.start;
+        current.endDate = current.endDate || range.end;
+      } else {
+        pendingDates = range;
+      }
+      continue;
+    }
+
+    // Date-only line (e.g. "2021", "Mar 2019").
+    if (!isBullet && isDateOnly(line)) {
+      const parts = line.split(/[-–—]/).map((p) => p.trim());
+      const start = parts[0] || "";
+      let end = parts[1] || "";
+      if (!end && /(present|current|now|ongoing)/i.test(line)) end = parts[0];
+      if (current) {
+        current.startDate = current.startDate || start;
+        current.endDate = current.endDate || end;
+      } else {
+        pendingDates = { start, end };
+      }
+      continue;
+    }
 
     // Try to detect a role/company header line.
     const header = parseRoleHeader(line);
     if (header && !isBullet) {
-      startNew(header.role, header.company, header.location, header.startDate, header.endDate);
+      // A role with an open entry that still lacks company/location may actually
+      // be the location line of the current entry (e.g. "Freelance • Mymensingh,
+      // Bangladesh"). Attach it instead of starting a new experience.
+      if (
+        current &&
+        current.role &&
+        !current.company &&
+        !current.location &&
+        isLocationLike(header.role)
+      ) {
+        const parts = header.role.split(/\s*[•|–—,-]\s*/).map((p) => p.trim()).filter(Boolean);
+        current.location = parts.length > 1 ? parts.slice(1).join(", ") : header.role;
+        if (/^(freelance|self[- ]employed|remote|contract|independent|consultant)/i.test(header.role)) {
+          current.company = parts[0] || header.role;
+          current.location = parts.slice(1).join(", ") || "";
+        }
+        continue;
+      }
+      startNew(
+        header.role,
+        header.company,
+        header.location,
+        header.startDate || pendingDates?.start || "",
+        header.endDate || pendingDates?.end || "",
+      );
       continue;
     }
 
@@ -289,29 +594,11 @@ const parseExperience = (lines: string[]): RawExperience[] => {
         role: line,
         company: "",
         location: "",
-        startDate: "",
-        endDate: "",
+        startDate: pendingDates?.start || "",
+        endDate: pendingDates?.end || "",
         responsibilities: [],
       };
-      continue;
-    }
-
-    // Pure date-range line (e.g. "Jan 2021 - Present", "2018 - 2020") sets dates.
-    if (!isBullet) {
-      const rangeMatch = line.match(DATE_RANGE_RE);
-      if (rangeMatch) {
-        current.startDate = current.startDate || rangeMatch[1];
-        current.endDate = current.endDate || rangeMatch[2];
-        continue;
-      }
-    }
-
-    // Date-only line updates dates.
-    if (isDateOnly(line) && !isBullet) {
-      const parts = line.split(/[-–—]/).map((p) => p.trim());
-      if (parts[0]) current.startDate = current.startDate || parts[0];
-      if (parts[1]) current.endDate = current.endDate || parts[1];
-      else if (/(present|current|now|ongoing)/i.test(line)) current.endDate = parts[0];
+      pendingDates = null;
       continue;
     }
 
@@ -331,14 +618,20 @@ const parseExperience = (lines: string[]): RawExperience[] => {
 const parseRoleHeader = (
   line: string,
 ): { role: string; company: string; location: string; startDate: string; endDate: string } | null => {
-  const cleaned = line.replace(/^[•·▪o*\-–—•\s]+/, "");
-  if (!cleaned || cleaned.length > 140) return null;
+  const cleaned = line.replace(/^[•·▪*\-–—\s]+/, "");
+  if (!cleaned || cleaned.length > 100) return null;
   // Requires an uppercase word near start to be a heading, not a sentence.
   if (!/^[A-Z]/.test(cleaned)) return null;
+
+  // Reject full sentences (responsibility bullets): a real role header rarely
+  // contains a verb past-tense action, a trailing period, or more than ~6 words.
+  if (/\.$/.test(cleaned)) return null;
+  if (/^(developed|designed|built|implemented|created|managed|led|worked|collaborated|delivered|improved|optimized|reduced|maintained|tested|wrote|architected|launched|owned|handled|assisted|spearheaded|responsible for|contributed|supported|helped)\b/i.test(cleaned)) return null;
 
   // A role header must contain at least two words or a separator/date range,
   // otherwise a wrapped continuation word (e.g. "PostgreSQL") is treated as a role.
   const wordCount = cleaned.split(/\s+/).length;
+  if (wordCount > 8) return null;
   if (
     wordCount < 2 &&
     !/[-–—|,|]|\s+at\s+|\s+@\s+|\d{4}/i.test(cleaned)
@@ -395,6 +688,12 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
   const projects: DictionaryResumeJson["projects"] = [];
   let current: DictionaryResumeJson["projects"][number] | null = null;
 
+  const pushCurrent = (name: string): DictionaryResumeJson["projects"][number] => {
+    current = { name: name.slice(0, 80), description: [], link: "" };
+    projects.push(current);
+    return current;
+  };
+
   for (const raw of lines) {
     const line = cleanLine(raw);
     if (!line) continue;
@@ -402,18 +701,38 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
     const isBullet = bullet.test(line) || /^\d+[.)]\s+/.test(line);
 
     if (isBullet) {
-      if (!current) {
-        current = { name: "Project", description: [], link: "" };
-        projects.push(current);
-      }
+      if (!current) current = pushCurrent("Project");
       current.description.push(line.replace(bullet, "").trim());
-    } else {
-      current = { name: line.slice(0, 80), description: [], link: "" };
-      projects.push(current);
+      continue;
     }
+
+    const isDateRange = DATE_RANGE_RE.test(line);
+    const isLink = /^(live|demo|github|link|project link|code|repo)[\s:]*$/i.test(line) || /^https?:\/\//i.test(line);
+
+    // Date-range / link lines belong to the current project when we have one.
+    if (current) {
+      if (isDateRange) {
+        current.description.push(line.trim());
+        continue;
+      }
+      if (isLink) {
+        current.link = line.replace(/^(live|demo|github|link|project link|code|repo)\s*[:]?\s*/i, "").trim();
+        continue;
+      }
+    }
+
+    if (!current || (!current.description.length && !isDescriptionLine(line))) {
+      current = pushCurrent(line);
+      continue;
+    }
+
+    current.description.push(line);
   }
   return projects;
 };
+
+const isDescriptionLine = (l: string): boolean =>
+  /^(developed|designed|built|implemented|created|used|built with|technologies|features|role|responsibilities)/i.test(l) || l.length > 60;
 
 // ============================================================================
 // Education
@@ -433,7 +752,7 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
     const educationLevel =
       matchDictionary(line, EDUCATION_LEVELS)[0] || "";
 
-    // Dates: "2013 - 2017"
+    // Dates: "2013 - 2017", "Mar 2017–May 2018" (spaces around dash optional)
     const dates = line.match(
       /(?<start>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4})|\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})\s*[-–—]\s*(?<end>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4})|present|current)/i,
     );
@@ -446,6 +765,23 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
         startDate: dates ? dates.groups?.start || "" : "",
         endDate: dates ? dates.groups?.end || "" : "",
       });
+    }
+  }
+
+  // If education entries were found but none carried dates, fall back to
+  // grabbing a date-range line from the raw section lines.
+  if (education.length > 0 && education.every((e) => !e.startDate && !e.endDate)) {
+    const dateLine = lines.find((l) => /[-–—]\s*\d{4}/.test(l) || /\d{4}[-–—]/.test(l));
+    if (dateLine) {
+      const dates = dateLine.match(
+        /(?<start>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}))\s*[-–—]\s*(?<end>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}))/i,
+      );
+      if (dates) {
+        for (const e of education) {
+          e.startDate = e.startDate || dates.groups?.start || "";
+          e.endDate = e.endDate || dates.groups?.end || "";
+        }
+      }
     }
   }
   return education;

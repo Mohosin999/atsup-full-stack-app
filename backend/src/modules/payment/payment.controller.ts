@@ -70,10 +70,6 @@ export const stripeWebhookController = async (req: any, res: Response) => {
 
 export const verifyPaymentController = async (req: Request, res: Response) => {
   try {
-    console.log("=== Payment Verification Started ===");
-    console.log("Query params:", req.query);
-    console.log("User:", (req.user as any)?.id);
-
     const { session_id } = req.query;
 
     if (!session_id) {
@@ -81,11 +77,9 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Session ID required" });
     }
 
-    console.log("Fetching Stripe session:", session_id);
     const session = await stripe.checkout.sessions.retrieve(
       session_id as string,
     );
-    console.log("Stripe session retrieved:", session.id);
 
     if (!session || !session.metadata) {
       console.error("Session not found or no metadata");
@@ -98,7 +92,6 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
     }
 
     const { userId, planId, email, credits } = session.metadata || {};
-    console.log("Session metadata:", { userId, planId, email, credits });
 
     if (!userId || !planId) {
       console.error("Invalid metadata:", { userId, planId });
@@ -113,13 +106,10 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
           ? PRO_PLAN_CREDITS
           : 100;
 
-    console.log(`Plan: ${planKey}, Credits to add: ${creditsNum}`);
-
     const existingPayment = await prisma.payment.findFirst({
       where: { stripeSessionId: session_id as string },
     });
     if (existingPayment) {
-      console.log("Payment already processed for this session");
       return res.json({
         success: true,
         alreadyProcessed: true,
@@ -128,7 +118,6 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
       });
     }
 
-    console.log("Fetching user:", userId);
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -142,7 +131,6 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
     }
 
     const amount = session.amount_total ? session.amount_total / 100 : 0;
-    console.log(`Payment amount: $${amount}`);
 
     const oldCredits = (user.subscription as any)?.credits ?? 0;
     const updated = await prisma.user.update({
@@ -161,9 +149,6 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
     });
 
     const newCredits = (updated.subscription as any)?.credits ?? 0;
-    console.log(
-      `User ${userId} updated: ${oldCredits} → ${newCredits} credits`,
-    );
 
     await prisma.payment.create({
       data: {
@@ -179,10 +164,6 @@ export const verifyPaymentController = async (req: Request, res: Response) => {
       },
     });
 
-    console.log(
-      `✅ Payment verified: User ${userId} received ${creditsNum} credits for ${planId} plan`,
-    );
-    console.log("=== Payment Verification Complete ===");
     res.json({ success: true, credits: creditsNum, plan: planId });
   } catch (error: any) {
     console.error("❌ Payment verification error:", error);

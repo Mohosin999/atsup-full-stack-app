@@ -1,4 +1,4 @@
-import { parsePdfFile } from "./pdf/pdfParser.service";
+import { parseResumeFile } from "../../shared/resume-parser";
 import {
   parseResumeByDictionary,
   DictionaryResumeJson,
@@ -26,9 +26,10 @@ export const runUnlimitedAtsCheck = async (
     );
   }
 
-  const pdf = await parsePdfFile(resumeFilePath, resumeMimeType);
+  const { text } = await parseResumeFile(resumeFilePath, resumeMimeType);
 
-  const resumeParsed = parseResumeByDictionary(pdf);
+  const resumeParsed = parseResumeByDictionary(text);
+
   const jdParsed = parseJdByDictionary(jobDescription);
 
   const score = scoreResumeAgainstJd(

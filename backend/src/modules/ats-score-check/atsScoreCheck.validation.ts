@@ -1,14 +1,15 @@
 import { z } from "zod";
 
-export const generateAnalysisSchema = z.object({
-  resumeId: z.string(),
-  jobDescription: z.string().min(50),
+export const parseJDSchema = z.object({
+  description: z.string().min(20, "Job description is too short. Please provide a detailed job description."),
 });
 
-export const paginationSchema = z.object({
-  page: z.number().int().min(1).default(1),
-  limit: z.number().int().min(1).max(100).default(10),
+export const analyzeSchema = z.object({
+  resumeName: z.string().optional(),
+  jobDescription: z.string().optional(),
+  structuredJD: z.any().optional(),
+  aiResearch: z.any().optional(),
 });
 
-export type GenerateAnalysisInput = z.infer<typeof generateAnalysisSchema>;
-export type PaginationInput = z.infer<typeof paginationSchema>;
+export type ParseJDInput = z.infer<typeof parseJDSchema>;
+export type AnalyzeInput = z.infer<typeof analyzeSchema>;

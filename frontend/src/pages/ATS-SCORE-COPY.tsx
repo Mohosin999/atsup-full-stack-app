@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Upload, CheckCircle, XCircle, Scan } from "lucide-react";
 import { toast } from "react-toastify";
-import { atsScoreApi, resumeParserApi, jobApi } from "../api/api";
+import { atsScoreApi } from "../api/api";
 import { useAppDispatch } from "../hooks/redux";
 import { setUserCredits } from "../store/slices/authSlice";
 import BackButton from "../components/ui/BackButton";
@@ -124,7 +124,7 @@ export default function AtsScorePage() {
       setCurrentMessage(PIPELINE_MESSAGES[0]);
       const formData = new FormData();
       formData.append("resume", resumeFile);
-      const parseResponse = await resumeParserApi.parse(formData);
+      const parseResponse = await atsScoreApi.parseResume(formData);
       const aiResearch = parseResponse.data.data?.aiResearch;
       if (!aiResearch) {
         throw new Error("AI returned no resume data");
@@ -136,7 +136,7 @@ export default function AtsScorePage() {
       setActiveStep(1);
 
       setCurrentMessage(PIPELINE_MESSAGES[3]);
-      const jdResponse = await jobApi.parse(jobDescription.trim());
+      const jdResponse = await atsScoreApi.parseJD(jobDescription.trim());
       const structuredJD = jdResponse.data.data;
       if (!structuredJD) {
         throw new Error("AI returned no job description data");

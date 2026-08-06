@@ -11,8 +11,8 @@
 // import { Upload, CheckCircle, XCircle, Scan, X } from "lucide-react";
 // import { toast } from "react-toastify";
 // import { atsScoreApi, resumeParserApi, jobApi } from "../api/api";
-// import { useAppDispatch } from "../hooks/redux";
-// import { setUserCredits } from "../store/slices/authSlice";
+import { useAppDispatch } from "../hooks/redux";
+import { setUserCredits } from "../store/slices/authSlice";
 // import BackButton from "../components/ui/BackButton";
 // import ScoreCard from "../components/ui/ScoreCard";
 // import SectionScoreCard from "../components/SectionScoreCard";
@@ -674,7 +674,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Upload, CheckCircle, XCircle, X } from "lucide-react";
 import { toast } from "react-toastify";
-import { unlimitedAtsApi } from "../api/api";
+import { atsScoreApi } from "../api/api";
 import ScoreCard from "../components/ui/ScoreCard";
 import SectionScoreCard from "../components/SectionScoreCard";
 import SuggestionList from "../components/SuggestionList";
@@ -705,6 +705,7 @@ const PIPELINE_MESSAGES = [
 
 export default function AtsScorePage() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [resumeName, setResumeName] = useState("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
@@ -750,43 +751,67 @@ export default function AtsScorePage() {
     setCurrentMessage(PIPELINE_MESSAGES[0]);
 
     try {
+      // Step 1: Parse resume
+      setCurrentMessage(PIPELINE_MESSAGES[0]);
       const formData = new FormData();
       formData.append("resume", resumeFile);
-      formData.append("jobDescription", jobDescription.trim());
-
-      const response = await unlimitedAtsApi.analyze(formData);
-      const data = response.data.data;
-
-      console.log(data);
-      if (!data || !data.score) {
-        throw new Error("ATS analysis failed");
+      const parseResponse = await atsScoreApi.parseResume(formData);
+      const aiResearch = parseResponse.data.data?.aiResearch;
+      if (!aiResearch) {
+        throw new Error("AI returned no resume data");
       }
 
-      setCompletedSteps(["resume", "jd", "ats"]);
+      await showMessage(1);
+      setCompletedSteps(["resume"]);
+      setActiveStep(1);
+
+      // Step 2: Parse job description
+      setCurrentMessage(PIPELINE_MESSAGES[1]);
+      const jdResponse = await atsScoreApi.parseJD(jobDescription.trim());
+      const structuredJD = jdResponse.data.data;
+      if (!structuredJD) {
+        throw new Error("AI returned no job description data");
+      }
+
+      await showMessage(2);
+      setCompletedSteps(["resume", "jd"]);
       setActiveStep(2);
-      setCurrentMessage(PIPELINE_MESSAGES[3]);
 
-      await showMessage(4, 1200);
+      // Step 3: Analyze
+      setCurrentMessage(PIPELINE_MESSAGES[2]);
+      const response = await atsScoreApi.analyze({
+        resumeName,
+        aiResearch,
+        jobDescription: jobDescription.trim(),
+        structuredJD,
+      });
 
-      const score = data.score;
+      if (response.data.credits !== undefined) {
+        dispatch(setUserCredits(response.data.credits));
+      }
+
+      await showMessage(3, 1200);
+      setCompletedSteps(["resume", "jd", "ats"]);
+
+      const score = response.data.data;
       const analysisResult: AtsScoreHistory = {
-        id: `unlimited-${Date.now()}`,
-        _id: `unlimited-${Date.now()}`,
+        id: score.id,
+        _id: score.id,
         userId: "",
-        title: resumeName,
+        title: score.title || resumeName,
         resumeName,
         overallScore: score.overallScore,
         sectionScores: {
           ...score.sectionScores,
-          categories: score.categories,
-          matchBreakdown: score.matchBreakdown,
+          categories: score.sectionScores?.categories,
+          matchBreakdown: score.sectionScores?.matchBreakdown,
         },
         spellingGrammar: score.spellingGrammar,
         atsFriendliness: score.atsFriendliness,
         suggestions: score.suggestions,
         resumeContent: {} as ResumeContent,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: score.createdAt || new Date().toISOString(),
+        updatedAt: score.updatedAt || new Date().toISOString(),
       };
 
       setPipelineOpen(false);

@@ -88,36 +88,24 @@ export const resumeApi = {
   deleteAll: () => api.delete("/resumes/delete-all"),
 };
 
-export const jobApi = {
-  getAll: (page = 1, limit = 10) =>
-    api.get(`/jobs?page=${page}&limit=${limit}`),
-  getById: (id: string) => api.get(`/jobs/${id}`),
-  create: (data: { title: string; company?: string; description: string }) =>
-    api.post("/jobs", data),
-  update: (id: string, data: any) => api.put(`/jobs/${id}`, data),
-  delete: (id: string) => api.delete(`/jobs/${id}`),
-  parse: (description: string) => api.post("/jobs/parse", { description }),
-};
-
 export const atsScoreApi = {
+  parseResume: (formData: FormData) =>
+    api.post("/ats-score/parse-resume", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  parseJD: (description: string) =>
+    api.post("/ats-score/parse-jd", { description }),
   analyze: (data: {
     resumeName: string;
     aiResearch?: any;
     jobDescription?: string;
     structuredJD?: any;
-  }) => api.post("/ats-score-history/analyze", data),
-  getAll: (page = 1, limit = 3) =>
-    api.get(`/ats-score-history?page=${page}&limit=${limit}`),
-  getById: (id: string) => api.get(`/ats-score-history/${id}`),
-  delete: (id: string) => api.delete(`/ats-score-history/${id}`),
-  deleteAll: () => api.delete("/ats-score-history"),
-};
-
-export const resumeParserApi = {
-  parse: (formData: FormData) =>
-    api.post("/resume-parser/parse", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+  }) => api.post("/ats-score/analyze", data),
+  getHistory: (page = 1, limit = 3) =>
+    api.get(`/ats-score/history?page=${page}&limit=${limit}`),
+  getById: (id: string) => api.get(`/ats-score/history/${id}`),
+  delete: (id: string) => api.delete(`/ats-score/history/${id}`),
+  deleteAll: () => api.delete("/ats-score/history"),
 };
 
 // Unlimited ATS check — no AI credits, no LLM (dictionary-based).

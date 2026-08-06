@@ -9,9 +9,7 @@ const startServer = async () => {
   try {
     await connectDB();
 
-    server.listen(env.port, () => {
-      console.log(`✅ Server running on port ${env.port}`);
-    });
+    server.listen(env.port);
   } catch (error) {
     console.error("❌ Failed to connect to PostgreSQL:", error);
     process.exit(1);

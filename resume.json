@@ -59,18 +59,5 @@
   "educationSection": true,
   "experienceSection": true,
   "workHistory": true,
-  "dateFormatting": true,
-  "layout": {
-    "isSingleColumn": true,
-    "hasTables": false,
-    "hasImages": false,
-    "hasIcons": false,
-    "hasMultiColumn": false
-  },
-  "fontCheck": {
-    "isStandardFont": true,
-    "fontName": "",
-    "isReadableSize": true,
-    "hasMixedFonts": false
-  }
+  "dateFormatting": true
 }

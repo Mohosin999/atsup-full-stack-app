@@ -19,7 +19,7 @@ export default function Dashboard() {
   const fetchData = async () => {
     setLoadingStats(true);
     try {
-      const atsRes = await atsScoreApi.getAll(1, 1);
+      const atsRes = await atsScoreApi.getHistory(1, 1);
       setTotalAtsHistory(atsRes.data.pagination?.total || 0);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);

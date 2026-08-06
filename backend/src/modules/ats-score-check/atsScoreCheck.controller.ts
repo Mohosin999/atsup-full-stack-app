@@ -1,36 +1,21 @@
 import { Response } from "express";
-import { AuthRequest } from "../../../shared/types";
-import { prisma } from "../../../lib/prisma";
+import { AuthRequest } from "../../shared/types";
+import { prisma } from "../../lib/prisma";
+import { ResumeContent } from "../../shared/types";
+import { parseResume as parseResumeService } from "./services/resumeParser.service";
+import {
+  parseJobDescription as parseJDService,
+  mapAIToStructuredJD,
+} from "./services/jobDescription.service";
 import {
   createAtsScoreHistory,
   getAtsScoreHistory,
   getAtsScoreHistoryById,
   deleteAtsScoreHistory,
   deleteAllAtsScoreHistory,
-} from "../scoring/subservices/history.service";
+} from "./services/history.service";
 
-const mapAIJobToStructuredJD = (aiJD: any) => {
-  if (!aiJD || !aiJD.skills) return null;
-
-  const educationParts = [aiJD.education?.field, aiJD.education?.degree].filter(Boolean);
-  const educationRequirement = educationParts.length > 0 ? educationParts.join("|") : null;
-
-  const yearsMatch = (aiJD.yearsOfExperience || "").match(/(\d+)/);
-  const experienceYearsRequired = yearsMatch ? parseInt(yearsMatch[1], 10) : 0;
-
-  return {
-    jobTitle: aiJD.jobTitle || "",
-    company: "",
-    location: "",
-    hardSkills: aiJD.skills?.hardSkills || [],
-    softSkills: aiJD.skills?.softSkills || [],
-    actionVerbs: [] as string[],
-    educationRequirement,
-    experienceYearsRequired,
-  };
-};
-
-const mapAIResearchToResumeContent = (ai: any) => {
+const mapAIResearchToResumeContent = (ai: any): ResumeContent | null => {
   if (!ai) return null;
 
   const addressParts = (ai.personal_info?.contact?.address || "")
@@ -91,8 +76,79 @@ const mapAIResearchToResumeContent = (ai: any) => {
       date: cert.date || "",
       link: cert.link || "",
     })),
-  };
+  } as ResumeContent;
 };
+
+// ─── Resume Parse ────────────────────────────────────────────────────────────
+
+export const parseResume = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+    }
+
+    try {
+      const result = await parseResumeService(
+        req.file.path,
+        req.file.originalname,
+        req.file.mimetype,
+      );
+
+      return res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (parseError: any) {
+      if (req.file && require("fs").existsSync(req.file.path)) {
+        require("fs").unlinkSync(req.file.path);
+      }
+      throw parseError;
+    }
+  } catch (error: any) {
+    console.error("Resume parse error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to parse resume",
+    });
+  }
+};
+
+// ─── Job Description Parse ───────────────────────────────────────────────────
+
+export const parseJobDescription = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  try {
+    const { description } = req.body;
+
+    if (!description || description.trim().length < 20) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Job description is too short. Please provide a detailed job description.",
+      });
+    }
+
+    const aiResult = await parseJDService(description);
+
+    res.status(200).json({
+      success: true,
+      data: aiResult,
+    });
+  } catch (error: any) {
+    console.error("Job description parse error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to parse job description",
+    });
+  }
+};
+
+// ─── Analyze ─────────────────────────────────────────────────────────────────
 
 export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
   try {
@@ -117,17 +173,13 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       certifications: [],
     };
 
-    // Map AI JD format → StructuredJD if needed
     const finalStructuredJD = structuredJD?.skills
-      ? mapAIJobToStructuredJD(structuredJD)
+      ? mapAIToStructuredJD(structuredJD)
       : structuredJD;
 
-    // Check user credits (ATS Score costs 1 credit)
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
-      select: {
-        subscription: true,
-      },
+      select: { subscription: true },
     });
 
     const credits = (user?.subscription as any)?.credits ?? 0;
@@ -147,7 +199,6 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       aiResearch || null,
     );
 
-    // Deduct 1 credit for ATS Score Analysis
     const updated = await prisma.user.update({
       where: { id: req.user.id },
       data: {
@@ -156,9 +207,7 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
           credits: credits - 1,
         },
       },
-      select: {
-        subscription: true,
-      },
+      select: { subscription: true },
     });
 
     const remainingCredits = (updated.subscription as any)?.credits ?? 0;
@@ -168,7 +217,7 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       data: score,
       credits: remainingCredits,
       message:
-        "✅ Credit deducted successfully! Task: ATS Score Analysis, Credits deducted: 1",
+        "Credit deducted successfully! Task: ATS Score Analysis, Credits deducted: 1",
     });
   } catch (error: any) {
     console.error("ATS Score analysis error:", error);
@@ -179,6 +228,8 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+
+// ─── History CRUD ────────────────────────────────────────────────────────────
 
 export const getAtsScores = async (req: AuthRequest, res: Response) => {
   try {
@@ -204,7 +255,6 @@ export const getAtsScores = async (req: AuthRequest, res: Response) => {
 export const getAtsScore = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-
     const score = await getAtsScoreHistoryById(req.user.id, id);
 
     res.json({
@@ -226,7 +276,6 @@ export const deleteAtsScoreController = async (
 ) => {
   try {
     const { id } = req.params;
-
     await deleteAtsScoreHistory(req.user.id, id);
 
     res.json({

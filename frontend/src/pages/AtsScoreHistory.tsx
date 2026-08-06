@@ -25,7 +25,7 @@ export default function AtsScoreHistoryPage() {
   const fetchHistory = async (pageNum: number = 1) => {
     try {
       setLoading(true);
-      const response = await atsScoreApi.getAll(pageNum, 3);
+      const response = await atsScoreApi.getHistory(pageNum, 3);
       setHistory(response.data.data || []);
       setTotalPages(response.data.pagination?.totalPages || 1);
       setPage(pageNum);

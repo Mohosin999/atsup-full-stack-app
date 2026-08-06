@@ -3,13 +3,9 @@
  * (dictionary-based, no LLM).
  */
 
-export interface ResumeSection {
-  key: string;
-  title: string;
-  lines: string[];
-  startIndex: number;
-  endIndex: number;
-}
+import { ResumeSection } from "../unlimitedAts.types";
+
+
 
 const SECTION_KEYWORDS: Array<{ key: string; title: string; patterns: RegExp[] }> = [
   {

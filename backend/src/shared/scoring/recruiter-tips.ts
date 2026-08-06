@@ -1,5 +1,4 @@
-import { ResumeContent } from "../../../shared/types";
-import { StructuredJD } from "../atsScoreCheck.types";
+import { ResumeContent, StructuredJD } from "../types";
 import { CategoryResult, CategorySubgroup, CheckStatus } from "./types";
 import { CATEGORY_WEIGHTS } from "./constants";
 import { scoreFromChecks, scoreFromSubgroups, deriveFeedback } from "./utils";

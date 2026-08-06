@@ -1,4 +1,3 @@
-// Helper utilities: toResumeText, scoreFromChecks, deriveFeedback, etc.
 import {
   LocalSpellingError,
   MatchCategoryResult,
@@ -11,11 +10,10 @@ import {
   countVariantsInText,
   matchActionVerbs,
   countActionVerbInText,
-} from "./subservices/keyword.service";
+} from "./keywords";
 import { ATS_DATE_RE, MEASURABLE_RESULT_RE } from "./constants";
-import { ResumeContent } from "../../../shared/types";
+import { ResumeContent } from "../types";
 
-// --- Resume text extraction ---
 export const toResumeText = (resume: ResumeContent): string => {
   const parts: string[] = [];
 
@@ -45,7 +43,6 @@ export const toResumeText = (resume: ResumeContent): string => {
   return parts.filter(Boolean).join("\n");
 };
 
-// --- Match category builder ---
 export const buildMatchCategory = (
   resumeText: string,
   items: string[],
@@ -84,7 +81,6 @@ export const buildMatchCategory = (
   };
 };
 
-// --- Scoring helpers ---
 export const scoreFromChecks = (checks: CategoryCheck[]): number => {
   let earned = 0,
     total = 0;
@@ -118,7 +114,6 @@ export const deriveFeedback = (checks: CategoryCheck[]) => {
   return { strengths, improvements };
 };
 
-// --- Education scoring ---
 export const educationScore = (
   resume: ResumeContent,
   educationRequirement?: string | null,
@@ -154,7 +149,6 @@ export const educationScore = (
   return 30;
 };
 
-// --- Experience years calculation ---
 export const calculateYearsOfExperience = (resume: ResumeContent): number => {
   let totalMonths = 0;
   resume.experience?.forEach((exp) => {
@@ -172,7 +166,6 @@ export const calculateYearsOfExperience = (resume: ResumeContent): number => {
   return Math.round(totalMonths / 12);
 };
 
-// --- Measurable results ---
 export const countMeasurableResults = (resume: ResumeContent) => {
   const highlights = (resume.experience || [])
     .flatMap((exp) => exp.highlights || [])
@@ -183,7 +176,6 @@ export const countMeasurableResults = (resume: ResumeContent) => {
 export const measurableResultsScore = (count: number): number =>
   count >= 5 ? 100 : Math.round((count / 5) * 100);
 
-// --- Spelling / Grammar ---
 export const checkSpellingGrammar = (text: string) => {
   const errors: LocalSpellingError[] = [];
 
@@ -211,7 +203,6 @@ export const checkSpellingGrammar = (text: string) => {
   };
 };
 
-// --- Date collection ---
 export const collectResumeDates = (resume: ResumeContent): string[] => {
   const dates: string[] = [];
   const push = (raw?: string) => {
@@ -234,7 +225,6 @@ export const collectResumeDates = (resume: ResumeContent): string[] => {
   return dates;
 };
 
-// --- Re-export keyword service functions for convenience ---
 export {
   extractSkillsFromResume,
   getSkillVariants,

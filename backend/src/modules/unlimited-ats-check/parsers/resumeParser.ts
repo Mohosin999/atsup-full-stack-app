@@ -21,23 +21,17 @@ import {
   NORMAL_DATE_RE,
 } from "../dictionaries/regex-helpers";
 import { matchDictionary } from "../dictionaries/matcher";
-import { splitResumeSections, ResumeSection } from "./resumeSections";
 import { ResumeContent } from "../../../shared/types";
-
-interface LayoutInfo {
-  isSingleColumn: boolean;
-  hasTables: boolean;
-  hasImages: boolean;
-  hasIcons: boolean;
-  hasMultiColumn: boolean;
-}
-
-interface FontCheckInfo {
-  isStandardFont: boolean;
-  fontName: string;
-  isReadableSize: boolean;
-  hasMixedFonts: boolean;
-}
+import {
+  DictionaryResumeJson,
+  ResumeParseOutput,
+  ResumeSegments,
+  Bucket,
+  RawExperience,
+  LayoutInfo,
+  FontCheckInfo,
+  ResumeSection,
+} from "../unlimitedAts.types";
 
 const DEFAULT_LAYOUT: LayoutInfo = {
   isSingleColumn: true,
@@ -53,70 +47,6 @@ const DEFAULT_FONT_CHECK: FontCheckInfo = {
   isReadableSize: false,
   hasMixedFonts: false,
 };
-
-/** The resume.json shape returned to the client (mirrors root resume.json). */
-export interface DictionaryResumeJson {
-  personal_info: {
-    fullName: string;
-    jobTitle: string;
-    contact: {
-      address: string;
-      email: string;
-      phone: string;
-      links: {
-        linkedin: string;
-        portfolio: string;
-        github: string;
-      };
-    };
-  };
-  summary: string;
-  experience: Array<{
-    role: string;
-    company: string;
-    location: string;
-    startDate: string;
-    endDate: string;
-    responsibilities: string[];
-  }>;
-  education: Array<{
-    degree: string;
-    field: string;
-    education_level: string;
-    startDate: string;
-    endDate: string;
-  }>;
-  skills: {
-    hardSkills: string[];
-    softSkills: string[];
-  };
-  projects: Array<{
-    name: string;
-    description: string[];
-    link: string;
-  }>;
-  certifications: Array<{
-    name: string;
-    issuer: string;
-    date: string;
-    link: string;
-  }>;
-  yearsOfExperience: string;
-  measurableResults: string[];
-  resumeTone: string;
-  wordCount: string;
-  educationSection: boolean;
-  experienceSection: boolean;
-  workHistory: boolean;
-  dateFormatting: boolean;
-  layout: LayoutInfo;
-  fontCheck: FontCheckInfo;
-}
-
-export interface ResumeParseOutput {
-  json: DictionaryResumeJson;
-  content: ResumeContent;
-}
 
 const cleanLine = (l: string): string => l.trim();
 
@@ -183,18 +113,6 @@ const isProjectNameLine = (l: string): boolean =>
 // in order and bucket each line into a logical section using content signals:
 // contact info, date ranges, degree keywords, skill lines, bullets, etc.
 // ============================================================================
-
-interface ResumeSegments {
-  header: string[];
-  summary: string[];
-  experience: string[];
-  skills: string[];
-  education: string[];
-  projects: string[];
-  certifications: string[];
-}
-
-type Bucket = keyof ResumeSegments;
 
 const BULLET_RE = /^(?:[•·▪*\-–—o]|\d+[.)])\s*/;
 
@@ -501,15 +419,6 @@ workHistory,
 // ============================================================================
 // Experience parsing
 // ============================================================================
-
-interface RawExperience {
-  role: string;
-  company: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  responsibilities: string[];
-}
 
 const parseExperience = (lines: string[]): RawExperience[] => {
   const entries: RawExperience[] = [];

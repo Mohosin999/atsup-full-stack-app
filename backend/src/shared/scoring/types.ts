@@ -1,6 +1,4 @@
-// Types and interfaces for ATS scoring
-import { ResumeContent } from "../../../shared/types";
-import { StructuredJD } from "../atsScoreCheck.types";
+import { ResumeContent, StructuredJD } from "../types";
 
 export type MatchStatus = "matched" | "partial" | "missing";
 export type CheckStatus = "passed" | "partial" | "failed" | "na";

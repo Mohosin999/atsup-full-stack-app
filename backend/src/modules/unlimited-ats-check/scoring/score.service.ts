@@ -1,6 +1,5 @@
-import { calculateLocalMatchScore } from "../../ats-score-check/scoring";
-import { ResumeContent } from "../../../shared/types";
-import { DictionaryStructuredJD } from "../parsers/jdParser";
+import { calculateLocalMatchScore } from "../../../shared/scoring";
+import { ResumeContent, StructuredJD } from "../../../shared/types";
 
 /**
  * Runs the deterministic ATS scoring engine (reused from ats-score-check,
@@ -9,7 +8,7 @@ import { DictionaryStructuredJD } from "../parsers/jdParser";
  */
 export const scoreResumeAgainstJd = (
   resume: ResumeContent,
-  structuredJd: DictionaryStructuredJD,
+  structuredJd: StructuredJD,
 ) => {
   return calculateLocalMatchScore(resume, structuredJd);
 };

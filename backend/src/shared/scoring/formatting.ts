@@ -1,4 +1,4 @@
-import { ResumeContent } from "../../../shared/types";
+import { ResumeContent } from "../types";
 import { CategoryResult, CheckStatus } from "./types";
 import { CATEGORY_WEIGHTS } from "./constants";
 import { scoreFromChecks, deriveFeedback } from "./utils";

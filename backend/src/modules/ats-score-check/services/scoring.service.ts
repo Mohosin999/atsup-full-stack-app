@@ -1,6 +1,5 @@
-import { ResumeContent } from "../../../shared/types";
-import { StructuredJD } from "../atsScoreCheck.types";
-import { calculateLocalMatchScore } from "../scoring";
+import { ResumeContent, StructuredJD } from "../../../shared/types";
+import { calculateLocalMatchScore } from "../../../shared/scoring";
 
 export const calculateAtsScore = (
   resume: ResumeContent,

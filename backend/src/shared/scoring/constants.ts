@@ -1,4 +1,3 @@
-// Constants: weights, stop words, regex patterns
 export const CATEGORY_WEIGHTS = {
   searchability: 30,
   hardSkills: 35,

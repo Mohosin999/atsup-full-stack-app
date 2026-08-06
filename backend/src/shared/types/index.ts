@@ -102,6 +102,21 @@ export interface ResumeContent {
 }
 
 // ============================================================================
+// Structured Job Description (shared across scoring modules)
+// ============================================================================
+
+export interface StructuredJD {
+  jobTitle: string;
+  company: string;
+  location: string;
+  hardSkills: string[];
+  softSkills: string[];
+  actionVerbs: string[];
+  educationRequirement: string | null;
+  experienceYearsRequired: number;
+}
+
+// ============================================================================
 // Analysis Result Types
 // ============================================================================
 

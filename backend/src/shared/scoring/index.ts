@@ -1,5 +1,4 @@
-import { ResumeContent } from "../../../shared/types";
-import { StructuredJD } from "../atsScoreCheck.types";
+import { ResumeContent, StructuredJD } from "../types";
 import { LocalAtsResult, CategoriesResult, MatchCategoryResult } from "./types";
 import { CATEGORY_WEIGHTS, ROLE_NOUNS } from "./constants";
 import {
@@ -36,7 +35,6 @@ export const calculateLocalMatchScore = (
   const measurable = countMeasurableResults(resume);
   const resumeActionVerbs = matchActionVerbs(resumeText);
 
-  // --- Match Breakdown ---
   let hardSkillsMatch: MatchCategoryResult = {
     score: 0,
     matched: [],
@@ -106,7 +104,6 @@ export const calculateLocalMatchScore = (
     suggestions.push("Add work experience with detailed descriptions.");
   }
 
-  // --- Generic suggestions ---
   if ((resume.skills || []).length < 5)
     suggestions.push(
       "Add a dedicated skills section with at least 5 technical skills.",
@@ -124,7 +121,6 @@ export const calculateLocalMatchScore = (
   if (!resume.projects?.length)
     suggestions.push("Add a projects section to showcase practical work.");
 
-  // --- Section Scores ---
   const summaryWords = (resume.summary || "")
     .split(/\s+/)
     .filter(Boolean).length;
@@ -148,7 +144,6 @@ export const calculateLocalMatchScore = (
   );
   const contactScore = hasContactInfo ? (contact.email ? 90 : 70) : 40;
 
-  // --- ATS Friendliness ---
   const structureFactors = [
     summaryWords >= 30,
     (resume.skills || []).length >= 5,
@@ -160,7 +155,6 @@ export const calculateLocalMatchScore = (
     40 + structureFactors.filter(Boolean).length * 12,
   );
 
-  // --- 5-Category Scoring ---
   const eduScore = educationScore(resume, jd?.educationRequirement ?? null);
   const categories: CategoriesResult = {
     searchability: buildSearchability(resume, resumeText, jd, eduScore),
@@ -176,7 +170,6 @@ export const calculateLocalMatchScore = (
     formatting: buildFormatting(resume, atsFriendliness),
   };
 
-  // --- Overall Score ---
   const overallScore = Math.round(
     (categories.searchability.score * CATEGORY_WEIGHTS.searchability +
       categories.hardSkills.score * CATEGORY_WEIGHTS.hardSkills +
@@ -186,7 +179,6 @@ export const calculateLocalMatchScore = (
       100,
   );
 
-  // --- Additional suggestions from category checks ---
   const searchChecks = categories.searchability.checks;
   ["Job title match", "Date formatting", "Education match"].forEach((label) => {
     const check = searchChecks.find((c) => c.label === label);

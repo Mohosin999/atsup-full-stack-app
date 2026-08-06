@@ -1,5 +1,6 @@
 import { researchJobDescription } from "../../../shared/ai/gemini/jobDescriptionResearch";
-import { ParsedJD, StructuredJD } from "../atsScoreCheck.types";
+import { ParsedJD } from "../atsScoreCheck.types";
+import { StructuredJD } from "../../../shared/types";
 
 export const parseJobDescription = async (
   description: string,

@@ -1,19 +1,8 @@
 import { parseResumeFile } from "../../shared/resume-parser";
-import {
-  parseResumeByDictionary,
-  DictionaryResumeJson,
-} from "./parsers/resumeParser";
-import {
-  parseJdByDictionary,
-  DictionaryJdJson,
-} from "./parsers/jdParser";
+import { parseResumeByDictionary } from "./parsers/resumeParser";
+import { parseJdByDictionary } from "./parsers/jdParser";
 import { scoreResumeAgainstJd } from "./scoring/score.service";
-
-export interface UnlimitedAtsResult {
-  resume: DictionaryResumeJson;
-  jd: DictionaryJdJson;
-  score: ReturnType<typeof scoreResumeAgainstJd>;
-}
+import { UnlimitedAtsResult } from "./unlimitedAts.types";
 
 export const runUnlimitedAtsCheck = async (
   resumeFilePath: string,

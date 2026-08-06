@@ -7,38 +7,8 @@ import {
 } from "../dictionaries/education.dictionary";
 import { ACTION_VERBS_DICTIONARY } from "../dictionaries/action-verbs.dictionary";
 import { matchDictionary } from "../dictionaries/matcher";
-
-/** The jd.json shape returned to the client (mirrors root jd.json). */
-export interface DictionaryJdJson {
-  jobTitle: string;
-  education: {
-    degree: string;
-    field: string;
-    education_level: string;
-  };
-  skills: {
-    hardSkills: string[];
-    softSkills: string[];
-  };
-  yearsOfExperience: string;
-}
-
-/** The StructuredJD shape expected by the ATS scoring engine. */
-export interface DictionaryStructuredJD {
-  jobTitle: string;
-  company: string;
-  location: string;
-  hardSkills: string[];
-  softSkills: string[];
-  actionVerbs: string[];
-  educationRequirement: string | null;
-  experienceYearsRequired: number;
-}
-
-export interface JdParseOutput {
-  json: DictionaryJdJson;
-  structured: DictionaryStructuredJD;
-}
+import { DictionaryJdJson, JdParseOutput } from "../unlimitedAts.types";
+import { StructuredJD } from "../../../shared/types";
 
 const TITLE_KEYWORDS =
   /(Engineer|Developer|Designer|Manager|Analyst|Architect|Scientist|Consultant|Lead|Director|Specialist|Administrator|Coordinator|Tester|Researcher|Writer|Intern|Trainee|Executive|Head|Principal|Officer|Support|Recruiter|Data|Machine Learning|Software|Product|UX|UI|Full Stack|Full-Stack|Backend|Back-end|Frontend|Front-end|DevOps|QA|Cloud|Security|Mobile|Web)/i;
@@ -130,7 +100,7 @@ export const parseJdByDictionary = (description: string): JdParseOutput => {
     .filter(Boolean)
     .join("|") || null;
 
-  const structured: DictionaryStructuredJD = {
+  const structured: StructuredJD = {
     jobTitle,
     company: "",
     location: "",

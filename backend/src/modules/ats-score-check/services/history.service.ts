@@ -1,6 +1,6 @@
 import { prisma } from "../../../lib/prisma";
 import { ResumeContent } from "../../../shared/types";
-import { StructuredJD } from "../atsScoreCheck.types";
+import { StructuredJD } from "../../../shared/types";
 import { calculateAtsScore } from "./scoring.service";
 
 export const createAtsScoreHistory = async (

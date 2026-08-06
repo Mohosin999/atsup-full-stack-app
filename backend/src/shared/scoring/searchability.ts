@@ -11,8 +11,7 @@ import {
   deriveFeedback,
   collectResumeDates,
 } from "./utils";
-import { ResumeContent } from "../../../shared/types";
-import { StructuredJD } from "../atsScoreCheck.types";
+import { ResumeContent, StructuredJD } from "../types";
 
 const buildContactInfoSubgroup = (resume: ResumeContent): CategorySubgroup => {
   const contact = resume.personalInfo?.contact || {};

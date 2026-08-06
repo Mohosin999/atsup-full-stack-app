@@ -120,4 +120,12 @@ export const resumeParserApi = {
     }),
 };
 
+// Unlimited ATS check — no AI credits, no LLM (dictionary-based).
+export const unlimitedAtsApi = {
+  analyze: (formData: FormData) =>
+    api.post("/unlimited-ats-check/analyze", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+};
+
 export default api;

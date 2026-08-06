@@ -5,6 +5,7 @@ import resumeParserRoutes from "./ats-score-check/resume-parser/resumeParser.rou
 import jobMatchRoutes from "./job-match/jobMatch.routes";
 import resumeBuilderRoutes from "./resume-builder/resumeBuilder.routes";
 import paymentRoutes from "./payment/payment.routes";
+import unlimitedAtsRoutes from "./unlimited-ats-check/unlimitedAts.routes";
 
 export const moduleRoutes = [
   { path: "/api/auth", router: authRoutes },
@@ -14,4 +15,5 @@ export const moduleRoutes = [
   { path: "/api/jobs", router: jobMatchRoutes },
   { path: "/api/resumes", router: resumeBuilderRoutes },
   { path: "/api/payment", router: paymentRoutes },
+  { path: "/api/unlimited-ats-check", router: unlimitedAtsRoutes },
 ];

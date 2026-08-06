@@ -670,8 +670,7 @@ export interface PaginatedResponse<T = any> extends ApiResponse<T> {
  * Supported file types for upload
  */
 export type SupportedFileType =
-  | "application/pdf"
-  | "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  | "application/pdf";
 
 /**
  * File upload configuration

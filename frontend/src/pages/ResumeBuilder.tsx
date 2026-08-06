@@ -23,6 +23,7 @@ import ProjectsForm from "../components/resume-builder/ProjectsForm";
 import AchievementsForm from "../components/resume-builder/AchievementsForm";
 import CertificationsForm from "../components/resume-builder/CertificationsForm";
 import AtsResumePreview from "../components/resume-builder/AtsResumePreview";
+import Wrapper from "../components/Wrapper";
 
 const STORAGE_KEY = "cvcoach-resume-builder";
 
@@ -231,7 +232,7 @@ export default function ResumeBuilder() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <Wrapper>
         <div className="mt-6 mb-4">
           <BackButton />
         </div>
@@ -378,7 +379,7 @@ export default function ResumeBuilder() {
             </div>
           </div>
         </div>
-      </div>
+      </Wrapper>
     </div>
   );
 }

@@ -1,7 +1,7 @@
-import { ResumeContent } from "../../../shared/types";
+import { ResumeContent } from "../../../../shared/types";
 import {
   StructuredJD,
-} from "../../job-match/subservices/jdParser.service";
+} from "../../../job-match/subservices/jdParser.service";
 import {
   extractSkillsFromResume,
   getSkillVariants,
@@ -1017,7 +1017,7 @@ const buildFormatting = (
 
   // File-level layout checks cannot be verified from parsed text.
   const fileChecks: CategoryCheck[] = [
-    { label: "ATS-friendly fonts", status: "na", detail: "Requires original file (PDF/DOCX) analysis to verify fonts.", weight: 0 },
+    { label: "ATS-friendly fonts", status: "na", detail: "Requires original file (PDF) analysis to verify fonts.", weight: 0 },
     { label: "No tables / text boxes", status: "na", detail: "Requires original file analysis to detect layout elements.", weight: 0 },
     { label: "No icons / graphics", status: "na", detail: "Requires original file analysis to detect images & icons.", weight: 0 },
     { label: "No profile photo", status: "na", detail: "Requires original file analysis to detect a profile image.", weight: 0 },

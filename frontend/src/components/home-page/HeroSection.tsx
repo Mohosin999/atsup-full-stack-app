@@ -13,6 +13,7 @@ import {
   Zap,
 } from "lucide-react";
 import HeroCards from "./HeroCards";
+import Wrapper from "../Wrapper";
 
 interface HeroSectionProps {
   user: any;
@@ -21,8 +22,8 @@ interface HeroSectionProps {
 
 export default function HeroSection({ user, onLogout }: HeroSectionProps) {
   return (
-    <section className="pt-28 md:pt-36 pb-24 section-container">
-      <div className="max-w-7xl mx-auto">
+    <section className="pt-28 md:pt-36 pb-24">
+      <Wrapper>
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -127,7 +128,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
           </motion.div>
           <HeroCards />
         </div>
-      </div>
+      </Wrapper>
     </section>
   );
 }

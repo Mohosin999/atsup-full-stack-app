@@ -1,7 +1,7 @@
 import { Response } from 'express';
-import { AuthRequest } from '../../shared/types';
-import { parseResumeFile } from '../../shared/resume-parser';
-import { researchResume } from '../../shared/ai/gemini/pdfResumeResearch';
+import { AuthRequest } from '../../../shared/types';
+import { parseResumeFile } from '../../../shared/resume-parser';
+import { researchResume } from '../../../shared/ai/gemini/pdfResumeResearch';
 import fs from 'fs';
 import path from 'path';
 

@@ -4,6 +4,7 @@ Features Section Component
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
 import { fadeInUp, staggerContainer } from "../../animations";
+import Wrapper from "../Wrapper";
 
 interface Feature {
   icon: React.ElementType;
@@ -17,8 +18,8 @@ interface FeaturesSectionProps {
 
 export default function FeaturesSection({ features }: FeaturesSectionProps) {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-24">
+      <Wrapper>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -75,7 +76,7 @@ export default function FeaturesSection({ features }: FeaturesSectionProps) {
             </motion.div>
           ))}
         </motion.div>
-      </div>
+      </Wrapper>
     </section>
   );
 }

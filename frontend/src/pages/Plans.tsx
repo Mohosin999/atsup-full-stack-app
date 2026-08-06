@@ -17,6 +17,7 @@ import { showUpgradePlan } from "../components/ui/Toast";
 import BackButton from "../components/ui/BackButton";
 import { createCheckoutSession } from "../services/payment";
 import { getStripe } from "../lib/stripe";
+import Wrapper from "../components/Wrapper";
 
 interface Plan {
   id: string;
@@ -127,7 +128,7 @@ export default function Plans() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-50 pt-20 pb-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Wrapper>
         <div className="mt-6 mb-1">
           <BackButton />
         </div>
@@ -237,7 +238,7 @@ export default function Plans() {
             </motion.div>
           ))}
         </div>
-      </div>
+      </Wrapper>
     </div>
   );
 }

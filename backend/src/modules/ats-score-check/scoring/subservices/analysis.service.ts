@@ -15,8 +15,8 @@ import {
   KeywordMatch,
   KeywordGap,
   DEFAULT_ANALYSIS_CONFIG,
-} from "../../../shared/types";
-import { experienceText } from "../../../shared/utils";
+} from "../../../../shared/types";
+import { experienceText } from "../../../../shared/utils";
 
 import {
   KeywordMatchingCalculator,

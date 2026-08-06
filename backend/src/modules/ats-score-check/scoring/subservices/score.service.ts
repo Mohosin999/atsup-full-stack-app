@@ -1,7 +1,7 @@
-import { prisma } from '../../../lib/prisma';
-import { ResumeContent } from '../../../shared/types';
+import { prisma } from '../../../../lib/prisma';
+import { ResumeContent } from '../../../../shared/types';
 import { calculateLocalMatchScore } from './engine.service';
-import { useUserCredits, getUserCredits } from '../../users/users.service';
+import { useUserCredits, getUserCredits } from '../../../users/users.service';
 
 export const calculateAtsScore = async (
   userId: string,

@@ -13,6 +13,7 @@ import ProfileMenu from "./ProfileMenu";
 import MobileMenuButton from "./MobileMenuButton";
 import MobileMenu from "./MobileMenu";
 import AuthButtons from "./ui/AuthButtons";
+import Wrapper from "./Wrapper";
 
 interface NavLink {
   path: string;
@@ -41,8 +42,8 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-white/80 backdrop-blur-md border-b border-gray-300">
-        <div className="section-container">
+      <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-white/80 backdrop-blur-md">
+        <Wrapper>
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-2">
               <img src="/favicon.svg" alt="CVCoach" className="w-8 h-8" />
@@ -93,7 +94,7 @@ export default function Navbar() {
               )}
             </div>
           </div>
-        </div>
+        </Wrapper>
         <AnimatePresence>
           {mobileMenuOpen && user && (
             <MobileMenu

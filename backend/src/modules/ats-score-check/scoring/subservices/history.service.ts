@@ -1,7 +1,7 @@
-import { prisma } from '../../../lib/prisma';
-import { ResumeContent } from '../../../shared/types';
+import { prisma } from '../../../../lib/prisma';
+import { ResumeContent } from '../../../../shared/types';
 import { calculateLocalMatchScore } from './engine.service';
-import { StructuredJD } from '../../job-match/subservices/jdParser.service';
+import { StructuredJD } from '../../../job-match/subservices/jdParser.service';
 
 export const createAtsScoreHistory = async (
   userId: string,

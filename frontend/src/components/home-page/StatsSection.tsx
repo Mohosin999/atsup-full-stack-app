@@ -3,6 +3,7 @@ Stats Section Component
 =================================== */
 import { motion } from "framer-motion";
 import { staggerContainer, fadeInUp } from "../../animations";
+import Wrapper from "../Wrapper";
 
 export default function StatsSection() {
   return (
@@ -11,9 +12,9 @@ export default function StatsSection() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8 }}
-      className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-green-600 via-emerald-600 to-green-700"
+      className="py-16 bg-gradient-to-r from-green-600 via-emerald-600 to-green-700"
     >
-      <div className="max-w-7xl mx-auto">
+      <Wrapper>
         <motion.div
           variants={staggerContainer}
           initial="initial"
@@ -40,7 +41,7 @@ export default function StatsSection() {
             </motion.div>
           ))}
         </motion.div>
-      </div>
+      </Wrapper>
     </motion.section>
   );
 }

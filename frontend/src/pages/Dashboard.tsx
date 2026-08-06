@@ -9,6 +9,7 @@ import { useAppSelector } from "../hooks/redux";
 import { atsScoreApi } from "../api/api";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import BackButton from "../components/ui/BackButton";
+import Wrapper from "../components/Wrapper";
 
 export default function Dashboard() {
   const { user } = useAppSelector((state) => state.auth);
@@ -39,7 +40,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Wrapper>
         <div className="mt-6 mb-1">
           <BackButton />
         </div>
@@ -54,7 +55,7 @@ export default function Dashboard() {
             />
           </div>
         </div>
-      </div>
+      </Wrapper>
     </div>
   );
 }

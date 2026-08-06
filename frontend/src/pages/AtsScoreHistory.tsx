@@ -11,6 +11,7 @@ import { AtsScoreHistory } from "../types";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import Pagination from "../components/ui/Pagination";
 import ConfirmModal from "../components/ui/ConfirmModal";
+import Wrapper from "../components/Wrapper";
 
 export default function AtsScoreHistoryPage() {
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ export default function AtsScoreHistoryPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
-      <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8">
+      <Wrapper maxWidth="max-w-5xl">
         <div className="mt-6 mb-4">
           <button
             onClick={() => navigate(-1)}
@@ -228,7 +229,7 @@ export default function AtsScoreHistoryPage() {
             )}
           </div>
         )}
-      </div>
+      </Wrapper>
 
       <ConfirmModal
         isOpen={!!deleteId}

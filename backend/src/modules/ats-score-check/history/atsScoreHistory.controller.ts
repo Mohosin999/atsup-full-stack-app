@@ -1,13 +1,13 @@
 import { Response } from "express";
-import { AuthRequest } from "../../shared/types";
-import { prisma } from "../../lib/prisma";
+import { AuthRequest } from "../../../shared/types";
+import { prisma } from "../../../lib/prisma";
 import {
   createAtsScoreHistory,
   getAtsScoreHistory,
   getAtsScoreHistoryById,
   deleteAtsScoreHistory,
   deleteAllAtsScoreHistory,
-} from "./subservices/history.service";
+} from "../scoring/subservices/history.service";
 
 const mapAIJobToStructuredJD = (aiJD: any) => {
   if (!aiJD || !aiJD.skills) return null;

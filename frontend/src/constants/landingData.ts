@@ -11,7 +11,7 @@ export const steps = [
   {
     number: "01",
     title: "Upload Resume",
-    description: "Drag and drop your PDF or DOCX resume into the upload zone.",
+    description: "Drag and drop your PDF resume into the upload zone.",
   },
   {
     number: "02",
@@ -83,7 +83,7 @@ export const analysisSteps = [
   {
     number: "01",
     title: "Upload Resume",
-    description: "Upload your existing resume (PDF or DOCX) to analyze.",
+    description: "Upload your existing resume (PDF) to analyze.",
   },
   {
     number: "02",

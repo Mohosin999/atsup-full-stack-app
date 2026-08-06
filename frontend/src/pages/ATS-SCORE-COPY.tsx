@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Upload, CheckCircle, XCircle, Scan, X } from "lucide-react";
+import { Upload, CheckCircle, XCircle, Scan } from "lucide-react";
 import { toast } from "react-toastify";
 import { atsScoreApi, resumeParserApi, jobApi } from "../api/api";
 import { useAppDispatch } from "../hooks/redux";
@@ -18,8 +18,6 @@ import AnalysisProgressModal, {
   PipelineStep,
 } from "../components/ui/AnalysisProgressModal";
 import { AtsScoreHistory } from "../types";
-import Wrapper from "../components/Wrapper";
-import Button from "@/components/ui/Button";
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: "resume", label: "Resume Analysis" },
@@ -53,7 +51,6 @@ export default function AtsScorePage() {
   const [activeStep, setActiveStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
-
 
   const bothFieldsReady = !!resumeFile && !!jobDescription.trim();
 
@@ -96,7 +93,7 @@ export default function AtsScorePage() {
     }
   };
 
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = (file: File) => {
     setResumeFile(file);
     setResumeName(file.name);
   };
@@ -192,166 +189,152 @@ export default function AtsScorePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
-      <Wrapper>
-
-        {/* <div className="mt-6 mb-4">
+    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="mt-6 mb-4">
           <BackButton />
-        </div> */}
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="my-8"
+          className="mb-8"
         >
-          <h1 className="text-lg font-bold text-gray-900 mb-1">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             ATS Score Check
           </h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-gray-600">
             Analyze your resume for ATS (Applicant Tracking System)
             compatibility
           </p>
         </motion.div>
 
         {!result ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-lg p-6 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-              {/* LEFT: Upload Resume */}
-              <div className="flex flex-col">
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${resumeFile ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
-                  >
-                    {resumeFile ? (
-                      <CheckCircle className="w-5 h-5" />
-                    ) : (
-                      "1"
-                    )}
-                  </div>
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    Upload Resume
-                  </h2>
+          <div className="max-w-3xl mx-auto space-y-6">
+            {/* Step 1: Upload Resume */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white rounded-lg p-6"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${resumeFile ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
+                >
+                  {resumeFile ? <CheckCircle className="w-5 h-5" /> : "1"}
                 </div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Upload Resume
+                </h2>
+              </div>
 
-                {resumeFile ? (
-                  <div className="relative flex-1 min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-green-400 bg-green-50 rounded-lg">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                        <CheckCircle className="w-8 h-8 text-green-500" />
-                      </div>
-                      <p className="text-sm font-medium text-gray-900 text-center px-4">
-                        {resumeName}
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-200 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-100 transition-colors">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  {loading ? (
+                    <LoadingSpinner />
+                  ) : (
+                    <>
+                      <Upload className="w-8 h-8 text-gray-600 mb-2" />
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
                       </p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setResumeFile(null);
-                        setResumeName("");
-                      }}
-                      className="absolute bottom-2 right-2 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-red-50 hover:text-red-600 hover:border-red-300 rounded-lg transition-colors shadow-sm"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                      Clear
-                    </button>
-                  </div>
-                ) : (
-                  <label className="relative flex-1 min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-white hover:bg-gray-100 cursor-pointer rounded-lg transition-colors">
-                    {loading ? (
-                      <LoadingSpinner />
-                    ) : (
-                      <>
-                        <Upload className="w-8 h-8 text-gray-600 mb-2" />
-                        <p className="text-sm text-gray-600">
-                          <span className="font-semibold">Click to upload</span>{" "}
-                          or drag and drop
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          PDF only (MAX. 10MB)
-                        </p>
-                      </>
-                    )}
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept=".pdf"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleFileUpload(file);
-                      }}
-                    />
-                  </label>
-                )}
-              </div>
-
-              {/* RIGHT: Job Description */}
-              <div className="flex flex-col">
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
-                  >
-                    {jobDescription ? (
-                      <CheckCircle className="w-5 h-5" />
-                    ) : (
-                      "2"
-                    )}
-                  </div>
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    Paste Job Description
-                  </h2>
+                      <p className="text-xs text-gray-500">
+                        PDF only (MAX. 10MB)
+                      </p>
+                    </>
+                  )}
                 </div>
-
-                <textarea
-                  value={jobDescription}
-                  onChange={(e) => handleJobDescriptionChange(e.target.value)}
-                  placeholder="Paste the job description here..."
-                  className="flex-1 min-h-[280px] w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                <input
+                  type="file"
+                  className="hidden"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileUpload(file);
+                  }}
                 />
-              </div>
-            </div>
+              </label>
 
-            {/* Scan Button */}
-            {/* <div className="mt-6 flex justify-end relative group">
-              <button
-                onClick={handleAnalyze}
-                disabled={!bothFieldsReady || analyzing}
-                className="h-14 px-8 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-green-500/25"
-              >
-                {analyzing ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <LoadingSpinner /> Scanning...
-                  </span>
-                ) : (
-                  <>
-                    <Scan className="w-5 h-5" />
-                    Scan Resume
-                  </>
-                )}
-              </button>
-              {!bothFieldsReady && (
-                <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block z-10">
-                  <div className="bg-gray-100 text-gray-900 text-sm rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
-                    {!resumeFile &&
-                      !jobDescription.trim() &&
-                      "Upload resume and paste job description"}
-                    {!resumeFile &&
-                      jobDescription.trim() &&
-                      "Upload resume to continue"}
-                    {resumeFile &&
-                      !jobDescription.trim() &&
-                      "Paste job description to continue"}
+              {resumeFile && (
+                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-600">
+                    <CheckCircle className="w-5 h-5" />
+                    <span className="font-medium">Selected: {resumeName}</span>
                   </div>
                 </div>
               )}
-            </div> */}
-            <div className="mt-6 flex justify-end" >
-              <Button onClick={handleAnalyze} disabled={!bothFieldsReady || analyzing}>Analyze</Button>
-            </div>
-          </motion.div>
+            </motion.div>
+
+            {/* Step 2: Job Description */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-lg p-6"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
+                >
+                  {jobDescription ? <CheckCircle className="w-5 h-5" /> : "2"}
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Paste Job Description
+                </h2>
+              </div>
+
+              <textarea
+                value={jobDescription}
+                onChange={(e) => handleJobDescriptionChange(e.target.value)}
+                placeholder="Paste the job description here..."
+                rows={10}
+                className="w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+              />
+            </motion.div>
+
+            {/* Scan Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="relative group">
+                <button
+                  onClick={handleAnalyze}
+                  disabled={!bothFieldsReady || analyzing}
+                  className="w-full h-14 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-green-500/25"
+                >
+                  {analyzing ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <LoadingSpinner /> Scanning...
+                    </span>
+                  ) : (
+                    <>
+                      <Scan className="w-5 h-5" />
+                      Scan Resume
+                    </>
+                  )}
+                </button>
+                {!bothFieldsReady && (
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block z-10">
+                    <div className="bg-gray-100 text-gray-900 text-sm rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
+                      {!resumeFile &&
+                        !jobDescription.trim() &&
+                        "Upload resume and paste job description"}
+                      {!resumeFile &&
+                        jobDescription.trim() &&
+                        "Upload resume to continue"}
+                      {resumeFile &&
+                        !jobDescription.trim() &&
+                        "Paste job description to continue"}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
         ) : (
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -644,7 +627,7 @@ export default function AtsScorePage() {
             )}
           </div>
         )}
-      </Wrapper>
+      </div>
 
       <AnalysisProgressModal
         isOpen={pipelineOpen}

@@ -1,9 +1,10 @@
 import { Flame } from "lucide-react";
+import Wrapper from "./Wrapper";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 text-gray-900 py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-200">
-      <div className="max-w-7xl mx-auto">
+    <footer className="bg-gray-50 text-gray-900 py-16 border-t border-gray-200">
+      <Wrapper>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-6">
@@ -79,7 +80,7 @@ const Footer = () => {
             ))}
           </div>
         </div>
-      </div>
+      </Wrapper>
     </footer>
   );
 };

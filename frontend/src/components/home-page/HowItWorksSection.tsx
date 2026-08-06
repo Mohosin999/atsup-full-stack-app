@@ -4,6 +4,7 @@ How It Works Section Component
 import { motion } from "framer-motion";
 import { Award } from "lucide-react";
 import { fadeInUp, staggerContainer } from "../../animations";
+import Wrapper from "../Wrapper";
 
 interface Step {
   number: string;
@@ -17,8 +18,8 @@ interface HowItWorksSectionProps {
 
 export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 via-white to-green-50">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-24 bg-gradient-to-br from-green-50 via-white to-green-50">
+      <Wrapper>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -61,7 +62,7 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
             </motion.div>
           ))}
         </motion.div>
-      </div>
+      </Wrapper>
     </section>
   );
 }

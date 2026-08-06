@@ -23,7 +23,7 @@ interface UploadState {
 
 export default function FileUpload({
   onFileSelect,
-  acceptedTypes = ['.pdf', '.docx'],
+  acceptedTypes = ['.pdf'],
   maxSize = 10 * 1024 * 1024,
 }: FileUploadProps) {
   const [uploadState, setUploadState] = useState<UploadState>({
@@ -82,7 +82,6 @@ export default function FileUpload({
     onDrop,
     accept: {
       'application/pdf': ['.pdf'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
     },
     maxFiles: 1,
     maxSize,
@@ -182,7 +181,7 @@ export default function FileUpload({
         </div>
 
         <div className="flex items-center gap-2 text-xs text-gray-600">
-          <span>PDF, DOCX</span>
+          <span>PDF</span>
           <span>•</span>
           <span>Max {maxSize / 1024 / 1024}MB</span>
         </div>

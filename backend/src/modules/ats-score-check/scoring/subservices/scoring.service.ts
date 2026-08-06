@@ -3,7 +3,7 @@ import {
   ScoringFactor,
   AnalysisConfig,
   DEFAULT_ANALYSIS_CONFIG,
-} from "../../../shared/types";
+} from "../../../../shared/types";
 
 /**
  * Abstract base class for all score calculators

@@ -42,7 +42,6 @@ const fileFilter = (
 ) => {
   const allowedMimeTypes = [
     'application/pdf',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   ];
 
   if (allowedMimeTypes.includes(file.mimetype)) {

@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScore";
+import AtsScoreDetail from "./pages/AtsScoreDetail";
 import AtsScoreHistory from "./pages/AtsScoreHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -88,7 +89,7 @@ function App() {
           path="/ats-score/:id"
           element={
             <PrivateRoute>
-              <AtsScore />
+              <AtsScoreDetail />
             </PrivateRoute>
           }
         />

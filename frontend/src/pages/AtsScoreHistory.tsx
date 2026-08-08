@@ -157,7 +157,7 @@ export default function AtsScoreHistoryPage() {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 gap-4">
                       <div
                         className={`p-3 rounded-lg border ${getScoreBg(item.overallScore)}`}
                       >
@@ -178,22 +178,6 @@ export default function AtsScoreHistoryPage() {
                           className={`text-xl font-bold ${getScoreColor(item.atsFriendliness)}`}
                         >
                           {item.atsFriendliness}%
-                        </p>
-                      </div>
-                      <div
-                        className={`p-3 rounded-lg border ${getScoreBg(item.spellingGrammar.score)}`}
-                      >
-                        <p className="text-xs text-gray-600 mb-1">Grammar</p>
-                        <p
-                          className={`text-xl font-bold ${getScoreColor(item.spellingGrammar.score)}`}
-                        >
-                          {item.spellingGrammar.score}%
-                        </p>
-                      </div>
-                      <div className="p-3 rounded-lg border bg-gray-100 border-gray-300/50">
-                        <p className="text-xs text-gray-600 mb-1">Errors</p>
-                        <p className="text-xl font-bold text-gray-900">
-                          {item.spellingGrammar.errors.length}
                         </p>
                       </div>
                     </div>

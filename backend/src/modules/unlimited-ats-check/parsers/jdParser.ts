@@ -5,7 +5,6 @@ import {
   FIELD_OF_STUDY_KEYWORDS,
   EDUCATION_LEVELS,
 } from "../dictionaries/education.dictionary";
-import { ACTION_VERBS_DICTIONARY } from "../dictionaries/action-verbs.dictionary";
 import { matchDictionary } from "../dictionaries/matcher";
 import { DictionaryJdJson, JdParseOutput } from "../unlimitedAts.types";
 import { StructuredJD } from "../../../shared/types";
@@ -71,7 +70,6 @@ export const parseJdByDictionary = (description: string): JdParseOutput => {
 
   const hardSkills = matchDictionary(text, HARD_SKILLS_DICTIONARY);
   const softSkills = matchDictionary(text, SOFT_SKILLS_DICTIONARY);
-  const actionVerbs = matchDictionary(text, ACTION_VERBS_DICTIONARY);
 
   const degree =
     matchDictionary(text, DEGREE_KEYWORDS).find(
@@ -106,7 +104,6 @@ export const parseJdByDictionary = (description: string): JdParseOutput => {
     location: "",
     hardSkills,
     softSkills,
-    actionVerbs,
     educationRequirement,
     experienceYearsRequired: years.years,
   };

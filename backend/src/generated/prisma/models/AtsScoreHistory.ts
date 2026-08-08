@@ -65,7 +65,6 @@ export type AtsScoreHistoryCountAggregateOutputType = {
   resumeName: number
   overallScore: number
   sectionScores: number
-  spellingGrammar: number
   atsFriendliness: number
   suggestions: number
   resumeContent: number
@@ -115,7 +114,6 @@ export type AtsScoreHistoryCountAggregateInputType = {
   resumeName?: true
   overallScore?: true
   sectionScores?: true
-  spellingGrammar?: true
   atsFriendliness?: true
   suggestions?: true
   resumeContent?: true
@@ -218,7 +216,6 @@ export type AtsScoreHistoryGroupByOutputType = {
   resumeName: string
   overallScore: number
   sectionScores: runtime.JsonValue
-  spellingGrammar: runtime.JsonValue
   atsFriendliness: number
   suggestions: string[]
   resumeContent: runtime.JsonValue
@@ -257,7 +254,6 @@ export type AtsScoreHistoryWhereInput = {
   resumeName?: Prisma.StringFilter<"AtsScoreHistory"> | string
   overallScore?: Prisma.IntFilter<"AtsScoreHistory"> | number
   sectionScores?: Prisma.JsonFilter<"AtsScoreHistory">
-  spellingGrammar?: Prisma.JsonFilter<"AtsScoreHistory">
   atsFriendliness?: Prisma.IntFilter<"AtsScoreHistory"> | number
   suggestions?: Prisma.StringNullableListFilter<"AtsScoreHistory">
   resumeContent?: Prisma.JsonFilter<"AtsScoreHistory">
@@ -274,7 +270,6 @@ export type AtsScoreHistoryOrderByWithRelationInput = {
   resumeName?: Prisma.SortOrder
   overallScore?: Prisma.SortOrder
   sectionScores?: Prisma.SortOrder
-  spellingGrammar?: Prisma.SortOrder
   atsFriendliness?: Prisma.SortOrder
   suggestions?: Prisma.SortOrder
   resumeContent?: Prisma.SortOrder
@@ -294,7 +289,6 @@ export type AtsScoreHistoryWhereUniqueInput = Prisma.AtLeast<{
   resumeName?: Prisma.StringFilter<"AtsScoreHistory"> | string
   overallScore?: Prisma.IntFilter<"AtsScoreHistory"> | number
   sectionScores?: Prisma.JsonFilter<"AtsScoreHistory">
-  spellingGrammar?: Prisma.JsonFilter<"AtsScoreHistory">
   atsFriendliness?: Prisma.IntFilter<"AtsScoreHistory"> | number
   suggestions?: Prisma.StringNullableListFilter<"AtsScoreHistory">
   resumeContent?: Prisma.JsonFilter<"AtsScoreHistory">
@@ -311,7 +305,6 @@ export type AtsScoreHistoryOrderByWithAggregationInput = {
   resumeName?: Prisma.SortOrder
   overallScore?: Prisma.SortOrder
   sectionScores?: Prisma.SortOrder
-  spellingGrammar?: Prisma.SortOrder
   atsFriendliness?: Prisma.SortOrder
   suggestions?: Prisma.SortOrder
   resumeContent?: Prisma.SortOrder
@@ -335,7 +328,6 @@ export type AtsScoreHistoryScalarWhereWithAggregatesInput = {
   resumeName?: Prisma.StringWithAggregatesFilter<"AtsScoreHistory"> | string
   overallScore?: Prisma.IntWithAggregatesFilter<"AtsScoreHistory"> | number
   sectionScores?: Prisma.JsonWithAggregatesFilter<"AtsScoreHistory">
-  spellingGrammar?: Prisma.JsonWithAggregatesFilter<"AtsScoreHistory">
   atsFriendliness?: Prisma.IntWithAggregatesFilter<"AtsScoreHistory"> | number
   suggestions?: Prisma.StringNullableListFilter<"AtsScoreHistory">
   resumeContent?: Prisma.JsonWithAggregatesFilter<"AtsScoreHistory">
@@ -350,7 +342,6 @@ export type AtsScoreHistoryCreateInput = {
   resumeName: string
   overallScore: number
   sectionScores: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness: number
   suggestions?: Prisma.AtsScoreHistoryCreatesuggestionsInput | string[]
   resumeContent: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -367,7 +358,6 @@ export type AtsScoreHistoryUncheckedCreateInput = {
   resumeName: string
   overallScore: number
   sectionScores: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness: number
   suggestions?: Prisma.AtsScoreHistoryCreatesuggestionsInput | string[]
   resumeContent: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -382,7 +372,6 @@ export type AtsScoreHistoryUpdateInput = {
   resumeName?: Prisma.StringFieldUpdateOperationsInput | string
   overallScore?: Prisma.IntFieldUpdateOperationsInput | number
   sectionScores?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness?: Prisma.IntFieldUpdateOperationsInput | number
   suggestions?: Prisma.AtsScoreHistoryUpdatesuggestionsInput | string[]
   resumeContent?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -399,7 +388,6 @@ export type AtsScoreHistoryUncheckedUpdateInput = {
   resumeName?: Prisma.StringFieldUpdateOperationsInput | string
   overallScore?: Prisma.IntFieldUpdateOperationsInput | number
   sectionScores?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness?: Prisma.IntFieldUpdateOperationsInput | number
   suggestions?: Prisma.AtsScoreHistoryUpdatesuggestionsInput | string[]
   resumeContent?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -415,7 +403,6 @@ export type AtsScoreHistoryCreateManyInput = {
   resumeName: string
   overallScore: number
   sectionScores: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness: number
   suggestions?: Prisma.AtsScoreHistoryCreatesuggestionsInput | string[]
   resumeContent: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -430,7 +417,6 @@ export type AtsScoreHistoryUpdateManyMutationInput = {
   resumeName?: Prisma.StringFieldUpdateOperationsInput | string
   overallScore?: Prisma.IntFieldUpdateOperationsInput | number
   sectionScores?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness?: Prisma.IntFieldUpdateOperationsInput | number
   suggestions?: Prisma.AtsScoreHistoryUpdatesuggestionsInput | string[]
   resumeContent?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -446,7 +432,6 @@ export type AtsScoreHistoryUncheckedUpdateManyInput = {
   resumeName?: Prisma.StringFieldUpdateOperationsInput | string
   overallScore?: Prisma.IntFieldUpdateOperationsInput | number
   sectionScores?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness?: Prisma.IntFieldUpdateOperationsInput | number
   suggestions?: Prisma.AtsScoreHistoryUpdatesuggestionsInput | string[]
   resumeContent?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -472,7 +457,6 @@ export type AtsScoreHistoryCountOrderByAggregateInput = {
   resumeName?: Prisma.SortOrder
   overallScore?: Prisma.SortOrder
   sectionScores?: Prisma.SortOrder
-  spellingGrammar?: Prisma.SortOrder
   atsFriendliness?: Prisma.SortOrder
   suggestions?: Prisma.SortOrder
   resumeContent?: Prisma.SortOrder
@@ -570,7 +554,6 @@ export type AtsScoreHistoryCreateWithoutUserInput = {
   resumeName: string
   overallScore: number
   sectionScores: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness: number
   suggestions?: Prisma.AtsScoreHistoryCreatesuggestionsInput | string[]
   resumeContent: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -585,7 +568,6 @@ export type AtsScoreHistoryUncheckedCreateWithoutUserInput = {
   resumeName: string
   overallScore: number
   sectionScores: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness: number
   suggestions?: Prisma.AtsScoreHistoryCreatesuggestionsInput | string[]
   resumeContent: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -630,7 +612,6 @@ export type AtsScoreHistoryScalarWhereInput = {
   resumeName?: Prisma.StringFilter<"AtsScoreHistory"> | string
   overallScore?: Prisma.IntFilter<"AtsScoreHistory"> | number
   sectionScores?: Prisma.JsonFilter<"AtsScoreHistory">
-  spellingGrammar?: Prisma.JsonFilter<"AtsScoreHistory">
   atsFriendliness?: Prisma.IntFilter<"AtsScoreHistory"> | number
   suggestions?: Prisma.StringNullableListFilter<"AtsScoreHistory">
   resumeContent?: Prisma.JsonFilter<"AtsScoreHistory">
@@ -645,7 +626,6 @@ export type AtsScoreHistoryCreateManyUserInput = {
   resumeName: string
   overallScore: number
   sectionScores: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness: number
   suggestions?: Prisma.AtsScoreHistoryCreatesuggestionsInput | string[]
   resumeContent: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -660,7 +640,6 @@ export type AtsScoreHistoryUpdateWithoutUserInput = {
   resumeName?: Prisma.StringFieldUpdateOperationsInput | string
   overallScore?: Prisma.IntFieldUpdateOperationsInput | number
   sectionScores?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness?: Prisma.IntFieldUpdateOperationsInput | number
   suggestions?: Prisma.AtsScoreHistoryUpdatesuggestionsInput | string[]
   resumeContent?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -675,7 +654,6 @@ export type AtsScoreHistoryUncheckedUpdateWithoutUserInput = {
   resumeName?: Prisma.StringFieldUpdateOperationsInput | string
   overallScore?: Prisma.IntFieldUpdateOperationsInput | number
   sectionScores?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness?: Prisma.IntFieldUpdateOperationsInput | number
   suggestions?: Prisma.AtsScoreHistoryUpdatesuggestionsInput | string[]
   resumeContent?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -690,7 +668,6 @@ export type AtsScoreHistoryUncheckedUpdateManyWithoutUserInput = {
   resumeName?: Prisma.StringFieldUpdateOperationsInput | string
   overallScore?: Prisma.IntFieldUpdateOperationsInput | number
   sectionScores?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  spellingGrammar?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   atsFriendliness?: Prisma.IntFieldUpdateOperationsInput | number
   suggestions?: Prisma.AtsScoreHistoryUpdatesuggestionsInput | string[]
   resumeContent?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -708,7 +685,6 @@ export type AtsScoreHistorySelect<ExtArgs extends runtime.Types.Extensions.Inter
   resumeName?: boolean
   overallScore?: boolean
   sectionScores?: boolean
-  spellingGrammar?: boolean
   atsFriendliness?: boolean
   suggestions?: boolean
   resumeContent?: boolean
@@ -725,7 +701,6 @@ export type AtsScoreHistorySelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   resumeName?: boolean
   overallScore?: boolean
   sectionScores?: boolean
-  spellingGrammar?: boolean
   atsFriendliness?: boolean
   suggestions?: boolean
   resumeContent?: boolean
@@ -742,7 +717,6 @@ export type AtsScoreHistorySelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   resumeName?: boolean
   overallScore?: boolean
   sectionScores?: boolean
-  spellingGrammar?: boolean
   atsFriendliness?: boolean
   suggestions?: boolean
   resumeContent?: boolean
@@ -759,7 +733,6 @@ export type AtsScoreHistorySelectScalar = {
   resumeName?: boolean
   overallScore?: boolean
   sectionScores?: boolean
-  spellingGrammar?: boolean
   atsFriendliness?: boolean
   suggestions?: boolean
   resumeContent?: boolean
@@ -768,7 +741,7 @@ export type AtsScoreHistorySelectScalar = {
   updatedAt?: boolean
 }
 
-export type AtsScoreHistoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "resumeName" | "overallScore" | "sectionScores" | "spellingGrammar" | "atsFriendliness" | "suggestions" | "resumeContent" | "aiResearch" | "createdAt" | "updatedAt", ExtArgs["result"]["atsScoreHistory"]>
+export type AtsScoreHistoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "resumeName" | "overallScore" | "sectionScores" | "atsFriendliness" | "suggestions" | "resumeContent" | "aiResearch" | "createdAt" | "updatedAt", ExtArgs["result"]["atsScoreHistory"]>
 export type AtsScoreHistoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -791,7 +764,6 @@ export type $AtsScoreHistoryPayload<ExtArgs extends runtime.Types.Extensions.Int
     resumeName: string
     overallScore: number
     sectionScores: runtime.JsonValue
-    spellingGrammar: runtime.JsonValue
     atsFriendliness: number
     suggestions: string[]
     resumeContent: runtime.JsonValue
@@ -1228,7 +1200,6 @@ export interface AtsScoreHistoryFieldRefs {
   readonly resumeName: Prisma.FieldRef<"AtsScoreHistory", 'String'>
   readonly overallScore: Prisma.FieldRef<"AtsScoreHistory", 'Int'>
   readonly sectionScores: Prisma.FieldRef<"AtsScoreHistory", 'Json'>
-  readonly spellingGrammar: Prisma.FieldRef<"AtsScoreHistory", 'Json'>
   readonly atsFriendliness: Prisma.FieldRef<"AtsScoreHistory", 'Int'>
   readonly suggestions: Prisma.FieldRef<"AtsScoreHistory", 'String[]'>
   readonly resumeContent: Prisma.FieldRef<"AtsScoreHistory", 'Json'>

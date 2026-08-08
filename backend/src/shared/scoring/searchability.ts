@@ -18,6 +18,7 @@ const buildContactInfoSubgroup = (resume: ResumeContent): CategorySubgroup => {
   const address = contact.address;
   const hasEmail = !!contact.email;
   const hasPhone = !!contact.phone || !!(resume.personalInfo as any)?.phone;
+  // FIXME: modify hasAddress
   const hasAddress = !!(address?.city || address?.division || address?.zipCode);
 
   const checks: CategoryCheck[] = [
@@ -46,6 +47,7 @@ const buildContactInfoSubgroup = (resume: ResumeContent): CategorySubgroup => {
   ];
 
   const passed = checks.filter((c) => c.status === "passed").length;
+  
   return {
     key: "contactInfo",
     title: "Contact Information",
@@ -119,6 +121,7 @@ const buildJobTitleSubgroup = (
 
   if (!title) {
     detail = "No job title detected from job description.";
+    // OPTIMIZE: here is trying to match job title with resume title directly
   } else if (resumeText.includes(title)) {
     status = "passed";
     detail = `Your resume includes the job title "${title}".`;
@@ -130,6 +133,7 @@ const buildJobTitleSubgroup = (
   const checks: CategoryCheck[] = [
     { label: "Job title match", status, detail, weight: 20 },
   ];
+  
   return {
     key: "jobTitleMatch",
     title: "Job Title Match",

@@ -37,7 +37,6 @@ export const createAtsScoreHistory = async (
           : {}),
         categories: analysis.categories,
       } as any,
-      spellingGrammar: analysis.spellingGrammar as any,
       atsFriendliness: analysis.atsFriendliness,
       suggestions: analysis.suggestions,
       resumeContent,

@@ -96,7 +96,6 @@ export interface ResumeContent {
   skills: string[];
   hardSkills?: string[];
   softSkills?: string[];
-  actionVerbs?: string[];
   measurableResults?: string[];
   [key: string]: any;
 }
@@ -111,7 +110,6 @@ export interface StructuredJD {
   location: string;
   hardSkills: string[];
   softSkills: string[];
-  actionVerbs: string[];
   educationRequirement: string | null;
   experienceYearsRequired: number;
 }
@@ -527,7 +525,6 @@ export interface ParsedJobDescription {
   qualifications: string[];
   benefits?: string[];
   keywords: string[];
-  actionVerbs?: string[];
   industryTerms: string[];
 }
 

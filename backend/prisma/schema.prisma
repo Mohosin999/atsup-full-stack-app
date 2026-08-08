@@ -87,7 +87,6 @@ model AtsScore {
   resumeId     String
   overallScore Int      @db.Integer
   sectionScores Json
-  spellingGrammar Json
   atsFriendliness Int    @db.Integer
   suggestions  String[]
   createdAt    DateTime @default(now()) @db.Timestamp()
@@ -108,7 +107,6 @@ model AtsScoreHistory {
   resumeName       String   @db.VarChar(255)
   overallScore     Int      @db.Integer
   sectionScores    Json
-  spellingGrammar  Json
   atsFriendliness  Int      @db.Integer
   suggestions      String[]
   resumeContent    Json

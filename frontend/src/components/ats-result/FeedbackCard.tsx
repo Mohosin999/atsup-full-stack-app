@@ -97,14 +97,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
           <h4 className="text-sm font-semibold text-gray-900 leading-tight">
             {subgroup.title}
           </h4>
-          <p className="text-[11px] text-gray-500">
-            {passed}/{active.length} check{active.length === 1 ? "" : "s"} ok ·
-            {subgroup.weight} pts
-          </p>
         </div>
-        <span className={`flex-shrink-0 text-lg font-bold ${scoreColor}`}>
-          {subgroup.score}%
-        </span>
       </div>
 
       <ul className="px-4 py-2.5 space-y-2.5">
@@ -123,14 +116,14 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
                         : "border-gray-300/40 bg-gray-50 text-gray-500"
                 }`}
               >
-                <span className="text-[10px] font-bold leading-none">
+                <span className="text-[16px] leading-none">
                   {st.mark}
                 </span>
               </span>
               <div className="min-w-0">
-                <p className="text-[13px] font-medium text-gray-700 leading-snug">
+                {/* <p className="text-[13px] font-medium text-gray-700 leading-snug">
                   {check.label}
-                </p>
+                </p> */}
                 <p className="text-xs text-gray-600 leading-snug mt-0.5">
                   {check.detail}
                 </p>
@@ -159,7 +152,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className={`rounded-2xl bg-white/80 border ${meta.accent} p-5 backdrop-blur-sm`}
+      className={`bg-white/80 rounded-2xl ${meta.accent} p-5 box-shadow`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -172,7 +165,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
               {category.title}
             </h3>
             <p className="text-xs text-gray-500">
-              Weight: {category.weight}% of overall score
+              {category.summary}
             </p>
           </div>
         </div>
@@ -180,9 +173,6 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
           {category.score}%
         </span>
       </div>
-
-      {/* Summary */}
-      <p className="text-sm text-gray-600 mb-4">{category.summary}</p>
 
       {/* Sub-group breakdown (e.g. Searchability) */}
       {hasSubgroups && (

@@ -151,7 +151,6 @@ export interface ResumeContent {
   skillCategories?: SkillCategory[];
   hardSkills?: string[];
   softSkills?: string[];
-  actionVerbs?: string[];
   keywords?: string[];
   measurableResults?: string[];
   certifications?: Certification[];
@@ -315,10 +314,6 @@ export interface AtsScore {
       found: string[];
     };
   };
-  spellingGrammar: {
-    score: number;
-    errors: Array<{ type: string; message: string; suggestion: string }>;
-  };
   atsFriendliness: number;
   suggestions: string[];
   createdAt: string;
@@ -414,13 +409,8 @@ export interface AtsScoreHistory {
     matchBreakdown?: {
       hardSkills: MatchCategoryResult;
       softSkills: MatchCategoryResult;
-      actionVerbs: MatchCategoryResult;
     };
     categories?: CategoriesResult;
-  };
-  spellingGrammar: {
-    score: number;
-    errors: Array<{ type: string; message: string; suggestion: string }>;
   };
   atsFriendliness: number;
   suggestions: string[];

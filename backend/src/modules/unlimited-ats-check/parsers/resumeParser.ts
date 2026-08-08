@@ -3,7 +3,6 @@ import {
   HARD_SKILL_STOPWORDS,
 } from "../dictionaries/hard-skills.dictionary";
 import { SOFT_SKILLS_DICTIONARY } from "../dictionaries/soft-skills.dictionary";
-import { ACTION_VERBS_DICTIONARY } from "../dictionaries/action-verbs.dictionary";
 import {
   DEGREE_KEYWORDS,
   FIELD_OF_STUDY_KEYWORDS,
@@ -370,7 +369,6 @@ export const parseResumeByDictionary = (
   // ---- Derived metrics ----
   const wordCount = countWords(allText);
   const measurableResults = extractMeasurableResults(allText);
-  const actionVerbs = matchDictionary(allText, ACTION_VERBS_DICTIONARY);
   const yearsOfExperience = extractExperienceYears(allText);
 
   const educationSection = segmented.education.length > 0;
@@ -380,7 +378,7 @@ export const parseResumeByDictionary = (
   // Date formatting check across experience lines.
   const dateFormatting = detectDateFormatting(segmented.experience);
 
-  const resumeTone = inferTone(allText, actionVerbs.length, measurableResults.length);
+  const resumeTone = inferTone(allText, measurableResults.length);
 
   const json: DictionaryResumeJson = {
     personal_info: {
@@ -731,10 +729,10 @@ const detectDateFormatting = (experienceLines: string[]): boolean => {
   return dateMatches.every((d) => /present|current/i.test(d) || /^\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}$/.test(d) || /(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{4}/i.test(d));
 };
 
-const inferTone = (text: string, actionVerbCount: number, measurableCount: number): string => {
+const inferTone = (text: string, measurableCount: number): string => {
   const wordCount = countWords(text);
-  if (actionVerbCount >= 5 && measurableCount >= 3) return "good";
-  if (actionVerbCount >= 3 || measurableCount >= 1) return "professional";
+  if (measurableCount >= 3) return "good";
+  if (measurableCount >= 1) return "professional";
   if (wordCount < 100) return "weak";
   return "bad";
 };
@@ -793,6 +791,5 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
       issuer: c.issuer || undefined,
     })),
     measurableResults: json.measurableResults,
-    actionVerbs: matchDictionary(json.summary + " " + json.experience.map((e) => e.responsibilities.join(" ")).join(" "), ACTION_VERBS_DICTIONARY),
   };
 };

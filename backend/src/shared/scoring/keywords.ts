@@ -14,19 +14,12 @@ export function extractSkillsFromResume(resume: any): string[] {
   return skills;
 }
 
+
 export function getSkillVariants(canonical: string): string[] {
   return [canonical];
 }
 
-export function matchActionVerbs(text: string): string[] {
-  if (!text || !text.trim()) return [];
-  return [];
-}
-
-export function countActionVerbInText(_text: string, _canonical: string): number {
-  return 0;
-}
-
+// NOTE: 
 export function countVariantsInText(text: string, variants: string[]): number {
   const textLower = text.toLowerCase();
   return variants.reduce((total, variant, index) => {

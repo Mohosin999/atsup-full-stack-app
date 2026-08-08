@@ -12,12 +12,6 @@ export interface LocalSectionScore {
   found?: string[];
 }
 
-export interface LocalSpellingError {
-  type: "spelling" | "grammar" | "punctuation" | "formatting" | "redundancy";
-  message: string;
-  suggestion: string;
-}
-
 export interface MatchItemResult {
   item: string;
   status: MatchStatus;
@@ -82,15 +76,10 @@ export interface LocalAtsResult {
     contactInfo: LocalSectionScore;
     measurableResults: LocalSectionScore;
   };
-  spellingGrammar: {
-    score: number;
-    errors: LocalSpellingError[];
-  };
   atsFriendliness: number;
   suggestions: string[];
   matchBreakdown?: {
     hardSkills: MatchCategoryResult;
     softSkills: MatchCategoryResult;
-    actionVerbs: MatchCategoryResult;
   };
 }

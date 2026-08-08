@@ -7,6 +7,7 @@ const buildSummarySubgroup = (resume: ResumeContent): CategorySubgroup => {
   const summaryWords = (resume.summary || "")
     .split(/\s+/)
     .filter(Boolean).length;
+
   const status: CheckStatus =
     summaryWords >= 30 ? "passed" : summaryWords > 0 ? "partial" : "failed";
   const detail =
@@ -26,12 +27,14 @@ const buildSummarySubgroup = (resume: ResumeContent): CategorySubgroup => {
   };
 };
 
+// QUESTION: why I need here jd instead of exect years from jd
 const buildJobLevelSubgroup = (
   jd: StructuredJD | null,
   resumeYears: number,
 ): CategorySubgroup => {
   let status: CheckStatus;
   let detail: string;
+
   if (jd && jd.experienceYearsRequired > 0) {
     if (resumeYears >= jd.experienceYearsRequired) {
       status = "passed";
@@ -50,6 +53,7 @@ const buildJobLevelSubgroup = (
         ? `Your experience (${resumeYears} yrs) shows relevant work history.`
         : "We couldn't verify your years of experience.";
   }
+
   const checks = [{ label: "Job level match", status, detail, weight: 30 }];
   return {
     key: "jobLevelMatch",
@@ -65,20 +69,23 @@ const buildMeasurableSubgroup = (measurable: {
   count: number;
 }): CategorySubgroup => {
   const status: CheckStatus =
-    measurable.count >= 5
+    measurable.count >= 3
       ? "passed"
       : measurable.count > 0
         ? "partial"
         : "failed";
+
   const detail =
-    measurable.count >= 5
+    measurable.count >= 3
       ? `${measurable.count} measurable results found.`
       : measurable.count > 0
-        ? `${measurable.count} of 5+ measurable results found.`
+        ? `${measurable.count} of 3+ measurable results found.`
         : "No measurable results found.";
+
   const checks = [
-    { label: "Measurable results (5+)", status, detail, weight: 20 },
+    { label: "Measurable results (3+)", status, detail, weight: 20 },
   ];
+
   return {
     key: "measurableResults",
     title: "Measurable Results",
@@ -89,48 +96,25 @@ const buildMeasurableSubgroup = (measurable: {
   };
 };
 
-const buildActionVerbsSubgroup = (
-  actionVerbCount: number,
-): CategorySubgroup => {
-  const status: CheckStatus =
-    actionVerbCount >= 5
-      ? "passed"
-      : actionVerbCount > 0
-        ? "partial"
-        : "failed";
-  const detail =
-    actionVerbCount >= 5
-      ? `${actionVerbCount} strong action verbs found.`
-      : actionVerbCount > 0
-        ? `Only ${actionVerbCount} action verbs found.`
-        : "No action verbs found.";
-  const checks = [{ label: "Action verbs", status, detail, weight: 20 }];
-  return {
-    key: "actionVerbs",
-    title: "Action Verbs",
-    score: scoreFromChecks(checks),
-    weight: 20,
-    summary: detail,
-    checks,
-  };
-};
+// TODO: also add (resume tone, web presence, word count)
 
 export const buildRecruiterTips = (
   resume: ResumeContent,
   jd: StructuredJD | null,
   resumeYears: number,
   measurable: { count: number },
-  actionVerbCount: number,
 ): CategoryResult => {
   const subgroups = [
     buildSummarySubgroup(resume),
     buildJobLevelSubgroup(jd, resumeYears),
     buildMeasurableSubgroup(measurable),
-    buildActionVerbsSubgroup(actionVerbCount),
   ];
+
   const checks = subgroups.flatMap((s) => s.checks);
+  // QUESTION: what it does
   const { strengths, improvements } = deriveFeedback(checks);
   const score = scoreFromSubgroups(subgroups);
+
   return {
     key: "recruiterTips",
     title: "Recruiter Tips",

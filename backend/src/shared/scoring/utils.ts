@@ -1,5 +1,4 @@
 import {
-  LocalSpellingError,
   MatchCategoryResult,
   CategoryCheck,
   CategorySubgroup,
@@ -8,8 +7,6 @@ import {
   extractSkillsFromResume,
   getSkillVariants,
   countVariantsInText,
-  matchActionVerbs,
-  countActionVerbInText,
 } from "./keywords";
 import { ATS_DATE_RE, MEASURABLE_RESULT_RE } from "./constants";
 import { ResumeContent } from "../types";
@@ -30,7 +27,6 @@ export const toResumeText = (resume: ResumeContent): string => {
   if (resume.hardSkills?.length) parts.push(resume.hardSkills.join(" "));
   if (resume.softSkills?.length) parts.push(resume.softSkills.join(" "));
   if (resume.keywords?.length) parts.push(resume.keywords.join(" "));
-  if (resume.actionVerbs?.length) parts.push(resume.actionVerbs.join(" "));
 
   resume.projects?.forEach((proj) => {
     parts.push(`${proj.name || ""}: ${(proj.highlights || []).join(" ")}`);
@@ -156,7 +152,10 @@ export const calculateYearsOfExperience = (resume: ResumeContent): number => {
     const start = new Date(exp.startDate);
     const end =
       exp.current || !exp.endDate ? new Date() : new Date(exp.endDate);
+
+    // Ignore invalid dates
     if (isNaN(start.getTime()) || isNaN(end.getTime())) return;
+
     totalMonths += Math.max(
       0,
       (end.getFullYear() - start.getFullYear()) * 12 +
@@ -176,33 +175,6 @@ export const countMeasurableResults = (resume: ResumeContent) => {
 export const measurableResultsScore = (count: number): number =>
   count >= 5 ? 100 : Math.round((count / 5) * 100);
 
-export const checkSpellingGrammar = (text: string) => {
-  const errors: LocalSpellingError[] = [];
-
-  const repeated = text.match(/\b([a-zA-Z]{3,})\s+\1\b/g);
-  repeated?.slice(0, 10).forEach((match) => {
-    errors.push({
-      type: "grammar",
-      message: `Repeated word detected: "${match}"`,
-      suggestion: "Remove the duplicated word.",
-    });
-  });
-
-  const doubleSpaces = text.match(/[.!?]\s{3,}[A-Z]/g);
-  doubleSpaces?.slice(0, 5).forEach(() => {
-    errors.push({
-      type: "punctuation",
-      message: "Multiple consecutive spaces found after punctuation.",
-      suggestion: "Use a single space after punctuation.",
-    });
-  });
-
-  return {
-    score: errors.length === 0 ? 100 : Math.max(60, 100 - errors.length * 8),
-    errors,
-  };
-};
-
 export const collectResumeDates = (resume: ResumeContent): string[] => {
   const dates: string[] = [];
   const push = (raw?: string) => {
@@ -213,6 +185,7 @@ export const collectResumeDates = (resume: ResumeContent): string[] => {
       .filter(Boolean)
       .forEach((p) => dates.push(p));
   };
+  
   resume.experience?.forEach((exp) => {
     push(exp.startDate);
     if (!exp.current) push(exp.endDate);
@@ -229,6 +202,4 @@ export {
   extractSkillsFromResume,
   getSkillVariants,
   countVariantsInText,
-  matchActionVerbs,
-  countActionVerbInText,
 };

@@ -29,7 +29,6 @@ export const mapAIToStructuredJD = (aiJD: any): StructuredJD | null => {
     location: "",
     hardSkills: aiJD.skills?.hardSkills || [],
     softSkills: aiJD.skills?.softSkills || [],
-    actionVerbs: [],
     educationRequirement,
     experienceYearsRequired,
   };

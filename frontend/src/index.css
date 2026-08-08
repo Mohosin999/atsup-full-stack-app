@@ -62,6 +62,10 @@ body {
   .card {
     @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-6;
   }
+
+  .box-shadow {
+    @apply shadow-[0_0_3px_rgba(0,0,0,0.2)];
+  }
 }
 
 @layer utilities {

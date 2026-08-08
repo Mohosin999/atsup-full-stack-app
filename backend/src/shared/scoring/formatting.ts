@@ -10,10 +10,12 @@ export const buildFormatting = (
   const summaryWords = (resume.summary || "")
     .split(/\s+/)
     .filter(Boolean).length;
+
   const hasExperience = (resume.experience || []).length > 0;
   const hasEducation = (resume.education || []).length > 0;
   const skillCount = (resume.skills || []).length;
 
+  // NOTE: for formatting, maybe I don't need this structuralChecks
   const structuralChecks = [
     {
       label: "Standard sections present",
@@ -41,7 +43,7 @@ export const buildFormatting = (
           : summaryWords > 0
             ? "Summary present but short."
             : "No summary section.",
-      weight: 20,
+      weight: 10,
     },
     {
       label: "Skills section (5+)",
@@ -56,7 +58,7 @@ export const buildFormatting = (
           : skillCount > 0
             ? `Only ${skillCount} skills listed.`
             : "No dedicated skills section.",
-      weight: 20,
+      weight: 30,
     },
     {
       label: "Work experience present",
@@ -97,6 +99,7 @@ export const buildFormatting = (
 
   const checks = [...structuralChecks, ...fileChecks];
   const { strengths, improvements } = deriveFeedback(checks);
+
   return {
     key: "formatting",
     title: "Formatting / Layout",

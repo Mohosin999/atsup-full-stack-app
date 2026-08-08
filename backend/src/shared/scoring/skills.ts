@@ -22,11 +22,13 @@ export const buildHardSkills = (
       weight: 100,
     },
   ];
+
   let summary = `${resumeHardSkills.length} technical skills identified.`;
   let score =
     resumeHardSkills.length > 0
       ? Math.min(100, 55 + resumeHardSkills.length * 3)
-      : 20;
+      : 0;
+
   let matched: string[] = [];
   let missing: string[] = [];
 

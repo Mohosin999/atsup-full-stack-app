@@ -57,14 +57,14 @@ export default function ProfileMenu({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-1 z-50"
+            className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50"
           >
-            <div className="px-4 py-3 border-b border-gray-700">
-              <p className="text-sm font-semibold text-white truncate">
+            <div className="px-4 py-3 border-b border-gray-200">
+              <p className="text-sm font-semibold text-gray-900 truncate">
                 {user.name}
               </p>
               <p
-                className="text-xs text-gray-400 truncate mt-1"
+                className="text-xs text-gray-600 truncate mt-1"
                 title={user.email}
               >
                 {user.email}
@@ -72,7 +72,7 @@ export default function ProfileMenu({
             </div>
             <Link
               to="/settings"
-              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
               onClick={() => setProfileMenuOpen(false)}
             >
               <Settings className="w-4 h-4" /> <span>Settings</span>
@@ -82,7 +82,7 @@ export default function ProfileMenu({
                 setProfileMenuOpen(false);
                 onLogout();
               }}
-              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
             >
               <LogOut className="w-4 h-4" /> <span>Logout</span>
             </button>

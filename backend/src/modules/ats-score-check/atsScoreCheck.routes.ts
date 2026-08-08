@@ -1,0 +1,26 @@
+import { Router } from "express";
+import { authenticate } from "../../shared/middlewares/auth";
+import { upload } from "../../shared/config/multer";
+import {
+  parseResume,
+  parseJobDescription,
+  analyzeAtsScore,
+  getAtsScores,
+  getAtsScore,
+  deleteAtsScoreController,
+  deleteAllAtsScoresController,
+} from "./atsScoreCheck.controller";
+
+const router = Router();
+
+router.use(authenticate);
+
+router.post("/parse-resume", upload.single("resume"), parseResume);
+router.post("/parse-jd", parseJobDescription);
+router.post("/analyze", analyzeAtsScore);
+router.get("/history", getAtsScores);
+router.get("/history/:id", getAtsScore);
+router.delete("/history/:id", deleteAtsScoreController);
+router.delete("/history", deleteAllAtsScoresController);
+
+export default router;

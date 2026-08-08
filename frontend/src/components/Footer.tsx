@@ -1,9 +1,10 @@
 import { Flame } from "lucide-react";
+import Wrapper from "./Wrapper";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-800">
-      <div className="max-w-7xl mx-auto">
+    <footer className="bg-gray-50 text-gray-900 py-16 border-t border-gray-200">
+      <Wrapper>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-6">
@@ -12,12 +13,12 @@ const Footer = () => {
               </div>
               <span className="text-2xl font-bold">
                 CV
-                <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                   Coach
                 </span>
               </span>
             </div>
-            <p className="text-gray-300 leading-relaxed max-w-md">
+            <p className="text-gray-700 leading-relaxed max-w-md">
               AI-powered resume analysis and generation platform helping job
               seekers land their dream careers with optimized, ATS-friendly
               resumes.
@@ -25,7 +26,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-lg mb-4 text-green-400">
+            <h4 className="font-bold text-lg mb-4 text-green-600">
               Quick Links
             </h4>
             <ul className="space-y-3">
@@ -34,7 +35,7 @@ const Footer = () => {
                   <li key={item}>
                     <a
                       href="#"
-                      className="text-gray-300 hover:text-green-400 transition-colors"
+                      className="text-gray-700 hover:text-green-600 transition-colors"
                     >
                       {item}
                     </a>
@@ -45,14 +46,14 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-lg mb-4 text-green-400">Legal</h4>
+            <h4 className="font-bold text-lg mb-4 text-green-600">Legal</h4>
             <ul className="space-y-3">
               {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(
                 (item) => (
                   <li key={item}>
                     <a
                       href="#"
-                      className="text-gray-300 hover:text-green-400 transition-colors"
+                      className="text-gray-700 hover:text-green-600 transition-colors"
                     >
                       {item}
                     </a>
@@ -63,7 +64,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-gray-500 text-sm">
             © 2026 CVCoach. All rights reserved.
           </p>
@@ -72,14 +73,14 @@ const Footer = () => {
               <a
                 key={social}
                 href="#"
-                className="text-gray-300 hover:text-green-400 transition-colors text-sm"
+                className="text-gray-700 hover:text-green-600 transition-colors text-sm"
               >
                 {social}
               </a>
             ))}
           </div>
         </div>
-      </div>
+      </Wrapper>
     </footer>
   );
 };

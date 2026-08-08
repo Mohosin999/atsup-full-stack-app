@@ -41,22 +41,105 @@ export interface Resume {
   updatedAt: string;
 }
 
+export interface AIResumeResearch {
+  personal_info: {
+    fullName: string;
+    jobTitle: string;
+    contact: {
+      address: string;
+      email: string;
+      phone: string;
+      links: {
+        linkedin: string;
+        portfolio: string;
+        github: string;
+      };
+    };
+  };
+  summary: string;
+  experience: Array<{
+    role: string;
+    company: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    responsibilities: string[];
+  }>;
+  education: Array<{
+    degree: string;
+    field: string;
+    education_level: string;
+    startDate: string;
+    endDate: string;
+  }>;
+  skills: {
+    hardSkills: string[];
+    softSkills: string[];
+  };
+  projects: Array<{
+    name: string;
+    description: string[];
+    link: string;
+  }>;
+  certifications: Array<{
+    name: string;
+    issuer: string;
+    date: string;
+    link: string;
+  }>;
+  yearsOfExperience: string;
+  measurableResults: string[];
+  resumeTone: string;
+  wordCount: string;
+  educationSection: boolean;
+  experienceSection: boolean;
+  workHistory: boolean;
+  dateFormatting: boolean;
+  layout: {
+    isSingleColumn: boolean;
+    hasTables: boolean;
+    hasImages: boolean;
+    hasIcons: boolean;
+    hasMultiColumn: boolean;
+  };
+  fontCheck: {
+    isStandardFont: boolean;
+    fontName: string;
+    isReadableSize: boolean;
+    hasMixedFonts: boolean;
+  };
+}
+
+export interface SkillCategory {
+  name: string;
+  skills: string[];
+}
+
+export interface Certification {
+  name: string;
+  issuer?: string;
+  date?: string;
+}
+
 export interface ResumeContent {
   personalInfo: {
     fullName?: string;
     jobTitle?: string;
-    email?: string;
-    whatsapp?: string;
-    address?: {
-      city?: string;
-      division?: string;
-      zipCode?: string;
-    };
-    linkedIn?: string;
-    socialLinks?: {
-      github?: string;
-      portfolio?: string;
-      website?: string;
+    contact?: {
+      email?: string;
+      phone?: string;
+      linkedIn?: string;
+      address?: {
+        city?: string;
+        state?: string;
+        division?: string;
+        zipCode?: string;
+      };
+      socialLinks?: {
+        github?: string;
+        portfolio?: string;
+        website?: string;
+      };
     };
   };
   summary?: string;
@@ -64,8 +147,13 @@ export interface ResumeContent {
   projects?: Project[];
   achievements?: Achievement[];
   education: Education[];
-  technicalSkills: string[];
-  softSkills: string[];
+  skills: string[];
+  skillCategories?: SkillCategory[];
+  hardSkills?: string[];
+  softSkills?: string[];
+  keywords?: string[];
+  measurableResults?: string[];
+  certifications?: Certification[];
 }
 
 export interface Experience {
@@ -76,12 +164,16 @@ export interface Experience {
   startDate: string;
   endDate?: string;
   current?: boolean;
-  description: string;
+  highlights: string[];
+  measurableImpacts?: string[];
 }
 
 export interface Project {
   name: string;
-  description: string;
+  highlights: string[];
+  startDate?: string;
+  endDate?: string;
+  current?: boolean;
   links?: {
     live?: string;
     github?: string;
@@ -215,38 +307,17 @@ export interface AtsScore {
     projects: { score: number; feedback: string };
     skills: { score: number; feedback: string };
     contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
-  };
-  spellingGrammar: {
-    score: number;
-    errors: Array<{ type: string; message: string; suggestion: string }>;
+    measurableResults: {
+      score: number;
+      feedback: string;
+      count: number;
+      found: string[];
+    };
   };
   atsFriendliness: number;
   suggestions: string[];
   createdAt: string;
   updatedAt: string;
-}
-
-// Resume Builder Types
-export interface ResumeTemplate {
-  _id: string;
-  userId: string;
-  name: string;
-  isAtsFriendly: boolean;
-  content: ResumeContent;
-  isDraft: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface AISectionSuggestion {
-  section: string;
-  content: string;
-  tips: string[];
-}
-
-export interface SectionImprovement {
-  improved: string;
-  changes: string[];
 }
 
 export interface AtsCheckResult {
@@ -256,8 +327,68 @@ export interface AtsCheckResult {
   isAtsFriendly: boolean;
 }
 
+export type MatchStatus = "matched" | "partial" | "missing";
+
+export interface MatchItemResult {
+  item: string;
+  status: MatchStatus;
+  jdCount: number;
+  resumeCount: number;
+}
+
+export interface MatchCategoryResult {
+  score: number;
+  matched: string[];
+  partial: string[];
+  missing: string[];
+  items: MatchItemResult[];
+}
+
+// 5-category ATS scoring (Searchability 30% / Hard Skills 35% / Soft Skills
+// 15% / Recruiter Tips 10% / Formatting 10%)
+export type CheckStatus = "passed" | "partial" | "failed" | "na";
+
+export interface CategoryCheck {
+  label: string;
+  status: CheckStatus;
+  detail: string;
+  weight: number;
+}
+
+export interface CategorySubgroup {
+  key: string;
+  title: string;
+  score: number;
+  weight: number;
+  summary: string;
+  checks: CategoryCheck[];
+}
+
+export interface CategoryResult {
+  key: string;
+  title: string;
+  score: number;
+  weight: number;
+  summary: string;
+  checks: CategoryCheck[];
+  strengths: string[];
+  improvements: string[];
+  subgroups?: CategorySubgroup[];
+  matched?: string[];
+  missing?: string[];
+}
+
+export interface CategoriesResult {
+  searchability: CategoryResult;
+  hardSkills: CategoryResult;
+  softSkills: CategoryResult;
+  recruiterTips: CategoryResult;
+  formatting: CategoryResult;
+}
+
 // ATS Score History Types
 export interface AtsScoreHistory {
+  id: string;
   _id: string;
   userId: string;
   title: string;
@@ -269,23 +400,20 @@ export interface AtsScoreHistory {
     projects: { score: number; feedback: string };
     skills: { score: number; feedback: string };
     contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
-  };
-  spellingGrammar: {
-    score: number;
-    errors: Array<{ type: string; message: string; suggestion: string }>;
+    measurableResults: {
+      score: number;
+      feedback: string;
+      count: number;
+      found: string[];
+    };
+    matchBreakdown?: {
+      hardSkills: MatchCategoryResult;
+      softSkills: MatchCategoryResult;
+    };
+    categories?: CategoriesResult;
   };
   atsFriendliness: number;
   suggestions: string[];
-  resumeContent: ResumeContent;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Resume Build History Types
-export interface ResumeBuildHistory {
-  _id: string;
-  userId: string;
-  title: string;
   resumeContent: ResumeContent;
   createdAt: string;
   updatedAt: string;

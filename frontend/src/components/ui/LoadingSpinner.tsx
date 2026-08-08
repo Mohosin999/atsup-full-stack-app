@@ -30,7 +30,7 @@ export default function LoadingSpinner({ size = 'md', fullScreen, className }: L
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="fixed inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-50"
+        className="fixed inset-0 bg-white/80 dark:bg-white/80 backdrop-blur-sm flex items-center justify-center z-50"
       >
         {spinner}
       </motion.div>

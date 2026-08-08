@@ -25,8 +25,6 @@ model User {
   atsScoreHistories AtsScoreHistory[]
   jobDescriptions   JobDescription[]
   payments          Payment[]
-  resumeBuildHistories ResumeBuildHistory[]
-  resumeTemplates   ResumeTemplate[]
 
   @@map("users")
 }
@@ -49,22 +47,6 @@ model Resume {
 
   @@index([userId, createdAt])
   @@map("resumes")
-}
-
-model ResumeTemplate {
-  id            String   @id @default(cuid())
-  userId        String
-  name          String   @default("Untitled Resume") @db.VarChar(255)
-  isAtsFriendly Boolean  @default(true)
-  content       Json
-  isDraft       Boolean  @default(true)
-  createdAt     DateTime @default(now()) @db.Timestamp()
-  updatedAt     DateTime @updatedAt @db.Timestamp()
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt])
-  @@map("resume_templates")
 }
 
 model Analysis {
@@ -105,7 +87,6 @@ model AtsScore {
   resumeId     String
   overallScore Int      @db.Integer
   sectionScores Json
-  spellingGrammar Json
   atsFriendliness Int    @db.Integer
   suggestions  String[]
   createdAt    DateTime @default(now()) @db.Timestamp()
@@ -126,10 +107,10 @@ model AtsScoreHistory {
   resumeName       String   @db.VarChar(255)
   overallScore     Int      @db.Integer
   sectionScores    Json
-  spellingGrammar  Json
   atsFriendliness  Int      @db.Integer
   suggestions      String[]
   resumeContent    Json
+  aiResearch       Json?
   createdAt        DateTime @default(now()) @db.Timestamp()
   updatedAt        DateTime @updatedAt @db.Timestamp()
 
@@ -171,18 +152,4 @@ model Payment {
 
   @@index([userId, createdAt])
   @@map("payments")
-}
-
-model ResumeBuildHistory {
-  id            String   @id @default(cuid())
-  userId        String
-  title         String   @db.VarChar(255)
-  resumeContent Json
-  createdAt     DateTime @default(now()) @db.Timestamp()
-  updatedAt     DateTime @updatedAt @db.Timestamp()
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt])
-  @@map("resume_build_histories")
 }

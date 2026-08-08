@@ -1,21 +1,17 @@
 import {
-  Download,
-  Edit3,
   FileSearch,
   FileText,
   Flame,
   TrendingUp,
   Wand2,
-  User,
   FileCheck,
-  Sparkles,
 } from "lucide-react";
 
 export const steps = [
   {
     number: "01",
     title: "Upload Resume",
-    description: "Drag and drop your PDF or DOCX resume into the upload zone.",
+    description: "Drag and drop your PDF resume into the upload zone.",
   },
   {
     number: "02",
@@ -63,34 +59,22 @@ export const allFeatures = [
       "Advanced AI analyzes your resume against job descriptions to identify gaps and opportunities.",
   },
   {
-    icon: Wand2,
-    title: "Resume Creation",
-    description:
-      "Generate professional, ATS-optimized resumes from scratch using advanced AI technology.",
-  },
-  {
     icon: TrendingUp,
     title: "ATS Optimization",
     description:
       "Get detailed ATS compatibility scores and recommendations to pass automated screening.",
   },
   {
-    icon: Edit3,
-    title: "Smart Editor",
-    description:
-      "Edit and refine your AI-generated resume with our intuitive, user-friendly editor.",
-  },
-  {
-    icon: Flame,
+    icon: Wand2,
     title: "Smart Suggestions",
     description:
       "Receive personalized improvements for skills, experience, and formatting.",
   },
   {
-    icon: Download,
-    title: "Multiple Export Formats",
+    icon: FileCheck,
+    title: "Job Match Scoring",
     description:
-      "Download your improved resume in PDF or DOCX while keeping the original layout.",
+      "See how well your resume matches specific job requirements with detailed scoring.",
   },
 ];
 
@@ -99,7 +83,7 @@ export const analysisSteps = [
   {
     number: "01",
     title: "Upload Resume",
-    description: "Upload your existing resume (PDF or DOCX) to analyze.",
+    description: "Upload your existing resume (PDF) to analyze.",
   },
   {
     number: "02",
@@ -115,29 +99,5 @@ export const analysisSteps = [
     number: "04",
     title: "Smart Suggestions",
     description: "Get AI-powered suggestions to optimize your resume for the job.",
-  },
-];
-
-// Steps for creation
-export const creationSteps = [
-  {
-    number: "01",
-    title: "Fill Personal Info",
-    description: "Enter your name, job title, contact details, and professional summary.",
-  },
-  {
-    number: "02",
-    title: "Add Experience & Education",
-    description: "Add your work experience, projects, achievements, and education details.",
-  },
-  {
-    number: "03",
-    title: "AI Enhancement",
-    description: "Use AI to generate professional summaries and improve your content.",
-  },
-  {
-    number: "04",
-    title: "Preview & Download",
-    description: "Preview your resume in real-time and download as PDF with clickable links.",
   },
 ];

@@ -10,11 +10,9 @@
  */
 export type * from './models/User'
 export type * from './models/Resume'
-export type * from './models/ResumeTemplate'
 export type * from './models/Analysis'
 export type * from './models/AtsScore'
 export type * from './models/AtsScoreHistory'
 export type * from './models/JobDescription'
 export type * from './models/Payment'
-export type * from './models/ResumeBuildHistory'
 export type * from './commonInputTypes'

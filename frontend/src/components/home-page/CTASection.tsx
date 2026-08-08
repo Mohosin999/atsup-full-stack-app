@@ -4,6 +4,7 @@ CTA Section Component
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight } from "lucide-react";
+import Wrapper from "../Wrapper";
 
 export default function CTASection() {
   return (
@@ -12,9 +13,9 @@ export default function CTASection() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8 }}
-      className="py-24 px-4 sm:px-6 lg:px-8"
+      className="py-24"
     >
-      <div className="max-w-5xl mx-auto">
+      <Wrapper maxWidth="max-w-5xl">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
@@ -60,7 +61,7 @@ export default function CTASection() {
             </motion.p>
           </div>
         </motion.div>
-      </div>
+      </Wrapper>
     </motion.section>
   );
 }

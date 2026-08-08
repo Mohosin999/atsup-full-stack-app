@@ -38,8 +38,8 @@ export default function Pagination({
         className={clsx(
           'p-2 rounded-lg transition-colors',
           currentPage === 1
-            ? 'text-gray-300 cursor-not-allowed'
-            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+            ? 'text-gray-700 cursor-not-allowed'
+            : 'text-gray-600 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-white'
         )}
       >
         <ChevronLeft className="w-5 h-5" />
@@ -53,13 +53,13 @@ export default function Pagination({
               'w-10 h-10 rounded-lg text-sm font-medium transition-colors',
               1 === currentPage
                 ? 'bg-primary text-white'
-                : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                : 'text-gray-600 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-white'
             )}
           >
             1
           </button>
           {startPage > 2 && (
-            <span className="text-gray-400">...</span>
+            <span className="text-gray-600">...</span>
           )}
         </>
       )}
@@ -72,7 +72,7 @@ export default function Pagination({
             'w-10 h-10 rounded-lg text-sm font-medium transition-colors',
             page === currentPage
               ? 'bg-primary text-white'
-              : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+              : 'text-gray-600 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-white'
           )}
         >
           {page}
@@ -82,7 +82,7 @@ export default function Pagination({
       {endPage < totalPages && (
         <>
           {endPage < totalPages - 1 && (
-            <span className="text-gray-400">...</span>
+            <span className="text-gray-600">...</span>
           )}
           <button
             onClick={() => onPageChange(totalPages)}
@@ -90,7 +90,7 @@ export default function Pagination({
               'w-10 h-10 rounded-lg text-sm font-medium transition-colors',
               totalPages === currentPage
                 ? 'bg-primary text-white'
-                : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                : 'text-gray-600 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-white'
             )}
           >
             {totalPages}
@@ -104,8 +104,8 @@ export default function Pagination({
         className={clsx(
           'p-2 rounded-lg transition-colors',
           currentPage === totalPages
-            ? 'text-gray-300 cursor-not-allowed'
-            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+            ? 'text-gray-700 cursor-not-allowed'
+            : 'text-gray-600 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-white'
         )}
       >
         <ChevronRight className="w-5 h-5" />

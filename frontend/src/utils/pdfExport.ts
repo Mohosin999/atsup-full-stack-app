@@ -430,8 +430,8 @@
 //     parts.push(locationParts.join(", "));
 //   }
 
-//   if (content.personalInfo.whatsapp) {
-//     const phone = content.personalInfo.whatsapp.replace(/^(\+880|880)/, "");
+//   if (content.personalInfo.phone) {
+//     const phone = content.personalInfo.phone.replace(/^(\+880|880)/, "");
 //     parts.push(`(+880) ${phone}`);
 //   }
 
@@ -778,7 +778,7 @@ function generateHtmlContent(content: ResumeContent): string {
             </span>
           </div>
           <p class="resume-position">${exp.title}${exp.topSkills ? ` - <em>${exp.topSkills.join(", ")}</em>` : ""}</p>
-          ${exp.description ? `<div class="resume-description">${formatDescriptionHtml(exp.description)}</div>` : ""}
+          ${exp.highlights?.length ? `<div class="resume-description">${formatHighlightsHtml(exp.highlights)}</div>` : ""}
         </div>
       `,
         )
@@ -800,6 +800,7 @@ function generateHtmlContent(content: ResumeContent): string {
         <div class="resume-item">
           <div class="resume-item-header">
             <span class="resume-company">${proj.name}</span>
+            <span class="resume-date">${formatDateRange(proj.startDate, proj.endDate)}</span>
 
             <span>
               ${
@@ -815,7 +816,7 @@ function generateHtmlContent(content: ResumeContent): string {
               }
             </span>
           </div>
-          ${proj.description ? `<div class="resume-description">${formatDescriptionHtml(proj.description)}</div>` : ""}
+          ${proj.highlights?.length ? `<div class="resume-description">${formatHighlightsHtml(proj.highlights)}</div>` : ""}
         </div>
       `,
         )
@@ -894,15 +895,14 @@ function generateHtmlContent(content: ResumeContent): string {
 
     <!-- Skills -->
     ${
-      content.technicalSkills?.length > 0 || content.softSkills?.length > 0
+      (content.skills?.length || 0) > 0
         ? `
     <div class="resume-section">
       <h2 class="resume-section-title">SKILLS</h2>
       <div style="margin-bottom: 6pt;">
-        ${content.technicalSkills?.length > 0 ? `<span style="font-weight: 600;">Technical: </span>` : ""}
         <span class="resume-skills-grid" style="display: inline;">
           ${
-            content.technicalSkills
+            content.skills
               ?.map(
                 (skill, index, arr) => `
               <span class="resume-skill-tag">
@@ -914,28 +914,6 @@ function generateHtmlContent(content: ResumeContent): string {
           }
         </span>
       </div>
-      ${
-        content.softSkills?.length > 0
-          ? `
-      <div>
-        <span style="font-weight: 600;">Soft: </span>
-        <span class="resume-skills-grid" style="display: inline;">
-          ${
-            content.softSkills
-              ?.map(
-                (skill, index, arr) => `
-            <span class="resume-skill-tag">
-              ${skill}${index < arr.length - 1 ? ", " : ""}
-            </span>
-          `,
-              )
-              .join("") || ""
-          }
-        </span>
-      </div>
-      `
-          : ""
-      }
     </div>
     `
         : ""
@@ -951,17 +929,17 @@ function buildContactInfo(content: ResumeContent): string {
   const parts: string[] = [];
 
   const locationParts = [
-    content.personalInfo.address?.city,
-    content.personalInfo.address?.division,
-    content.personalInfo.address?.zipCode,
+    content.personalInfo.contact?.address?.city,
+    content.personalInfo.contact?.address?.division,
+    content.personalInfo.contact?.address?.zipCode,
   ].filter(Boolean);
 
   if (locationParts.length > 0) {
     parts.push(locationParts.join(", "));
   }
 
-  if (content.personalInfo.whatsapp) {
-    const phone = content.personalInfo.whatsapp.replace(/^(\+880|880)/, "");
+  if (content.personalInfo.contact?.phone) {
+    const phone = content.personalInfo.contact.phone.replace(/^(\+880|880)/, "");
     parts.push(`(+880) ${phone}`);
   }
 
@@ -969,12 +947,12 @@ function buildContactInfo(content: ResumeContent): string {
 
   const secondLineParts: string[] = [];
 
-  if (content.personalInfo.email) {
-    secondLineParts.push(content.personalInfo.email);
+  if (content.personalInfo.contact?.email) {
+    secondLineParts.push(content.personalInfo.contact.email);
   }
 
-  if (content.personalInfo.linkedIn) {
-    let linkedin = content.personalInfo.linkedIn
+  if (content.personalInfo.contact?.linkedIn) {
+    let linkedin = content.personalInfo.contact.linkedIn
       .replace(/^https?:\/\//, "")
       .replace(/^www\./, "");
     if (!linkedin.startsWith("linkedin.com/in/")) {
@@ -985,22 +963,22 @@ function buildContactInfo(content: ResumeContent): string {
 
   const socialParts: string[] = [];
 
-  if (content.personalInfo.socialLinks?.github) {
-    let github = content.personalInfo.socialLinks.github
+  if (content.personalInfo.contact?.socialLinks?.github) {
+    let github = content.personalInfo.contact.socialLinks.github
       .replace(/^https?:\/\//, "")
       .replace(/^www\./, "");
     socialParts.push(`github.com/${github.replace(/^github\.com\//, "")}`);
   }
 
-  if (content.personalInfo.socialLinks?.portfolio) {
-    let portfolio = content.personalInfo.socialLinks.portfolio
+  if (content.personalInfo.contact?.socialLinks?.portfolio) {
+    let portfolio = content.personalInfo.contact.socialLinks.portfolio
       .replace(/^https?:\/\//, "")
       .replace(/^www\./, "");
     socialParts.push(portfolio);
   }
 
-  if (content.personalInfo.socialLinks?.website) {
-    let website = content.personalInfo.socialLinks.website
+  if (content.personalInfo.contact?.socialLinks?.website) {
+    let website = content.personalInfo.contact.socialLinks.website
       .replace(/^https?:\/\//, "")
       .replace(/^www\./, "");
     socialParts.push(website);
@@ -1026,6 +1004,18 @@ function formatDateRange(startDate?: string, endDate?: string): string {
   const end = endDate || "Present";
 
   return `${start} - ${end}`;
+}
+
+function formatHighlightsHtml(highlights: string[]): string {
+  const lines = (highlights || []).map((l) => l.trim()).filter(Boolean);
+  if (lines.length === 0) return "";
+
+  return `<ul style="margin: 2pt 0 0 0; padding-left: 14pt;">${lines
+    .map((line) => {
+      const cleanLine = line.replace(/^[•\-\*]\s*/, "").trim();
+      return cleanLine ? `<li style="margin: 1pt 0;">${cleanLine}</li>` : "";
+    })
+    .join("")}</ul>`;
 }
 
 function formatDescriptionHtml(desc: string): string {

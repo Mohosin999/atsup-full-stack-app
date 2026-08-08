@@ -399,13 +399,11 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Resume: 'Resume',
-  ResumeTemplate: 'ResumeTemplate',
   Analysis: 'Analysis',
   AtsScore: 'AtsScore',
   AtsScoreHistory: 'AtsScoreHistory',
   JobDescription: 'JobDescription',
-  Payment: 'Payment',
-  ResumeBuildHistory: 'ResumeBuildHistory'
+  Payment: 'Payment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "resume" | "resumeTemplate" | "analysis" | "atsScore" | "atsScoreHistory" | "jobDescription" | "payment" | "resumeBuildHistory"
+    modelProps: "user" | "resume" | "analysis" | "atsScore" | "atsScoreHistory" | "jobDescription" | "payment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -570,80 +568,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ResumeCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ResumeCountAggregateOutputType> | number
-        }
-      }
-    }
-    ResumeTemplate: {
-      payload: Prisma.$ResumeTemplatePayload<ExtArgs>
-      fields: Prisma.ResumeTemplateFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ResumeTemplateFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ResumeTemplateFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload>
-        }
-        findFirst: {
-          args: Prisma.ResumeTemplateFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ResumeTemplateFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload>
-        }
-        findMany: {
-          args: Prisma.ResumeTemplateFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload>[]
-        }
-        create: {
-          args: Prisma.ResumeTemplateCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload>
-        }
-        createMany: {
-          args: Prisma.ResumeTemplateCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ResumeTemplateCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload>[]
-        }
-        delete: {
-          args: Prisma.ResumeTemplateDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload>
-        }
-        update: {
-          args: Prisma.ResumeTemplateUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload>
-        }
-        deleteMany: {
-          args: Prisma.ResumeTemplateDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ResumeTemplateUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ResumeTemplateUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload>[]
-        }
-        upsert: {
-          args: Prisma.ResumeTemplateUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeTemplatePayload>
-        }
-        aggregate: {
-          args: Prisma.ResumeTemplateAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateResumeTemplate>
-        }
-        groupBy: {
-          args: Prisma.ResumeTemplateGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ResumeTemplateGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ResumeTemplateCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ResumeTemplateCountAggregateOutputType> | number
         }
       }
     }
@@ -1017,80 +941,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    ResumeBuildHistory: {
-      payload: Prisma.$ResumeBuildHistoryPayload<ExtArgs>
-      fields: Prisma.ResumeBuildHistoryFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ResumeBuildHistoryFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ResumeBuildHistoryFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload>
-        }
-        findFirst: {
-          args: Prisma.ResumeBuildHistoryFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ResumeBuildHistoryFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload>
-        }
-        findMany: {
-          args: Prisma.ResumeBuildHistoryFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload>[]
-        }
-        create: {
-          args: Prisma.ResumeBuildHistoryCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload>
-        }
-        createMany: {
-          args: Prisma.ResumeBuildHistoryCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ResumeBuildHistoryCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload>[]
-        }
-        delete: {
-          args: Prisma.ResumeBuildHistoryDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload>
-        }
-        update: {
-          args: Prisma.ResumeBuildHistoryUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload>
-        }
-        deleteMany: {
-          args: Prisma.ResumeBuildHistoryDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ResumeBuildHistoryUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ResumeBuildHistoryUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload>[]
-        }
-        upsert: {
-          args: Prisma.ResumeBuildHistoryUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeBuildHistoryPayload>
-        }
-        aggregate: {
-          args: Prisma.ResumeBuildHistoryAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateResumeBuildHistory>
-        }
-        groupBy: {
-          args: Prisma.ResumeBuildHistoryGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ResumeBuildHistoryGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ResumeBuildHistoryCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ResumeBuildHistoryCountAggregateOutputType> | number
-        }
-      }
-    }
   }
 } & {
   other: {
@@ -1162,20 +1012,6 @@ export const ResumeScalarFieldEnum = {
 export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
 
 
-export const ResumeTemplateScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  name: 'name',
-  isAtsFriendly: 'isAtsFriendly',
-  content: 'content',
-  isDraft: 'isDraft',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ResumeTemplateScalarFieldEnum = (typeof ResumeTemplateScalarFieldEnum)[keyof typeof ResumeTemplateScalarFieldEnum]
-
-
 export const AnalysisScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1211,7 +1047,6 @@ export const AtsScoreScalarFieldEnum = {
   resumeId: 'resumeId',
   overallScore: 'overallScore',
   sectionScores: 'sectionScores',
-  spellingGrammar: 'spellingGrammar',
   atsFriendliness: 'atsFriendliness',
   suggestions: 'suggestions',
   createdAt: 'createdAt',
@@ -1228,10 +1063,10 @@ export const AtsScoreHistoryScalarFieldEnum = {
   resumeName: 'resumeName',
   overallScore: 'overallScore',
   sectionScores: 'sectionScores',
-  spellingGrammar: 'spellingGrammar',
   atsFriendliness: 'atsFriendliness',
   suggestions: 'suggestions',
   resumeContent: 'resumeContent',
+  aiResearch: 'aiResearch',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1267,18 +1102,6 @@ export const PaymentScalarFieldEnum = {
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
-
-
-export const ResumeBuildHistoryScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  title: 'title',
-  resumeContent: 'resumeContent',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ResumeBuildHistoryScalarFieldEnum = (typeof ResumeBuildHistoryScalarFieldEnum)[keyof typeof ResumeBuildHistoryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1564,13 +1387,11 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   resume?: Prisma.ResumeOmit
-  resumeTemplate?: Prisma.ResumeTemplateOmit
   analysis?: Prisma.AnalysisOmit
   atsScore?: Prisma.AtsScoreOmit
   atsScoreHistory?: Prisma.AtsScoreHistoryOmit
   jobDescription?: Prisma.JobDescriptionOmit
   payment?: Prisma.PaymentOmit
-  resumeBuildHistory?: Prisma.ResumeBuildHistoryOmit
 }
 
 /* Types for Logging */

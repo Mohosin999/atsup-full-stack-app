@@ -6,7 +6,7 @@ export default function BackButton() {
 
   return (
     <button onClick={() => navigate(-1)}>
-      <ArrowLeft className="w-5 h-5 text-gray-100 hover:text-green-500" />
+      <ArrowLeft className="w-5 h-5 text-gray-800 hover:text-green-500" />
     </button>
   );
 }

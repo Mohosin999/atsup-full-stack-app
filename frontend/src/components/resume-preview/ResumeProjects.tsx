@@ -6,13 +6,13 @@ import { Project } from "../../types";
 interface ResumeProjectsProps {
   projects: Project[];
   forPdf?: boolean;
-  formatDescription: (desc: string) => React.ReactNode;
+  formatDescription: (highlights: string[]) => React.ReactNode;
 }
 
 export default function ResumeProjects({ projects, forPdf, formatDescription }: ResumeProjectsProps) {
-  const textColor = forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-100";
+  const textColor = forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-800";
   const titleColor = forPdf ? "text-black" : "text-gray-900 dark:text-white";
-  const borderColor = forPdf ? "border-gray-700" : "border-gray-700 dark:border-gray-600";
+  const borderColor = forPdf ? "border-gray-200" : "border-gray-200 dark:border-gray-300";
 
   return (
     <div className="mb-4">
@@ -49,8 +49,8 @@ export default function ResumeProjects({ projects, forPdf, formatDescription }: 
           {proj.technologies && proj.technologies.length > 0 && (
             <p className={`text-sm ${textColor} mt-1 italic`}>{proj.technologies.join(", ")}</p>
           )}
-          <div className={`${forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-100"} text-sm mt-1`}>
-            {formatDescription(proj.description)}
+          <div className={`${forPdf ? "text-gray-900" : "text-gray-900 dark:text-gray-800"} text-sm mt-1`}>
+            {formatDescription(proj.highlights)}
           </div>
         </div>
       ))}

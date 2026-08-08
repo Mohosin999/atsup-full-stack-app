@@ -13,6 +13,7 @@ import ProfileMenu from "./ProfileMenu";
 import MobileMenuButton from "./MobileMenuButton";
 import MobileMenu from "./MobileMenu";
 import AuthButtons from "./ui/AuthButtons";
+import Wrapper from "./Wrapper";
 
 interface NavLink {
   path: string;
@@ -21,8 +22,8 @@ interface NavLink {
 
 const NAV_LINKS: NavLink[] = [
   { path: "/dashboard", label: "Dashboard" },
+  { path: "/resume-builder", label: "Resume Builder" },
   { path: "/ats-score", label: "ATS Score" },
-  { path: "/builder", label: "Builder" },
 ];
 
 export default function Navbar() {
@@ -41,12 +42,12 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-gray-900/80 backdrop-blur-md border-b border-gray-600">
-        <div className="section-container">
+      <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-white/80 backdrop-blur-md box-shadow">
+        <Wrapper>
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-2">
               <img src="/favicon.svg" alt="CVCoach" className="w-8 h-8" />
-              <span className="text-xl font-bold text-white">
+              <span className="text-xl font-bold text-gray-900">
                 CV<span className="text-primary">Coach</span>
               </span>
             </Link>
@@ -84,16 +85,16 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   >
                     {mobileMenuOpen ? (
-                      <X className="w-6 h-6 text-white" />
+                      <X className="w-6 h-6 text-gray-900" />
                     ) : (
-                      <Menu className="w-6 h-6 text-white" />
+                      <Menu className="w-6 h-6 text-gray-900" />
                     )}
                   </button>
                 </>
               )}
             </div>
           </div>
-        </div>
+        </Wrapper>
         <AnimatePresence>
           {mobileMenuOpen && user && (
             <MobileMenu
@@ -107,7 +108,7 @@ export default function Navbar() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="md:hidden absolute top-16 left-0 right-0 bg-gray-900/95 backdrop-blur-md border-b border-gray-800 py-6 px-4"
+              className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 py-6 px-4"
             >
               <div className="flex flex-col gap-4">
                 <Link

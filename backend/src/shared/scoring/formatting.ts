@@ -21,9 +21,7 @@ export const buildFormatting = (
       label: "Standard sections present",
       status: (hasExperience && hasEducation && skillCount > 0
         ? "passed"
-        : hasExperience || hasEducation
-          ? "partial"
-          : "failed") as CheckStatus,
+        : "failed") as CheckStatus,
       detail:
         hasExperience && hasEducation && skillCount > 0
           ? "Education, experience & skills sections detected."
@@ -34,9 +32,7 @@ export const buildFormatting = (
       label: "Summary section",
       status: (summaryWords >= 30
         ? "passed"
-        : summaryWords > 0
-          ? "partial"
-          : "failed") as CheckStatus,
+        : "failed") as CheckStatus,
       detail:
         summaryWords >= 30
           ? "Professional summary present."
@@ -49,9 +45,7 @@ export const buildFormatting = (
       label: "Skills section (5+)",
       status: (skillCount >= 5
         ? "passed"
-        : skillCount > 0
-          ? "partial"
-          : "failed") as CheckStatus,
+        : "failed") as CheckStatus,
       detail:
         skillCount >= 5
           ? `${skillCount} skills listed.`
@@ -73,25 +67,25 @@ export const buildFormatting = (
   const fileChecks = [
     {
       label: "ATS-friendly fonts",
-      status: "na" as CheckStatus,
+      status: "not-applicable" as CheckStatus,
       detail: "Requires original file analysis.",
       weight: 0,
     },
     {
       label: "No tables / text boxes",
-      status: "na" as CheckStatus,
+      status: "not-applicable" as CheckStatus,
       detail: "Requires original file analysis.",
       weight: 0,
     },
     {
       label: "No icons / graphics",
-      status: "na" as CheckStatus,
+      status: "not-applicable" as CheckStatus,
       detail: "Requires original file analysis.",
       weight: 0,
     },
     {
       label: "No profile photo",
-      status: "na" as CheckStatus,
+      status: "not-applicable" as CheckStatus,
       detail: "Requires original file analysis.",
       weight: 0,
     },

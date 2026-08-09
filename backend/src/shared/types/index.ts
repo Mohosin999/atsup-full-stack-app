@@ -40,64 +40,50 @@ export interface ResumeContent {
     contact?: {
       email?: string;
       phone?: string;
-      linkedIn?: string;
-      address?: {
-        city?: string;
-        division?: string;
-        zipCode?: string;
-      };
-      socialLinks?: {
-        github?: string;
-        portfolio?: string;
-        website?: string;
-      };
+      address?: string | { city?: string; state?: string };
     };
   };
   summary?: string;
   experience: Array<{
+    role: string;
     company: string;
-    title: string;
-    location?: string;
     startDate: string;
     endDate?: string;
-    current?: boolean;
-    highlights: string[];
-    measurableImpacts?: string[];
-  }>;
-  projects?: Array<{
-    name: string;
-    highlights: string[];
-    startDate?: string;
-    endDate?: string;
-    current?: boolean;
-    links?: {
-      live?: string;
-      github?: string;
-      caseStudy?: string;
-    };
-    technologies?: string[];
-  }>;
-  certifications?: Array<{
-    name: string;
-    issuer?: string;
-    date?: string;
-    description?: string;
-  }>;
-  achievements?: Array<{
-    title: string;
-    description?: string;
-    date?: string;
+    responsibilities: string[];
   }>;
   education: Array<{
-    institution: string;
     degree: string;
-    date?: string;
+    field: string;
+    education_level: string;
   }>;
-  skills: string[];
-  hardSkills?: string[];
-  softSkills?: string[];
+  skills: {
+    hardSkills: string[];
+    softSkills: string[];
+  };
+  projects?: Array<{
+    name: string;
+    description: string[];
+  }>;
+  yearsOfExperience?: string;
   measurableResults?: string[];
-  [key: string]: any;
+  resumeTone?: string;
+  wordCount?: number;
+  educationSection?: boolean;
+  experienceSection?: boolean;
+  workHistory?: boolean;
+  dateFormatting?: boolean;
+  layout?: {
+    isSingleColumn?: boolean;
+    hasTables?: boolean;
+    hasImages?: boolean;
+    hasIcons?: boolean;
+    hasMultiColumn?: boolean;
+  };
+  fontCheck?: {
+    isStandardFont?: boolean;
+    fontName?: string;
+    isReadableSize?: boolean;
+  };
 }
 
 // ============================================================================
@@ -106,11 +92,16 @@ export interface ResumeContent {
 
 export interface StructuredJD {
   jobTitle: string;
-  company: string;
-  location: string;
-  hardSkills: string[];
-  softSkills: string[];
-  educationRequirement: string | null;
+  education: {
+    degree: string;
+    field: string;
+    education_level: string;
+  };
+  skills: {
+    hardSkills: string[];
+    softSkills: string[];
+  };
+  yearsOfExperience: string;
   experienceYearsRequired: number;
 }
 
@@ -681,8 +672,7 @@ export interface PaginatedResponse<T = any> extends ApiResponse<T> {
 /**
  * Supported file types for upload
  */
-export type SupportedFileType =
-  | "application/pdf";
+export type SupportedFileType = "application/pdf";
 
 /**
  * File upload configuration

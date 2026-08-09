@@ -9,7 +9,7 @@ const buildSummarySubgroup = (resume: ResumeContent): CategorySubgroup => {
     .filter(Boolean).length;
 
   const status: CheckStatus =
-    summaryWords >= 30 ? "passed" : summaryWords > 0 ? "partial" : "failed";
+    summaryWords >= 30 ? "passed" : "failed";
   const detail =
     summaryWords >= 30
       ? "Summary present with good length."
@@ -39,9 +39,6 @@ const buildJobLevelSubgroup = (
     if (resumeYears >= jd.experienceYearsRequired) {
       status = "passed";
       detail = "Your experience aligns with the role's requirements.";
-    } else if (resumeYears >= jd.experienceYearsRequired * 0.6) {
-      status = "partial";
-      detail = `Your experience (${resumeYears} yrs) is close to the requirement of ${jd.experienceYearsRequired}+ yrs.`;
     } else {
       status = "failed";
       detail = `Your experience (${resumeYears} yrs) doesn't align with the requirement of ${jd.experienceYearsRequired}+ yrs.`;
@@ -69,11 +66,7 @@ const buildMeasurableSubgroup = (measurable: {
   count: number;
 }): CategorySubgroup => {
   const status: CheckStatus =
-    measurable.count >= 3
-      ? "passed"
-      : measurable.count > 0
-        ? "partial"
-        : "failed";
+    measurable.count >= 3 ? "passed" : "failed";
 
   const detail =
     measurable.count >= 3

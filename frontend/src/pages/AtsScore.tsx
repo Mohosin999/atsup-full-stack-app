@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Upload, CheckCircle, X } from "lucide-react";
 import { toast } from "react-toastify";
@@ -7,8 +8,6 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 import AnalysisProgressModal, {
   PipelineStep,
 } from "../components/ui/AnalysisProgressModal";
-import AtsScoreResult from "../components/ats-result/AtsScoreResult";
-import { AtsScoreHistory, ResumeContent } from "../types";
 import Wrapper from "../components/Wrapper";
 import Button from "@/components/ui/Button";
 import { useAppDispatch } from "@/hooks";
@@ -30,18 +29,18 @@ const PIPELINE_MESSAGES = [
 
 export default function AtsScorePage() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [resumeName, setResumeName] = useState("");
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const [result, setResult] = useState<AtsScoreHistory | null>(null);
   const [pipelineOpen, setPipelineOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
 
-  const bothFieldsReady = !!resumeFile && !!jobDescription.trim();
+  const bothFieldsReady = !!resumeFile && jobDescription.trim().length >= 20;
 
   const handleJobDescriptionChange = (value: string) => {
     setJobDescription(value);
@@ -63,8 +62,8 @@ export default function AtsScorePage() {
       toast.error("Please upload a resume");
       return;
     }
-    if (!jobDescription.trim()) {
-      toast.error("Please paste a job description");
+    if (jobDescription.trim().length < 20) {
+      toast.error("Job description is too short. Please provide at least 20 characters.");
       return;
     }
 
@@ -118,28 +117,10 @@ export default function AtsScorePage() {
       setCompletedSteps(["resume", "jd", "ats"]);
 
       const score = response.data.data;
-      const analysisResult: AtsScoreHistory = {
-        id: score.id,
-        _id: score.id,
-        userId: "",
-        title: score.title || resumeName,
-        resumeName,
-        overallScore: score.overallScore,
-        sectionScores: {
-          ...score.sectionScores,
-          categories: score.sectionScores?.categories,
-          matchBreakdown: score.sectionScores?.matchBreakdown,
-        },
-        atsFriendliness: score.atsFriendliness,
-        suggestions: score.suggestions,
-        resumeContent: {} as ResumeContent,
-        createdAt: score.createdAt || new Date().toISOString(),
-        updatedAt: score.updatedAt || new Date().toISOString(),
-      };
 
       setPipelineOpen(false);
       setAnalyzing(false);
-      setResult(analysisResult);
+      navigate(`/ats-score/${score.id}`);
     } catch (error: any) {
       console.error("Analysis error:", error);
       setPipelineOpen(false);
@@ -150,13 +131,6 @@ export default function AtsScorePage() {
           "Failed to analyze resume",
       );
     }
-  };
-
-  const handleReset = () => {
-    setResult(null);
-    setResumeName("");
-    setResumeFile(null);
-    setJobDescription("");
   };
 
   return (
@@ -176,13 +150,12 @@ export default function AtsScorePage() {
           </p>
         </motion.div>
 
-        {!result ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-lg p-6 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
-          >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-lg p-6 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
+        >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
               {/* LEFT: Upload Resume */}
               <div className="flex flex-col">
@@ -278,19 +251,6 @@ export default function AtsScorePage() {
               </Button>
             </div>
           </motion.div>
-        ) : (
-          <AtsScoreResult
-            result={result}
-            headerAction={
-              <button
-                onClick={handleReset}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-900 py-2 px-4 rounded-lg transition-colors"
-              >
-                Analyze Another Resume
-              </button>
-            }
-          />
-        )}
       </Wrapper>
 
       <AnalysisProgressModal

@@ -930,8 +930,7 @@ function buildContactInfo(content: ResumeContent): string {
 
   const locationParts = [
     content.personalInfo.contact?.address?.city,
-    content.personalInfo.contact?.address?.division,
-    content.personalInfo.contact?.address?.zipCode,
+    content.personalInfo.contact?.address?.state,
   ].filter(Boolean);
 
   if (locationParts.length > 0) {

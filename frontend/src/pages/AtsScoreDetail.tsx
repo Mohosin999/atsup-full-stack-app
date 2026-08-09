@@ -71,7 +71,7 @@ export default function AtsScoreDetail() {
   return (
     <div className="min-h-screen bg-[#F6F9FC] pt-24 pb-12">
       <Wrapper>
-        {/* <div className="my-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="my-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-lg font-bold text-gray-900 mb-1">
               ATS Score Report
@@ -87,7 +87,7 @@ export default function AtsScoreDetail() {
             <ArrowLeft className="w-4 h-4" />
             Back to History
           </button>
-        </div> */}
+        </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-24">

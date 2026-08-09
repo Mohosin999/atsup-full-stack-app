@@ -8,18 +8,12 @@ export interface AIResumeResearchResult {
       address: string;
       email: string;
       phone: string;
-      links: {
-        linkedin: string;
-        portfolio: string;
-        github: string;
-      };
     };
   };
   summary: string;
   experience: Array<{
     role: string;
     company: string;
-    location: string;
     startDate: string;
     endDate: string;
     responsibilities: string[];
@@ -28,8 +22,6 @@ export interface AIResumeResearchResult {
     degree: string;
     field: string;
     education_level: string;
-    startDate: string;
-    endDate: string;
   }>;
   skills: {
     hardSkills: string[];
@@ -38,13 +30,6 @@ export interface AIResumeResearchResult {
   projects: Array<{
     name: string;
     description: string[];
-    link: string;
-  }>;
-  certifications: Array<{
-    name: string;
-    issuer: string;
-    date: string;
-    link: string;
   }>;
   yearsOfExperience: string;
   measurableResults: string[];
@@ -76,11 +61,6 @@ export const RESUME_RESEARCH_TEMPLATE: AIResumeResearchResult = {
       address: "",
       email: "",
       phone: "",
-      links: {
-        linkedin: "",
-        portfolio: "",
-        github: "",
-      },
     },
   },
   summary: "",
@@ -91,7 +71,6 @@ export const RESUME_RESEARCH_TEMPLATE: AIResumeResearchResult = {
     softSkills: [],
   },
   projects: [],
-  certifications: [],
   yearsOfExperience: "",
   measurableResults: [],
   resumeTone: "bad",
@@ -118,24 +97,23 @@ const RESEARCH_PROMPT = `
 You are an expert AI resume researcher. Your task is to analyze the provided resume VERY carefully and extract all information from it accurately.
 
 RESEARCH THE FOLLOWING DETAILS:
-1. Personal info (full name, job title, contact: address, email, phone, LinkedIn link, portfolio link, GitHub link)
+1. Personal info (full name, job title, contact: address, email, phone)
 2. Professional summary
-3. Work experience (role, company, location, startDate, endDate, responsibilities as bullet points)
-4. Education (degree, field of study, education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's"), startDate, endDate)
+3. Work experience (role, company, startDate, endDate, responsibilities as bullet points)
+4. Education (degree, field of study, education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's"))
 5. Skills:
    - hardSkills: ONLY technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, DevOps tools, software, technologies, APIs, etc.) - return ONLY the keyword names
    - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
-6. Projects (name, description as bullet points, link)
-7. Certifications (name, issuer, date, link)
-8. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
-9. measurableResults: ONLY the measurable IMPACTS/achievements from work experience that demonstrate a business or technical outcome (e.g. "reduced load time by 40%", "increased sales by 30%", "saved 10 hours/week", "improved performance by 2x", "cut costs by $50k"). These must show a quantified result tied to time, money, percentage, speed, scale, or performance. Do NOT include role scope statements or non-impact items (e.g. "led a team of 5 engineers", "managed 3 projects", "worked with 10 clients") unless they show a measurable outcome. If a result has no number, percentage, money, time or scale value, do NOT include it.
-10. resumeTone: assess the overall tone and quality of the resume writing. Use one of: "good", "bad", "professional", "weak".
-11. wordCount: total number of words in the resume.
-12. educationSection: true if an education section exists.
-13. experienceSection: true if an experience/work section exists.
-14. workHistory: true if there is AT LEAST ONE work experience entry.
-15. dateFormatting: true if dates use "MM/YY or MM/YYYY or Month YYYY" format (e.g. 03/19, 03/2019, Mar 2019 or March 2019). false otherwise.
-16. layout: analyze the given PDF very carefully and answer the following questions correctly:
+6. Projects (name, description as bullet points)
+7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
+8. measurableResults: ONLY the measurable IMPACTS/achievements from work experience that demonstrate a business or technical outcome (e.g. "reduced load time by 40%", "increased sales by 30%", "saved 10 hours/week", "improved performance by 2x", "cut costs by $50k"). These must show a quantified result tied to time, money, percentage, speed, scale, or performance. Do NOT include role scope statements or non-impact items (e.g. "led a team of 5 engineers", "managed 3 projects", "worked with 10 clients") unless they show a measurable outcome. If a result has no number, percentage, money, time or scale value, do NOT include it.
+9. resumeTone: assess the overall tone and quality of the resume writing. Use one of: "good", "bad", "professional", "weak".
+10. wordCount: total number of words in the resume.
+11. educationSection: true if an education section exists.
+12. experienceSection: true if an experience/work section exists.
+13. workHistory: true if there is AT LEAST ONE work experience entry.
+14. dateFormatting: true if dates use "MM/YY or MM/YYYY or Month YYYY" format (e.g. 03/19, 03/2019, Mar 2019 or March 2019). false otherwise.
+15. layout: analyze the given PDF very carefully and answer the following questions correctly:
     - isSingleColumn: true if the resume uses a single column layout
     - hasTables: true if tables are used in the layout
     - hasImages: true if images/photos are present
@@ -161,11 +139,6 @@ JSON STRUCTURE:
       "address": "",
       "email": "",
       "phone": "",
-      "links": {
-        "linkedin": "",
-        "portfolio": "",
-        "github": ""
-      }
     }
   },
   "summary": "",
@@ -173,7 +146,6 @@ JSON STRUCTURE:
     {
       "role": "",
       "company": "",
-      "location": "",
       "startDate": "",
       "endDate": "",
       "responsibilities": [""]
@@ -184,8 +156,6 @@ JSON STRUCTURE:
       "degree": "",
       "field": "",
       "education_level": "",
-      "startDate": "",
-      "endDate": ""
     }
   ],
   "skills": {
@@ -196,16 +166,8 @@ JSON STRUCTURE:
     {
       "name": "",
       "description": [""],
-      "link": ""
     }
-  ],
-  "certifications": [
-    {
-      "name": "",
-      "issuer": "",
-      "date": "",
-      "link": ""
-    }
+  ]
   ],
   "yearsOfExperience": "",
   "measurableResults": [""],
@@ -230,6 +192,9 @@ JSON STRUCTURE:
 }
 `;
 
+/** --------------------------------------------------------------
+ * Resume research result
+ ----------------------------------------------------------------*/
 export const researchResume = async (
   resumeText: string,
   fileBase64?: string,
@@ -277,19 +242,10 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
   }
 };
 
+/** --------------------------------------------------------------
+ * Normalize resume research result
+ ----------------------------------------------------------------*/
 const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
-  // const str = (v: any, fallback = "") =>
-  //   typeof v === "string"
-  //     ? v
-  //     : v === null || v === undefined
-  //       ? fallback
-  //       : String(v);
-
-  // const bool = (v: any, fallback = false) =>
-  //   typeof v === "boolean" ? v : v === undefined || v === null ? fallback : !!v;
-
-  // const arr = (v: any) => (Array.isArray(v) ? v : []);
-
   const str = (v: any, fallback = "") => {
     if (typeof v === "string") return v;
     if (v == null) return fallback;
@@ -318,18 +274,12 @@ const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
         address: str(raw?.personal_info?.contact?.address),
         email: str(raw?.personal_info?.contact?.email),
         phone: str(raw?.personal_info?.contact?.phone),
-        links: {
-          linkedin: str(raw?.personal_info?.contact?.links?.linkedin),
-          portfolio: str(raw?.personal_info?.contact?.links?.portfolio),
-          github: str(raw?.personal_info?.contact?.links?.github),
-        },
       },
     },
     summary: str(raw?.summary),
     experience: arr(raw?.experience).map((exp: any) => ({
       role: str(exp?.role),
       company: str(exp?.company),
-      location: str(exp?.location),
       startDate: str(exp?.startDate),
       endDate: str(exp?.endDate),
       responsibilities: arr(exp?.responsibilities).map((v: any) => str(v)),
@@ -338,8 +288,6 @@ const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
       degree: str(edu?.degree),
       field: str(edu?.field),
       education_level: str(edu?.education_level),
-      startDate: str(edu?.startDate),
-      endDate: str(edu?.endDate),
     })),
     skills: {
       hardSkills: arr(raw?.skills?.hardSkills).map((v: any) => str(v)),
@@ -348,13 +296,6 @@ const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
     projects: arr(raw?.projects).map((proj: any) => ({
       name: str(proj?.name),
       description: arr(proj?.description).map((v: any) => str(v)),
-      link: str(proj?.link),
-    })),
-    certifications: arr(raw?.certifications).map((cert: any) => ({
-      name: str(cert?.name),
-      issuer: str(cert?.issuer),
-      date: str(cert?.date),
-      link: str(cert?.link),
     })),
     yearsOfExperience: str(raw?.yearsOfExperience),
     measurableResults: arr(raw?.measurableResults).map((v: any) => str(v)),

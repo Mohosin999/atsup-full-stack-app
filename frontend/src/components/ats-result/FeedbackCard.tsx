@@ -13,11 +13,7 @@ import {
   Check,
   Plus,
 } from "lucide-react";
-import {
-  CategoryResult,
-  CategorySubgroup,
-  CheckStatus,
-} from "../../types";
+import { CategoryResult, CategorySubgroup, CheckStatus } from "../../types";
 
 const CATEGORY_META: Record<
   string,
@@ -66,17 +62,12 @@ const STATUS_ICON: Record<
     color: "text-green-600",
     mark: "✓",
   },
-  partial: {
-    icon: <AlertTriangle className="w-5 h-5" />,
-    color: "text-amber-600",
-    mark: "!",
-  },
   failed: {
     icon: <XCircle className="w-5 h-5" />,
     color: "text-red-600",
     mark: "✗",
   },
-  na: {
+  "not-applicable": {
     icon: <MinusCircle className="w-5 h-5" />,
     color: "text-gray-500",
     mark: "–",
@@ -87,7 +78,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
   subgroup,
 }) => {
   const scoreColor = getScoreColor(subgroup.score);
-  const active = subgroup.checks.filter((c) => c.status !== "na");
+  const active = subgroup.checks.filter((c) => c.status !== "not-applicable");
   const passed = active.filter((c) => c.status === "passed").length;
 
   return (
@@ -102,7 +93,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
 
       <ul className="px-4 py-2.5 space-y-2.5">
         {subgroup.checks.map((check) => {
-          const st = STATUS_ICON[check.status] || STATUS_ICON.na;
+          const st = STATUS_ICON[check.status] || STATUS_ICON["not-applicable"];
           return (
             <li key={check.label} className="flex items-start gap-2.5">
               <span
@@ -111,14 +102,10 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
                     ? "border-green-500/40 bg-green-500/15 text-green-600"
                     : check.status === "failed"
                       ? "border-red-500/40 bg-red-500/15 text-red-600"
-                      : check.status === "partial"
-                        ? "border-amber-500/40 bg-amber-500/15 text-amber-600"
-                        : "border-gray-300/40 bg-gray-50 text-gray-500"
+                      : "border-gray-300/40 bg-gray-50 text-gray-500"
                 }`}
               >
-                <span className="text-[16px] leading-none">
-                  {st.mark}
-                </span>
+                <span className="text-[16px] leading-none">{st.mark}</span>
               </span>
               <div className="min-w-0">
                 {/* <p className="text-[13px] font-medium text-gray-700 leading-snug">
@@ -144,8 +131,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
   const hasSkillChips =
     (category.matched && category.matched.length > 0) ||
     (category.missing && category.missing.length > 0);
-  const hasSubgroups =
-    !!category.subgroups && category.subgroups.length > 0;
+  const hasSubgroups = !!category.subgroups && category.subgroups.length > 0;
 
   return (
     <motion.div
@@ -157,16 +143,16 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${meta.iconColor}`}>
+          <div
+            className={`w-10 h-10 rounded-xl flex items-center justify-center ${meta.iconColor}`}
+          >
             {meta.icon}
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 leading-tight">
               {category.title}
             </h3>
-            <p className="text-xs text-gray-500">
-              {category.summary}
-            </p>
+            <p className="text-xs text-gray-500">{category.summary}</p>
           </div>
         </div>
         <span className={`text-2xl font-bold ${getScoreColor(category.score)}`}>

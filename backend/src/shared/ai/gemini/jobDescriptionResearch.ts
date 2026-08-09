@@ -50,6 +50,9 @@ JSON STRUCTURE:
 }
 `;
 
+/** --------------------------------------------------------------
+ * Job description result
+ ----------------------------------------------------------------*/
 export const researchJobDescription = async (
   jdText: string,
 ): Promise<AIJobResearchResult> => {
@@ -81,14 +84,10 @@ Research this job description thoroughly and return ONLY the valid JSON structur
   }
 };
 
+/** --------------------------------------------------------------
+ * Normalize job description result
+ ----------------------------------------------------------------*/
 const normalizeJDResearchResult = (raw: any): AIJobResearchResult => {
-  // const str = (v: any, fallback = "") =>
-  //   typeof v === "string"
-  //     ? v
-  //     : v === null || v === undefined
-  //       ? fallback
-  //       : String(v);
-  // const arr = (v: any) => (Array.isArray(v) ? v : []);
 
   const str = (v: any, fallback = "") => {
     if (typeof v === "string") return v;

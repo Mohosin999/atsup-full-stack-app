@@ -13,11 +13,9 @@ export const buildHardSkills = (
     {
       label: "Technical skills present",
       status:
-        resumeHardSkills.length >= 5
+        resumeHardSkills.length > 0
           ? ("passed" as CheckStatus)
-          : resumeHardSkills.length > 0
-            ? ("partial" as CheckStatus)
-            : ("failed" as CheckStatus),
+          : ("failed" as CheckStatus),
       detail: `${resumeHardSkills.length} technical skill(s) identified.`,
       weight: 100,
     },
@@ -40,8 +38,7 @@ export const buildHardSkills = (
     checks = [
       {
         label: "Required hard skills matched",
-        status:
-          missing.length === 0 ? "passed" : score >= 50 ? "partial" : "failed",
+        status: missing.length === 0 ? "passed" : "failed",
         detail: `${matched.length} of ${total} required technical skills found.`,
         weight: 100,
       },
@@ -98,7 +95,7 @@ export const buildSoftSkills = (
       status:
         resumeSoft.length > 0
           ? ("passed" as CheckStatus)
-          : ("partial" as CheckStatus),
+          : ("failed" as CheckStatus),
       detail:
         resumeSoft.length > 0
           ? `${resumeSoft.length} soft skill(s) highlighted.`
@@ -123,8 +120,7 @@ export const buildSoftSkills = (
     checks = [
       {
         label: "Soft skills matched",
-        status:
-          missing.length === 0 ? "passed" : score >= 50 ? "partial" : "failed",
+        status: missing.length === 0 ? "passed" : "failed",
         detail: `${matched.length} of ${total} soft skills found.`,
         weight: 100,
       },

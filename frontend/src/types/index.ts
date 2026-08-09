@@ -132,8 +132,6 @@ export interface ResumeContent {
       address?: {
         city?: string;
         state?: string;
-        division?: string;
-        zipCode?: string;
       };
       socialLinks?: {
         github?: string;
@@ -327,7 +325,7 @@ export interface AtsCheckResult {
   isAtsFriendly: boolean;
 }
 
-export type MatchStatus = "matched" | "partial" | "missing";
+export type MatchStatus = "matched" | "missing";
 
 export interface MatchItemResult {
   item: string;
@@ -339,14 +337,13 @@ export interface MatchItemResult {
 export interface MatchCategoryResult {
   score: number;
   matched: string[];
-  partial: string[];
   missing: string[];
   items: MatchItemResult[];
 }
 
 // 5-category ATS scoring (Searchability 30% / Hard Skills 35% / Soft Skills
 // 15% / Recruiter Tips 10% / Formatting 10%)
-export type CheckStatus = "passed" | "partial" | "failed" | "na";
+export type CheckStatus = "passed" | "failed" | "not-applicable";
 
 export interface CategoryCheck {
   label: string;

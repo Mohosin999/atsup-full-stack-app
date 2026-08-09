@@ -2,6 +2,7 @@ function escapeRegex(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// NOTE: maybe no need it anymore
 export function extractSkillsFromResume(resume: any): string[] {
   const skills: string[] = [];
   if (Array.isArray(resume.skills)) {
@@ -14,12 +15,10 @@ export function extractSkillsFromResume(resume: any): string[] {
   return skills;
 }
 
-
 export function getSkillVariants(canonical: string): string[] {
   return [canonical];
 }
 
-// NOTE: 
 export function countVariantsInText(text: string, variants: string[]): number {
   const textLower = text.toLowerCase();
   return variants.reduce((total, variant, index) => {

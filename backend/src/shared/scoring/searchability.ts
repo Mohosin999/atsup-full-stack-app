@@ -13,13 +13,17 @@ import {
 } from "./utils";
 import { ResumeContent, StructuredJD } from "../types";
 
+// ============================================================
+// Contact Info
+// ============================================================
 const buildContactInfoSubgroup = (resume: ResumeContent): CategorySubgroup => {
   const contact = resume.personalInfo?.contact || {};
   const address = contact.address;
   const hasEmail = !!contact.email;
   const hasPhone = !!contact.phone || !!(resume.personalInfo as any)?.phone;
-  // FIXME: modify hasAddress
-  const hasAddress = !!(address?.city || address?.division || address?.zipCode);
+  const hasAddress = typeof address === "string"
+    ? address.trim().length > 0
+    : !!(address?.city || address?.state);
 
   const checks: CategoryCheck[] = [
     {
@@ -61,6 +65,9 @@ const buildContactInfoSubgroup = (resume: ResumeContent): CategorySubgroup => {
   };
 };
 
+// ============================================================
+// Section Headings
+// ============================================================
 const buildSectionHeadingsSubgroup = (
   resume: ResumeContent,
 ): CategorySubgroup => {
@@ -110,13 +117,15 @@ const buildSectionHeadingsSubgroup = (
   };
 };
 
+// ============================================================
+// Job Title
+// ============================================================
 const buildJobTitleSubgroup = (
-  resume: ResumeContent,
   resumeText: string,
   jd: StructuredJD | null,
 ): CategorySubgroup => {
   const title = jd?.jobTitle || "";
-  let status: CheckStatus = "na";
+  let status: CheckStatus = "not-applicable";
   let detail = "";
 
   if (!title) {
@@ -140,15 +149,18 @@ const buildJobTitleSubgroup = (
     score: scoreFromChecks(checks),
     weight: 20,
     summary:
-      status === "passed"
-        ? `Job title "${title}" found.`
-        : status === "na"
-          ? "Not evaluated."
+      status === "not-applicable"
+        ? "Not evaluated."
+        : status === "passed"
+          ? `Job title "${title}" found.`
           : `Job title "${title}" not found.`,
     checks,
   };
 };
 
+// ============================================================
+// Date Formatting
+// ============================================================
 const buildDateFormattingSubgroup = (
   resume: ResumeContent,
 ): CategorySubgroup => {
@@ -164,7 +176,7 @@ const buildDateFormattingSubgroup = (
     status = "passed";
     detail = "All dates use ATS-friendly formats.";
   } else {
-    status = "partial";
+    status = "failed";
     detail = `${bad.length} of ${dates.length} date(s) need updating (e.g. "${bad[0]}").`;
   }
 
@@ -179,33 +191,28 @@ const buildDateFormattingSubgroup = (
     summary:
       status === "passed"
         ? "All dates ATS-friendly."
-        : status === "partial"
-          ? `Some dates need updating (e.g. "${bad[0]}").`
-          : "Dates missing or not ATS-friendly.",
+        : "Dates missing or not ATS-friendly.",
     checks,
   };
 };
 
+// ============================================================
+// Education Match
+// ============================================================
 const buildEducationMatchSubgroup = (
   jd: StructuredJD | null,
   eduScore: number,
 ): CategorySubgroup => {
-  const requirementLabel = jd?.educationRequirement?.replace("|", ", ") || "";
-  let status: CheckStatus = "na";
+  let status: CheckStatus = "not-applicable";
   let detail = "No education requirement listed.";
 
-  if (jd?.educationRequirement) {
     if (eduScore >= 80) {
       status = "passed";
-      detail = `Education matches the preferred (${requirementLabel}).`;
-    } else if (eduScore >= 50) {
-      status = "partial";
-      detail = `Education partially matches (${requirementLabel}).`;
+      detail = `Education matches the preferred .`;
     } else {
       status = "failed";
-      detail = `Education doesn't match (${requirementLabel}).`;
+      detail = `Education doesn't match`;
     }
-  }
 
   const checks: CategoryCheck[] = [
     { label: "Education match", status, detail, weight: 10 },
@@ -218,13 +225,16 @@ const buildEducationMatchSubgroup = (
     summary:
       status === "passed"
         ? "Education matches JD."
-        : status === "na"
+        : status === "not-applicable"
           ? "Not evaluated."
           : "Education doesn't meet JD requirements.",
     checks,
   };
 };
 
+// ============================================================
+// Build
+// ============================================================
 export const buildSearchability = (
   resume: ResumeContent,
   resumeText: string,
@@ -241,7 +251,7 @@ export const buildSearchability = (
 
   const checks = subgroups.flatMap((s) => s.checks);
   const { strengths, improvements } = deriveFeedback(checks);
-  const active = checks.filter((c) => c.status !== "na");
+  const active = checks.filter((c) => c.status !== "not-applicable");
   const passed = active.filter((c) => c.status === "passed").length;
 
   return {

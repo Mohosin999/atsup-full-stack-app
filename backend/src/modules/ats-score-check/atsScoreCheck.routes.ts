@@ -18,7 +18,7 @@ router.use(authenticate);
 router.post("/parse-resume", upload.single("resume"), parseResume);
 router.post("/parse-jd", parseJobDescription);
 router.post("/analyze", analyzeAtsScore);
-router.get("/history", getAtsScores);
+router.get("/history", getAtsScores); // TODO: start revision from here
 router.get("/history/:id", getAtsScore);
 router.delete("/history/:id", deleteAtsScoreController);
 router.delete("/history", deleteAllAtsScoresController);

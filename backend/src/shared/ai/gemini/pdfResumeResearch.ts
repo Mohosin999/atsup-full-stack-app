@@ -1,4 +1,5 @@
 import { genAI, GEMINI_MODEL } from "../../config/gemini";
+import { normalizeHardSkills } from "../../skills/skillNormalizer";
 
 export interface AIResumeResearchResult {
   personal_info: {
@@ -128,6 +129,8 @@ STRICT RULES:
 - NO field is required. If a piece of information is NOT present in the resume, set it to empty: "" for strings, [] for arrays, false for booleans.
 - Do NOT invent or hallucinate information. Only extract what is actually present in the resume.
 - measurableResults must ONLY contain quantified IMPACT results with numbers/percentages/money/time/scale. Exclude role-scope statements that have no measurable outcome.
+- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript"; "Next.js", "NextJS" → "Next.js"). NEVER list two different spellings of the same skill as separate entries.
+- Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
 - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
 
 JSON STRUCTURE:
@@ -290,6 +293,9 @@ const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
       education_level: str(edu?.education_level),
     })),
     skills: {
+      // hardSkills: normalizeHardSkills(
+      //   arr(raw?.skills?.hardSkills).map((v: any) => str(v)),
+      // ),
       hardSkills: arr(raw?.skills?.hardSkills).map((v: any) => str(v)),
       softSkills: arr(raw?.skills?.softSkills).map((v: any) => str(v)),
     },
@@ -319,3 +325,5 @@ const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
     },
   };
 };
+
+// - Remove filler words around keywords. From "pure react app, react.js and react js", extract ONLY "React" - never "react app", "pure react", or a duplicate "react.js".

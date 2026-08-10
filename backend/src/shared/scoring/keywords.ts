@@ -1,3 +1,5 @@
+// import { getSkillAliases } from "../skills/skillNormalizer";
+
 function escapeRegex(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -16,6 +18,7 @@ export function extractSkillsFromResume(resume: any): string[] {
 }
 
 export function getSkillVariants(canonical: string): string[] {
+  // return getSkillAliases(canonical);
   return [canonical];
 }
 

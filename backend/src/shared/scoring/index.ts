@@ -296,7 +296,6 @@ export const calculateLocalMatchScore = (
   resume: ResumeContent,
   structuredJD?: StructuredJD | null,
 ): LocalAtsResult => {
-  console.log('resume body ', resume) // TODO: DETELE IT
   const jd = structuredJD || null;
   const resumeText = toResumeText(resume);
   // const resumeSkills = extractSkillsFromResume(resume);
@@ -325,8 +324,6 @@ export const calculateLocalMatchScore = (
     items: [],
   };
   let matchBreakdown: LocalAtsResult["matchBreakdown"];
-
-  console.log("match break down ", matchBreakdown); // NOTE:
 
   if (jd) {
     // Helper functions for checking presence of skills in text

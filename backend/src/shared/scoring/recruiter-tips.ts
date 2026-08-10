@@ -89,6 +89,32 @@ const buildMeasurableSubgroup = (measurable: {
   };
 };
 
+const buildActionVerbsSubgroup = (actionVerbs: {
+  count: number;
+}): CategorySubgroup => {
+  const status: CheckStatus = actionVerbs.count >= 3 ? "passed" : "failed";
+
+  const detail =
+    actionVerbs.count >= 3
+      ? `${actionVerbs.count} action verbs found.`
+      : actionVerbs.count > 0
+        ? `${actionVerbs.count} of 3+ action verbs found.`
+        : "No action verbs found in experience bullets.";
+
+  const checks = [
+    { label: "Action verbs (3+)", status, detail, weight: 20 },
+  ];
+
+  return {
+    key: "actionVerbs",
+    title: "Action Verbs",
+    score: scoreFromChecks(checks),
+    weight: 20,
+    summary: detail,
+    checks,
+  };
+};
+
 // TODO: also add (resume tone, web presence, word count)
 
 export const buildRecruiterTips = (
@@ -96,11 +122,13 @@ export const buildRecruiterTips = (
   jd: StructuredJD | null,
   resumeYears: number,
   measurable: { count: number },
+  actionVerbs: { count: number },
 ): CategoryResult => {
   const subgroups = [
     buildSummarySubgroup(resume),
     buildJobLevelSubgroup(jd, resumeYears),
     buildMeasurableSubgroup(measurable),
+    buildActionVerbsSubgroup(actionVerbs),
   ];
 
   const checks = subgroups.flatMap((s) => s.checks);

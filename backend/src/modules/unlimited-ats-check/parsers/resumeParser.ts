@@ -790,6 +790,5 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
       name: c.name,
       issuer: c.issuer || undefined,
     })),
-    measurableResults: json.measurableResults,
   };
 };

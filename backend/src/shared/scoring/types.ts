@@ -81,6 +81,7 @@ export interface LocalAtsResult {
     skills: LocalSectionScore;
     contactInfo: LocalSectionScore;
     measurableResults: LocalSectionScore;
+    actionVerbs: LocalSectionScore;
   };
   atsFriendliness: number;
   suggestions: string[];

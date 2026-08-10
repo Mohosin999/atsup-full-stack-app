@@ -286,6 +286,8 @@ import {
   extractSkillsFromResume,
   getSkillVariants,
   countVariantsInText,
+  countActionVerbs,
+  actionVerbsScore,
 } from "./utils";
 import { buildSearchability } from "./searchability";
 import { buildHardSkills, buildSoftSkills } from "./skills";
@@ -304,6 +306,7 @@ export const calculateLocalMatchScore = (
     : [];
   const resumeYears = calculateYearsOfExperience(resume);
   const measurable = countMeasurableResults(resume);
+  const actionVerbs = countActionVerbs(resume);
   const suggestions: string[] = [];
 
   // =========================================================
@@ -381,6 +384,10 @@ export const calculateLocalMatchScore = (
     suggestions.push(
       `Add at least ${3 - measurable.count} more measurable results.`,
     );
+  if (actionVerbs.count < 3)
+    suggestions.push(
+      "Use strong action verbs in your experience bullet points (e.g. built, launched, optimized).",
+    );
   if (!resume.summary || resume.summary.split(/\s+/).length < 30)
     suggestions.push("Add a professional summary of at least 30 words.");
 
@@ -445,7 +452,13 @@ export const calculateLocalMatchScore = (
     searchability: buildSearchability(resume, resumeText, jd, eduScore),
     hardSkills: buildHardSkills(resume, resumeHardSkills, jd, hardSkillsMatch),
     softSkills: buildSoftSkills(resume, jd, softSkillsMatch),
-    recruiterTips: buildRecruiterTips(resume, jd, resumeYears, measurable),
+    recruiterTips: buildRecruiterTips(
+      resume,
+      jd,
+      resumeYears,
+      measurable,
+      actionVerbs,
+    ),
     formatting: buildFormatting(resume, atsFriendliness),
   };
 
@@ -538,6 +551,17 @@ export const calculateLocalMatchScore = (
             : measurable.count > 0
               ? `${measurable.count} of 5+ recommended measurable results found.`
               : "No measurable results found.",
+      },
+      actionVerbs: {
+        score: actionVerbsScore(actionVerbs.count),
+        count: actionVerbs.count,
+        found: actionVerbs.found,
+        feedback:
+          actionVerbs.count >= 5
+            ? `${actionVerbs.count} action verbs found in experience bullets.`
+            : actionVerbs.count > 0
+              ? `${actionVerbs.count} of 5+ recommended action verbs found.`
+              : "No strong action verbs found in experience bullets.",
       },
     },
     atsFriendliness,

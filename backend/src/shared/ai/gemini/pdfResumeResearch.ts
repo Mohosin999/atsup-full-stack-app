@@ -33,7 +33,6 @@ export interface AIResumeResearchResult {
     description: string[];
   }>;
   yearsOfExperience: string;
-  measurableResults: string[];
   resumeTone: string;
   wordCount: string;
   educationSection: boolean;
@@ -73,7 +72,6 @@ export const RESUME_RESEARCH_TEMPLATE: AIResumeResearchResult = {
   },
   projects: [],
   yearsOfExperience: "",
-  measurableResults: [],
   resumeTone: "bad",
   wordCount: "",
   educationSection: false,
@@ -107,20 +105,19 @@ RESEARCH THE FOLLOWING DETAILS:
    - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
 6. Projects (name, description as bullet points)
 7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
-8. measurableResults: ONLY the measurable IMPACTS/achievements from work experience that demonstrate a business or technical outcome (e.g. "reduced load time by 40%", "increased sales by 30%", "saved 10 hours/week", "improved performance by 2x", "cut costs by $50k"). These must show a quantified result tied to time, money, percentage, speed, scale, or performance. Do NOT include role scope statements or non-impact items (e.g. "led a team of 5 engineers", "managed 3 projects", "worked with 10 clients") unless they show a measurable outcome. If a result has no number, percentage, money, time or scale value, do NOT include it.
-9. resumeTone: assess the overall tone and quality of the resume writing. Use one of: "good", "bad", "professional", "weak".
-10. wordCount: total number of words in the resume.
-11. educationSection: true if an education section exists.
-12. experienceSection: true if an experience/work section exists.
-13. workHistory: true if there is AT LEAST ONE work experience entry.
-14. dateFormatting: true if dates use "MM/YY or MM/YYYY or Month YYYY" format (e.g. 03/19, 03/2019, Mar 2019 or March 2019). false otherwise.
-15. layout: analyze the given PDF very carefully and answer the following questions correctly:
+8. resumeTone: assess the overall tone and quality of the resume writing. Use one of: "good", "bad", "professional", "weak".
+9. wordCount: total number of words in the resume.
+10. educationSection: true if an education section exists.
+11. experienceSection: true if an experience/work section exists.
+12. workHistory: true if there is AT LEAST ONE work experience entry.
+13. dateFormatting: true if dates use "MM/YY or MM/YYYY or Month YYYY" format (e.g. 03/19, 03/2019, Mar 2019 or March 2019). false otherwise.
+14. layout: analyze the given PDF very carefully and answer the following questions correctly:
     - isSingleColumn: true if the resume uses a single column layout
     - hasTables: true if tables are used in the layout
     - hasImages: true if images/photos are present
     - hasIcons: true if icons/graphics are present
     - hasMultiColumn: true if the resume uses a multi-column layout
-17. fontCheck: analyze the given PDF very carefully and answer the following questions correctly. I must need these answer correctly:
+16. fontCheck: analyze the given PDF very carefully and answer the following questions correctly. I must need these answer correctly:
     - isStandardFont: true if a standard/ATS-friendly font is used (Arial, Calibri, Times New Roman, Helvetica, Georgia, Verdana, etc.)
     - fontName: the primary font name of resume text.
     - isReadableSize: true if the font size is readable (typically 10-12pt body text)
@@ -128,7 +125,6 @@ RESEARCH THE FOLLOWING DETAILS:
 STRICT RULES:
 - NO field is required. If a piece of information is NOT present in the resume, set it to empty: "" for strings, [] for arrays, false for booleans.
 - Do NOT invent or hallucinate information. Only extract what is actually present in the resume.
-- measurableResults must ONLY contain quantified IMPACT results with numbers/percentages/money/time/scale. Exclude role-scope statements that have no measurable outcome.
 - CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript"; "Next.js", "NextJS" → "Next.js"). NEVER list two different spellings of the same skill as separate entries.
 - Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
 - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
@@ -173,7 +169,6 @@ JSON STRUCTURE:
   ]
   ],
   "yearsOfExperience": "",
-  "measurableResults": [""],
   "resumeTone": "bad",
   "wordCount": "",
   "educationSection": false,
@@ -304,7 +299,6 @@ const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
       description: arr(proj?.description).map((v: any) => str(v)),
     })),
     yearsOfExperience: str(raw?.yearsOfExperience),
-    measurableResults: arr(raw?.measurableResults).map((v: any) => str(v)),
     resumeTone: str(raw?.resumeTone, "bad"),
     wordCount: str(raw?.wordCount),
     educationSection: bool(raw?.educationSection),

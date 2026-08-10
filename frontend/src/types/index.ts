@@ -88,7 +88,6 @@ export interface AIResumeResearch {
     link: string;
   }>;
   yearsOfExperience: string;
-  measurableResults: string[];
   resumeTone: string;
   wordCount: string;
   educationSection: boolean;
@@ -150,7 +149,6 @@ export interface ResumeContent {
   hardSkills?: string[];
   softSkills?: string[];
   keywords?: string[];
-  measurableResults?: string[];
   certifications?: Certification[];
 }
 
@@ -311,6 +309,12 @@ export interface AtsScore {
       count: number;
       found: string[];
     };
+    actionVerbs?: {
+      score: number;
+      feedback: string;
+      count: number;
+      found: string[];
+    };
   };
   atsFriendliness: number;
   suggestions: string[];
@@ -398,6 +402,12 @@ export interface AtsScoreHistory {
     skills: { score: number; feedback: string };
     contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
     measurableResults: {
+      score: number;
+      feedback: string;
+      count: number;
+      found: string[];
+    };
+    actionVerbs?: {
       score: number;
       feedback: string;
       count: number;

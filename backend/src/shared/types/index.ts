@@ -65,7 +65,6 @@ export interface ResumeContent {
     description: string[];
   }>;
   yearsOfExperience?: string;
-  measurableResults?: string[];
   resumeTone?: string;
   wordCount?: number;
   educationSection?: boolean;

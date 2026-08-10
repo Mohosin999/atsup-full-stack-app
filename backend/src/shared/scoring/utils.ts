@@ -9,7 +9,7 @@ import {
   getSkillVariants,
   countVariantsInText,
 } from "./keywords";
-import { ATS_DATE_RE, MEASURABLE_RESULT_RE } from "./constants";
+import { MEASURABLE_RESULT_RE, ACTION_VERBS } from "./constants";
 import { ResumeContent } from "../types";
 
 export const toResumeText = (resume: ResumeContent): string => {
@@ -285,6 +285,32 @@ export const countMeasurableResults = (resume: ResumeContent) => {
 export const measurableResultsScore = (count: number): number =>
   count >= 5 ? 100 : Math.round((count / 5) * 100);
 
+const ACTION_VERBS_RE = new RegExp(
+  `\\b(?:${ACTION_VERBS.map((v) =>
+    v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  ).join("|")})\\b`,
+  "gi",
+);
+
+const countActionVerbs = (resume: ResumeContent) => {
+  const highlights = (resume.experience || []).flatMap(
+    (exp) => exp.responsibilities || [],
+  );
+  const text = highlights.join(" ");
+
+  const matched = new Set<string>();
+  ACTION_VERBS_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = ACTION_VERBS_RE.exec(text))) {
+    matched.add(m[0].toLowerCase());
+  }
+
+  return { count: matched.size, found: [...matched].slice(0, 5) };
+};
+
+const actionVerbsScore = (count: number): number =>
+  count >= 5 ? 100 : Math.round((count / 5) * 100);
+
 export const collectResumeDates = (resume: ResumeContent): string[] => {
   const dates: string[] = [];
   const push = (raw?: string) => {
@@ -304,4 +330,10 @@ export const collectResumeDates = (resume: ResumeContent): string[] => {
   return dates;
 };
 
-export { extractSkillsFromResume, getSkillVariants, countVariantsInText };
+export {
+  extractSkillsFromResume,
+  getSkillVariants,
+  countVariantsInText,
+  countActionVerbs,
+  actionVerbsScore,
+};

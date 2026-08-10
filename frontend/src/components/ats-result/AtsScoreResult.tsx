@@ -139,6 +139,14 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
                   "No measurable result data available."
                 }
               />
+              <SectionScoreCard
+                sectionName="Action Verbs"
+                score={result.sectionScores.actionVerbs?.score ?? 0}
+                feedback={
+                  result.sectionScores.actionVerbs?.feedback ??
+                  "No action verb data available."
+                }
+              />
             </div>
           </motion.div>
 

@@ -59,7 +59,6 @@ const mapAIResearchToResumeContent = (ai: any): ResumeContent | null => {
       description: proj.description || [],
     })),
     yearsOfExperience: ai.yearsOfExperience || 0,
-    measurableResults: ai.measurableResults || [],
     resumeTone: ai.resumeTone || "bad",
     wordCount: ai.wordCount || 0,
     educationSection: ai.educationSection || false,

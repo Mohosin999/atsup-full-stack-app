@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -10,8 +10,6 @@ import {
   XCircle,
   AlertTriangle,
   MinusCircle,
-  Check,
-  Plus,
 } from "lucide-react";
 import { CategoryResult, CategorySubgroup, CheckStatus } from "../../types";
 
@@ -123,6 +121,80 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
   );
 };
 
+const SeenMoreLimit = 10;
+
+const SkillsTable: React.FC<{
+  skills: { item: string; status: string }[];
+}> = ({ skills }) => {
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? skills : skills.slice(0, SeenMoreLimit);
+  const remaining = skills.length - SeenMoreLimit;
+
+  return (
+    <div>
+      <div className="overflow-x-auto -mx-1">
+        <table className="w-full min-w-[300px] text-sm border-collapse">
+          <thead>
+            <tr className="text-left text-xs tracking-wide text-gray-500 border-b border-gray-200">
+              <th className="py-2 pl-5 font-medium">Skill</th>
+              <th className="py-2 px-6 font-medium text-center">Resume</th>
+              <th className="py-2 pl-6 font-medium text-center">
+                Job Description
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {visible.map((s) => (
+              <tr
+                key={s.item}
+                className="border-b border-gray-100 last:border-b-0"
+              >
+                <td className="py-2.5 pl-5 text-xs text-gray-800 break-words">
+                  {s.item}
+                </td>
+                <td className="py-2.5 text-center">
+                  {s.status === "matched" ? (
+                    <span
+                      className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                      title={`${s.item} found in resume`}
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                    </span>
+                  ) : (
+                    <span
+                      className="inline-flex w-6 h-6 rounded-full bg-red-500/15 text-red-600 items-center justify-center"
+                      title={`${s.item} missing from resume`}
+                    >
+                      <XCircle className="w-4 h-4" />
+                    </span>
+                  )}
+                </td>
+                <td className="py-2.5 text-center">
+                  <span
+                    className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                    title="Required by the job description"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {skills.length > SeenMoreLimit && (
+        <button
+          onClick={() => setShowAll((v) => !v)}
+          className="mt-3 py-2 px-4 text-xs font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          {showAll ? "See Less" : `See More (${remaining} more)`}
+        </button>
+      )}
+    </div>
+  );
+};
+
 const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
   category,
   index,
@@ -169,27 +241,21 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
         </div>
       )}
 
-      {/* Skills chips */}
+      {/* Skills table */}
       {hasSkillChips && (
-        <div className="flex flex-wrap gap-2 mb-4">
-          {category.matched?.map((item) => (
-            <span
-              key={`m-${item}`}
-              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border bg-green-500/10 text-green-600 border-green-500/30"
-            >
-              <Check className="w-3 h-3" />
-              {item}
-            </span>
-          ))}
-          {category.missing?.map((item) => (
-            <span
-              key={`x-${item}`}
-              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border bg-red-500/10 text-red-600 border-red-500/30"
-            >
-              <Plus className="w-3 h-3" />
-              {item}
-            </span>
-          ))}
+        <div className="mb-4">
+          <SkillsTable
+            skills={[
+              ...(category.matched?.map((item) => ({
+                item,
+                status: "matched",
+              })) || []),
+              ...(category.missing?.map((item) => ({
+                item,
+                status: "missing",
+              })) || []),
+            ]}
+          />
         </div>
       )}
 

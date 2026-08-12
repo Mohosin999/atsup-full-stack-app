@@ -6,33 +6,43 @@ import {
   scoreFromSubgroups,
   deriveFeedback,
   toResumeText,
+  actionVerbsScore,
+  measurableResultsScore,
+  summaryScore,
 } from "./utils";
 
+// ============================================================
+// Summary
+// ============================================================
 const buildSummarySubgroup = (resume: ResumeContent): CategorySubgroup => {
   const summaryWords = (resume.summary || "")
     .split(/\s+/)
     .filter(Boolean).length;
 
-  const status: CheckStatus =
-    summaryWords >= 30 ? "passed" : "failed";
+  const score = summaryScore(summaryWords);
+  const status: CheckStatus = score >= 100 ? "passed" : "failed";
   const detail =
-    summaryWords >= 30
-      ? "Summary present with good length."
-      : summaryWords > 0
-        ? `Summary too short (${summaryWords} words).`
-        : "No summary section found.";
+    summaryWords >= 30 && summaryWords <= 80
+      ? "We found a summary section on your resume. Good job! The summary provides a quick overview of the candidate's qualifications, helping recruiters and hiring managers promptly grasp the value the candidate can offer in the position."
+      : summaryWords > 80
+        ? `Your summary is too long (${summaryWords} words). Keep it within 30-80 words so it stays scannable.`
+        : summaryWords > 0
+          ? `We found a summary section on your resume, but it's not enough. Make sure to include 30-80 words in the summary to stand out.`
+          : "We couldn't find a summary section on your resume. Make sure to include a summary section in your resume to stand out.";
   const checks = [{ label: "Summary section", status, detail, weight: 20 }];
   return {
     key: "summary",
     title: "Summary",
-    score: scoreFromChecks(checks),
+    score,
     weight: 20,
     summary: detail,
     checks,
   };
 };
 
-// QUESTION: why I need here jd instead of exect years from jd
+// ============================================================
+// Job Level match - years (2+ years of experience)
+// ============================================================
 const buildJobLevelSubgroup = (
   jd: StructuredJD | null,
   resumeYears: number,
@@ -43,17 +53,18 @@ const buildJobLevelSubgroup = (
   if (jd && jd.experienceYearsRequired > 0) {
     if (resumeYears >= jd.experienceYearsRequired) {
       status = "passed";
-      detail = "Your experience aligns with the role's requirements.";
+      detail =
+        "Your years of experience align with the role's requirements. This is a positive start, but remember to carefully review all other job criteria to ensure you're a strong overall match before applying.";
     } else {
       status = "failed";
-      detail = `Your experience (${resumeYears} yrs) doesn't align with the requirement of ${jd.experienceYearsRequired}+ yrs.`;
+      detail = `Your years of experience (${resumeYears} yrs) do not align with the role's requirements (${jd.experienceYearsRequired} yrs). This is a negative start, but remember to carefully review all other job criteria to ensure you're a strong overall match before applying.`;
     }
   } else {
     status = resumeYears >= 1 ? "passed" : "failed";
     detail =
       resumeYears >= 1
-        ? `Your experience (${resumeYears} yrs) shows relevant work history.`
-        : "We couldn't verify your years of experience.";
+        ? `Your experience (${resumeYears} yrs) shows relevant work history. This is a positive start, but remember to carefully review all other job criteria to ensure you're a strong overall match before applying.`
+        : "We couldn't verify your years of experience. Please make sure that you've included experience section properly in your resume.";
   }
 
   const checks = [{ label: "Job level match", status, detail, weight: 20 }];
@@ -67,18 +78,21 @@ const buildJobLevelSubgroup = (
   };
 };
 
+// ============================================================
+// Measurable results
+// ============================================================
 const buildMeasurableSubgroup = (measurable: {
   count: number;
 }): CategorySubgroup => {
-  const status: CheckStatus =
-    measurable.count >= 3 ? "passed" : "failed";
+  const score = measurableResultsScore(measurable.count);
+  const status: CheckStatus = score >= 60 ? "passed" : "failed";
 
   const detail =
     measurable.count >= 3
-      ? `${measurable.count} measurable results found.`
+      ? `We found ${measurable.count} measurable results in experience section, which is great!`
       : measurable.count > 0
-        ? `${measurable.count} of 3+ measurable results found.`
-        : "No measurable results found.";
+        ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 3 measurable results to stand out.`
+        : "We couldn't find any measurable results in experience section. Use at least 3 measurable results in your resume's experience section to stand out.";
 
   const checks = [
     { label: "Measurable results (3+)", status, detail, weight: 20 },
@@ -87,41 +101,43 @@ const buildMeasurableSubgroup = (measurable: {
   return {
     key: "measurableResults",
     title: "Measurable Results",
-    score: scoreFromChecks(checks),
+    score,
     weight: 20,
     summary: detail,
     checks,
   };
 };
-
+// ============================================================
+// Action verbs
+// ============================================================
 const buildActionVerbsSubgroup = (actionVerbs: {
   count: number;
 }): CategorySubgroup => {
-  const status: CheckStatus = actionVerbs.count >= 3 ? "passed" : "failed";
+  const score = actionVerbsScore(actionVerbs.count);
+  const status: CheckStatus = score >= 60 ? "passed" : "failed";
 
   const detail =
     actionVerbs.count >= 3
-      ? `${actionVerbs.count} action verbs found.`
+      ? `We found ${actionVerbs.count} action verbs in experience section, which is great!`
       : actionVerbs.count > 0
-        ? `${actionVerbs.count} of 3+ action verbs found.`
-        : "No action verbs found in experience bullets.";
+        ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 3 action verbs to stand out.`
+        : "We couldn't find any action verbs in experience section. Use at least 3 action verbs in your resume's experience section to stand out.";
 
-  const checks = [
-    { label: "Action verbs (3+)", status, detail, weight: 20 },
-  ];
+  const checks = [{ label: "Action verbs (3+)", status, detail, weight: 20 }];
 
   return {
     key: "actionVerbs",
     title: "Action Verbs",
-    score: scoreFromChecks(checks),
+    score,
     weight: 20,
     summary: detail,
     checks,
   };
 };
 
-// TODO: also add web presence
-
+// ============================================================
+// Word count
+// ============================================================
 const countResumeWords = (resume: ResumeContent): number => {
   if (resume.wordCount) return Number(resume.wordCount) || 0;
   return toResumeText(resume).split(/\s+/).filter(Boolean).length;
@@ -133,7 +149,7 @@ const buildWordCountSubgroup = (wordCount: number): CategorySubgroup => {
 
   if (wordCount >= 100 && wordCount <= 1000) {
     status = "passed";
-    detail = `Resume length (${wordCount} words) is in the acceptable range of 100-1000 words.`;
+    detail = `There is ${wordCount} words in your resume, which is under the suggested limit of 1000 words and over the minimum of 100 words.`;
   } else if (wordCount < 100) {
     status = "failed";
     detail = `Resume is too short (${wordCount} words). Aim for at least 100 words so recruiters get enough detail.`;
@@ -153,6 +169,9 @@ const buildWordCountSubgroup = (wordCount: number): CategorySubgroup => {
   };
 };
 
+// ============================================================
+// Build recruiter tips
+// ============================================================
 export const buildRecruiterTips = (
   resume: ResumeContent,
   jd: StructuredJD | null,
@@ -170,7 +189,6 @@ export const buildRecruiterTips = (
   ];
 
   const checks = subgroups.flatMap((s) => s.checks);
-  // QUESTION: what it does
   const { strengths, improvements } = deriveFeedback(checks);
   const score = scoreFromSubgroups(subgroups);
 

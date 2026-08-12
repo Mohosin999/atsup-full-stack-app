@@ -185,25 +185,14 @@ export const educationScore = (
 };
 
 // ============================================================
-// Calculate years of experience
+// Years of experience from parsed field
 // ============================================================
-export const calculateYearsOfExperience = (resume: ResumeContent): number => {
-  let totalMonths = 0;
-  resume.experience?.forEach((exp) => {
-    if (!exp.startDate) return;
-    const start = new Date(exp.startDate);
-    const end = !exp.endDate ? new Date() : new Date(exp.endDate);
-
-    // Ignore invalid dates
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) return;
-
-    totalMonths += Math.max(
-      0,
-      (end.getFullYear() - start.getFullYear()) * 12 +
-        (end.getMonth() - start.getMonth()),
-    );
-  });
-  return Math.round(totalMonths / 12);
+export const parseYearsOfExperience = (raw?: string | number): number => {
+  if (raw == null || raw === "") return 0;
+  if (typeof raw === "number") return isNaN(raw) ? 0 : raw;
+  const matches = String(raw).match(/\d+/g);
+  if (!matches) return 0;
+  return Math.max(...matches.map(Number));
 };
 
 export const countMeasurableResults = (resume: ResumeContent) => {
@@ -214,7 +203,7 @@ export const countMeasurableResults = (resume: ResumeContent) => {
 };
 
 export const measurableResultsScore = (count: number): number =>
-  count >= 5 ? 100 : Math.round((count / 5) * 100);
+  count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
 
 const ACTION_VERBS_RE = new RegExp(
   `\\b(?:${ACTION_VERBS.map((v) =>
@@ -240,7 +229,18 @@ const countActionVerbs = (resume: ResumeContent) => {
 };
 
 const actionVerbsScore = (count: number): number =>
-  count >= 5 ? 100 : Math.round((count / 5) * 100);
+  count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
+
+export const summaryScore = (summaryWords: number): number =>
+  summaryWords >= 30 && summaryWords <= 80
+    ? 100
+    : summaryWords >= 80
+      ? 60
+      : summaryWords >= 10
+        ? 40
+        : summaryWords > 0
+          ? 20
+          : 0;
 
 // ============================================================
 // 

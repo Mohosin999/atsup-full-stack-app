@@ -10,7 +10,6 @@
 //   toResumeText,
 //   buildMatchCategory,
 //   educationScore,
-//   calculateYearsOfExperience,
 //   countMeasurableResults,
 //   measurableResultsScore,
 //   checkSpellingGrammar,
@@ -38,7 +37,6 @@
 //   const resumeHardSkills = resume.hardSkills?.length
 //     ? resume.hardSkills
 //     : resumeSkills;
-//   const resumeYears = calculateYearsOfExperience(resume);
 //   const suggestions: string[] = [];
 //   const measurable = countMeasurableResults(resume);
 //   const resumeActionVerbs = matchActionVerbs(resumeText); // NOTE: maybe don't need
@@ -280,9 +278,10 @@ import {
   toResumeText,
   buildMatchCategory,
   educationScore,
-  calculateYearsOfExperience,
+  parseYearsOfExperience,
   countMeasurableResults,
   measurableResultsScore,
+  summaryScore as summaryWordsScore,
   extractSkillsFromResume,
   getSkillVariants,
   countVariantsInText,
@@ -304,7 +303,7 @@ export const calculateLocalMatchScore = (
   const resumeHardSkills = resume.skills.hardSkills?.length
     ? resume.skills.hardSkills
     : [];
-  const resumeYears = calculateYearsOfExperience(resume);
+  const resumeYears = parseYearsOfExperience(resume.yearsOfExperience);
   const measurable = countMeasurableResults(resume);
   const actionVerbs = countActionVerbs(resume);
   const suggestions: string[] = [];
@@ -401,19 +400,7 @@ export const calculateLocalMatchScore = (
     .split(/\s+/)
     .filter(Boolean).length;
 
-  const summaryScore =
-    summaryWords >= 40 && summaryWords <= 100
-      ? 90 // ideal ATS-friendly range
-      : summaryWords >= 100
-        ? 70 // too long — ATS/recruiter dujonei skip korte pare
-        : summaryWords >= 25
-          ? 65 // acceptable but thin
-          : summaryWords >= 10
-            ? 40 // too short, minimal content
-            : summaryWords > 0
-              ? 20 // barely anything
-              : 0; // empty summary — no score
-
+  const summaryScore = summaryWordsScore(summaryWords);
   // Experience Score
   const experienceCount = resume.experience?.length || 0;
 

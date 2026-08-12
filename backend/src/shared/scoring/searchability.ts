@@ -138,8 +138,8 @@ const buildJobTitleSubgroup = (
     const hasMatch = jobTitleMatches(resumeText, title);
     status = hasMatch ? "passed" : "failed";
     detail = hasMatch
-      ? `The job title **${title}** from the job description was found in your resume, indicating a strong match with the role you're applying for.`
-      : `The job title ${title} from the job description was not found in your resume. We recommend having the exact title of the job for which you're applying in your resume.`;
+      ? `The job title "${title}" from the job description was found in your resume, indicating a strong match with the role you're applying for.`
+      : `The job title "${title}" from the job description was not found in your resume. We recommend having the exact title of the job for which you're applying in your resume.`;
   }
 
   const checks: CategoryCheck[] = [

@@ -3,8 +3,10 @@ import { CategoryResult, CheckStatus, MatchCategoryResult } from "./types";
 import { CATEGORY_WEIGHTS } from "./constants";
 import { scoreFromChecks, deriveFeedback } from "./utils";
 
+// =============================================================
+// Hard skills
+// =============================================================
 export const buildHardSkills = (
-  resume: ResumeContent,
   resumeHardSkills: string[],
   jd: StructuredJD | null,
   hardSkillsMatch: MatchCategoryResult,
@@ -22,10 +24,7 @@ export const buildHardSkills = (
   ];
 
   let summary = `${resumeHardSkills.length} technical skills identified.`;
-  let score =
-    resumeHardSkills.length > 0
-      ? Math.min(100, 55 + resumeHardSkills.length * 3)
-      : 0;
+  let score = 0;
 
   let matched: string[] = [];
   let missing: string[] = [];
@@ -56,7 +55,7 @@ export const buildHardSkills = (
     summary = `${matched.length} of ${total} required technical skills matched.`;
   } else if (jd) {
     score = 0;
-    missing = jd.hardSkills;
+    missing = jd.skills?.hardSkills;
     checks = [
       {
         label: "Required hard skills matched",
@@ -83,12 +82,15 @@ export const buildHardSkills = (
   };
 };
 
+// =============================================================
+// Soft skills
+// =============================================================
 export const buildSoftSkills = (
   resume: ResumeContent,
   jd: StructuredJD | null,
   softSkillsMatch: MatchCategoryResult,
 ): CategoryResult => {
-  const resumeSoft = (resume.softSkills || []).filter(Boolean);
+  const resumeSoft = (resume.skills?.softSkills || []).filter(Boolean);
   let checks = [
     {
       label: "Soft skills highlighted",
@@ -107,8 +109,8 @@ export const buildSoftSkills = (
     resumeSoft.length > 0
       ? `${resumeSoft.length} soft skill(s) highlighted.`
       : "Soft skills not explicitly listed.";
-  let score =
-    resumeSoft.length > 0 ? Math.min(100, 60 + resumeSoft.length * 5) : 70;
+      
+  let score = 0;
   let matched: string[] = [];
   let missing: string[] = [];
 
@@ -128,7 +130,7 @@ export const buildSoftSkills = (
     summary = `${matched.length} of ${total} expected soft skills found.`;
   } else if (jd) {
     score = 0;
-    missing = jd.softSkills;
+    missing = jd.skills?.softSkills;
     checks = [
       {
         label: "Soft skills matched",

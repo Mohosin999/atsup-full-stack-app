@@ -1,7 +1,12 @@
 import { ResumeContent, StructuredJD } from "../types";
 import { CategoryResult, CategorySubgroup, CheckStatus } from "./types";
 import { CATEGORY_WEIGHTS } from "./constants";
-import { scoreFromChecks, scoreFromSubgroups, deriveFeedback } from "./utils";
+import {
+  scoreFromChecks,
+  scoreFromSubgroups,
+  deriveFeedback,
+  toResumeText,
+} from "./utils";
 
 const buildSummarySubgroup = (resume: ResumeContent): CategorySubgroup => {
   const summaryWords = (resume.summary || "")
@@ -16,12 +21,12 @@ const buildSummarySubgroup = (resume: ResumeContent): CategorySubgroup => {
       : summaryWords > 0
         ? `Summary too short (${summaryWords} words).`
         : "No summary section found.";
-  const checks = [{ label: "Summary section", status, detail, weight: 30 }];
+  const checks = [{ label: "Summary section", status, detail, weight: 20 }];
   return {
     key: "summary",
     title: "Summary",
     score: scoreFromChecks(checks),
-    weight: 30,
+    weight: 20,
     summary: detail,
     checks,
   };
@@ -51,12 +56,12 @@ const buildJobLevelSubgroup = (
         : "We couldn't verify your years of experience.";
   }
 
-  const checks = [{ label: "Job level match", status, detail, weight: 30 }];
+  const checks = [{ label: "Job level match", status, detail, weight: 20 }];
   return {
     key: "jobLevelMatch",
     title: "Job Level Match",
     score: scoreFromChecks(checks),
-    weight: 30,
+    weight: 20,
     summary: detail,
     checks,
   };
@@ -115,7 +120,38 @@ const buildActionVerbsSubgroup = (actionVerbs: {
   };
 };
 
-// TODO: also add (resume tone, web presence, word count)
+// TODO: also add web presence
+
+const countResumeWords = (resume: ResumeContent): number => {
+  if (resume.wordCount) return Number(resume.wordCount) || 0;
+  return toResumeText(resume).split(/\s+/).filter(Boolean).length;
+};
+
+const buildWordCountSubgroup = (wordCount: number): CategorySubgroup => {
+  let status: CheckStatus;
+  let detail: string;
+
+  if (wordCount >= 100 && wordCount <= 1000) {
+    status = "passed";
+    detail = `Resume length (${wordCount} words) is in the acceptable range of 100-1000 words.`;
+  } else if (wordCount < 100) {
+    status = "failed";
+    detail = `Resume is too short (${wordCount} words). Aim for at least 100 words so recruiters get enough detail.`;
+  } else {
+    status = "failed";
+    detail = `Resume is too long (${wordCount} words). Keep it under 1000 words so it stays scannable.`;
+  }
+
+  const checks = [{ label: "Word count", status, detail, weight: 20 }];
+  return {
+    key: "wordCount",
+    title: "Word Count",
+    score: scoreFromChecks(checks),
+    weight: 20,
+    summary: `${wordCount} words total.`,
+    checks,
+  };
+};
 
 export const buildRecruiterTips = (
   resume: ResumeContent,
@@ -124,11 +160,13 @@ export const buildRecruiterTips = (
   measurable: { count: number },
   actionVerbs: { count: number },
 ): CategoryResult => {
+  const wordCount = countResumeWords(resume);
   const subgroups = [
     buildSummarySubgroup(resume),
     buildJobLevelSubgroup(jd, resumeYears),
     buildMeasurableSubgroup(measurable),
     buildActionVerbsSubgroup(actionVerbs),
+    buildWordCountSubgroup(wordCount),
   ];
 
   const checks = subgroups.flatMap((s) => s.checks);

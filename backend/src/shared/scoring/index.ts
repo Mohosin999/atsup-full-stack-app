@@ -450,7 +450,7 @@ export const calculateLocalMatchScore = (
   const eduScore = educationScore(resume, jd?.education || null);
   const categories: CategoriesResult = {
     searchability: buildSearchability(resume, resumeText, jd, eduScore),
-    hardSkills: buildHardSkills(resume, resumeHardSkills, jd, hardSkillsMatch),
+    hardSkills: buildHardSkills(resumeHardSkills, jd, hardSkillsMatch),
     softSkills: buildSoftSkills(resume, jd, softSkillsMatch),
     recruiterTips: buildRecruiterTips(
       resume,

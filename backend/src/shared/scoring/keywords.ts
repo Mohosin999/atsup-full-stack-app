@@ -4,6 +4,32 @@ function escapeRegex(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// ============================================================
+// Job Title Normalization
+// ============================================================
+
+function normalizeJobTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "")
+    .replace(/\s+/g, "")
+    .trim();
+}
+
+export function jobTitleMatches(resumeText: string, jdTitle: string): boolean {
+  if (!jdTitle) return false;
+
+  const normalizedJd = normalizeJobTitle(jdTitle);
+  const normalizedResume = normalizeJobTitle(resumeText);
+
+  if (!normalizedJd) return false;
+
+  if (normalizedResume.includes(normalizedJd)) return true;
+
+  const jdTokens = normalizedJd.split(/\s+/).filter(Boolean);
+  return jdTokens.length > 0 && jdTokens.every((t) => normalizedResume.includes(t));
+}
+
 // NOTE: maybe no need it anymore
 export function extractSkillsFromResume(resume: any): string[] {
   const skills: string[] = [];

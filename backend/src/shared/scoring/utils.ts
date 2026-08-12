@@ -77,6 +77,9 @@ export const buildMatchCategory = (
   };
 };
 
+// ============================================================
+// Score from checks
+// ============================================================
 export const scoreFromChecks = (checks: CategoryCheck[]): number => {
   let earned = 0,
     total = 0;
@@ -92,6 +95,8 @@ export const scoreFromSubgroups = (subgroups: CategorySubgroup[]): number => {
   let earned = 0,
     total = 0;
   for (const s of subgroups) {
+    const allNotApplicable = s.checks.every((c) => c.status === "not-applicable");
+    if (allNotApplicable) continue;
     total += s.weight;
     earned += (s.score / 100) * s.weight;
   }
@@ -102,55 +107,22 @@ export const deriveFeedback = (checks: CategoryCheck[]) => {
   const strengths: string[] = [];
   const improvements: string[] = [];
   for (const c of checks) {
-    if (c.status === "not-applicable") continue;
+    if (c.status === "not-applicable" || c.weight <= 0) continue;
     if (c.status === "passed") strengths.push(c.detail);
     else improvements.push(`${c.label}: ${c.detail}`);
   }
   return { strengths, improvements };
 };
 
-// export const educationScore = (
-//   resume: ResumeContent,
-//   educationRequirement?: string | null,
-// ): number => {
-//   const eduText = (resume.education || [])
-//     .map((edu) => `${edu.degree}`)
-//     .join(" ")
-//     .toLowerCase();
 
-//   if (!educationRequirement) return 70;
-
-//   const parts = educationRequirement
-//     .split("|")
-//     .map((p) => p.trim().toLowerCase())
-//     .filter(Boolean);
-//   if (!parts.length) return 70;
-
-//   let matchedParts = 0;
-//   for (const part of parts) {
-//     const keywords = part
-//       .replace(/['']s\b/g, "")
-//       .split(/\s+/)
-//       .filter((w) => w.length > 2);
-//     if (!keywords.length) {
-//       if (eduText.includes(part)) matchedParts++;
-//     } else if (keywords.some((w) => eduText.includes(w))) {
-//       matchedParts++;
-//     }
-//   }
-
-//   if (matchedParts >= parts.length) return 100;
-//   if (matchedParts >= 1) return 70;
-//   return 30;
-// };
-
+// ============================================================
+// Education match score
+// ============================================================
 export const educationScore = (
   resume: ResumeContent,
   jdEducation?: jdEducationType | null,
 ): number => {
   const resumeEdu = resume.education || [];
-
-  // ---- Education level hierarchy (higher index = higher qualification) ----
   const LEVEL_RANK: Record<string, number> = {
     "high school": 1,
     secondary: 1,
@@ -175,7 +147,6 @@ export const educationScore = (
     doctoral: 5,
   };
 
-  // কোনো একটা টেক্সট থেকে normalize করে rank বের করা
   const getRank = (text: string): number => {
     const t = text.toLowerCase();
     let bestRank = 0;
@@ -184,27 +155,19 @@ export const educationScore = (
         bestRank = Math.max(bestRank, LEVEL_RANK[key]);
       }
     }
-    return bestRank; // 0 মানে কিছুই মেলেনি
+    return bestRank;
   };
 
-  // No education requirement in JD
   if (!jdEducation || !jdEducation.education_level) {
-    if (resumeEdu.length > 0) return 80;
-    return 60;
+    return 0;
   }
-
-  // JD has education requirements
-  if (!resumeEdu.length) return 20;
-
+  if (!resumeEdu.length) return 0;
   const jdRank = getRank(jdEducation.education_level);
 
-  // Resume-এর প্রতিটা entry থেকে সর্বোচ্চ rank বের করা (সবচেয়ে বড় ডিগ্রি ধরে)
   const resumeRanks = resumeEdu.map((edu) =>
     getRank(`${edu.degree} ${edu.field} ${edu.education_level}`),
   );
   const resumeMaxRank = Math.max(...resumeRanks, 0);
-
-  // JD-এর level normalize করতে না পারলে (unknown string) → fallback: substring match
   if (jdRank === 0) {
     const eduText = resumeEdu
       .map((edu) => `${edu.degree} ${edu.field} ${edu.education_level}`)
@@ -214,48 +177,16 @@ export const educationScore = (
     return eduText.includes(jdLevel) ? 100 : 45;
   }
 
-  // Resume-এ কোনো rank-ই ধরা পড়েনি (unrecognized degree naming)
   if (resumeMaxRank === 0) return 45;
-
-  // ---- Hierarchy-aware scoring ----
-  if (resumeMaxRank === jdRank) return 100; // ঠিক match
-  if (resumeMaxRank > jdRank) return 95; // required-এর চেয়ে বেশি qualified — near full score
-  if (resumeMaxRank === jdRank - 1) return 55; // এক ধাপ নিচে (যেমন Bachelor আছে, Master চাচ্ছে)
-  return 30; // দুই বা তার বেশি ধাপ নিচে
+  if (resumeMaxRank === jdRank) return 100;
+  if (resumeMaxRank > jdRank) return 95;
+  if (resumeMaxRank === jdRank - 1) return 55; 
+  return 30;
 };
 
-// export const educationScore = (
-//   resume: ResumeContent,
-//   jdEducation?: jdEducationType | null,
-// ): number => {
-//   const resumeEdu = resume.education || [];
-
-//   // No education in JD
-//   if (!jdEducation || !jdEducation.education_level) {
-//     // Resume has education → good sign, bonus
-//     if (resumeEdu.length > 0) return 80;
-//     // No education in either → neutral
-//     return 60;
-//   }
-
-//   // JD has education requirements → check match
-//   const eduText = resumeEdu
-//     .map((edu) => `${edu.degree} ${edu.field} ${edu.education_level}`)
-//     .join(" ")
-//     .toLowerCase();
-
-//   const jdLevel = jdEducation.education_level.toLowerCase().trim();
-
-//   // Resume has no education but JD requires → penalty
-//   if (!resumeEdu.length) return 20;
-
-//   // Education level match
-//   if (eduText.includes(jdLevel)) return 100;
-
-//   // Has education but level doesn't match → partial
-//   return 45;
-// };
-
+// ============================================================
+// Calculate years of experience
+// ============================================================
 export const calculateYearsOfExperience = (resume: ResumeContent): number => {
   let totalMonths = 0;
   resume.experience?.forEach((exp) => {
@@ -311,6 +242,9 @@ const countActionVerbs = (resume: ResumeContent) => {
 const actionVerbsScore = (count: number): number =>
   count >= 5 ? 100 : Math.round((count / 5) * 100);
 
+// ============================================================
+// 
+// ============================================================
 export const collectResumeDates = (resume: ResumeContent): string[] => {
   const dates: string[] = [];
   const push = (raw?: string) => {

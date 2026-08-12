@@ -69,7 +69,7 @@ export default function AtsScoreDetail() {
   }, [historyId]);
 
   return (
-    <div className="min-h-screen bg-[#F6F9FC] pt-24 pb-12">
+    <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
       <Wrapper>
         <div className="my-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

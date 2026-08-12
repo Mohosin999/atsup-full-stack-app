@@ -17,7 +17,7 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
   return (
     <div className="space-y-6">
       {result.sectionScores.categories ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
           {/* LEFT: score circle + checklist of what was checked */}
           <div className="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24">
             <CategoryChecklist
@@ -27,7 +27,7 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
           </div>
 
           {/* RIGHT: feedback cards column (wider) */}
-          <div className="lg:col-span-8 xl:col-span-9 space-y-4">
+          <div className="lg:col-span-8 xl:col-span-9 space-y-6">
             {(
               [
                 "searchability",
@@ -44,17 +44,17 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
               />
             ))}
 
-            {result.sectionScores.matchBreakdown && (
+            {/* {result.sectionScores.matchBreakdown && (
               <JobMatchBreakdown
                 matchBreakdown={result.sectionScores.matchBreakdown}
               />
-            )}
+            )} */}
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Improvement Suggestions
               </h2>
               <SuggestionList
@@ -150,11 +150,11 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
             </div>
           </motion.div>
 
-          {result.sectionScores.matchBreakdown && (
+          {/* {result.sectionScores.matchBreakdown && (
             <JobMatchBreakdown
               matchBreakdown={result.sectionScores.matchBreakdown}
             />
-          )}
+          )} */}
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}

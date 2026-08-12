@@ -1,169 +1,370 @@
+// import { ResumeContent } from "../types";
+// import { CategoryResult, CategoryCheck, CategorySubgroup } from "./types";
+// import { CATEGORY_WEIGHTS } from "./constants";
+// import { scoreFromChecks, scoreFromSubgroups, deriveFeedback } from "./utils";
+
+// const check = (
+//   available: boolean,
+//   passed: boolean,
+//   passDetail: string,
+//   failDetail: string,
+// ): { status: "passed" | "failed" | "not-applicable"; detail: string } => {
+//   if (!available) return { status: "not-applicable", detail: "Requires original file analysis." };
+//   return passed
+//     ? { status: "passed", detail: passDetail }
+//     : { status: "failed", detail: failDetail };
+// };
+
+// // ============================================================
+// // Layout
+// // ============================================================
+// const buildLayoutSubgroup = (resume: ResumeContent): CategorySubgroup => {
+//   const layout = resume.layout;
+
+//   const checks: CategoryCheck[] = [
+//     {
+//       label: "Single column layout",
+//       ...check(
+//         !!layout,
+//         layout?.isSingleColumn === true,
+//         "Single column layout detected.",
+//         "Use a single column layout for best ATS parsing.",
+//       ),
+//       weight: 32,
+//     },
+//     {
+//       label: "No multi-column layout",
+//       ...check(
+//         !!layout,
+//         layout?.hasMultiColumn !== true,
+//         "No multi-column layout detected.",
+//         "Avoid multi-column layout; ATS may misread the content.",
+//       ),
+//       weight: 18,
+//     },
+//     {
+//       label: "No tables / text boxes",
+//       ...check(
+//         !!layout,
+//         layout?.hasTables === false,
+//         "No tables or text boxes detected.",
+//         "Remove tables and text boxes; they break ATS parsing.",
+//       ),
+//       weight: 30,
+//     },
+//     {
+//       label: "No images / photos",
+//       ...check(
+//         !!layout,
+//         layout?.hasImages === false,
+//         "No images or photos detected.",
+//         "Remove images/photos; they are not parsed by ATS.",
+//       ),
+//       weight: 10,
+//     },
+//     {
+//       label: "No icons / graphics",
+//       ...check(
+//         !!layout,
+//         layout?.hasIcons === false,
+//         "No icons or graphics detected.",
+//         "Remove icons/graphics; they are not parsed by ATS.",
+//       ),
+//       weight: 10,
+//     },
+//   ];
+
+//   const passed = checks.filter((c) => c.status === "passed").length;
+//   return {
+//     key: "layout",
+//     title: "Layout",
+//     score: scoreFromChecks(checks),
+//     weight: 60,
+//     summary:
+//       passed === checks.length
+//         ? "Clean single-column layout."
+//         : `${passed} of ${checks.length} layout checks passed.`,
+//     checks,
+//   };
+// };
+
+// // ============================================================
+// // Font
+// // ============================================================
+// const buildFontSubgroup = (resume: ResumeContent): CategorySubgroup => {
+//   const font = resume.fontCheck;
+
+//   const checks: CategoryCheck[] = [
+//     {
+//       label: "ATS-friendly font",
+//       ...check(
+//         !!font,
+//         font?.isStandardFont === true,
+//         font?.fontName
+//           ? `Standard font detected (${font.fontName}).`
+//           : "Standard/ATS-friendly font detected.",
+//         "Use a standard ATS-friendly font (Arial, Calibri, Times New Roman, etc.).",
+//       ),
+//       weight: 50,
+//     },
+//     {
+//       label: "Font name identified",
+//       ...check(
+//         !!font,
+//         !!font?.fontName,
+//         font?.fontName
+//           ? `Font name identified (${font.fontName}).`
+//           : "Font name identified.",
+//         "Font name could not be identified from the resume.",
+//       ),
+//       weight: 20,
+//     },
+//     {
+//       label: "Readable font size",
+//       ...check(
+//         !!font,
+//         font?.isReadableSize === true,
+//         "Readable font size detected.",
+//         "Use a readable font size (10-12pt body, 14-16pt headings).",
+//       ),
+//       weight: 30,
+//     },
+//   ];
+
+//   const passed = checks.filter((c) => c.status === "passed").length;
+//   return {
+//     key: "font",
+//     title: "Font",
+//     score: scoreFromChecks(checks),
+//     weight: 40,
+//     summary:
+//       passed === checks.length
+//         ? "ATS-friendly fonts used."
+//         : `${passed} of ${checks.length} font checks passed.`,
+//     checks,
+//   };
+// };
+
+// // ============================================================
+// // Build
+// // ============================================================
+// export const buildFormatting = (
+//   resume: ResumeContent,
+//   atsFriendliness: number,
+// ): CategoryResult => {
+//   const subgroups = [buildLayoutSubgroup(resume), buildFontSubgroup(resume)];
+
+//   const checks = subgroups.flatMap((s) => s.checks);
+//   const { strengths, improvements } = deriveFeedback(checks);
+
+//   return {
+//     key: "formatting",
+//     title: "Formatting",
+//     score: scoreFromSubgroups(subgroups),
+//     weight: CATEGORY_WEIGHTS.formatting,
+//     summary: `Structure is ${atsFriendliness >= 80 ? "clean" : atsFriendliness >= 60 ? "acceptable" : "weak"}. Layout and font analysis based on resume file.`,
+//     checks,
+//     subgroups,
+//     strengths,
+//     improvements,
+//   };
+// };
+
 import { ResumeContent } from "../types";
 import { CategoryResult, CategoryCheck, CategorySubgroup } from "./types";
 import { CATEGORY_WEIGHTS } from "./constants";
 import { scoreFromChecks, scoreFromSubgroups, deriveFeedback } from "./utils";
 
-const check = (
+const createCheckResult = (
   available: boolean,
   passed: boolean,
   passDetail: string,
   failDetail: string,
 ): { status: "passed" | "failed" | "not-applicable"; detail: string } => {
-  if (!available) return { status: "not-applicable", detail: "Requires original file analysis." };
+  if (!available) {
+    return {
+      status: "not-applicable",
+      detail: "Requires original file analysis.",
+    };
+  }
+
   return passed
     ? { status: "passed", detail: passDetail }
     : { status: "failed", detail: failDetail };
 };
 
 // ============================================================
-// Layout
+// Layout Subgroup Builder
 // ============================================================
 const buildLayoutSubgroup = (resume: ResumeContent): CategorySubgroup => {
-  const layout = resume.layout;
+  const { layout } = resume;
 
   const checks: CategoryCheck[] = [
     {
-      label: "Single column layout",
-      ...check(
+      label: "Single Column Layout",
+      ...createCheckResult(
         !!layout,
         layout?.isSingleColumn === true,
-        "Single column layout detected.",
-        "Use a single column layout for best ATS parsing.",
+        "Single column layout detected. This format is optimal for ATS parsing.",
+        "Single column layout recommended for best ATS parsing compatibility.",
       ),
       weight: 32,
     },
     {
-      label: "No multi-column layout",
-      ...check(
+      label: "Multi-Column Layout Avoidance",
+      ...createCheckResult(
         !!layout,
         layout?.hasMultiColumn !== true,
-        "No multi-column layout detected.",
-        "Avoid multi-column layout; ATS may misread the content.",
+        "No multi-column layout detected. Content structure is ATS-friendly.",
+        "Multi-column layouts should be avoided as ATS may misread content flow.",
       ),
       weight: 18,
     },
     {
-      label: "No tables / text boxes",
-      ...check(
+      label: "Tables and Text Boxes",
+      ...createCheckResult(
         !!layout,
         layout?.hasTables === false,
-        "No tables or text boxes detected.",
-        "Remove tables and text boxes; they break ATS parsing.",
+        "No tables or text boxes detected. Clean text extraction is possible.",
+        "Tables and text boxes should be removed as they break ATS parsing algorithms.",
       ),
       weight: 30,
     },
     {
-      label: "No images / photos",
-      ...check(
+      label: "Images and Photos",
+      ...createCheckResult(
         !!layout,
         layout?.hasImages === false,
-        "No images or photos detected.",
-        "Remove images/photos; they are not parsed by ATS.",
+        "No images or photos detected. Text-only content is fully ATS-parseable.",
+        "Images and photos should be removed as they are ignored by ATS systems.",
       ),
       weight: 10,
     },
     {
-      label: "No icons / graphics",
-      ...check(
+      label: "Icons and Graphics",
+      ...createCheckResult(
         !!layout,
         layout?.hasIcons === false,
-        "No icons or graphics detected.",
-        "Remove icons/graphics; they are not parsed by ATS.",
+        "No icons or graphics detected. Clean text-focused resume structure.",
+        "Icons and graphics should be removed as they are not processed by ATS.",
       ),
       weight: 10,
     },
   ];
 
-  const passed = checks.filter((c) => c.status === "passed").length;
+  const passedCount = checks.filter(
+    (check) => check.status === "passed",
+  ).length;
+  const totalChecks = checks.length;
+
   return {
     key: "layout",
-    title: "Layout",
+    title: "Layout and Structure",
     score: scoreFromChecks(checks),
     weight: 60,
     summary:
-      passed === checks.length
-        ? "Clean single-column layout."
-        : `${passed} of ${checks.length} layout checks passed.`,
+      passedCount === totalChecks
+        ? "Excellent layout. Fully ATS-compatible single-column structure detected."
+        : `${passedCount} of ${totalChecks} layout standards met. Improvements needed in some areas.`,
     checks,
   };
 };
 
 // ============================================================
-// Font
+// Font Subgroup Builder
 // ============================================================
 const buildFontSubgroup = (resume: ResumeContent): CategorySubgroup => {
-  const font = resume.fontCheck;
+  const { fontCheck } = resume;
 
   const checks: CategoryCheck[] = [
     {
-      label: "ATS-friendly font",
-      ...check(
-        !!font,
-        font?.isStandardFont === true,
-        font?.fontName
-          ? `Standard font detected (${font.fontName}).`
-          : "Standard/ATS-friendly font detected.",
-        "Use a standard ATS-friendly font (Arial, Calibri, Times New Roman, etc.).",
+      label: "ATS-Friendly Font Selection",
+      ...createCheckResult(
+        !!fontCheck,
+        fontCheck?.isStandardFont === true,
+        fontCheck?.fontName
+          ? `${fontCheck.fontName} detected. Standard ATS-compatible font in use.`
+          : "Standard ATS-friendly font detected.",
+        "Standard ATS-friendly font recommended (Arial, Calibri, Times New Roman, Verdana).",
       ),
       weight: 50,
     },
     {
-      label: "Font name identified",
-      ...check(
-        !!font,
-        !!font?.fontName,
-        font?.fontName
-          ? `Font name identified (${font.fontName}).`
-          : "Font name identified.",
-        "Font name could not be identified from the resume.",
+      label: "Font Identification",
+      ...createCheckResult(
+        !!fontCheck,
+        !!fontCheck?.fontName,
+        fontCheck?.fontName
+          ? `Font identified as ${fontCheck.fontName}.`
+          : "Font name successfully identified from the document.",
+        "Font name could not be identified from the resume document.",
       ),
       weight: 20,
     },
     {
-      label: "Readable font size",
-      ...check(
-        !!font,
-        font?.isReadableSize === true,
-        "Readable font size detected.",
-        "Use a readable font size (10-12pt body, 14-16pt headings).",
+      label: "Font Size Readability",
+      ...createCheckResult(
+        !!fontCheck,
+        fontCheck?.isReadableSize === true,
+        "Readable font size detected. Body text appears to be 10-12pt with headings at 14-16pt.",
+        "Readable font sizes recommended. Use 10-12pt for body text and 14-16pt for headings.",
       ),
       weight: 30,
     },
   ];
 
-  const passed = checks.filter((c) => c.status === "passed").length;
+  const passedCount = checks.filter(
+    (check) => check.status === "passed",
+  ).length;
+  const totalChecks = checks.length;
+
   return {
     key: "font",
-    title: "Font",
+    title: "Font and Typography",
     score: scoreFromChecks(checks),
     weight: 40,
     summary:
-      passed === checks.length
-        ? "ATS-friendly fonts used."
-        : `${passed} of ${checks.length} font checks passed.`,
+      passedCount === totalChecks
+        ? "Excellent font choices. Fully ATS-compatible typography detected."
+        : `${passedCount} of ${totalChecks} font standards met. Improvements needed in some areas.`,
     checks,
   };
 };
 
 // ============================================================
-// Build
+// Main Formatting Category Builder
 // ============================================================
 export const buildFormatting = (
   resume: ResumeContent,
   atsFriendliness: number,
 ): CategoryResult => {
+  // Build individual subgroup evaluations
   const subgroups = [buildLayoutSubgroup(resume), buildFontSubgroup(resume)];
 
-  const checks = subgroups.flatMap((s) => s.checks);
-  const { strengths, improvements } = deriveFeedback(checks);
+  // Flatten all checks for comprehensive feedback
+  const allChecks = subgroups.flatMap((subgroup) => subgroup.checks);
+
+  // Generate strengths and improvement areas
+  const { strengths, improvements } = deriveFeedback(allChecks);
+
+  // Determine summary based on overall score
+  const getSummary = (score: number): string => {
+    if (score >= 80) {
+      return "Excellent formatting. Document structure and typography are fully optimized for ATS parsing.";
+    }
+    if (score >= 60) {
+      return "Acceptable formatting. Some improvements needed for optimal ATS compatibility.";
+    }
+    return "Weak formatting. Significant improvements needed in layout and typography.";
+  };
 
   return {
     key: "formatting",
-    title: "Formatting",
+    title: "Formatting and Structure",
     score: scoreFromSubgroups(subgroups),
     weight: CATEGORY_WEIGHTS.formatting,
-    summary: `Structure is ${atsFriendliness >= 80 ? "clean" : atsFriendliness >= 60 ? "acceptable" : "weak"}. Layout and font analysis based on resume file.`,
-    checks,
+    summary: getSummary(atsFriendliness),
+    checks: allChecks,
     subgroups,
     strengths,
     improvements,

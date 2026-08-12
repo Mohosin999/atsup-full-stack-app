@@ -72,13 +72,12 @@ const STATUS_ICON: Record<
   },
 };
 
+// ==========================================================================
+// Sub group block component (contact, section heading etc...)
+// ==========================================================================
 const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
   subgroup,
 }) => {
-  const scoreColor = getScoreColor(subgroup.score);
-  const active = subgroup.checks.filter((c) => c.status !== "not-applicable");
-  const passed = active.filter((c) => c.status === "passed").length;
-
   return (
     <div className="rounded-xl border border-gray-200/60 bg-gray-100 overflow-hidden">
       <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-50 border-b border-gray-200/60">
@@ -123,6 +122,9 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
 
 const SeenMoreLimit = 10;
 
+// ==========================================================================
+// Skills table (hard and soft skills display)
+// ==========================================================================
 const SkillsTable: React.FC<{
   skills: { item: string; status: string }[];
 }> = ({ skills }) => {
@@ -135,10 +137,10 @@ const SkillsTable: React.FC<{
       <div className="overflow-x-auto -mx-1">
         <table className="w-full min-w-[300px] text-sm border-collapse">
           <thead>
-            <tr className="text-left text-xs tracking-wide text-gray-500 border-b border-gray-200">
-              <th className="py-2 pl-5 font-medium">Skill</th>
-              <th className="py-2 px-6 font-medium text-center">Resume</th>
-              <th className="py-2 pl-6 font-medium text-center">
+            <tr className="text-left text-xs tracking-wide text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+              <th className="py-2 px-5 font-medium">Skill</th>
+              <th className="py-2 px-5 font-medium text-center">Resume</th>
+              <th className="py-2 px-5 font-medium text-center">
                 Job Description
               </th>
             </tr>
@@ -147,12 +149,12 @@ const SkillsTable: React.FC<{
             {visible.map((s) => (
               <tr
                 key={s.item}
-                className="border-b border-gray-100 last:border-b-0"
+                className="border-b border-gray-100 dark:border-gray-700 last:border-b-0"
               >
-                <td className="py-2.5 pl-5 text-xs text-gray-800 break-words">
+                <td className="py-2.5 pl-5 pr-2 text-xs text-gray-800 dark:text-gray-200 break-words">
                   {s.item}
                 </td>
-                <td className="py-2.5 text-center">
+                <td className="py-2.5 px-2 text-center">
                   {s.status === "matched" ? (
                     <span
                       className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
@@ -169,7 +171,7 @@ const SkillsTable: React.FC<{
                     </span>
                   )}
                 </td>
-                <td className="py-2.5 text-center">
+                <td className="py-2.5 pr-5 pl-2 text-center">
                   <span
                     className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
                     title="Required by the job description"
@@ -186,7 +188,7 @@ const SkillsTable: React.FC<{
       {skills.length > SeenMoreLimit && (
         <button
           onClick={() => setShowAll((v) => !v)}
-          className="mt-3 py-2 px-4 text-xs font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+          className="mt-3 py-2 px-4 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
         >
           {showAll ? "See Less" : `See More (${remaining} more)`}
         </button>
@@ -195,6 +197,9 @@ const SkillsTable: React.FC<{
   );
 };
 
+// ==========================================================================
+// Feedback card component (searchability, hard skills etc..)
+// ==========================================================================
 const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
   category,
   index,
@@ -227,9 +232,9 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
             <p className="text-xs text-gray-500">{category.summary}</p>
           </div>
         </div>
-        <span className={`text-2xl font-bold ${getScoreColor(category.score)}`}>
+        {/* <span className={`text-base font-bold ${getScoreColor(category.score)}`}>
           {category.score}%
-        </span>
+        </span> */}
       </div>
 
       {/* Sub-group breakdown (e.g. Searchability) */}
@@ -281,7 +286,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
       )}
 
       {/* Improvements */}
-      {!hasSubgroups && category.improvements.length > 0 && (
+      {/* {!hasSubgroups && category.improvements.length > 0 && (
         <div>
           <p className="flex items-center gap-1.5 text-xs font-semibold text-amber-600 mb-2">
             <AlertTriangle className="w-3.5 h-3.5" />
@@ -299,7 +304,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
             ))}
           </ul>
         </div>
-      )}
+      )} */}
     </motion.div>
   );
 };

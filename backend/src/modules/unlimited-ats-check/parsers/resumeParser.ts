@@ -755,7 +755,7 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
           addressParts.length === 1
             ? { city: addressParts[0] }
             : addressParts.length > 1
-              ? { city: addressParts[0], division: addressParts[addressParts.length - 1] }
+              ? { city: addressParts[0], state: addressParts[addressParts.length - 1] }
               : undefined,
         socialLinks: {
           github: json.personal_info.contact.links.github || undefined,

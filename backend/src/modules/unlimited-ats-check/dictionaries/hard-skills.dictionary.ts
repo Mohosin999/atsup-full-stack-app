@@ -58,6 +58,7 @@ export const HARD_SKILLS_DICTIONARY: string[] = [
 
   // Frontend frameworks & libraries
   "React",
+  "ReactJS",
   "React Native",
   "Next.js",
   "NextJS",

@@ -164,7 +164,7 @@ const buildPersonalInfo = (content: ResumeContent): string => {
   const pi = content.personalInfo || {};
   const contact = pi.contact || {};
   const address = contact.address || {};
-  const location = [address.city, address.state || address.division]
+  const location = [address.city, address.state]
     .filter(Boolean)
     .join(", ");
 

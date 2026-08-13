@@ -80,7 +80,7 @@ export default function PersonalInfoForm({
       <div>
         <Input
           label="State / Division"
-          value={address.state || address.division || ""}
+          value={address.state || ""}
           onChange={(e) => setAddress("state", e.target.value)}
           placeholder="Dhaka"
         />

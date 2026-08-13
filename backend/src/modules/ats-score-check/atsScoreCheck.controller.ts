@@ -177,12 +177,20 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       select: { subscription: true },
     });
 
-    const credits = (user?.subscription as any)?.credits ?? 0;
-    if (!user || credits < 1) {
+    const subscription = (user?.subscription as any) || {};
+    const today = new Date().toISOString().slice(0, 10);
+    const lastReset = subscription?.lastAiScanResetDate ?? "";
+    const credits = subscription?.credits ?? 0;
+
+    // Daily credit: every account has exactly 1 credit per day (GMT midnight).
+    const effectiveCredits = lastReset !== today ? 1 : credits;
+
+    if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
         message:
-          "Today's limit is over. Please wait until tomorrow or use the free option.",
+          "No AI scan credit available. A new credit will be granted at midnight (GMT).",
+        code: "AI_SCAN_UNAVAILABLE",
       });
     }
 
@@ -194,24 +202,29 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       aiResearch || null,
     );
 
-    const updated = await prisma.user.update({
+    const remainingCredits = effectiveCredits - 1;
+    await prisma.user.update({
       where: { id: req.user.id },
       data: {
         subscription: {
-          ...((user.subscription as any) || {}),
-          credits: credits - 1,
+          ...subscription,
+          credits: remainingCredits,
+          lastAiScanResetDate: today,
         },
       },
       select: { subscription: true },
     });
 
-    const remainingCredits = (updated.subscription as any)?.credits ?? 0;
-
     res.status(201).json({
       success: true,
       data: score,
       credits: remainingCredits,
-      message: "You have used 1 credit",
+      aiScan: {
+        available: false,
+        credits: remainingCredits,
+        lastAiScanResetDate: today,
+      },
+      message: "AI scan used. A new credit will be available at midnight (GMT).",
     });
   } catch (error: any) {
     console.error("ATS Score analysis error:", error);

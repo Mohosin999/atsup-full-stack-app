@@ -1,6 +1,7 @@
 import { Response } from "express";
 import fs from "fs";
 import { AuthRequest } from "../../shared/types";
+import { prisma } from "../../lib/prisma";
 import { runUnlimitedAtsCheck } from "./unlimitedAts.service";
 
 export const analyzeUnlimitedAts = async (
@@ -34,9 +35,39 @@ export const analyzeUnlimitedAts = async (
       jobDescription,
     );
 
+    const resumeName = (
+      req.body.resumeName ||
+      req.file.originalname ||
+      "Untitled Resume"
+    ).trim();
+
+    const score = result.score;
+
+    const saved = await prisma.atsScoreHistory.create({
+      data: {
+        userId: req.user.id,
+        title: resumeName,
+        resumeName,
+        overallScore: score.overallScore,
+        sectionScores: {
+          ...score.sectionScores,
+          ...(score.matchBreakdown
+            ? { matchBreakdown: score.matchBreakdown }
+            : {}),
+          categories: score.categories,
+        } as any,
+        atsFriendliness: score.atsFriendliness,
+        suggestions: score.suggestions,
+        resumeContent: result.resumeContent as any,
+      },
+    });
+
     res.status(200).json({
       success: true,
-      data: result,
+      data: {
+        ...result,
+        history: saved,
+      },
     });
   } catch (error: any) {
     console.error("Unlimited ATS check error:", error);

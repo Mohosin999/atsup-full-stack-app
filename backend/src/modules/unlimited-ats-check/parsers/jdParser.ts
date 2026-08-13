@@ -100,11 +100,16 @@ export const parseJdByDictionary = (description: string): JdParseOutput => {
 
   const structured: StructuredJD = {
     jobTitle,
-    company: "",
-    location: "",
-    hardSkills,
-    softSkills,
-    educationRequirement,
+    education: {
+      degree,
+      field,
+      education_level: educationLevel,
+    },
+    skills: {
+      hardSkills,
+      softSkills,
+    },
+    yearsOfExperience: years.raw,
     experienceYearsRequired: years.years,
   };
 

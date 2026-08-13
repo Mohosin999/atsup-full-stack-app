@@ -201,7 +201,7 @@ const buildLayoutSubgroup = (resume: ResumeContent): CategorySubgroup => {
 
   const checks: CategoryCheck[] = [
     {
-      label: "Single Column Layout",
+      label: "Single Column",
       ...createCheckResult(
         !!layout,
         layout?.isSingleColumn === true,
@@ -211,7 +211,7 @@ const buildLayoutSubgroup = (resume: ResumeContent): CategorySubgroup => {
       weight: 32,
     },
     {
-      label: "Multi-Column Layout Avoidance",
+      label: "Multi-Column",
       ...createCheckResult(
         !!layout,
         layout?.hasMultiColumn !== true,
@@ -259,7 +259,7 @@ const buildLayoutSubgroup = (resume: ResumeContent): CategorySubgroup => {
 
   return {
     key: "layout",
-    title: "Layout and Structure",
+    title: "Layout",
     score: scoreFromChecks(checks),
     weight: 60,
     summary:
@@ -278,7 +278,7 @@ const buildFontSubgroup = (resume: ResumeContent): CategorySubgroup => {
 
   const checks: CategoryCheck[] = [
     {
-      label: "ATS-Friendly Font Selection",
+      label: "ATS-Friendly Font",
       ...createCheckResult(
         !!fontCheck,
         fontCheck?.isStandardFont === true,
@@ -290,7 +290,7 @@ const buildFontSubgroup = (resume: ResumeContent): CategorySubgroup => {
       weight: 50,
     },
     {
-      label: "Font Identification",
+      label: "Font Name",
       ...createCheckResult(
         !!fontCheck,
         !!fontCheck?.fontName,
@@ -302,7 +302,7 @@ const buildFontSubgroup = (resume: ResumeContent): CategorySubgroup => {
       weight: 20,
     },
     {
-      label: "Font Size Readability",
+      label: "Font Size",
       ...createCheckResult(
         !!fontCheck,
         fontCheck?.isReadableSize === true,
@@ -320,7 +320,7 @@ const buildFontSubgroup = (resume: ResumeContent): CategorySubgroup => {
 
   return {
     key: "font",
-    title: "Font and Typography",
+    title: "Font",
     score: scoreFromChecks(checks),
     weight: 40,
     summary:
@@ -360,7 +360,7 @@ export const buildFormatting = (
 
   return {
     key: "formatting",
-    title: "Formatting and Structure",
+    title: "Formatting",
     score: scoreFromSubgroups(subgroups),
     weight: CATEGORY_WEIGHTS.formatting,
     summary: getSummary(atsFriendliness),

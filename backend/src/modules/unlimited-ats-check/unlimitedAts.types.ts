@@ -99,6 +99,7 @@ export interface JdParseOutput {
 
 export interface UnlimitedAtsResult {
   resume: DictionaryResumeJson;
+  resumeContent: ResumeContent;
   jd: DictionaryJdJson;
   score: any;
 }

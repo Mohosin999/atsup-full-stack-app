@@ -90,7 +90,6 @@ export const createResumeFromContent = async (
     res.status(201).json({
       success: true,
       data: result.resume,
-      remainingCredits: result.remainingCredits,
     });
   } catch (error: any) {
     res.status(500).json({

@@ -2,6 +2,25 @@ import { prisma } from "../../../lib/prisma";
 import { ResumeContent, StructuredJD } from "../../../shared/types";
 import { calculateAtsScore } from "./scoring.service";
 
+const CATEGORY_TITLES: Record<string, string> = {
+  searchability: "Searchability",
+  hardSkills: "Hard Skills",
+  softSkills: "Soft Skills",
+  recruiterTips: "Recruiter Tips",
+  formatting: "Formatting",
+};
+
+const normalizeCategories = (sectionScores: any) => {
+  if (!sectionScores?.categories) return sectionScores;
+  const categories = { ...sectionScores.categories };
+  for (const key of Object.keys(categories)) {
+    if (CATEGORY_TITLES[key] && categories[key]) {
+      categories[key] = { ...categories[key], title: CATEGORY_TITLES[key] };
+    }
+  }
+  return { ...sectionScores, categories };
+};
+
 export const createAtsScoreHistory = async (
   userId: string,
   resumeName: string,
@@ -61,7 +80,10 @@ export const getAtsScoreHistory = async (
   ]);
 
   return {
-    scores,
+    scores: scores.map((s) => ({
+      ...s,
+      sectionScores: normalizeCategories(s.sectionScores),
+    })),
     pagination: {
       page,
       limit,
@@ -83,7 +105,10 @@ export const getAtsScoreHistoryById = async (
     throw new Error("ATS Score history not found");
   }
 
-  return score;
+  return {
+    ...score,
+    sectionScores: normalizeCategories(score.sectionScores),
+  };
 };
 
 export const deleteAtsScoreHistory = async (

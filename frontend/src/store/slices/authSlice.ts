@@ -94,6 +94,17 @@ const authSlice = createSlice({
         localStorage.setItem('user', JSON.stringify(state.user));
       }
     },
+    setUserAiScanState: (
+      state,
+      action: PayloadAction<{ credits: number; lastAiScanResetDate: string }>,
+    ) => {
+      if (state.user) {
+        state.user.subscription.credits = action.payload.credits;
+        state.user.subscription.lastAiScanResetDate =
+          action.payload.lastAiScanResetDate;
+        localStorage.setItem('user', JSON.stringify(state.user));
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -126,5 +137,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { login, clearUser, setUser, setUserCredits } = authSlice.actions;
+export const { login, clearUser, setUser, setUserCredits, setUserAiScanState } = authSlice.actions;
 export default authSlice.reducer;

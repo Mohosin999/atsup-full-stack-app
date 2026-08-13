@@ -3,17 +3,25 @@ import app from "./app";
 import { connectDB } from "./db";
 import { env } from "./shared/config/env";
 
-const server = http.createServer(app);
+// Vercel serverless runtime requires the Express app as the default export.
+export default app;
 
-const startServer = async () => {
-  try {
-    await connectDB();
+// Only start a long-running HTTP server outside of Vercel (local dev, docker).
+const isVercel = process.env.VERCEL === "1";
 
-    server.listen(env.port);
-  } catch (error) {
-    console.error("❌ Failed to connect to PostgreSQL:", error);
-    process.exit(1);
-  }
-};
+if (!isVercel) {
+  const server = http.createServer(app);
 
-startServer();
+  const startServer = async () => {
+    try {
+      await connectDB();
+
+      server.listen(env.port);
+    } catch (error) {
+      console.error("❌ Failed to connect to PostgreSQL:", error);
+      process.exit(1);
+    }
+  };
+
+  startServer();
+}

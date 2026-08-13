@@ -10,8 +10,6 @@ import AtsScore from "./pages/AtsScore";
 import AtsScoreDetail from "./pages/AtsScoreDetail";
 import AtsScoreHistory from "./pages/AtsScoreHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import PaymentCancel from "./pages/PaymentCancel";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
 import GoToTop from "./components/ui/GoToTop";
 import ThemeWrapper from "./components/ThemeWrapper";
@@ -106,22 +104,6 @@ function App() {
           element={
             <PrivateRoute>
               <ResumeBuilder />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/payment/success"
-          element={
-            <PrivateRoute>
-              <PaymentSuccess />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/payment/cancel"
-          element={
-            <PrivateRoute>
-              <PaymentCancel />
             </PrivateRoute>
           }
         />

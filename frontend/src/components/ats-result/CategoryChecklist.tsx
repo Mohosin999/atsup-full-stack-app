@@ -138,7 +138,6 @@ const CATEGORY_META: Record<string, { bar: string; glow: string }> = {
 const CategoryRow: React.FC<{
   category: CategoriesResult[keyof CategoriesResult];
 }> = ({ category }) => {
-  const meta = CATEGORY_META[category.key] || CATEGORY_META.hardSkills;
   const activeChecks = category.checks.filter((c) => c.status !== "not-applicable");
   const passedCount = activeChecks.filter((c) => c.status === "passed").length;
   const hasMatchData =

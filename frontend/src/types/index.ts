@@ -13,6 +13,7 @@ export interface User {
     plan: 'free' | 'pro';
     credits: number;
     expiresAt?: string;
+    lastAiScanResetDate?: string | null;
   };
   createdAt: string;
   updatedAt: string;

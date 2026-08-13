@@ -23,18 +23,12 @@ export interface DictionaryResumeJson {
       address: string;
       email: string;
       phone: string;
-      links: {
-        linkedin: string;
-        portfolio: string;
-        github: string;
-      };
     };
   };
   summary: string;
   experience: Array<{
     role: string;
     company: string;
-    location: string;
     startDate: string;
     endDate: string;
     responsibilities: string[];
@@ -43,8 +37,6 @@ export interface DictionaryResumeJson {
     degree: string;
     field: string;
     education_level: string;
-    startDate: string;
-    endDate: string;
   }>;
   skills: {
     hardSkills: string[];
@@ -53,18 +45,11 @@ export interface DictionaryResumeJson {
   projects: Array<{
     name: string;
     description: string[];
-    link: string;
-  }>;
-  certifications: Array<{
-    name: string;
-    issuer: string;
-    date: string;
-    link: string;
   }>;
   yearsOfExperience: string;
   measurableResults: string[];
   resumeTone: string;
-  wordCount: string;
+  wordCount?: number;
   educationSection: boolean;
   experienceSection: boolean;
   workHistory: boolean;

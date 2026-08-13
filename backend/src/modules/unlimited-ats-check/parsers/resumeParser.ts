@@ -52,8 +52,15 @@ const cleanLine = (l: string): string => l.trim();
 /** True if the line looks like an employment/location continuation rather than a role. */
 const isLocationLike = (role: string): boolean => {
   const lower = role.toLowerCase();
-  if (/^(freelance|self[- ]employed|remote|contract|independent|part[- ]time|full[- ]time)/.test(lower)) return true;
-  return /(?:dhaka|chittagong|khulna|rajshahi|sylhet|barishal|rangpur|mymensingh|bangladesh|usa|uk|new york|london|remote)/i.test(role);
+  if (
+    /^(freelance|self[- ]employed|remote|contract|independent|part[- ]time|full[- ]time)/.test(
+      lower,
+    )
+  )
+    return true;
+  return /(?:dhaka|chittagong|khulna|rajshahi|sylhet|barishal|rangpur|mymensingh|bangladesh|usa|uk|new york|london|remote)/i.test(
+    role,
+  );
 };
 
 const sanitizeName = (name: string): string => {
@@ -64,8 +71,14 @@ const sanitizeName = (name: string): string => {
   if (words.length < 2 || words.length > 4) return "";
   if (!words.every((w) => /^[A-Za-z][A-Za-z.'-]*$/.test(w))) return "";
   // Reject when it's clearly an email/phone/link/section heading.
-  if (/@/.test(trimmed) || /linkedin|github|http|www\./i.test(trimmed)) return "";
-  if (/^(summary|experience|education|skills|projects|certification|objective|profile)$/i.test(trimmed)) return "";
+  if (/@/.test(trimmed) || /linkedin|github|http|www\./i.test(trimmed))
+    return "";
+  if (
+    /^(summary|experience|education|skills|projects|certification|objective|profile)$/i.test(
+      trimmed,
+    )
+  )
+    return "";
   return trimmed;
 };
 
@@ -101,7 +114,9 @@ const isTitleCaseLine = (l: string): boolean =>
 
 const isProjectNameLine = (l: string): boolean =>
   isTitleCaseLine(l) &&
-  !/^(summary|work experience|professional experience|technical skills|soft skills|education|projects|skills|certifications?|experience|contact|references?|languages|interests|hobbies|achievements?|awards)/i.test(l) &&
+  !/^(summary|work experience|professional experience|technical skills|soft skills|education|projects|skills|certifications?|experience|contact|references?|languages|interests|hobbies|achievements?|awards)/i.test(
+    l,
+  ) &&
   !isEducationLine(l);
 
 // ============================================================================
@@ -133,18 +148,53 @@ const isEducationLine = (l: string): boolean =>
 const isSectionHeading = (l: string): { key: Bucket } | null => {
   const t = l.toLowerCase().trim();
   if (t.length > 40) return null;
-  if (/^(professional\s+|career\s+|executive\s+)?summary$|^objective$|^about me$/i.test(t)) return { key: "summary" };
-  if (/^(work experience|professional experience|relevant experience|employment history|career history|work history|experience|experience history|career experience)$/i.test(t)) return { key: "experience" };
-  if (/^(technical skills|core competencies|core skills|key skills|skill set|technologies|tech stack|areas of expertise|soft skills|skills|professional skills)$/i.test(t)) return { key: "skills" };
-  if (/^(education|academic background|academic qualifications|educational background|qualifications)$/i.test(t)) return { key: "education" };
-  if (/^(projects|personal projects|key projects|academic projects|project experience|featured projects)$/i.test(t)) return { key: "projects" };
-  if (/^(certifications?|licenses?|licenses & certifications|licenses and certifications|professional certifications|courses|training)$/i.test(t)) return { key: "certifications" };
+  if (
+    /^(professional\s+|career\s+|executive\s+)?summary$|^objective$|^about me$/i.test(
+      t,
+    )
+  )
+    return { key: "summary" };
+  if (
+    /^(work experience|professional experience|relevant experience|employment history|career history|work history|experience|experience history|career experience)$/i.test(
+      t,
+    )
+  )
+    return { key: "experience" };
+  if (
+    /^(technical skills|core competencies|core skills|key skills|skill set|technologies|tech stack|areas of expertise|soft skills|skills|professional skills)$/i.test(
+      t,
+    )
+  )
+    return { key: "skills" };
+  if (
+    /^(education|academic background|academic qualifications|educational background|qualifications)$/i.test(
+      t,
+    )
+  )
+    return { key: "education" };
+  if (
+    /^(projects|personal projects|key projects|academic projects|project experience|featured projects)$/i.test(
+      t,
+    )
+  )
+    return { key: "projects" };
+  if (
+    /^(certifications?|licenses?|licenses & certifications|licenses and certifications|professional certifications|courses|training)$/i.test(
+      t,
+    )
+  )
+    return { key: "certifications" };
   return null;
 };
 
 const isSummarySentence = (l: string): boolean => {
   if (l.length < 40) return false;
-  if (/\b(?:responsible|passionate|motivated|graduate|professional|developer|engineer|experience)\b/i.test(l)) return true;
+  if (
+    /\b(?:responsible|passionate|motivated|graduate|professional|developer|engineer|experience)\b/i.test(
+      l,
+    )
+  )
+    return true;
   return false;
 };
 
@@ -271,7 +321,11 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
     if (phase === "education") {
       // A project name followed by a date/description that has no degree
       // keywords starts the projects section.
-      if (isProjectNameLine(l) && lines[i + 1] && DATE_RANGE_RE.test(lines[i + 1].trim())) {
+      if (
+        isProjectNameLine(l) &&
+        lines[i + 1] &&
+        DATE_RANGE_RE.test(lines[i + 1].trim())
+      ) {
         phase = "projects";
         pushBucket(seg, "projects", l);
         continue;
@@ -301,10 +355,11 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
   return seg;
 };
 
-export const parseResumeByDictionary = (
-  text: string,
-): ResumeParseOutput => {
-  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
+  const lines = text
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
   const segmented = segmentResume(lines);
 
   const allText = text;
@@ -320,25 +375,27 @@ export const parseResumeByDictionary = (
   const portfolio = extractPortfolio(headerText);
 
   // Address = remaining header line that contains a city/division word.
-  const address = segmented.header
-    .filter(
-      (l) =>
-        !l.includes("@") &&
-        !/\+?\d{7,}/.test(l) &&
-        !/linkedin|github|http/i.test(l),
-    )
-    .find(
-      (l) =>
+  const address =
+    segmented.header
+      .filter(
+        (l) =>
+          !l.includes("@") &&
+          !/\+?\d{7,}/.test(l) &&
+          !/linkedin|github|http/i.test(l),
+      )
+      .find((l) =>
         /(Dhaka|Chittagong|Khulna|Rajshahi|Sylhet|Barishal|Barisal|Rangpur|Mymensingh|Bangladesh|New York|London|San Francisco|Toronto|Sydney|Berlin|India|USA|UK|Dubai|California|Texas)/i.test(
           l,
         ),
-    ) ?? "";
+      ) ?? "";
 
   // Job title: try header, then summary.
   const headerTitleLine =
-    segmented.header.slice(1).find(
-      (l) => !isContactLine(l) && !isLocationLine(l) && isTitleCaseLine(l),
-    ) || "";
+    segmented.header
+      .slice(1)
+      .find(
+        (l) => !isContactLine(l) && !isLocationLine(l) && isTitleCaseLine(l),
+      ) || "";
   let jobTitle =
     headerTitleLine ||
     detectJobTitle(headerText) ||
@@ -356,14 +413,13 @@ export const parseResumeByDictionary = (
   // ---- Education ----
   const education = parseEducation(segmented.education);
 
-  // ---- Certifications ----
-  const certifications = parseCertifications(segmented.certifications);
-
   // ---- Skills ----
   const skillsSectionText = segmented.skills.join("\n");
   const skillsAllText = skillsSectionText || allText;
-  const hardSkills = matchDictionary(skillsAllText, HARD_SKILLS_DICTIONARY)
-    .filter((s) => !HARD_SKILL_STOPWORDS.has(s.toLowerCase()));
+  const hardSkills = matchDictionary(
+    skillsAllText,
+    HARD_SKILLS_DICTIONARY,
+  ).filter((s) => !HARD_SKILL_STOPWORDS.has(s.toLowerCase()));
   const softSkills = matchDictionary(skillsAllText, SOFT_SKILLS_DICTIONARY);
 
   // ---- Derived metrics ----
@@ -388,7 +444,6 @@ export const parseResumeByDictionary = (
         address,
         email,
         phone,
-        links: { linkedin, portfolio, github },
       },
     },
     summary,
@@ -396,14 +451,13 @@ export const parseResumeByDictionary = (
     education,
     skills: { hardSkills, softSkills },
     projects,
-    certifications,
     yearsOfExperience: yearsOfExperience ? `${yearsOfExperience} years` : "",
     measurableResults,
     resumeTone,
-    wordCount: String(wordCount),
+    wordCount: Number(wordCount),
     educationSection,
     experienceSection,
-workHistory,
+    workHistory,
     dateFormatting,
     layout: DEFAULT_LAYOUT,
     fontCheck: DEFAULT_FONT_CHECK,
@@ -423,9 +477,22 @@ const parseExperience = (lines: string[]): RawExperience[] => {
   let current: RawExperience | null = null;
   let pendingDates: { start: string; end: string } | null = null;
 
-  const startNew = (role: string, company: string, location: string, start: string, end: string) => {
+  const startNew = (
+    role: string,
+    company: string,
+    location: string,
+    start: string,
+    end: string,
+  ) => {
     if (current) entries.push(current);
-    current = { role, company, location, startDate: start, endDate: end, responsibilities: [] };
+    current = {
+      role,
+      company,
+      location,
+      startDate: start,
+      endDate: end,
+      responsibilities: [],
+    };
     pendingDates = null;
   };
 
@@ -477,9 +544,17 @@ const parseExperience = (lines: string[]): RawExperience[] => {
         !current.location &&
         isLocationLike(header.role)
       ) {
-        const parts = header.role.split(/\s*[•|–—,-]\s*/).map((p) => p.trim()).filter(Boolean);
-        current.location = parts.length > 1 ? parts.slice(1).join(", ") : header.role;
-        if (/^(freelance|self[- ]employed|remote|contract|independent|consultant)/i.test(header.role)) {
+        const parts = header.role
+          .split(/\s*[•|–—,-]\s*/)
+          .map((p) => p.trim())
+          .filter(Boolean);
+        current.location =
+          parts.length > 1 ? parts.slice(1).join(", ") : header.role;
+        if (
+          /^(freelance|self[- ]employed|remote|contract|independent|consultant)/i.test(
+            header.role,
+          )
+        ) {
           current.company = parts[0] || header.role;
           current.location = parts.slice(1).join(", ") || "";
         }
@@ -524,7 +599,13 @@ const parseExperience = (lines: string[]): RawExperience[] => {
 
 const parseRoleHeader = (
   line: string,
-): { role: string; company: string; location: string; startDate: string; endDate: string } | null => {
+): {
+  role: string;
+  company: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+} | null => {
   const cleaned = line.replace(/^[•·▪*\-–—\s]+/, "");
   if (!cleaned || cleaned.length > 100) return null;
   // Requires an uppercase word near start to be a heading, not a sentence.
@@ -533,20 +614,28 @@ const parseRoleHeader = (
   // Reject full sentences (responsibility bullets): a real role header rarely
   // contains a verb past-tense action, a trailing period, or more than ~6 words.
   if (/\.$/.test(cleaned)) return null;
-  if (/^(developed|designed|built|implemented|created|managed|led|worked|collaborated|delivered|improved|optimized|reduced|maintained|tested|wrote|architected|launched|owned|handled|assisted|spearheaded|responsible for|contributed|supported|helped)\b/i.test(cleaned)) return null;
+  if (
+    /^(developed|designed|built|implemented|created|managed|led|worked|collaborated|delivered|improved|optimized|reduced|maintained|tested|wrote|architected|launched|owned|handled|assisted|spearheaded|responsible for|contributed|supported|helped)\b/i.test(
+      cleaned,
+    )
+  )
+    return null;
 
   // A role header must contain at least two words or a separator/date range,
   // otherwise a wrapped continuation word (e.g. "PostgreSQL") is treated as a role.
   const wordCount = cleaned.split(/\s+/).length;
   if (wordCount > 8) return null;
-  if (
-    wordCount < 2 &&
-    !/[-–—|,|]|\s+at\s+|\s+@\s+|\d{4}/i.test(cleaned)
-  ) {
+  if (wordCount < 2 && !/[-–—|,|]|\s+at\s+|\s+@\s+|\d{4}/i.test(cleaned)) {
     return null;
   }
 
-  const result = { role: "", company: "", location: "", startDate: "", endDate: "" };
+  const result = {
+    role: "",
+    company: "",
+    location: "",
+    startDate: "",
+    endDate: "",
+  };
 
   // Split date range "Mar 2019 - Present" or "2020 - 2022" off the end.
   const dateMatch = cleaned.match(
@@ -570,12 +659,20 @@ const parseRoleHeader = (
   }
 
   // Split on " | " or " at " or " , " separators.
-  const parts = body.split(/\s+[|,]\s+|\s+at\s+|\s+@\s+/i).map((p) => p.trim().replace(/[|,]$/, "").trim()).filter(Boolean);
+  const parts = body
+    .split(/\s+[|,]\s+|\s+at\s+|\s+@\s+/i)
+    .map((p) => p.trim().replace(/[|,]$/, "").trim())
+    .filter(Boolean);
   if (parts.length >= 1) result.role = parts[0];
   if (parts.length >= 2) {
     // Second part is company or location; guess by keyword.
     const second = parts[1];
-    if (/\b(?:remote|hybrid|onsite|on-site|bangladesh|dhaka|usa|uk|germany|india|australia|canada)\b/i.test(second) || /\b(?:city|district|division)\b/i.test(second)) {
+    if (
+      /\b(?:remote|hybrid|onsite|on-site|bangladesh|dhaka|usa|uk|germany|india|australia|canada)\b/i.test(
+        second,
+      ) ||
+      /\b(?:city|district|division)\b/i.test(second)
+    ) {
       result.location = second;
     } else {
       result.company = second;
@@ -595,8 +692,10 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
   const projects: DictionaryResumeJson["projects"] = [];
   let current: DictionaryResumeJson["projects"][number] | null = null;
 
-  const pushCurrent = (name: string): DictionaryResumeJson["projects"][number] => {
-    current = { name: name.slice(0, 80), description: [], link: "" };
+  const pushCurrent = (
+    name: string,
+  ): DictionaryResumeJson["projects"][number] => {
+    current = { name: name.slice(0, 80), description: [] };
     projects.push(current);
     return current;
   };
@@ -613,21 +712,6 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
       continue;
     }
 
-    const isDateRange = DATE_RANGE_RE.test(line);
-    const isLink = /^(live|demo|github|link|project link|code|repo)[\s:]*$/i.test(line) || /^https?:\/\//i.test(line);
-
-    // Date-range / link lines belong to the current project when we have one.
-    if (current) {
-      if (isDateRange) {
-        current.description.push(line.trim());
-        continue;
-      }
-      if (isLink) {
-        current.link = line.replace(/^(live|demo|github|link|project link|code|repo)\s*[:]?\s*/i, "").trim();
-        continue;
-      }
-    }
-
     if (!current || (!current.description.length && !isDescriptionLine(line))) {
       current = pushCurrent(line);
       continue;
@@ -639,7 +723,9 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
 };
 
 const isDescriptionLine = (l: string): boolean =>
-  /^(developed|designed|built|implemented|created|used|built with|technologies|features|role|responsibilities)/i.test(l) || l.length > 60;
+  /^(developed|designed|built|implemented|created|used|built with|technologies|features|role|responsibilities)/i.test(
+    l,
+  ) || l.length > 60;
 
 // ============================================================================
 // Education
@@ -653,11 +739,11 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
     if (!line || line.length > 160) continue;
 
     const degree =
-      matchDictionary(line, DEGREE_KEYWORDS).find((d) => d.toLowerCase() !== "certification") || "";
-    const field =
-      matchDictionary(line, FIELD_OF_STUDY_KEYWORDS)[0] || "";
-    const educationLevel =
-      matchDictionary(line, EDUCATION_LEVELS)[0] || "";
+      matchDictionary(line, DEGREE_KEYWORDS).find(
+        (d) => d.toLowerCase() !== "certification",
+      ) || "";
+    const field = matchDictionary(line, FIELD_OF_STUDY_KEYWORDS)[0] || "";
+    const educationLevel = matchDictionary(line, EDUCATION_LEVELS)[0] || "";
 
     // Dates: "2013 - 2017", "Mar 2017–May 2018" (spaces around dash optional)
     const dates = line.match(
@@ -669,51 +755,11 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
         degree,
         field,
         education_level: educationLevel,
-        startDate: dates ? dates.groups?.start || "" : "",
-        endDate: dates ? dates.groups?.end || "" : "",
       });
     }
   }
 
-  // If education entries were found but none carried dates, fall back to
-  // grabbing a date-range line from the raw section lines.
-  if (education.length > 0 && education.every((e) => !e.startDate && !e.endDate)) {
-    const dateLine = lines.find((l) => /[-–—]\s*\d{4}/.test(l) || /\d{4}[-–—]/.test(l));
-    if (dateLine) {
-      const dates = dateLine.match(
-        /(?<start>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}))\s*[-–—]\s*(?<end>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}))/i,
-      );
-      if (dates) {
-        for (const e of education) {
-          e.startDate = e.startDate || dates.groups?.start || "";
-          e.endDate = e.endDate || dates.groups?.end || "";
-        }
-      }
-    }
-  }
   return education;
-};
-
-// ============================================================================
-// Certifications
-// ============================================================================
-
-const parseCertifications = (lines: string[]): DictionaryResumeJson["certifications"] => {
-  const certs: DictionaryResumeJson["certifications"] = [];
-  for (const raw of lines) {
-    const line = cleanLine(raw);
-    if (!line || line.length > 120) continue;
-    const bullet = /^[•·▪o*\-–—]+\s*/;
-    const name = line.replace(bullet, "").trim();
-    const issuerMatch = name.match(/^(.*?)\s*[-–|]\s*(.*)$/);
-    certs.push({
-      name: issuerMatch ? issuerMatch[1] : name,
-      issuer: issuerMatch ? issuerMatch[2] : "",
-      date: "",
-      link: "",
-    });
-  }
-  return certs;
 };
 
 // ============================================================================
@@ -726,7 +772,14 @@ const detectDateFormatting = (experienceLines: string[]): boolean => {
     /\b((?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{4})|(?:present|current))\b/gi,
   );
   if (!dateMatches || dateMatches.length === 0) return true; // no dates to validate
-  return dateMatches.every((d) => /present|current/i.test(d) || /^\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}$/.test(d) || /(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{4}/i.test(d));
+  return dateMatches.every(
+    (d) =>
+      /present|current/i.test(d) ||
+      /^\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}$/.test(d) ||
+      /(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{4}/i.test(
+        d,
+      ),
+  );
 };
 
 const inferTone = (text: string, measurableCount: number): string => {
@@ -737,58 +790,127 @@ const inferTone = (text: string, measurableCount: number): string => {
   return "bad";
 };
 
+// const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
+//   const addressParts = (json.personal_info.contact.address || "")
+//     .split(/[,|-]/)
+//     .map((p) => p.trim())
+//     .filter(Boolean);
+
+//   return {
+//     personalInfo: {
+//       fullName: json.personal_info.fullName || undefined,
+//       jobTitle: json.personal_info.jobTitle || undefined,
+//       contact: {
+//         email: json.personal_info.contact.email || undefined,
+//         phone: json.personal_info.contact.phone || undefined,
+//         address:
+//           addressParts.length === 1
+//             ? { city: addressParts[0] }
+//             : addressParts.length > 1
+//               ? { city: addressParts[0], state: addressParts[addressParts.length - 1] }
+//               : undefined,
+//       },
+//     },
+//     summary: json.summary || undefined,
+//     experience: json.experience.map((exp) => ({
+//       company: exp.company || "",
+//       title: exp.role || "",
+//       startDate: exp.startDate || "",
+//       endDate: exp.endDate || undefined,
+//       current: /present|current/i.test(exp.endDate),
+//       responsibilities: exp.responsibilities || [],
+//     })),
+//     education: json.education.map((edu) => ({
+//       institution: edu.field || "",
+//       degree: edu.degree || edu.education_level || "",
+//       date: [edu.startDate, edu.endDate].filter(Boolean).join(" - "),
+//     })),
+//     skills: [...json.skills.hardSkills, ...json.skills.softSkills],
+//     hardSkills: json.skills.hardSkills,
+//     softSkills: json.skills.softSkills,
+//     projects: json.projects.map((p) => ({
+//       name: p.name,
+//       highlights: p.description,
+//       links: p.link ? { live: p.link } : undefined,
+//     })),
+//     certifications: json.certifications.map((c) => ({
+//       name: c.name,
+//       issuer: c.issuer || undefined,
+//     })),
+//   };
+// };
+
 const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
-  const addressParts = (json.personal_info.contact.address || "")
-    .split(/[,|-]/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+  const parseAddress = (address: string) => {
+    const addressParts = (address || "")
+      .split(/[,|-]/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+
+    if (addressParts.length === 0) {
+      return undefined;
+    }
+
+    return {
+      city: addressParts[0] || "",
+      state:
+        addressParts.length > 1
+          ? addressParts[addressParts.length - 1]
+          : undefined,
+    };
+  };
 
   return {
     personalInfo: {
-      fullName: json.personal_info.fullName || undefined,
-      jobTitle: json.personal_info.jobTitle || undefined,
+      fullName: json.personal_info?.fullName || "",
+      jobTitle: json.personal_info?.jobTitle || "",
       contact: {
-        email: json.personal_info.contact.email || undefined,
-        phone: json.personal_info.contact.phone || undefined,
-        linkedIn: json.personal_info.contact.links.linkedin || undefined,
-        address:
-          addressParts.length === 1
-            ? { city: addressParts[0] }
-            : addressParts.length > 1
-              ? { city: addressParts[0], state: addressParts[addressParts.length - 1] }
-              : undefined,
-        socialLinks: {
-          github: json.personal_info.contact.links.github || undefined,
-          portfolio: json.personal_info.contact.links.portfolio || undefined,
-        },
+        email: json.personal_info?.contact?.email || "",
+        phone: json.personal_info?.contact?.phone || "",
+        address: parseAddress(json.personal_info?.contact?.address || ""),
       },
     },
-    summary: json.summary || undefined,
-    experience: json.experience.map((exp) => ({
+    summary: json.summary || "",
+    experience: (json.experience || []).map((exp: any) => ({
+      role: exp.role || "",
       company: exp.company || "",
-      title: exp.role || "",
-      location: exp.location || undefined,
       startDate: exp.startDate || "",
-      endDate: exp.endDate || undefined,
-      current: /present|current/i.test(exp.endDate),
-      highlights: exp.responsibilities || [],
+      endDate: exp.endDate || "",
+      responsibilities: exp.responsibilities || [],
     })),
-    education: json.education.map((edu) => ({
-      institution: edu.field || "",
-      degree: edu.degree || edu.education_level || "",
-      date: [edu.startDate, edu.endDate].filter(Boolean).join(" - "),
+    education: (json.education || [])
+      .map((edu: any) => ({
+        degree: edu.degree || edu.education_level || "",
+        field: edu.field || "",
+        education_level: edu.education_level || "",
+      }))
+      .filter((e: any) => e.institution || e.degree || e.date),
+    skills: {
+      hardSkills: json.skills?.hardSkills || [],
+      softSkills: json.skills?.softSkills || [],
+    },
+    projects: (json.projects || []).map((p: any) => ({
+      name: p.name || "",
+      description: p.description || [],
     })),
-    skills: [...json.skills.hardSkills, ...json.skills.softSkills],
-    hardSkills: json.skills.hardSkills,
-    softSkills: json.skills.softSkills,
-    projects: json.projects.map((p) => ({
-      name: p.name,
-      highlights: p.description,
-      links: p.link ? { live: p.link } : undefined,
-    })),
-    certifications: json.certifications.map((c) => ({
-      name: c.name,
-      issuer: c.issuer || undefined,
-    })),
+    yearsOfExperience: json.yearsOfExperience || "",
+    resumeTone: json.resumeTone || "bad",
+    wordCount: json.wordCount || 0,
+    educationSection: json.educationSection || false,
+    experienceSection: json.experienceSection || false,
+    workHistory: json.workHistory || false,
+    dateFormatting: json.dateFormatting || false,
+    layout: {
+      isSingleColumn: json.layout?.isSingleColumn || false,
+      hasTables: json.layout?.hasTables || false,
+      hasImages: json.layout?.hasImages || false,
+      hasIcons: json.layout?.hasIcons || false,
+      hasMultiColumn: json.layout?.hasMultiColumn || false,
+    },
+    fontCheck: {
+      isStandardFont: json.fontCheck?.isStandardFont || false,
+      fontName: json.fontCheck?.fontName || "",
+      isReadableSize: json.fontCheck?.isReadableSize || false,
+    },
   };
 };

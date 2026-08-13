@@ -14,9 +14,14 @@ import {
   deleteAllAtsScoreHistory,
 } from "./services/history.service";
 
-const parseAddress = (raw: string): { city?: string; state?: string } | undefined => {
+const parseAddress = (
+  raw: string,
+): { city?: string; state?: string } | undefined => {
   if (!raw) return undefined;
-  const parts = raw.split(/[,•\-]/).map((p) => p.trim()).filter(Boolean);
+  const parts = raw
+    .split(/[,•\-]/)
+    .map((p) => p.trim())
+    .filter(Boolean);
   if (parts.length === 0) return undefined;
   if (parts.length === 1) return { city: parts[0] };
   return { city: parts[0], state: parts[1] };
@@ -58,7 +63,7 @@ const mapAIResearchToResumeContent = (ai: any): ResumeContent | null => {
       name: proj.name || "",
       description: proj.description || [],
     })),
-    yearsOfExperience: ai.yearsOfExperience || 0,
+    yearsOfExperience: ai.yearsOfExperience || "",
     resumeTone: ai.resumeTone || "bad",
     wordCount: ai.wordCount || 0,
     educationSection: ai.educationSection || false,
@@ -224,7 +229,8 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
         credits: remainingCredits,
         lastAiScanResetDate: today,
       },
-      message: "AI scan used. A new credit will be available at midnight (GMT).",
+      message:
+        "AI scan used. A new credit will be available at midnight (GMT).",
     });
   } catch (error: any) {
     console.error("ATS Score analysis error:", error);

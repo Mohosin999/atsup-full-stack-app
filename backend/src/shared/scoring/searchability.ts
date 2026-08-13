@@ -135,7 +135,7 @@ const buildJobTitleSubgroup = (
   if (!title) {
     status = "failed";
     detail =
-      "No job title detected from job description. Add a job title with your provided job description.";
+      "No job title detected from job description. Add a job title at the top of your provided job description.";
   } else {
     const hasMatch = jobTitleMatches(resumeText, title);
     status = hasMatch ? "passed" : "failed";

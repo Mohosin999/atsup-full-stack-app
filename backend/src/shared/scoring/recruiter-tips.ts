@@ -60,11 +60,8 @@ const buildJobLevelSubgroup = (
       detail = `Your years of experience (${resumeYears} yrs) do not align with the role's requirements (${jd.experienceYearsRequired} yrs). This is a negative start, but remember to carefully review all other job criteria to ensure you're a strong overall match before applying.`;
     }
   } else {
-    status = resumeYears >= 1 ? "passed" : "failed";
-    detail =
-      resumeYears >= 1
-        ? `Your experience (${resumeYears} yrs) shows relevant work history. This is a positive start, but remember to carefully review all other job criteria to ensure you're a strong overall match before applying.`
-        : "We couldn't verify your years of experience. Please make sure that you've included experience section properly in your resume.";
+    status = "not-applicable";
+    detail = "No years of experience requirement listed in the job description.";
   }
 
   const checks = [{ label: "Job level match", status, detail, weight: 20 }];

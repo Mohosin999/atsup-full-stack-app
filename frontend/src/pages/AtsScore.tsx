@@ -20,7 +20,7 @@ const PIPELINE_STEPS: PipelineStep[] = [
 ];
 
 const PIPELINE_MESSAGES = [
-  "Sending resume & job description...",
+  "Sending resume & JD to AI...",
   "Extracting resume data...",
   "Parsing job description...",
   "Calculating ATS score...",
@@ -224,9 +224,9 @@ export default function AtsScorePage() {
               <div className="flex flex-col">
                 <div className="flex items-center gap-3 mb-4">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription.trim().length >= 20 ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
                   >
-                    {jobDescription ? <CheckCircle className="w-5 h-5" /> : "2"}
+                    {jobDescription.trim().length >= 20 ? <CheckCircle className="w-5 h-5" /> : "2"}
                   </div>
                   <h2 className="text-xl font-semibold text-gray-900">
                     Paste Job Description

@@ -129,11 +129,13 @@ const buildJobTitleSubgroup = (
   jd: StructuredJD | null,
 ): CategorySubgroup => {
   const title = jd?.jobTitle || "";
-  let status: CheckStatus = "not-applicable";
+  let status: CheckStatus;
   let detail = "";
 
   if (!title) {
-    detail = "No job title detected from job description.";
+    status = "failed";
+    detail =
+      "No job title detected from job description. Add a job title with your provided job description.";
   } else {
     const hasMatch = jobTitleMatches(resumeText, title);
     status = hasMatch ? "passed" : "failed";
@@ -154,9 +156,7 @@ const buildJobTitleSubgroup = (
     summary:
       status === "passed"
         ? `Job title "${title}" found.`
-        : status === "not-applicable"
-          ? "Not evaluated."
-          : `Job title "${title}" not found.`,
+        : `Job title "${title}" not found.`,
     checks,
   };
 };

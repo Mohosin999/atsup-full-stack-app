@@ -105,9 +105,9 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
                 <span className="text-[16px] leading-none">{st.mark}</span>
               </span>
               <div className="min-w-0">
-                {/* <p className="text-[13px] font-medium text-gray-700 leading-snug">
+                <p className="text-[13px] font-medium text-gray-700 leading-snug">
                   {check.label}
-                </p> */}
+                </p>
                 <p className="text-xs text-gray-600 leading-snug mt-0.5">
                   {check.detail}
                 </p>
@@ -232,9 +232,9 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
             <p className="text-xs text-gray-500">{category.summary}</p>
           </div>
         </div>
-        {/* <span className={`text-base font-bold ${getScoreColor(category.score)}`}>
+        <span className={`text-sm font-bold ${getScoreColor(category.score)}`}>
           {category.score}%
-        </span> */}
+        </span>
       </div>
 
       {/* Sub-group breakdown (e.g. Searchability) */}
@@ -265,7 +265,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
       )}
 
       {/* Strengths */}
-      {!hasSubgroups && category.strengths.length > 0 && (
+      {/* {!hasSubgroups && category.strengths.length > 0 && (
         <div className="mb-3">
           <p className="flex items-center gap-1.5 text-xs font-semibold text-green-600 mb-2">
             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -283,7 +283,7 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
             ))}
           </ul>
         </div>
-      )}
+      )} */}
 
       {/* Improvements */}
       {/* {!hasSubgroups && category.improvements.length > 0 && (

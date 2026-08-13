@@ -64,7 +64,8 @@ export const buildHardSkills = (
         weight: 100,
       },
     ];
-    summary = "No required technical skills found.";
+    summary =
+      "No hard skills detected from your provided job description. Please add a perfect job description of your role before applying.";
   }
 
   const { strengths, improvements } = deriveFeedback(checks);
@@ -109,7 +110,7 @@ export const buildSoftSkills = (
     resumeSoft.length > 0
       ? `${resumeSoft.length} soft skill(s) highlighted.`
       : "Soft skills not explicitly listed.";
-      
+
   let score = 0;
   let matched: string[] = [];
   let missing: string[] = [];
@@ -139,7 +140,8 @@ export const buildSoftSkills = (
         weight: 100,
       },
     ];
-    summary = "No soft skills from JD detected.";
+    summary =
+      "No soft skills detected from job description. Please add a perfect job description of your role before applying.";
   }
 
   const { strengths, improvements } = deriveFeedback(checks);

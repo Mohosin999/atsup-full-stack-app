@@ -548,15 +548,11 @@ const parseExperience = (lines: string[]): RawExperience[] => {
           .split(/\s*[•|–—,-]\s*/)
           .map((p) => p.trim())
           .filter(Boolean);
-        current.location =
-          parts.length > 1 ? parts.slice(1).join(", ") : header.role;
-        if (
-          /^(freelance|self[- ]employed|remote|contract|independent|consultant)/i.test(
-            header.role,
-          )
-        ) {
-          current.company = parts[0] || header.role;
-          current.location = parts.slice(1).join(", ") || "";
+        if (parts.length > 1) {
+          current.company = parts[0];
+          current.location = parts.slice(1).join(", ");
+        } else {
+          current.location = header.role;
         }
         continue;
       }
@@ -606,7 +602,9 @@ const parseRoleHeader = (
   startDate: string;
   endDate: string;
 } | null => {
-  const cleaned = line.replace(/^[•·▪*\-–—\s]+/, "");
+  let cleaned = line.replace(/^[•·▪*\-–—\s]+/, "");
+  // Insert space before month names when directly attached to a word (e.g. "DeveloperApr" → "Developer Apr")
+  cleaned = cleaned.replace(/([a-zA-Z])(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)/g, '$1 $2');
   if (!cleaned || cleaned.length > 100) return null;
   // Requires an uppercase word near start to be a heading, not a sentence.
   if (!/^[A-Z]/.test(cleaned)) return null;
@@ -615,7 +613,7 @@ const parseRoleHeader = (
   // contains a verb past-tense action, a trailing period, or more than ~6 words.
   if (/\.$/.test(cleaned)) return null;
   if (
-    /^(developed|designed|built|implemented|created|managed|led|worked|collaborated|delivered|improved|optimized|reduced|maintained|tested|wrote|architected|launched|owned|handled|assisted|spearheaded|responsible for|contributed|supported|helped)\b/i.test(
+    /^(developed|designed|built|implemented|created|managed|led|worked|collaborated|delivered|improved|optimized|reduced|maintained|tested|wrote|architected|launched|owned|handled|assisted|spearheaded|responsible for|contributed|supported|helped|applied)\b/i.test(
       cleaned,
     )
   )
@@ -789,56 +787,6 @@ const inferTone = (text: string, measurableCount: number): string => {
   if (wordCount < 100) return "weak";
   return "bad";
 };
-
-// const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
-//   const addressParts = (json.personal_info.contact.address || "")
-//     .split(/[,|-]/)
-//     .map((p) => p.trim())
-//     .filter(Boolean);
-
-//   return {
-//     personalInfo: {
-//       fullName: json.personal_info.fullName || undefined,
-//       jobTitle: json.personal_info.jobTitle || undefined,
-//       contact: {
-//         email: json.personal_info.contact.email || undefined,
-//         phone: json.personal_info.contact.phone || undefined,
-//         address:
-//           addressParts.length === 1
-//             ? { city: addressParts[0] }
-//             : addressParts.length > 1
-//               ? { city: addressParts[0], state: addressParts[addressParts.length - 1] }
-//               : undefined,
-//       },
-//     },
-//     summary: json.summary || undefined,
-//     experience: json.experience.map((exp) => ({
-//       company: exp.company || "",
-//       title: exp.role || "",
-//       startDate: exp.startDate || "",
-//       endDate: exp.endDate || undefined,
-//       current: /present|current/i.test(exp.endDate),
-//       responsibilities: exp.responsibilities || [],
-//     })),
-//     education: json.education.map((edu) => ({
-//       institution: edu.field || "",
-//       degree: edu.degree || edu.education_level || "",
-//       date: [edu.startDate, edu.endDate].filter(Boolean).join(" - "),
-//     })),
-//     skills: [...json.skills.hardSkills, ...json.skills.softSkills],
-//     hardSkills: json.skills.hardSkills,
-//     softSkills: json.skills.softSkills,
-//     projects: json.projects.map((p) => ({
-//       name: p.name,
-//       highlights: p.description,
-//       links: p.link ? { live: p.link } : undefined,
-//     })),
-//     certifications: json.certifications.map((c) => ({
-//       name: c.name,
-//       issuer: c.issuer || undefined,
-//     })),
-//   };
-// };
 
 const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
   const parseAddress = (address: string) => {

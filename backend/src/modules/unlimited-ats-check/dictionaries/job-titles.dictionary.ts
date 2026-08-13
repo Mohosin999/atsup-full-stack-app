@@ -21,7 +21,7 @@ export const JOB_TITLES_DICTIONARY = [
   "TypeScript Developer",
   "JavaScript Developer",
   "Senior JavaScript Developer",
-  "Web Developer",
+  "Full Stack Web Developer",
   "Senior Web Developer",
   "Frontend Web Developer",
 

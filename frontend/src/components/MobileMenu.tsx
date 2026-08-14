@@ -46,9 +46,9 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
         ))}
 
         <Link
-          to="/resume-builder"
+          to="/resumes"
           className={`block px-3 py-2 rounded-lg text-sm font-medium ${
-            location.pathname === "/resume-builder"
+            location.pathname === "/resumes"
               ? "bg-green-500/20 text-green-600"
               : "text-gray-700"
           }`}

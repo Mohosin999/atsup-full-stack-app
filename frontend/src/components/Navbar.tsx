@@ -22,7 +22,7 @@ interface NavLink {
 
 const NAV_LINKS: NavLink[] = [
   { path: "/dashboard", label: "Dashboard" },
-  { path: "/resume-builder", label: "Resume Builder" },
+  { path: "/resumes", label: "Resume Builder" },
   { path: "/ats-score", label: "ATS Score" },
 ];
 

@@ -10,6 +10,7 @@ import AtsScore from "./pages/AtsScore";
 import AtsScoreDetail from "./pages/AtsScoreDetail";
 import AtsScoreHistory from "./pages/AtsScoreHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
+import ResumeDashboard from "./pages/ResumeDashboard";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
 import GoToTop from "./components/ui/GoToTop";
 import ThemeWrapper from "./components/ThemeWrapper";
@@ -100,7 +101,27 @@ function App() {
           }
         />
         <Route
+          path="/resumes"
+          element={
+            <PrivateRoute>
+              <ResumeDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/resume-builder"
+          element={<Navigate to="/resumes" replace />}
+        />
+        <Route
+          path="/resume-builder/new"
+          element={
+            <PrivateRoute>
+              <ResumeBuilder />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/resume-builder/:id"
           element={
             <PrivateRoute>
               <ResumeBuilder />

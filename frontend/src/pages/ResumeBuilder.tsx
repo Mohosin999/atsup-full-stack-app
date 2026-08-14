@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Download, RotateCcw, Sparkles } from "lucide-react";
 import { toast } from "react-toastify";
 import {
@@ -27,6 +28,7 @@ import {
   SectionKey,
 } from "../types";
 import { downloadAtsPdf, getSectionTitle } from "../utils/atsResume";
+import { resumeApi } from "../api/api";
 import BackButton from "../components/ui/BackButton";
 import ResumeBuilderSection from "../components/resume-builder/ResumeBuilderSection";
 import PersonalInfoForm from "../components/resume-builder/PersonalInfoForm";
@@ -38,9 +40,8 @@ import ProjectsForm from "../components/resume-builder/ProjectsForm";
 import AchievementsForm from "../components/resume-builder/AchievementsForm";
 import CertificationsForm from "../components/resume-builder/CertificationsForm";
 import AtsResumePreview from "../components/resume-builder/AtsResumePreview";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 import Wrapper from "../components/Wrapper";
-
-const STORAGE_KEY = "cvcoach-resume-builder";
 
 const SECTION_SUBTITLES: Record<SectionKey, string> = {
   summary: "Highlight your top skills and achievements",
@@ -66,23 +67,19 @@ const defaultContent = (): ResumeContent => ({
   sectionOrder: [...SECTION_KEYS],
 });
 
-const loadSavedContent = (): ResumeContent => {
-  const defaults = defaultContent();
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return { ...defaults, ...parsed };
-    }
-  } catch {
-    // ignore corrupted storage
-  }
-  return defaults;
-};
-
 export default function ResumeBuilder() {
-  const [content, setContent] = useState<ResumeContent>(loadSavedContent);
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isNew = location.pathname === "/resume-builder/new";
+  const [content, setContent] = useState<ResumeContent>(defaultContent);
+  const [resumeId, setResumeId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(isNew ? false : true);
   const [downloading, setDownloading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const initializedRef = useRef(false);
+  const skipAutosaveRef = useRef(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -106,12 +103,60 @@ export default function ResumeBuilder() {
   };
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
-    } catch {
-      // storage full / unavailable
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    if (isNew) {
+      resumeApi
+        .createFromContent(defaultContent())
+        .then((res) => {
+          const rid = res.data.data.id;
+          setResumeId(rid);
+          navigate(`/resume-builder/${rid}`, { replace: true });
+        })
+        .catch(() => {
+          toast.error("Failed to create resume. Please try again.");
+        })
+        .finally(() => setLoading(false));
+    } else if (id) {
+      resumeApi
+        .getById(id)
+        .then((res) => {
+          skipAutosaveRef.current = true;
+          setContent({ ...defaultContent(), ...(res.data.data.content || {}) });
+          setResumeId(id);
+        })
+        .catch(() => {
+          toast.error("Failed to load resume.");
+          navigate("/resumes", { replace: true });
+        })
+        .finally(() => setLoading(false));
+    } else {
+      navigate("/resumes", { replace: true });
     }
-  }, [content]);
+  }, [id, isNew, navigate]);
+
+  useEffect(() => {
+    if (!resumeId) return;
+    if (skipAutosaveRef.current) {
+      skipAutosaveRef.current = false;
+      return;
+    }
+    setSaving(true);
+    const timer = setTimeout(() => {
+      resumeApi
+        .update(resumeId, { content })
+        .then((res) => {
+          setResumeId(res.data.data?.id || resumeId);
+          setSavedAt(new Date().toLocaleTimeString());
+        })
+        .catch(() => {
+          toast.error("Failed to save resume.");
+        })
+        .finally(() => setSaving(false));
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [content, resumeId]);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -362,6 +407,14 @@ export default function ResumeBuilder() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <Wrapper>
@@ -379,6 +432,20 @@ export default function ResumeBuilder() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-500 flex items-center gap-1.5">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  saving ? "bg-amber-400 animate-pulse" : "bg-green-500"
+                }`}
+              />
+              {saving
+                ? "Saving..."
+                : savedAt
+                  ? `Saved at ${savedAt}`
+                  : resumeId
+                    ? "Saved"
+                    : ""}
+            </span>
             <button
               onClick={handleReset}
               className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 transition-colors"

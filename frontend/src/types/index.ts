@@ -151,6 +151,15 @@ export interface ResumeContent {
   softSkills?: string[];
   keywords?: string[];
   certifications?: Certification[];
+  sectionTitles?: {
+    summary?: string;
+    experience?: string;
+    skills?: string;
+    education?: string;
+    projects?: string;
+    achievements?: string;
+    certifications?: string;
+  };
 }
 
 export interface Experience {

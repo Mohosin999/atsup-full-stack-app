@@ -11,7 +11,7 @@ import {
   Achievement,
   Certification,
 } from "../types";
-import { downloadAtsPdf } from "../utils/atsResume";
+import { downloadAtsPdf, getSectionTitle, SectionTitleKey } from "../utils/atsResume";
 import BackButton from "../components/ui/BackButton";
 import ResumeBuilderSection from "../components/resume-builder/ResumeBuilderSection";
 import PersonalInfoForm from "../components/resume-builder/PersonalInfoForm";
@@ -37,6 +37,7 @@ const defaultContent = (): ResumeContent => ({
   skills: [],
   skillCategories: [],
   certifications: [],
+  sectionTitles: {},
 });
 
 const loadSavedContent = (): ResumeContent => {
@@ -99,6 +100,15 @@ export default function ResumeBuilder() {
       ...prev,
       skillCategories: categories,
     }));
+
+  const setSectionTitle = (key: SectionTitleKey, value: string) =>
+    setContent((prev) => {
+      const current = prev.sectionTitles || {};
+      const next = { ...current };
+      if (value.trim()) next[key] = value.trim();
+      else delete next[key];
+      return { ...prev, sectionTitles: next };
+    });
 
   const addExperience = () =>
     setContent((prev) => ({
@@ -291,7 +301,8 @@ export default function ResumeBuilder() {
             </ResumeBuilderSection>
 
             <ResumeBuilderSection
-              title="Summary"
+              title={getSectionTitle(content, "summary")}
+              onTitleChange={(v) => setSectionTitle("summary", v)}
               subtitle="Highlight your top skills and achievements"
             >
               <SummaryForm
@@ -301,7 +312,8 @@ export default function ResumeBuilder() {
             </ResumeBuilderSection>
 
             <ResumeBuilderSection
-              title="Work Experience"
+              title={getSectionTitle(content, "experience")}
+              onTitleChange={(v) => setSectionTitle("experience", v)}
               subtitle="List relevant jobs and key accomplishments"
             >
               <ExperienceForm
@@ -313,7 +325,8 @@ export default function ResumeBuilder() {
             </ResumeBuilderSection>
 
             <ResumeBuilderSection
-              title="Skills"
+              title={getSectionTitle(content, "skills")}
+              onTitleChange={(v) => setSectionTitle("skills", v)}
               subtitle="Add your main skills for recruiters to see at a glance"
             >
               <SkillsForm
@@ -325,7 +338,8 @@ export default function ResumeBuilder() {
             </ResumeBuilderSection>
 
             <ResumeBuilderSection
-              title="Education"
+              title={getSectionTitle(content, "education")}
+              onTitleChange={(v) => setSectionTitle("education", v)}
               subtitle="Include degrees, schools, and graduation years"
             >
               <EducationForm
@@ -337,7 +351,8 @@ export default function ResumeBuilder() {
             </ResumeBuilderSection>
 
             <ResumeBuilderSection
-              title="Projects"
+              title={getSectionTitle(content, "projects")}
+              onTitleChange={(v) => setSectionTitle("projects", v)}
               subtitle="Projects you've worked on"
             >
               <ProjectsForm
@@ -349,7 +364,8 @@ export default function ResumeBuilder() {
             </ResumeBuilderSection>
 
             <ResumeBuilderSection
-              title="Achievements"
+              title={getSectionTitle(content, "achievements")}
+              onTitleChange={(v) => setSectionTitle("achievements", v)}
               subtitle="Awards, recognitions & wins"
             >
               <AchievementsForm
@@ -361,7 +377,8 @@ export default function ResumeBuilder() {
             </ResumeBuilderSection>
 
             <ResumeBuilderSection
-              title="Certifications"
+              title={getSectionTitle(content, "certifications")}
+              onTitleChange={(v) => setSectionTitle("certifications", v)}
               subtitle="Licenses & certificates"
             >
               <CertificationsForm

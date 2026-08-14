@@ -5,6 +5,23 @@ export so they always match exactly.
 =================================== */
 import { ResumeContent } from "../types";
 
+export const DEFAULT_SECTION_TITLES = {
+  summary: "Summary",
+  experience: "Work Experience",
+  skills: "Skills",
+  education: "Education",
+  projects: "Projects",
+  achievements: "Achievements",
+  certifications: "Certifications",
+} as const;
+
+export type SectionTitleKey = keyof typeof DEFAULT_SECTION_TITLES;
+
+export const getSectionTitle = (
+  content: ResumeContent,
+  key: SectionTitleKey,
+): string => content.sectionTitles?.[key]?.trim() || DEFAULT_SECTION_TITLES[key];
+
 const escapeHtml = (value?: string): string =>
   (value || "")
     .replace(/&/g, "&amp;")
@@ -210,7 +227,9 @@ const buildPersonalInfo = (content: ResumeContent): string => {
 const buildSummary = (content: ResumeContent): string => {
   if (!content.summary?.trim()) return "";
   return `<div class="ats-section">
-    <div class="ats-section-title">Summary</div>
+    <div class="ats-section-title">${escapeHtml(
+      getSectionTitle(content, "summary"),
+    )}</div>
     <div>${escapeHtml(content.summary.trim())}</div>
   </div>`;
 };
@@ -221,7 +240,9 @@ const buildExperience = (content: ResumeContent): string => {
   );
   if (items.length === 0) return "";
   return `<div class="ats-section">
-    <div class="ats-section-title">Work Experience</div>
+    <div class="ats-section-title">${escapeHtml(
+      getSectionTitle(content, "experience"),
+    )}</div>
     ${items
       .map((exp) => {
         const dr = dateRange(exp.startDate, exp.endDate, exp.current);
@@ -277,7 +298,9 @@ const buildSkills = (content: ResumeContent): string => {
 
   if (lines.length === 0) return "";
   return `<div class="ats-section">
-    <div class="ats-section-title">Skills</div>
+    <div class="ats-section-title">${escapeHtml(
+      getSectionTitle(content, "skills"),
+    )}</div>
     ${lines.join("")}
   </div>`;
 };
@@ -291,7 +314,9 @@ const buildEducation = (content: ResumeContent): string => {
   );
   if (items.length === 0) return "";
   return `<div class="ats-section">
-    <div class="ats-section-title">Education</div>
+    <div class="ats-section-title">${escapeHtml(
+      getSectionTitle(content, "education"),
+    )}</div>
     ${items
       .map((edu) => {
         const dr = dateRange(edu.startDate, edu.endDate);
@@ -322,7 +347,9 @@ const buildProjects = (content: ResumeContent): string => {
   const items = (content.projects || []).filter((proj) => proj.name?.trim());
   if (items.length === 0) return "";
   return `<div class="ats-section">
-    <div class="ats-section-title">Projects</div>
+    <div class="ats-section-title">${escapeHtml(
+      getSectionTitle(content, "projects"),
+    )}</div>
     ${items
       .map((proj) => {
         const dr = dateRange(proj.startDate, proj.endDate, proj.current);
@@ -359,7 +386,9 @@ const buildAchievements = (content: ResumeContent): string => {
   const items = (content.achievements || []).filter((ach) => ach.title?.trim());
   if (items.length === 0) return "";
   return `<div class="ats-section">
-    <div class="ats-section-title">Achievements</div>
+    <div class="ats-section-title">${escapeHtml(
+      getSectionTitle(content, "achievements"),
+    )}</div>
     ${items
       .map(
         (ach) => `<div class="ats-item">
@@ -386,7 +415,9 @@ const buildCertifications = (content: ResumeContent): string => {
   );
   if (items.length === 0) return "";
   return `<div class="ats-section">
-    <div class="ats-section-title">Certifications</div>
+    <div class="ats-section-title">${escapeHtml(
+      getSectionTitle(content, "certifications"),
+    )}</div>
     ${items
       .map(
         (cert) => `<div class="ats-item">

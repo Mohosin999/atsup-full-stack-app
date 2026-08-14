@@ -1,6 +1,7 @@
 /* ===================================
 Skills Form (categorized)
 =================================== */
+import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { Input } from "../ui/FormField";
 import { SkillCategory } from "../../types";
@@ -20,6 +21,50 @@ interface SkillsFormProps {
   onChange: (categories: SkillCategory[]) => void;
 }
 
+/**
+ * Comma-separated skills input. Keeps the raw text locally so commas are not
+ * swallowed on each keystroke; commits to the skills array on blur/Enter.
+ */
+function SkillTextInput({
+  value,
+  onCommit,
+}: {
+  value: string[];
+  onCommit: (skills: string[]) => void;
+}) {
+  const [text, setText] = useState(value.join(", "));
+
+  useEffect(() => {
+    setText(value.join(", "));
+  }, [value]);
+
+  const commit = (next?: string) => {
+    const raw = next ?? text;
+    onCommit(
+      raw
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    );
+  };
+
+  return (
+    <input
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      onBlur={() => commit()}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          commit();
+          (e.target as HTMLInputElement).blur();
+        }
+      }}
+      className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500"
+      placeholder="React, Node.js, TypeScript"
+    />
+  );
+}
+
 export default function SkillsForm({ categories, onChange }: SkillsFormProps) {
   const addCategory = () =>
     onChange([
@@ -35,19 +80,9 @@ export default function SkillsForm({ categories, onChange }: SkillsFormProps) {
   const updateName = (index: number, name: string) =>
     onChange(categories.map((c, i) => (i === index ? { ...c, name } : c)));
 
-  const updateSkills = (index: number, text: string) =>
+  const updateSkills = (index: number, skills: string[]) =>
     onChange(
-      categories.map((c, i) =>
-        i === index
-          ? {
-              ...c,
-              skills: text
-                .split(",")
-                .map((s) => s.trim())
-                .filter(Boolean),
-            }
-          : c,
-      ),
+      categories.map((c, i) => (i === index ? { ...c, skills } : c)),
     );
 
   const removeCategory = (index: number) =>
@@ -91,12 +126,15 @@ export default function SkillsForm({ categories, onChange }: SkillsFormProps) {
             </datalist>
           </div>
 
-          <Input
-            label="Skills (comma separated)"
-            value={(cat.skills || []).join(", ")}
-            onChange={(e) => updateSkills(index, e.target.value)}
-            placeholder="React, Node.js, TypeScript"
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Skills (comma separated)
+            </label>
+            <SkillTextInput
+              value={cat.skills || []}
+              onCommit={(skills) => updateSkills(index, skills)}
+            />
+          </div>
         </div>
       ))}
 

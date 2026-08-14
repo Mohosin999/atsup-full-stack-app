@@ -41,6 +41,12 @@ export interface ResumeContent {
       email?: string;
       phone?: string;
       address?: string | { city?: string; state?: string };
+      linkedIn?: string;
+      socialLinks?: {
+        github?: string;
+        portfolio?: string;
+        website?: string;
+      };
     };
   };
   summary?: string;

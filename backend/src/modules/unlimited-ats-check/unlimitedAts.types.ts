@@ -23,6 +23,9 @@ export interface DictionaryResumeJson {
       address: string;
       email: string;
       phone: string;
+      linkedin: string;
+      github: string;
+      portfolio: string;
     };
   };
   summary: string;

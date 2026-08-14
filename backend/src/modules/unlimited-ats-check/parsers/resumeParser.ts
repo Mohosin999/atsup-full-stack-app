@@ -320,11 +320,16 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
     // --- Education phase. ---
     if (phase === "education") {
       // A project name followed by a date/description that has no degree
-      // keywords starts the projects section.
+      // keywords starts the projects section. Year-only ranges (e.g.
+      // "2020 - 2024") are characteristic of education entries, so a
+      // short institution name like "BUET" followed by a year range must
+      // NOT flip the phase to projects.
+      const nextLine = (lines[i + 1] || "").trim();
       if (
         isProjectNameLine(l) &&
-        lines[i + 1] &&
-        DATE_RANGE_RE.test(lines[i + 1].trim())
+        nextLine &&
+        DATE_RANGE_RE.test(nextLine) &&
+        !/^\s*\d{4}\s*[-–—]\s*\d{4}\s*$/i.test(nextLine)
       ) {
         phase = "projects";
         pushBucket(seg, "projects", l);
@@ -415,11 +420,16 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
 
   // ---- Skills ----
   const skillsSectionText = segmented.skills.join("\n");
-  const skillsAllText = skillsSectionText || allText;
-  const hardSkills = matchDictionary(
-    skillsAllText,
-    HARD_SKILLS_DICTIONARY,
-  ).filter((s) => !HARD_SKILL_STOPWORDS.has(s.toLowerCase()));
+  const hasSkillsSection = skillsSectionText.trim().length > 0;
+  const skillsAllText = hasSkillsSection ? skillsSectionText : allText;
+  let hardSkills = matchDictionary(skillsAllText, HARD_SKILLS_DICTIONARY);
+  // Stopwords (react, node, express, ...) prevent false positives when scanning
+  // general prose, but in a dedicated skills section they are legitimate skills.
+  if (!hasSkillsSection) {
+    hardSkills = hardSkills.filter(
+      (s) => !HARD_SKILL_STOPWORDS.has(s.toLowerCase()),
+    );
+  }
   const softSkills = matchDictionary(skillsAllText, SOFT_SKILLS_DICTIONARY);
 
   // ---- Derived metrics ----
@@ -444,6 +454,9 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
         address,
         email,
         phone,
+        linkedin,
+        github,
+        portfolio,
       },
     },
     summary,
@@ -545,7 +558,7 @@ const parseExperience = (lines: string[]): RawExperience[] => {
         isLocationLike(header.role)
       ) {
         const parts = header.role
-          .split(/\s*[•|–—,-]\s*/)
+          .split(/\s*[•·|–—,-]\s*/)
           .map((p) => p.trim())
           .filter(Boolean);
         if (parts.length > 1) {
@@ -710,12 +723,23 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
       continue;
     }
 
-    if (!current || (!current.description.length && !isDescriptionLine(line))) {
-      current = pushCurrent(line);
+    // PDF text extraction often concatenates a month to the previous word
+    // with no space ("E-Commerce PlatformFeb 2024 - Present"). Insert the
+    // space so the project name does not swallow its start date.
+    const spaced = line.replace(
+      /([a-zA-Z])(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)/g,
+      "$1 $2",
+    );
+
+    if (!current || (!current.description.length && !isDescriptionLine(spaced))) {
+      // A standalone date range ("Feb 2024 - Present") right after a project
+      // name is that project's start/end dates, not a new project.
+      if (current && DATE_RANGE_RE.test(spaced)) continue;
+      current = pushCurrent(spaced);
       continue;
     }
 
-    current.description.push(line);
+    current.description.push(spaced);
   }
   return projects;
 };
@@ -816,6 +840,11 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
         email: json.personal_info?.contact?.email || "",
         phone: json.personal_info?.contact?.phone || "",
         address: parseAddress(json.personal_info?.contact?.address || ""),
+        linkedIn: json.personal_info?.contact?.linkedin || "",
+        socialLinks: {
+          github: json.personal_info?.contact?.github || "",
+          portfolio: json.personal_info?.contact?.portfolio || "",
+        },
       },
     },
     summary: json.summary || "",

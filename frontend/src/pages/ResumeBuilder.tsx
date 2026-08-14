@@ -269,9 +269,9 @@ export default function ResumeBuilder() {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
           {/* LEFT: form (1/3) */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:col-span-2 space-y-4">
             <ResumeBuilderSection
               title="Personal Info"
               subtitle="Name, title & contact details"
@@ -365,16 +365,16 @@ export default function ResumeBuilder() {
           </div>
 
           {/* RIGHT: preview (2/3) */}
-          <div className="lg:col-span-2 lg:sticky lg:top-20">
+          <div className="lg:col-span-3 lg:sticky lg:top-20">
             <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-4">
+              {/* <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">
                   Live Preview
                 </h2>
                 <span className="text-xs text-gray-600">
                   Auto-saved to your browser
                 </span>
-              </div>
+              </div> */}
               <AtsResumePreview content={content} />
             </div>
           </div>

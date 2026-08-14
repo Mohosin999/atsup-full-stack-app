@@ -68,7 +68,7 @@ export const ATS_STYLE = `
     padding: 0;
   }
   .ats-resume {
-    width: 794px;
+    width: 100%;
     min-height: 1122px;
     padding: 40px 46px 46px;
     background: #ffffff;
@@ -141,7 +141,9 @@ export const ATS_STYLE = `
   }
   .ats-bullets {
     margin: 3px 0 0 0;
-    padding-left: 16px;
+    padding-left: 22px;
+    list-style: disc;
+    list-style-position: outside;
   }
   .ats-bullets li {
     margin-bottom: 2px;
@@ -277,16 +279,14 @@ const buildEducation = (content: ResumeContent): string => {
     ${items
       .map(
         (edu) => `<div class="ats-item">
-          <div class="ats-item-head">
-            <span class="ats-strong">${escapeHtml(edu.degree)}</span>
-            ${
-              edu.date ? `<span class="ats-date">${escapeHtml(edu.date)}</span>` : ""
-            }
-          </div>
+          <div class="ats-strong">${escapeHtml(edu.degree)}</div>
           ${
             edu.institution
               ? `<div class="ats-sub">${escapeHtml(edu.institution)}</div>`
               : ""
+          }
+          ${
+            edu.date ? `<div class="ats-date">${escapeHtml(edu.date)}</div>` : ""
           }
         </div>`,
       )
@@ -341,16 +341,14 @@ const buildAchievements = (content: ResumeContent): string => {
     ${items
       .map(
         (ach) => `<div class="ats-item">
-          <div class="ats-item-head">
-            <span class="ats-strong">${escapeHtml(ach.title)}</span>
-            ${
-              ach.date ? `<span class="ats-date">${escapeHtml(ach.date)}</span>` : ""
-            }
-          </div>
+          <div class="ats-strong">${escapeHtml(ach.title)}</div>
           ${
             ach.description
               ? `<div class="ats-sub">${escapeHtml(ach.description)}</div>`
               : ""
+          }
+          ${
+            ach.date ? `<div class="ats-date">${escapeHtml(ach.date)}</div>` : ""
           }
         </div>`,
       )
@@ -366,18 +364,14 @@ const buildCertifications = (content: ResumeContent): string => {
     ${items
       .map(
         (cert) => `<div class="ats-item">
-          <div class="ats-item-head">
-            <span class="ats-strong">${escapeHtml(cert.name)}</span>
-            ${
-              cert.date
-                ? `<span class="ats-date">${escapeHtml(cert.date)}</span>`
-                : ""
-            }
-          </div>
+          <div class="ats-strong">${escapeHtml(cert.name)}</div>
           ${
             cert.issuer
               ? `<div class="ats-sub">${escapeHtml(cert.issuer)}</div>`
               : ""
+          }
+          ${
+            cert.date ? `<div class="ats-date">${escapeHtml(cert.date)}</div>` : ""
           }
         </div>`,
       )

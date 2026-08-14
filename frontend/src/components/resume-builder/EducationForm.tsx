@@ -1,9 +1,11 @@
 /* ===================================
 Education Form
 =================================== */
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Input } from "../ui/FormField";
+import CollapsibleItem from "./CollapsibleItem";
 import { Education } from "../../types";
+import { sortItemsByDateDesc } from "../../utils/sort";
 
 interface EducationFormProps {
   education: Education[];
@@ -18,26 +20,26 @@ export default function EducationForm({
   onUpdate,
   onRemove,
 }: EducationFormProps) {
+  const sorted = sortItemsByDateDesc(education, (edu) => edu.startDate);
   return (
     <div className="space-y-3">
-      {education.map((edu, index) => (
-        <div
-          key={index}
-          className="rounded-lg border border-gray-200 bg-gray-100 p-3 space-y-3"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-gray-700">
-              Education {index + 1}
-            </span>
-            <button
-              type="button"
-              onClick={() => onRemove(index)}
-              className="text-gray-600 hover:text-red-600"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-
+      {sorted.map((edu) => {
+        const index = education.indexOf(edu);
+        return (
+          <CollapsibleItem
+            key={index}
+            title={
+              edu.institution ||
+              [edu.degree, edu.areaOfStudy].filter(Boolean).join(" · ") ||
+              `Education ${index + 1}`
+            }
+            subtitle={
+              [edu.degree, edu.areaOfStudy].filter(Boolean).join(" · ") ||
+              undefined
+            }
+            onRemove={() => onRemove(index)}
+          >
+          <div className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="sm:col-span-2">
               <Input
@@ -96,8 +98,10 @@ export default function EducationForm({
               />
             </div>
           </div>
-        </div>
-      ))}
+          </div>
+          </CollapsibleItem>
+        );
+      })}
 
       <button
         type="button"

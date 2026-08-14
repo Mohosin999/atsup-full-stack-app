@@ -1,10 +1,12 @@
 /* ===================================
 Work Experience Form
 =================================== */
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Input } from "../ui/FormField";
 import HighlightsEditor from "./HighlightsEditor";
+import CollapsibleItem from "./CollapsibleItem";
 import { Experience } from "../../types";
+import { sortItemsByDateDesc } from "../../utils/sort";
 
 interface ExperienceFormProps {
   experience: Experience[];
@@ -19,26 +21,26 @@ export default function ExperienceForm({
   onUpdate,
   onRemove,
 }: ExperienceFormProps) {
+  const sorted = sortItemsByDateDesc(experience, (exp) => exp.startDate);
   return (
     <div className="space-y-3">
-      {experience.map((exp, index) => (
-        <div
-          key={index}
-          className="rounded-lg border border-gray-200 bg-gray-100 p-3 space-y-3"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-gray-700">
-              Position {index + 1}
-            </span>
-            <button
-              type="button"
-              onClick={() => onRemove(index)}
-              className="text-gray-600 hover:text-red-600"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-
+      {sorted.map((exp) => {
+        const index = experience.indexOf(exp);
+        return (
+          <CollapsibleItem
+            key={index}
+            title={
+              exp.title ||
+              exp.company ||
+              `Position ${index + 1}`
+            }
+            subtitle={
+              [exp.company, exp.location].filter(Boolean).join(", ") ||
+              undefined
+            }
+            onRemove={() => onRemove(index)}
+          >
+          <div className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input
               label="Job Title"
@@ -119,8 +121,10 @@ export default function ExperienceForm({
               placeholder="e.g. Built a REST API serving 10k requests per day"
             />
           </div>
-        </div>
-      ))}
+          </div>
+          </CollapsibleItem>
+        );
+      })}
 
       <button
         type="button"

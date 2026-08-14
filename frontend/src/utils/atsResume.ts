@@ -4,6 +4,7 @@ Shared by the live preview and the PDF
 export so they always match exactly.
 =================================== */
 import { ResumeContent } from "../types";
+import { sortItemsByDateDesc } from "./sort";
 
 export const DEFAULT_SECTION_TITLES = {
   summary: "Summary",
@@ -235,9 +236,10 @@ const buildSummary = (content: ResumeContent): string => {
 };
 
 const buildExperience = (content: ResumeContent): string => {
-  const items = (content.experience || []).filter(
-    (exp) => exp.title?.trim() || exp.company?.trim(),
-  );
+  const items = sortItemsByDateDesc(
+    content.experience || [],
+    (exp) => exp.startDate,
+  ).filter((exp) => exp.title?.trim() || exp.company?.trim());
   if (items.length === 0) return "";
   return `<div class="ats-section">
     <div class="ats-section-title">${escapeHtml(
@@ -306,7 +308,10 @@ const buildSkills = (content: ResumeContent): string => {
 };
 
 const buildEducation = (content: ResumeContent): string => {
-  const items = (content.education || []).filter(
+  const items = sortItemsByDateDesc(
+    content.education || [],
+    (edu) => edu.startDate,
+  ).filter(
     (edu) =>
       edu.institution?.trim() ||
       edu.degree?.trim() ||
@@ -344,7 +349,10 @@ const buildEducation = (content: ResumeContent): string => {
 };
 
 const buildProjects = (content: ResumeContent): string => {
-  const items = (content.projects || []).filter((proj) => proj.name?.trim());
+  const items = sortItemsByDateDesc(
+    content.projects || [],
+    (proj) => proj.startDate,
+  ).filter((proj) => proj.name?.trim());
   if (items.length === 0) return "";
   return `<div class="ats-section">
     <div class="ats-section-title">${escapeHtml(
@@ -383,7 +391,10 @@ const buildProjects = (content: ResumeContent): string => {
 };
 
 const buildAchievements = (content: ResumeContent): string => {
-  const items = (content.achievements || []).filter((ach) => ach.title?.trim());
+  const items = sortItemsByDateDesc(
+    content.achievements || [],
+    (ach) => ach.date,
+  ).filter((ach) => ach.title?.trim());
   if (items.length === 0) return "";
   return `<div class="ats-section">
     <div class="ats-section-title">${escapeHtml(
@@ -410,9 +421,10 @@ const buildAchievements = (content: ResumeContent): string => {
 };
 
 const buildCertifications = (content: ResumeContent): string => {
-  const items = (content.certifications || []).filter((cert) =>
-    cert.name?.trim(),
-  );
+  const items = sortItemsByDateDesc(
+    content.certifications || [],
+    (cert) => cert.date,
+  ).filter((cert) => cert.name?.trim());
   if (items.length === 0) return "";
   return `<div class="ats-section">
     <div class="ats-section-title">${escapeHtml(

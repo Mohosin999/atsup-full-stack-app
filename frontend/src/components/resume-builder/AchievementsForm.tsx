@@ -1,9 +1,11 @@
 /* ===================================
 Achievements Form
 =================================== */
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Input, Textarea } from "../ui/FormField";
+import CollapsibleItem from "./CollapsibleItem";
 import { Achievement } from "../../types";
+import { sortItemsByDateDesc } from "../../utils/sort";
 
 interface AchievementsFormProps {
   achievements: Achievement[];
@@ -18,26 +20,19 @@ export default function AchievementsForm({
   onUpdate,
   onRemove,
 }: AchievementsFormProps) {
+  const sorted = sortItemsByDateDesc(achievements, (ach) => ach.date);
   return (
     <div className="space-y-3">
-      {achievements.map((ach, index) => (
-        <div
-          key={index}
-          className="rounded-lg border border-gray-200 bg-gray-100 p-3 space-y-3"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-gray-700">
-              Achievement {index + 1}
-            </span>
-            <button
-              type="button"
-              onClick={() => onRemove(index)}
-              className="text-gray-600 hover:text-red-600"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-
+      {sorted.map((ach) => {
+        const index = achievements.indexOf(ach);
+        return (
+          <CollapsibleItem
+            key={index}
+            title={ach.title || `Achievement ${index + 1}`}
+            subtitle={ach.date || undefined}
+            onRemove={() => onRemove(index)}
+          >
+          <div className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input
               label="Title"
@@ -63,8 +58,10 @@ export default function AchievementsForm({
               />
             </div>
           </div>
-        </div>
-      ))}
+          </div>
+          </CollapsibleItem>
+        );
+      })}
 
       <button
         type="button"

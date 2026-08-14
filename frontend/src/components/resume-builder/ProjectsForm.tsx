@@ -1,10 +1,12 @@
 /* ===================================
 Projects Form
 =================================== */
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Input } from "../ui/FormField";
 import HighlightsEditor from "./HighlightsEditor";
+import CollapsibleItem from "./CollapsibleItem";
 import { Project } from "../../types";
+import { sortItemsByDateDesc } from "../../utils/sort";
 
 interface ProjectsFormProps {
   projects: Project[];
@@ -19,6 +21,7 @@ export default function ProjectsForm({
   onUpdate,
   onRemove,
 }: ProjectsFormProps) {
+  const sorted = sortItemsByDateDesc(projects, (proj) => proj.startDate);
   const updateLink = (
     index: number,
     field: "live" | "github",
@@ -30,24 +33,20 @@ export default function ProjectsForm({
 
   return (
     <div className="space-y-3">
-      {projects.map((proj, index) => (
-        <div
-          key={index}
-          className="rounded-lg border border-gray-200 bg-gray-100 p-3 space-y-3"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-gray-700">
-              Project {index + 1}
-            </span>
-            <button
-              type="button"
-              onClick={() => onRemove(index)}
-              className="text-gray-600 hover:text-red-600"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-
+      {sorted.map((proj) => {
+        const index = projects.indexOf(proj);
+        return (
+          <CollapsibleItem
+            key={index}
+            title={proj.name || `Project ${index + 1}`}
+            subtitle={
+              [proj.links?.live, proj.links?.github]
+                .filter(Boolean)
+                .join(" · ") || undefined
+            }
+            onRemove={() => onRemove(index)}
+          >
+          <div className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="sm:col-span-2">
               <Input
@@ -130,8 +129,10 @@ export default function ProjectsForm({
               placeholder="e.g. Designed a payment gateway handling 5k transactions per month"
             />
           </div>
-        </div>
-      ))}
+          </div>
+          </CollapsibleItem>
+        );
+      })}
 
       <button
         type="button"

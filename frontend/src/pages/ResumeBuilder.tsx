@@ -292,7 +292,6 @@ export default function ResumeBuilder() {
             <ResumeBuilderSection
               title="Personal Info"
               subtitle="Include email, phone & linkedin for easy employer access"
-              defaultOpen
             >
               <PersonalInfoForm
                 personalInfo={content.personalInfo}

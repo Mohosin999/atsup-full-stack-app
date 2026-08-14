@@ -3,6 +3,19 @@ import { motion } from "framer-motion";
 import { Download, RotateCcw, Sparkles } from "lucide-react";
 import { toast } from "react-toastify";
 import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
   ResumeContent,
   SkillCategory,
   Experience,
@@ -10,8 +23,10 @@ import {
   Education,
   Achievement,
   Certification,
+  SECTION_KEYS,
+  SectionKey,
 } from "../types";
-import { downloadAtsPdf, getSectionTitle, SectionTitleKey } from "../utils/atsResume";
+import { downloadAtsPdf, getSectionTitle } from "../utils/atsResume";
 import BackButton from "../components/ui/BackButton";
 import ResumeBuilderSection from "../components/resume-builder/ResumeBuilderSection";
 import PersonalInfoForm from "../components/resume-builder/PersonalInfoForm";
@@ -27,6 +42,16 @@ import Wrapper from "../components/Wrapper";
 
 const STORAGE_KEY = "cvcoach-resume-builder";
 
+const SECTION_SUBTITLES: Record<SectionKey, string> = {
+  summary: "Highlight your top skills and achievements",
+  experience: "List relevant jobs and key accomplishments",
+  skills: "Add your main skills for recruiters to see at a glance",
+  education: "Include degrees, schools, and graduation years",
+  projects: "Projects you've worked on",
+  achievements: "Awards, recognitions & wins",
+  certifications: "Licenses & certificates",
+};
+
 const defaultContent = (): ResumeContent => ({
   personalInfo: {},
   summary: "",
@@ -38,6 +63,7 @@ const defaultContent = (): ResumeContent => ({
   skillCategories: [],
   certifications: [],
   sectionTitles: {},
+  sectionOrder: [...SECTION_KEYS],
 });
 
 const loadSavedContent = (): ResumeContent => {
@@ -57,6 +83,27 @@ const loadSavedContent = (): ResumeContent => {
 export default function ResumeBuilder() {
   const [content, setContent] = useState<ResumeContent>(loadSavedContent);
   const [downloading, setDownloading] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  const sectionOrder =
+    content.sectionOrder && content.sectionOrder.length
+      ? content.sectionOrder
+      : [...SECTION_KEYS];
+
+  const handleSectionDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = sectionOrder.indexOf(active.id as SectionKey);
+    const newIndex = sectionOrder.indexOf(over.id as SectionKey);
+    if (oldIndex === -1 || newIndex === -1) return;
+    setContent((prev) => ({
+      ...prev,
+      sectionOrder: arrayMove(sectionOrder, oldIndex, newIndex),
+    }));
+  };
 
   useEffect(() => {
     try {
@@ -101,7 +148,7 @@ export default function ResumeBuilder() {
       skillCategories: categories,
     }));
 
-  const setSectionTitle = (key: SectionTitleKey, value: string) =>
+  const setSectionTitle = (key: SectionKey, value: string) =>
     setContent((prev) => {
       const current = prev.sectionTitles || {};
       const next = { ...current };
@@ -247,6 +294,74 @@ export default function ResumeBuilder() {
       certifications: (prev.certifications || []).filter((_, i) => i !== index),
     }));
 
+  const renderSectionForm = (key: SectionKey) => {
+    switch (key) {
+      case "summary":
+        return (
+          <SummaryForm
+            value={content.summary || ""}
+            onChange={(value) => updateContent({ summary: value })}
+          />
+        );
+      case "experience":
+        return (
+          <ExperienceForm
+            experience={content.experience}
+            onAdd={addExperience}
+            onUpdate={updateExperience}
+            onRemove={removeExperience}
+          />
+        );
+      case "skills":
+        return (
+          <SkillsForm
+            skills={content.skills || []}
+            onSkillsChange={(skills) => updateContent({ skills })}
+            categories={content.skillCategories || []}
+            onChange={setSkillCategories}
+          />
+        );
+      case "education":
+        return (
+          <EducationForm
+            education={content.education}
+            onAdd={addEducation}
+            onUpdate={updateEducation}
+            onRemove={removeEducation}
+          />
+        );
+      case "projects":
+        return (
+          <ProjectsForm
+            projects={content.projects || []}
+            onAdd={addProject}
+            onUpdate={updateProject}
+            onRemove={removeProject}
+          />
+        );
+      case "achievements":
+        return (
+          <AchievementsForm
+            achievements={content.achievements || []}
+            onAdd={addAchievement}
+            onUpdate={updateAchievement}
+            onRemove={removeAchievement}
+          />
+        );
+      case "certifications":
+        return (
+          <CertificationsForm
+            certifications={content.certifications || []}
+            onAdd={addCertification}
+            onUpdate={updateCertification}
+            onRemove={removeCertification}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <Wrapper>
@@ -299,94 +414,28 @@ export default function ResumeBuilder() {
               />
             </ResumeBuilderSection>
 
-            <ResumeBuilderSection
-              title={getSectionTitle(content, "summary")}
-              onTitleChange={(v) => setSectionTitle("summary", v)}
-              subtitle="Highlight your top skills and achievements"
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleSectionDragEnd}
             >
-              <SummaryForm
-                value={content.summary || ""}
-                onChange={(value) => updateContent({ summary: value })}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title={getSectionTitle(content, "experience")}
-              onTitleChange={(v) => setSectionTitle("experience", v)}
-              subtitle="List relevant jobs and key accomplishments"
-            >
-              <ExperienceForm
-                experience={content.experience}
-                onAdd={addExperience}
-                onUpdate={updateExperience}
-                onRemove={removeExperience}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title={getSectionTitle(content, "skills")}
-              onTitleChange={(v) => setSectionTitle("skills", v)}
-              subtitle="Add your main skills for recruiters to see at a glance"
-            >
-              <SkillsForm
-                skills={content.skills || []}
-                onSkillsChange={(skills) => updateContent({ skills })}
-                categories={content.skillCategories || []}
-                onChange={setSkillCategories}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title={getSectionTitle(content, "education")}
-              onTitleChange={(v) => setSectionTitle("education", v)}
-              subtitle="Include degrees, schools, and graduation years"
-            >
-              <EducationForm
-                education={content.education}
-                onAdd={addEducation}
-                onUpdate={updateEducation}
-                onRemove={removeEducation}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title={getSectionTitle(content, "projects")}
-              onTitleChange={(v) => setSectionTitle("projects", v)}
-              subtitle="Projects you've worked on"
-            >
-              <ProjectsForm
-                projects={content.projects || []}
-                onAdd={addProject}
-                onUpdate={updateProject}
-                onRemove={removeProject}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title={getSectionTitle(content, "achievements")}
-              onTitleChange={(v) => setSectionTitle("achievements", v)}
-              subtitle="Awards, recognitions & wins"
-            >
-              <AchievementsForm
-                achievements={content.achievements || []}
-                onAdd={addAchievement}
-                onUpdate={updateAchievement}
-                onRemove={removeAchievement}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title={getSectionTitle(content, "certifications")}
-              onTitleChange={(v) => setSectionTitle("certifications", v)}
-              subtitle="Licenses & certificates"
-            >
-              <CertificationsForm
-                certifications={content.certifications || []}
-                onAdd={addCertification}
-                onUpdate={updateCertification}
-                onRemove={removeCertification}
-              />
-            </ResumeBuilderSection>
+              <SortableContext
+                items={sectionOrder}
+                strategy={verticalListSortingStrategy}
+              >
+                {sectionOrder.map((key) => (
+                  <ResumeBuilderSection
+                    key={key}
+                    sortableId={key}
+                    title={getSectionTitle(content, key)}
+                    onTitleChange={(v) => setSectionTitle(key, v)}
+                    subtitle={SECTION_SUBTITLES[key]}
+                  >
+                    {renderSectionForm(key)}
+                  </ResumeBuilderSection>
+                ))}
+              </SortableContext>
+            </DndContext>
           </div>
 
           {/* RIGHT: preview (2/3) */}

@@ -3,10 +3,10 @@ ATS-Friendly Resume HTML/CSS Builder
 Shared by the live preview and the PDF
 export so they always match exactly.
 =================================== */
-import { ResumeContent } from "../types";
+import { ResumeContent, SECTION_KEYS, SectionKey } from "../types";
 import { sortItemsByDateDesc } from "./sort";
 
-export const DEFAULT_SECTION_TITLES = {
+export const DEFAULT_SECTION_TITLES: Record<SectionKey, string> = {
   summary: "Summary",
   experience: "Work Experience",
   skills: "Skills",
@@ -14,13 +14,11 @@ export const DEFAULT_SECTION_TITLES = {
   projects: "Projects",
   achievements: "Achievements",
   certifications: "Certifications",
-} as const;
-
-export type SectionTitleKey = keyof typeof DEFAULT_SECTION_TITLES;
+};
 
 export const getSectionTitle = (
   content: ResumeContent,
-  key: SectionTitleKey,
+  key: SectionKey,
 ): string => content.sectionTitles?.[key]?.trim() || DEFAULT_SECTION_TITLES[key];
 
 const escapeHtml = (value?: string): string =>
@@ -450,17 +448,24 @@ const buildCertifications = (content: ResumeContent): string => {
   </div>`;
 };
 
-export const buildAtsResumeMarkup = (content: ResumeContent): string =>
-  [
-    buildPersonalInfo(content),
-    buildSummary(content),
-    buildExperience(content),
-    buildSkills(content),
-    buildEducation(content),
-    buildProjects(content),
-    buildAchievements(content),
-    buildCertifications(content),
-  ].join("");
+const SECTION_BUILDERS: Record<SectionKey, (c: ResumeContent) => string> = {
+  summary: buildSummary,
+  experience: buildExperience,
+  skills: buildSkills,
+  education: buildEducation,
+  projects: buildProjects,
+  achievements: buildAchievements,
+  certifications: buildCertifications,
+};
+
+export const buildAtsResumeMarkup = (content: ResumeContent): string => {
+  const order =
+    content.sectionOrder && content.sectionOrder.length
+      ? content.sectionOrder
+      : [...SECTION_KEYS];
+  const body = order.map((key) => SECTION_BUILDERS[key](content)).join("");
+  return `${buildPersonalInfo(content)}${body}`;
+};
 
 export const buildAtsResumeHtml = (content: ResumeContent): string => {
   const printCss = `@page {

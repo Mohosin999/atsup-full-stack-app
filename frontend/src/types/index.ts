@@ -121,6 +121,18 @@ export interface Certification {
   date?: string;
 }
 
+export const SECTION_KEYS = [
+  "summary",
+  "experience",
+  "skills",
+  "education",
+  "projects",
+  "achievements",
+  "certifications",
+] as const;
+
+export type SectionKey = (typeof SECTION_KEYS)[number];
+
 export interface ResumeContent {
   personalInfo: {
     fullName?: string;
@@ -160,6 +172,7 @@ export interface ResumeContent {
     achievements?: string;
     certifications?: string;
   };
+  sectionOrder?: SectionKey[];
 }
 
 export interface Experience {

@@ -1,8 +1,24 @@
 /* ===================================
-Skills Form (categorized)
+Skills Form (categorized) with drag & drop
 =================================== */
 import { useState } from "react";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, Trash2, X, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  useSortable,
+  rectSortingStrategy,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { SkillCategory } from "../../types";
 
 const PRESET_CATEGORIES = [
@@ -67,35 +83,93 @@ function SkillTagInput({
 }
 
 /**
- * Removable skill chips.
+ * A single draggable skill chip.
  */
-function SkillChips({
+function SortableChip({
+  id,
+  onRemove,
+  children,
+}: {
+  id: string;
+  onRemove: () => void;
+  children: React.ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  return (
+    <span
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      {...attributes}
+      {...listeners}
+      className={`inline-flex items-center gap-1.5 rounded-full bg-green-50 border border-green-200 px-2.5 py-1 text-xs text-green-800 cursor-grab active:cursor-grabbing touch-none select-none ${
+        isDragging ? "opacity-60 z-10 shadow-md" : ""
+      }`}
+    >
+      <GripVertical className="w-3 h-3 text-green-400" />
+      {children}
+      <button
+        type="button"
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={onRemove}
+        className="text-green-600 hover:text-red-600 transition-colors"
+        aria-label={`Remove ${children}`}
+      >
+        <X className="w-3 h-3" />
+      </button>
+    </span>
+  );
+}
+
+/**
+ * Reorderable skill chips (flex-wrap layout).
+ */
+function SortableChipList({
   value,
+  onChange,
   onRemove,
 }: {
   value: string[];
+  onChange: (skills: string[]) => void;
   onRemove: (skill: string) => void;
 }) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = value.indexOf(active.id as string);
+    const newIndex = value.indexOf(over.id as string);
+    if (oldIndex === -1 || newIndex === -1) return;
+    onChange(arrayMove(value, oldIndex, newIndex));
+  };
+
   if (value.length === 0) return null;
   return (
-    <div className="flex flex-wrap gap-1.5">
-      {value.map((skill) => (
-        <span
-          key={skill}
-          className="inline-flex items-center gap-1.5 rounded-full bg-green-50 border border-green-200 px-2.5 py-1 text-xs text-green-800"
-        >
-          {skill}
-          <button
-            type="button"
-            onClick={() => onRemove(skill)}
-            className="text-green-600 hover:text-red-600 transition-colors"
-            aria-label={`Remove ${skill}`}
-          >
-            <X className="w-3 h-3" />
-          </button>
-        </span>
-      ))}
-    </div>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext items={value} strategy={rectSortingStrategy}>
+        <div className="flex flex-wrap gap-1.5">
+          {value.map((skill) => (
+            <SortableChip key={skill} id={skill} onRemove={() => onRemove(skill)}>
+              {skill}
+            </SortableChip>
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
   );
 }
 
@@ -129,7 +203,115 @@ function SkillTagsInput({
         placeholder={placeholder}
       />
       <div className="mt-2">
-        <SkillChips value={value} onRemove={onRemove} />
+        <SortableChipList
+          value={value}
+          onChange={onChange}
+          onRemove={onRemove}
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A draggable skill category card.
+ */
+function SortableCategory({
+  id,
+  cat,
+  index,
+  onNameChange,
+  onSkillsChange,
+  onRemove,
+}: {
+  id: string;
+  cat: SkillCategory;
+  index: number;
+  onNameChange: (name: string) => void;
+  onSkillsChange: (skills: string[]) => void;
+  onRemove: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const onRemoveSkill = (skill: string) =>
+    onSkillsChange((cat.skills || []).filter((s) => s !== skill));
+
+  const onReorderSkills = (skills: string[]) => onSkillsChange(skills);
+
+  const onAddSkills = (next: string[]) =>
+    onSkillsChange(
+      Array.from(
+        new Set([
+          ...(cat.skills || []).map((s) => s.trim()).filter(Boolean),
+          ...next,
+        ]),
+      ),
+    );
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={`rounded-lg border border-gray-200 bg-gray-100 p-3 space-y-3 ${
+        isDragging ? "opacity-70 z-10 shadow-md" : ""
+      }`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            {...attributes}
+            {...listeners}
+            title="Drag to reorder category"
+            className="text-gray-400 hover:text-gray-700 cursor-grab active:cursor-grabbing touch-none"
+          >
+            <GripVertical className="w-4 h-4" />
+          </button>
+          <span className="text-xs font-semibold text-gray-700">
+            Cat. {index + 1}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="text-gray-600 hover:text-red-600"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <input
+            list="skill-category-presets"
+            value={cat.name || ""}
+            onChange={(e) => onNameChange(e.target.value)}
+            className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-xs"
+            placeholder="e.g. Technical Skills"
+          />
+        </div>
+
+        <div>
+          <SkillTagInput
+            onAdd={onAddSkills}
+            onRemoveLast={() => onSkillsChange((cat.skills || []).slice(0, -1))}
+          />
+        </div>
+      </div>
+
+      <div className="pt-1">
+        <SortableChipList
+          value={cat.skills || []}
+          onChange={onReorderSkills}
+          onRemove={onRemoveSkill}
+        />
       </div>
     </div>
   );
@@ -141,6 +323,10 @@ export default function SkillsForm({
   categories,
   onChange,
 }: SkillsFormProps) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
   const addCategory = () =>
     onChange([
       ...categories,
@@ -161,110 +347,50 @@ export default function SkillsForm({
   const removeCategory = (index: number) =>
     onChange(categories.filter((_, i) => i !== index));
 
+  const handleCategoryDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = categories.findIndex((_, i) => `cat-${i}` === active.id);
+    const newIndex = categories.findIndex((_, i) => `cat-${i}` === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+    onChange(arrayMove(categories, oldIndex, newIndex));
+  };
+
   return (
     <div className="space-y-3">
-      {/* ===========================================================
-       * All skills together without categories
-       =========================================================== */}
-      <div className="rounded-lg  p-3 space-y-3">
-        {/* <div>
-          <span className="text-xs font-semibold text-gray-700">
-            Add your own skill
-          </span>
-        </div> */}
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">
-            Add your own skill
-          </label>
-          <SkillTagsInput
-            value={skills}
-            onChange={onSkillsChange}
-            placeholder="Type a skill and press Enter"
-          />
-          {/* <p className="text-xs text-gray-500 mt-1.5">
-            No category? Just add skills here — they appear as a single line on
-            the resume.
-          </p> */}
-        </div>
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1.5">
+          Add your own skill
+        </label>
+        <SkillTagsInput
+          value={skills}
+          onChange={onSkillsChange}
+          placeholder="Type a skill and press Enter"
+        />
       </div>
 
-      {categories.map((cat, index) => (
-        <div
-          key={index}
-          className="rounded-lg p-3 space-y-3"
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleCategoryDragEnd}
+      >
+        <SortableContext
+          items={categories.map((_, i) => `cat-${i}`)}
+          strategy={verticalListSortingStrategy}
         >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-gray-700">
-              Cat. {index + 1}
-            </span>
-            <button
-              type="button"
-              onClick={() => removeCategory(index)}
-              className="text-gray-600 hover:text-red-600"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              {/* <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Category Name
-              </label> */}
-              <input
-                list="skill-category-presets"
-                value={cat.name || ""}
-                onChange={(e) => updateName(index, e.target.value)}
-                className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-xs"
-                placeholder="e.g. Technical Skills"
-              />
-              {/* <datalist id="skill-category-presets">
-                {PRESET_CATEGORIES.map((c) => (
-                  <option key={c} value={c} />
-                ))}
-              </datalist> */}
-            </div>
-
-            <div>
-              {/* <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Skills
-              </label> */}
-              <SkillTagInput
-                onAdd={(next) =>
-                  updateSkills(
-                    index,
-                    Array.from(
-                      new Set([
-                        ...(cat.skills || [])
-                          .map((s) => s.trim())
-                          .filter(Boolean),
-                        ...next,
-                      ]),
-                    ),
-                  )
-                }
-                onRemoveLast={() =>
-                  updateSkills(index, (cat.skills || []).slice(0, -1))
-                }
-              />
-            </div>
-          </div>
-
-          {(cat.skills || []).length > 0 && (
-            <div className="pt-1">
-              <SkillChips
-                value={cat.skills || []}
-                onRemove={(skill) =>
-                  updateSkills(
-                    index,
-                    (cat.skills || []).filter((s) => s !== skill),
-                  )
-                }
-              />
-            </div>
-          )}
-        </div>
-      ))}
+          {categories.map((cat, index) => (
+            <SortableCategory
+              key={index}
+              id={`cat-${index}`}
+              cat={cat}
+              index={index}
+              onNameChange={(name) => updateName(index, name)}
+              onSkillsChange={(catSkills) => updateSkills(index, catSkills)}
+              onRemove={() => removeCategory(index)}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
 
       <button
         type="button"

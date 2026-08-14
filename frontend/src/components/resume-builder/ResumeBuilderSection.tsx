@@ -2,13 +2,16 @@
 Collapsible Resume Builder Section
 =================================== */
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Pencil } from "lucide-react";
+import { ChevronDown, GripVertical, Pencil } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface ResumeBuilderSectionProps {
   title: string;
   onTitleChange?: (title: string) => void;
   subtitle?: string;
   defaultOpen?: boolean;
+  sortableId?: string;
   children: React.ReactNode;
 }
 
@@ -17,6 +20,7 @@ export default function ResumeBuilderSection({
   onTitleChange,
   subtitle,
   defaultOpen = false,
+  sortableId,
   children,
 }: ResumeBuilderSectionProps) {
   const [open, setOpen] = useState(defaultOpen);
@@ -24,6 +28,16 @@ export default function ResumeBuilderSection({
   const [draft, setDraft] = useState(title);
   const inputRef = useRef<HTMLInputElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
+
+  const sortable = sortableId
+    ? useSortable({ id: sortableId })
+    : null;
+  const sortableStyle = sortable
+    ? {
+        transform: CSS.Transform.toString(sortable.transform),
+        transition: sortable.transition,
+      }
+    : undefined;
 
   useEffect(() => {
     if (editing && inputRef.current && measureRef.current) {
@@ -50,94 +64,113 @@ export default function ResumeBuilderSection({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div className="px-4 py-3">
-        {editing ? (
-          <div className="w-full flex items-center justify-between text-left min-w-0">
-            <div className="min-w-0">
-              <div className="relative inline-block">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  onBlur={commit}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") commit();
-                    if (e.key === "Escape") cancel();
-                  }}
-                  autoFocus
-                  maxLength={60}
-                  placeholder={title}
-                  className="text-sm font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-green-300 bg-white focus:outline-none focus:border-green-500"
-                />
-                <span
-                  ref={measureRef}
-                  aria-hidden="true"
-                  className="invisible whitespace-pre absolute top-0 left-0 text-sm font-semibold"
-                >
-                  {draft || title}
-                </span>
-              </div>
-              {subtitle && (
-                <p className="text-xs text-gray-600 mt-0.5">{subtitle}</p>
-              )}
-            </div>
-            <ChevronDown
-              className={`w-4 h-4 text-gray-600 flex-shrink-0 transition-transform duration-200 ml-2 ${
-                open ? "rotate-180" : ""
-              }`}
-            />
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className="w-full flex items-center justify-between text-left min-w-0"
-          >
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5 group/title">
-                <h3 className="text-sm font-semibold text-gray-900">
-                  {title}
-                </h3>
-                {onTitleChange && (
-                  <span
-                    role="button"
-                    tabIndex={0}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      startEdit();
-                    }}
+    <div
+      ref={sortable ? sortable.setNodeRef : undefined}
+      style={sortableStyle}
+      className={sortable && sortable.isDragging ? "relative z-10 opacity-90" : ""}
+    >
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="px-4 py-3">
+          {editing ? (
+            <div className="w-full flex items-center justify-between text-left min-w-0">
+              <div className="min-w-0">
+                <div className="relative inline-block">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onBlur={commit}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.stopPropagation();
-                        startEdit();
-                      }
+                      if (e.key === "Enter") commit();
+                      if (e.key === "Escape") cancel();
                     }}
-                    title="Edit section title"
-                    className="text-gray-400 hover:text-emerald-600 transition-colors cursor-pointer flex-shrink-0 opacity-0 group-hover/title:opacity-100 focus-visible:opacity-100"
+                    autoFocus
+                    maxLength={60}
+                    placeholder={title}
+                    className="text-sm font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-green-300 bg-white focus:outline-none focus:border-green-500"
+                  />
+                  <span
+                    ref={measureRef}
+                    aria-hidden="true"
+                    className="invisible whitespace-pre absolute top-0 left-0 text-sm font-semibold"
                   >
-                    <Pencil className="w-3.5 h-3.5" />
+                    {draft || title}
                   </span>
+                </div>
+                {subtitle && (
+                  <p className="text-xs text-gray-600 mt-0.5">{subtitle}</p>
                 )}
               </div>
-              {subtitle && (
-                <p className="text-xs text-gray-600 mt-0.5">{subtitle}</p>
-              )}
+              <ChevronDown
+                className={`w-4 h-4 text-gray-600 flex-shrink-0 transition-transform duration-200 ml-2 ${
+                  open ? "rotate-180" : ""
+                }`}
+              />
             </div>
-            <ChevronDown
-              className={`w-4 h-4 text-gray-600 flex-shrink-0 transition-transform duration-200 ml-2 ${
-                open ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              {sortable && (
+                <button
+                  type="button"
+                  {...sortable.attributes}
+                  {...sortable.listeners}
+                  title="Drag to reorder section"
+                  className="text-gray-400 hover:text-gray-700 cursor-grab active:cursor-grabbing flex-shrink-0 touch-none"
+                >
+                  <GripVertical className="w-4 h-4" />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                className="flex-1 flex items-center justify-between text-left min-w-0"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 group/title">
+                    <h3 className="text-sm font-semibold text-gray-900">
+                      {title}
+                    </h3>
+                    {onTitleChange && (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          startEdit();
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.stopPropagation();
+                            startEdit();
+                          }
+                        }}
+                        title="Edit section title"
+                        className="text-gray-400 hover:text-emerald-600 transition-colors cursor-pointer flex-shrink-0 opacity-0 group-hover/title:opacity-100 focus-visible:opacity-100"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </span>
+                    )}
+                  </div>
+                  {subtitle && (
+                    <p className="text-xs text-gray-600 mt-0.5">{subtitle}</p>
+                  )}
+                </div>
+                <ChevronDown
+                  className={`w-4 h-4 text-gray-600 flex-shrink-0 transition-transform duration-200 ml-2 ${
+                    open ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+            </div>
+          )}
+        </div>
+        {open && (
+          <div className="px-4 pb-4 pt-3 border-t border-gray-200 space-y-4">
+            {children}
+          </div>
         )}
       </div>
-      {open && (
-        <div className="px-4 pb-4 pt-3 border-t border-gray-200 space-y-4">
-          {children}
-        </div>
-      )}
     </div>
   );
 }

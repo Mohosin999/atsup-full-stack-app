@@ -366,17 +366,7 @@ export default function ResumeBuilder() {
 
           {/* RIGHT: preview (2/3) */}
           <div className="lg:col-span-3 lg:sticky lg:top-20">
-            <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
-              {/* <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Live Preview
-                </h2>
-                <span className="text-xs text-gray-600">
-                  Auto-saved to your browser
-                </span>
-              </div> */}
-              <AtsResumePreview content={content} />
-            </div>
+            <AtsResumePreview content={content} />
           </div>
         </div>
       </Wrapper>

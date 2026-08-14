@@ -54,12 +54,17 @@ const formatPhone = (phone?: string): string => {
 
 const formatLinkedIn = (linkedIn?: string): string => {
   if (!linkedIn) return "";
-  let clean = linkedIn.trim().replace(/^https?:\/\//, "").replace(/^www\./, "");
+  let clean = linkedIn
+    .trim()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "");
   if (!clean.startsWith("linkedin.com/in/")) {
     clean = `linkedin.com/in/${clean}`;
   }
   return clean;
 };
+
+// padding: 40px 46px 46px;
 
 export const ATS_STYLE = `
   * {
@@ -70,54 +75,54 @@ export const ATS_STYLE = `
   .ats-resume {
     width: 100%;
     min-height: 1122px;
-    padding: 40px 46px 46px;
+    padding: 60px 56px 56px;
     background: #ffffff;
-    color: #1f1f1f;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 11pt;
+    color: #444444;
+    font-size: 10pt;
+    font-family: Inter, Calibri, Arial, Helvetica, "Times New Roman";
     line-height: 1.45;
   }
   .ats-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 16px;
+    margin-bottom: 2px;
   }
   .ats-name {
-    font-size: 22pt;
-    font-weight: 700;
-    text-transform: uppercase;
+    font-size: 17pt;
+    font-weight: 500;
+    text-transform: capitalize;
     letter-spacing: 0.5px;
     line-height: 1.15;
-    color: #111111;
+    color: #333333;
   }
   .ats-job-title {
-    font-size: 12pt;
+    font-size: 13pt;
     margin-top: 4px;
-    color: #222222;
+    color: #444444;
   }
   .ats-contact {
     text-align: right;
     font-size: 10pt;
-    color: #333333;
+    color: #444444;
     line-height: 1.55;
   }
   .ats-contact div {
     margin-bottom: 1px;
   }
   .ats-section {
-    margin-top: 14px;
+    margin-top: 24px;
   }
   .ats-section-title {
-    font-size: 11pt;
-    font-weight: 700;
-    text-transform: uppercase;
+    font-size: 13pt;
+    font-weight: 500;
+    text-transform: capitalize;
     letter-spacing: 0.5px;
-    margin-bottom: 6px;
-    color: #111111;
+    margin-bottom: 14px;
+    color: #333333;
   }
   .ats-item {
-    margin-bottom: 8px;
+    margin-bottom: 14px;
   }
   .ats-item-head {
     display: flex;
@@ -126,8 +131,9 @@ export const ATS_STYLE = `
     gap: 12px;
   }
   .ats-strong {
-    font-weight: 700;
-    color: #111111;
+    font-size: 11pt;
+    font-weight: 500;
+    color: #333333;
   }
   .ats-date {
     font-size: 10pt;
@@ -138,9 +144,11 @@ export const ATS_STYLE = `
     font-size: 10pt;
     color: #333333;
     margin-top: 1px;
+    font-style: italic;
+    
   }
   .ats-bullets {
-    margin: 3px 0 0 0;
+    margin: 8px 0 0 0;
     padding-left: 22px;
     list-style: disc;
     list-style-position: outside;
@@ -153,7 +161,7 @@ export const ATS_STYLE = `
   }
   .ats-links {
     font-size: 10pt;
-    color: #333333;
+    color: #444444;
     margin-top: 1px;
   }
   .ats-links .sep {
@@ -166,9 +174,7 @@ const buildPersonalInfo = (content: ResumeContent): string => {
   const pi = content.personalInfo || {};
   const contact = pi.contact || {};
   const address = contact.address || {};
-  const location = [address.city, address.state]
-    .filter(Boolean)
-    .join(", ");
+  const location = [address.city, address.state].filter(Boolean).join(", ");
 
   const contactLines: string[] = [];
   if (contact.email) contactLines.push(escapeHtml(contact.email));
@@ -219,9 +225,7 @@ const buildExperience = (content: ResumeContent): string => {
         return `<div class="ats-item">
           <div class="ats-item-head">
             <span class="ats-strong">${escapeHtml(exp.title)}</span>
-            ${
-              dr ? `<span class="ats-date">${escapeHtml(dr)}</span>` : ""
-            }
+            ${dr ? `<span class="ats-date">${escapeHtml(dr)}</span>` : ""}
           </div>
           ${
             exp.company || exp.location
@@ -286,7 +290,9 @@ const buildEducation = (content: ResumeContent): string => {
               : ""
           }
           ${
-            edu.date ? `<div class="ats-date">${escapeHtml(edu.date)}</div>` : ""
+            edu.date
+              ? `<div class="ats-date">${escapeHtml(edu.date)}</div>`
+              : ""
           }
         </div>`,
       )
@@ -309,9 +315,7 @@ const buildProjects = (content: ResumeContent): string => {
         return `<div class="ats-item">
           <div class="ats-item-head">
             <span class="ats-strong">${escapeHtml(proj.name)}</span>
-            ${
-              dr ? `<span class="ats-date">${escapeHtml(dr)}</span>` : ""
-            }
+            ${dr ? `<span class="ats-date">${escapeHtml(dr)}</span>` : ""}
           </div>
           ${
             links.length
@@ -348,7 +352,9 @@ const buildAchievements = (content: ResumeContent): string => {
               : ""
           }
           ${
-            ach.date ? `<div class="ats-date">${escapeHtml(ach.date)}</div>` : ""
+            ach.date
+              ? `<div class="ats-date">${escapeHtml(ach.date)}</div>`
+              : ""
           }
         </div>`,
       )
@@ -357,7 +363,9 @@ const buildAchievements = (content: ResumeContent): string => {
 };
 
 const buildCertifications = (content: ResumeContent): string => {
-  const items = (content.certifications || []).filter((cert) => cert.name?.trim());
+  const items = (content.certifications || []).filter((cert) =>
+    cert.name?.trim(),
+  );
   if (items.length === 0) return "";
   return `<div class="ats-section">
     <div class="ats-section-title">Certifications</div>
@@ -371,7 +379,9 @@ const buildCertifications = (content: ResumeContent): string => {
               : ""
           }
           ${
-            cert.date ? `<div class="ats-date">${escapeHtml(cert.date)}</div>` : ""
+            cert.date
+              ? `<div class="ats-date">${escapeHtml(cert.date)}</div>`
+              : ""
           }
         </div>`,
       )

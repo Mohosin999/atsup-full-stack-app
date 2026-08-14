@@ -102,7 +102,7 @@ export const ATS_STYLE = `
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 2px;
+    margin-bottom: 0px;
   }
   .ats-name {
     font-size: 17pt;
@@ -163,6 +163,10 @@ export const ATS_STYLE = `
     font-style: italic;
     
   }
+  .ats-location {
+    font-style: normal;
+    color: #444444;
+  }
   .ats-bullets {
     margin: 8px 0 0 0;
     padding-left: 22px;
@@ -177,8 +181,10 @@ export const ATS_STYLE = `
   }
   .ats-skill-category {
     font-size: 10pt;
-    font-weight: 500;
+    font-weight: 600;
     color: #333333;
+    margin-top: 6px;
+    margin-bottom: 1px;
   }
   .ats-links {
     font-size: 10pt;
@@ -246,7 +252,9 @@ const buildExperience = (content: ResumeContent): string => {
     ${items
       .map((exp) => {
         const dr = dateRange(exp.startDate, exp.endDate, exp.current);
-        const location = exp.location ? ` · ${escapeHtml(exp.location)}` : "";
+        const location = exp.location
+          ? `<span class="ats-location"> · ${escapeHtml(exp.location)}</span>`
+          : "";
         const bullets = (exp.highlights || []).filter((h) => h.trim());
         return `<div class="ats-item">
           <div class="ats-item-head">
@@ -290,9 +298,8 @@ const buildSkills = (content: ResumeContent): string => {
     const skills = (cat.skills || []).filter((s) => s.trim());
     if (skills.length === 0) continue;
     lines.push(
-      `<div class="ats-skill-line"><span class="ats-skill-category">${escapeHtml(
-        cat.name,
-      )}:</span> ${escapeHtml(skills.join(", "))}</div>`,
+      `<div class="ats-skill-category">${escapeHtml(cat.name)}</div>
+  <div class="ats-skill-line">${escapeHtml(skills.join(", "))}</div>`,
     );
   }
 
@@ -335,10 +342,10 @@ const buildEducation = (content: ResumeContent): string => {
               dr ? `<span class="ats-date">${escapeHtml(dr)}</span>` : ""
             }</div>`,
           );
-        if (study) parts.push(`<div class="ats-sub">${escapeHtml(study)}</div>`);
+        if (study) parts.push(`<div class="ats-bullet">${escapeHtml(study)}</div>`);
         if (edu.gpa?.trim())
           parts.push(
-            `<div class="ats-sub">GPA: ${escapeHtml(edu.gpa.trim())}</div>`,
+            `<div class="ats-bullet">GPA: ${escapeHtml(edu.gpa.trim())}</div>`,
           );
         return `<div class="ats-item">${parts.join("")}</div>`;
       })

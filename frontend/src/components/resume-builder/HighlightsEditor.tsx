@@ -4,120 +4,203 @@ Each added item appears as a bullet
 point in the resume preview.
 =================================== */
 import { useState } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Trash2, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import AddButton from "../ui/AddButton";
+import ConfirmModal from "../ui/ConfirmModal";
 
 interface HighlightsEditorProps {
   highlights: string[];
   onAdd: (text: string) => void;
   onRemove: (index: number) => void;
+  onReorder: (highlights: string[]) => void;
   placeholder?: string;
+}
+
+function SortableHighlight({
+  id,
+  onDelete,
+  children,
+}: {
+  id: string;
+  onDelete: () => void;
+  children: React.ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={`flex items-start gap-2 border border-gray-200 rounded-lg px-3 py-3 bg-white ${
+        isDragging ? "opacity-70 z-10 shadow-md" : ""
+      }`}
+    >
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        title="Drag to reorder"
+        className="text-gray-400 hover:text-gray-700 mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing touch-none"
+      >
+        <GripVertical className="w-4 h-4" />
+      </button>
+      <span className="flex-1 text-xs text-gray-700 break-words">
+        {children}
+      </span>
+      <button
+        type="button"
+        onClick={onDelete}
+        className="text-gray-600 hover:text-red-600 mt-0.5 flex-shrink-0"
+      >
+        <Trash2 className="w-4 h-4" />
+      </button>
+    </div>
+  );
 }
 
 export default function HighlightsEditor({
   highlights,
   onAdd,
   onRemove,
+  onReorder,
   placeholder,
 }: HighlightsEditorProps) {
-  const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+  const [adding, setAdding] = useState(false);
+  const [removeIndex, setRemoveIndex] = useState<number | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = highlights.indexOf(active.id as string);
+    const newIndex = highlights.indexOf(over.id as string);
+    if (oldIndex === -1 || newIndex === -1) return;
+    onReorder(arrayMove(highlights, oldIndex, newIndex));
+  };
+
+  const startAdding = () => {
+    setText("");
+    setAdding(true);
+  };
 
   const handleSave = () => {
     const trimmed = text.trim();
     if (!trimmed) return;
     onAdd(trimmed);
     setText("");
-    setOpen(false);
+    setAdding(false);
   };
 
   return (
     <div>
-      <div className="space-y-2">
-        {(highlights || []).map((highlight, index) => (
-          <div
-            key={index}
-            className="flex items-start gap-2 bg-gray-100 rounded-lg px-3 py-2"
-          >
-            <span className="text-green-600 mt-0.5 text-xs">•</span>
-            <span className="flex-1 text-sm text-gray-700 break-words">
-              {highlight}
-            </span>
-            <button
-              type="button"
-              onClick={() => onRemove(index)}
-              className="text-gray-600 hover:text-red-600 mt-0.5 flex-shrink-0"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
-        {(highlights || []).length === 0 && (
-          <p className="text-xs text-gray-500">
-            No bullet points added yet.
-          </p>
-        )}
-      </div>
-
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 hover:text-emerald-700"
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
       >
-        <Plus className="w-4 h-4" /> Add Bullet Point
-      </button>
-
-      {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-          onClick={() => setOpen(false)}
+        <SortableContext
+          items={highlights}
+          strategy={verticalListSortingStrategy}
         >
-          <div
-            className="bg-white rounded-xl border border-gray-200 w-full max-w-md p-5"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-semibold text-gray-900">
-                Add Bullet Point
-              </h4>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="text-gray-600 hover:text-gray-900"
+          <div className="space-y-2">
+            {highlights.map((highlight, index) => (
+              <SortableHighlight
+                key={`${highlight}-${index}`}
+                id={highlight}
+                onDelete={() => setRemoveIndex(index)}
               >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder={
-                placeholder ||
-                "e.g. Increased website traffic by 40% through SEO optimization"
-              }
-              rows={3}
-              autoFocus
-              className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
-            />
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="px-4 py-2 text-sm text-gray-700 hover:text-gray-900"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={!text.trim()}
-                className="px-4 py-2 text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Add
-              </button>
-            </div>
+                {highlight}
+              </SortableHighlight>
+            ))}
+            {highlights.length === 0 && (
+              <p className="text-xs text-gray-500">
+                No bullet points added yet.
+              </p>
+            )}
           </div>
+        </SortableContext>
+      </DndContext>
+
+      {adding && (
+        <div className="flex items-start gap-2 border border-gray-200 rounded-lg px-3 py-3 bg-white mt-2">
+          {/* <Plus className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" /> */}
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSave();
+              } else if (e.key === "Escape") {
+                setAdding(false);
+              }
+            }}
+            // placeholder={
+            //   placeholder ||
+            //   "e.g. Increased website traffic by 40% through SEO optimization"
+            // }
+            autoFocus
+            className="flex-1 text-xs text-gray-700 bg-white focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={!text.trim()}
+            className="text-xs font-medium text-emerald-600 hover:text-emerald-700 disabled:text-gray-300 flex-shrink-0 mt-0.5"
+          >
+            Add
+          </button>
+          <button
+            type="button"
+            onClick={() => setAdding(false)}
+            className="text-gray-400 hover:text-red-600 mt-0.5 flex-shrink-0"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
+
+      <AddButton onClick={startAdding} className="mt-2">
+        Add Bullet Point
+      </AddButton>
+
+      <ConfirmModal
+        isOpen={removeIndex !== null}
+        title="Delete bullet point?"
+        message="Are you sure you want to delete this bullet point? This action cannot be undone."
+        confirmText="Delete"
+        onConfirm={() => {
+          if (removeIndex !== null) onRemove(removeIndex);
+          setRemoveIndex(null);
+        }}
+        onCancel={() => setRemoveIndex(null)}
+      />
     </div>
   );
 }

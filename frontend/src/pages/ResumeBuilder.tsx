@@ -405,7 +405,7 @@ export default function ResumeBuilder() {
           {/* LEFT: form (1/3) */}
           <div className="lg:col-span-2 space-y-4">
             <ResumeBuilderSection
-              title="Personal Info"
+              title="Profile Info"
               subtitle="Include email, phone & linkedin for easy employer access"
             >
               <PersonalInfoForm

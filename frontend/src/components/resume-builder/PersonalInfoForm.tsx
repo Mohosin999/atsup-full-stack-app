@@ -1,6 +1,5 @@
-/* ===================================
-Personal Info Form
-=================================== */
+import { useState } from "react";
+import { FaLinkedin } from "react-icons/fa";
 import { Input } from "../ui/FormField";
 import { ResumeContent } from "../../types";
 
@@ -17,6 +16,9 @@ export default function PersonalInfoForm({
 }: PersonalInfoFormProps) {
   const contact = personalInfo.contact || {};
   const address = contact.address || {};
+  const [location, setLocation] = useState(
+    [address.city, address.state].filter(Boolean).join(", "),
+  );
 
   const setField = (field: keyof PersonalInfo, value: string) =>
     onChange({ ...personalInfo, [field]: value });
@@ -24,26 +26,29 @@ export default function PersonalInfoForm({
   const setContact = (field: keyof typeof contact, value: string) =>
     onChange({ ...personalInfo, contact: { ...contact, [field]: value } });
 
-  const setAddress = (field: keyof typeof address, value: string) =>
+  const handleLocationChange = (value: string) => {
+    setLocation(value);
+    const [city = "", state = ""] = value.split(",").map((s) => s.trim());
     onChange({
       ...personalInfo,
       contact: {
         ...contact,
-        address: { ...address, [field]: value },
+        address: { ...address, city, state },
       },
     });
+  };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div className="sm:col-span-2">
+      <div>
         <Input
-          label="Full Name"
+          label="Name"
           value={personalInfo.fullName || ""}
           onChange={(e) => setField("fullName", e.target.value)}
           placeholder="John Doe"
         />
       </div>
-      <div className="sm:col-span-2">
+      <div>
         <Input
           label="Job Title"
           value={personalInfo.jobTitle || ""}
@@ -71,26 +76,19 @@ export default function PersonalInfoForm({
       </div>
       <div>
         <Input
-          label="City"
-          value={address.city || ""}
-          onChange={(e) => setAddress("city", e.target.value)}
-          placeholder="Dhaka"
+          label="Location"
+          value={location}
+          onChange={(e) => handleLocationChange(e.target.value)}
+          placeholder="city, state"
         />
       </div>
       <div>
         <Input
-          label="State / Division"
-          value={address.state || ""}
-          onChange={(e) => setAddress("state", e.target.value)}
-          placeholder="Dhaka"
-        />
-      </div>
-      <div className="sm:col-span-2">
-        <Input
-          label="LinkedIn Profile"
+          label="LinkedIn"
+          icon={<FaLinkedin size={16} />}
           value={contact.linkedIn || ""}
           onChange={(e) => setContact("linkedIn", e.target.value)}
-          placeholder="https://www.linkedin.com/in/johndoe"
+          placeholder="username"
         />
       </div>
     </div>

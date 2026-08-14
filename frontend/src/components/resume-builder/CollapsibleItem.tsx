@@ -5,6 +5,7 @@ education / achievement / certification
 =================================== */
 import { useState } from "react";
 import { ChevronDown, Trash2 } from "lucide-react";
+import ConfirmModal from "../ui/ConfirmModal";
 
 interface CollapsibleItemProps {
   title: string;
@@ -22,9 +23,10 @@ export default function CollapsibleItem({
   children,
 }: CollapsibleItemProps) {
   const [open, setOpen] = useState(defaultOpen);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-gray-100 overflow-hidden">
+    <div className="rounded-lg border border-gray-200 overflow-hidden">
       <div className="flex items-center gap-2 px-3 py-2.5">
         <button
           type="button"
@@ -43,7 +45,7 @@ export default function CollapsibleItem({
         {onRemove && (
           <button
             type="button"
-            onClick={onRemove}
+            onClick={() => setConfirmOpen(true)}
             aria-label="Remove item"
             className="text-gray-600 hover:text-red-600 flex-shrink-0"
           >
@@ -67,6 +69,19 @@ export default function CollapsibleItem({
         <div className="px-3 pb-3 pt-3 border-t border-gray-200 space-y-3">
           {children}
         </div>
+      )}
+      {onRemove && (
+        <ConfirmModal
+          isOpen={confirmOpen}
+          title="Delete item?"
+          message={`Are you sure you want to delete "${title}"? This action cannot be undone.`}
+          confirmText="Delete"
+          onConfirm={() => {
+            setConfirmOpen(false);
+            onRemove();
+          }}
+          onCancel={() => setConfirmOpen(false)}
+        />
       )}
     </div>
   );

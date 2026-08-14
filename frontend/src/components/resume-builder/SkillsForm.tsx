@@ -20,6 +20,8 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { SkillCategory } from "../../types";
+import AddButton from "../ui/AddButton";
+import ConfirmModal from "../ui/ConfirmModal";
 
 const PRESET_CATEGORIES = [
   "Technical Skills",
@@ -76,7 +78,7 @@ function SkillTagInput({
         }
       }}
       onBlur={() => addSkills(text)}
-      className="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-xs"
+      className="w-full px-3 py-2 text-xs rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-xs"
       placeholder={placeholder || "Type a skill and press Enter"}
     />
   );
@@ -163,7 +165,11 @@ function SortableChipList({
       <SortableContext items={value} strategy={rectSortingStrategy}>
         <div className="flex flex-wrap gap-1.5">
           {value.map((skill) => (
-            <SortableChip key={skill} id={skill} onRemove={() => onRemove(skill)}>
+            <SortableChip
+              key={skill}
+              id={skill}
+              onRemove={() => onRemove(skill)}
+            >
               {skill}
             </SortableChip>
           ))}
@@ -239,10 +245,10 @@ function SortableCategory({
     transition,
     isDragging,
   } = useSortable({ id });
+  const [confirmRemove, setConfirmRemove] = useState(false);
 
   const onRemoveSkill = (skill: string) =>
     onSkillsChange((cat.skills || []).filter((s) => s !== skill));
-
   const onReorderSkills = (skills: string[]) => onSkillsChange(skills);
 
   const onAddSkills = (next: string[]) =>
@@ -275,12 +281,12 @@ function SortableCategory({
             <GripVertical className="w-4 h-4" />
           </button>
           <span className="text-xs font-semibold text-gray-700">
-            Cat. {index + 1}
+            Category {index + 1}
           </span>
         </div>
         <button
           type="button"
-          onClick={onRemove}
+          onClick={() => setConfirmRemove(true)}
           className="text-gray-600 hover:text-red-600"
         >
           <Trash2 className="w-4 h-4" />
@@ -293,7 +299,7 @@ function SortableCategory({
             list="skill-category-presets"
             value={cat.name || ""}
             onChange={(e) => onNameChange(e.target.value)}
-            className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-xs"
+            className="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-xs"
             placeholder="e.g. Technical Skills"
           />
         </div>
@@ -313,6 +319,18 @@ function SortableCategory({
           onRemove={onRemoveSkill}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={confirmRemove}
+        title="Delete skill category?"
+        message={`Are you sure you want to delete "${cat.name || "this category"}"?`}
+        confirmText="Delete"
+        onConfirm={() => {
+          setConfirmRemove(false);
+          onRemove();
+        }}
+        onCancel={() => setConfirmRemove(false)}
+      />
     </div>
   );
 }
@@ -391,14 +409,8 @@ export default function SkillsForm({
           ))}
         </SortableContext>
       </DndContext>
-
-      <button
-        type="button"
-        onClick={addCategory}
-        className="inline-flex items-center gap-1 px-4 py-2.5 text-xs font-medium text-gray-700 hover:border-green-500 hover:text-green-600 transition-colors"
-      >
-        <Plus className="w-4 h-4" /> Add Skill Category
-      </button>
+      
+      <AddButton onClick={addCategory}>Add Skill Category</AddButton>
 
       {categories.length === 0 && (
         <p className="text-xs text-gray-500">

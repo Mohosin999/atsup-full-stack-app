@@ -719,7 +719,7 @@ function generateHtmlContent(content: ResumeContent): string {
     }
     
     a {
-      color: #2563eb !important;
+      color: #222222 !important;
       text-decoration: none !important;
     }
     
@@ -805,13 +805,7 @@ function generateHtmlContent(content: ResumeContent): string {
             <span>
               ${
                 proj.links?.live
-                  ? `<a href="${proj.links.live}" target="_blank">Live</a>`
-                  : ""
-              }
-              
-              ${
-                proj.links?.github
-                  ? `<a href="${proj.links.github}" target="_blank" style="margin-left: 6px;">GitHub</a>`
+                  ? `<a href="${proj.links.live}" target="_blank">Live link</a>`
                   : ""
               }
             </span>

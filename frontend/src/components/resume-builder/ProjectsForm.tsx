@@ -23,9 +23,9 @@ export default function ProjectsForm({
   onRemove,
 }: ProjectsFormProps) {
   const sorted = sortItemsByDateDesc(projects, (proj) => proj.startDate);
-  const updateLink = (index: number, field: "live" | "github", value: string) =>
+  const updateLink = (index: number, value: string) =>
     onUpdate(index, {
-      links: { ...(projects[index].links || {}), [field]: value },
+      links: { ...(projects[index].links || {}), live: value },
     });
 
   return (
@@ -36,6 +36,11 @@ export default function ProjectsForm({
           <CollapsibleItem
             key={index}
             title={proj.name || `Project ${index + 1}`}
+            subtitle={
+              [proj.startDate, proj.current ? "Present" : proj.endDate]
+                .filter(Boolean)
+                .join(" - ") || undefined
+            }
             onRemove={() => onRemove(index)}
           >
             <div className="space-y-4">
@@ -47,9 +52,9 @@ export default function ProjectsForm({
                     placeholder="E-commerce Platform"
                   />
                 <Input
-                  label="Live Link"
+                  label="URL"
                   value={proj.links?.live || ""}
-                  onChange={(e) => updateLink(index, "live", e.target.value)}
+                  onChange={(e) => updateLink(index, e.target.value)}
                   placeholder="https://example.com"
                 />
               </div>

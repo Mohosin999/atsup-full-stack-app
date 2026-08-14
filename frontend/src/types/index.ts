@@ -195,7 +195,6 @@ export interface Project {
   current?: boolean;
   links?: {
     live?: string;
-    github?: string;
     caseStudy?: string;
   };
   technologies?: string[];

@@ -20,7 +20,19 @@ export default function ResumeAchievements({ achievements, forPdf }: ResumeAchie
       </h2>
       <div className="space-y-1">
         {achievements.map((ach, index) => (
-          <div key={index} className={`${textColor} text-sm`}>• {ach.title}</div>
+          <div key={index} className="mb-2">
+            <div className="flex justify-between items-start gap-2">
+              <span className={`${titleColor} text-base font-bold`}>
+                {ach.title}
+              </span>
+              <span className={`text-sm ${textColor} flex-shrink-0`}>
+                {ach.date}
+              </span>
+            </div>
+            {ach.description && (
+              <p className={`${textColor} text-sm mt-0.5`}>{ach.description}</p>
+            )}
+          </div>
         ))}
       </div>
     </div>

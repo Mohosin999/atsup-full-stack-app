@@ -6,6 +6,7 @@ import { Input, Textarea } from "../ui/FormField";
 import CollapsibleItem from "./CollapsibleItem";
 import { Achievement } from "../../types";
 import { sortItemsByDateDesc } from "../../utils/sort";
+import AddButton from "../ui/AddButton";
 
 interface AchievementsFormProps {
   achievements: Achievement[];
@@ -44,7 +45,7 @@ export default function AchievementsForm({
               label="Date"
               value={ach.date || ""}
               onChange={(e) => onUpdate(index, { date: e.target.value })}
-              placeholder="2024"
+              placeholder="e.g. Jun 2024"
             />
             <div className="sm:col-span-2">
               <Textarea
@@ -63,13 +64,7 @@ export default function AchievementsForm({
         );
       })}
 
-      <button
-        type="button"
-        onClick={onAdd}
-        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border border-dashed border-gray-300 text-gray-700 hover:border-green-500 hover:text-green-600 transition-colors"
-      >
-        <Plus className="w-4 h-4" /> Add Achievement
-      </button>
+      <AddButton onClick={onAdd}>Add Achievement</AddButton>
     </div>
   );
 }

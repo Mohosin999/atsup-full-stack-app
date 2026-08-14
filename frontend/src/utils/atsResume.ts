@@ -159,6 +159,11 @@ export const ATS_STYLE = `
   .ats-skill-line {
     margin-bottom: 2px;
   }
+  .ats-skill-category {
+    font-size: 10pt;
+    font-weight: 500;
+    color: #333333;
+  }
   .ats-links {
     font-size: 10pt;
     color: #444444;
@@ -258,7 +263,7 @@ const buildSkills = (content: ResumeContent): string => {
       .map((cat) => {
         const skills = cat.skills.filter((s) => s.trim());
         if (skills.length === 0) return "";
-        return `<div class="ats-skill-line"><span class="ats-strong">${escapeHtml(
+        return `<div class="ats-skill-line"><span class="ats-skill-category">${escapeHtml(
           cat.name,
         )}:</span> ${escapeHtml(skills.join(", "))}</div>`;
       })

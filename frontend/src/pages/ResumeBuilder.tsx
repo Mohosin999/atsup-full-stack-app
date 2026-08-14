@@ -365,21 +365,16 @@ export default function ResumeBuilder() {
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <Wrapper>
-        <div className="mt-6 mb-4">
-          <BackButton />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          className="my-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-lg font-bold text-gray-900 mb-1">
               ATS Resume Builder
             </h1>
-            <p className="text-gray-600 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-green-600" />
+            <p className="text-sm text-gray-600">
               ATS-friendly layout — no images, emojis, tables or underlines.
             </p>
           </div>

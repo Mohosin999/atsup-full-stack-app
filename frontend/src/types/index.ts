@@ -188,7 +188,10 @@ export interface Achievement {
 export interface Education {
   institution: string;
   degree: string;
-  date?: string;
+  areaOfStudy?: string;
+  startDate?: string;
+  endDate?: string;
+  gpa?: string;
 }
 
 export interface MissingKeywords {

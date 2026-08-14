@@ -257,50 +257,63 @@ const buildSkills = (content: ResumeContent): string => {
   const flatSkills = (content.skills || []).filter((s) => s.trim());
   if (categories.length === 0 && flatSkills.length === 0) return "";
 
-  let body = "";
-  if (categories.length > 0) {
-    body = categories
-      .map((cat) => {
-        const skills = cat.skills.filter((s) => s.trim());
-        if (skills.length === 0) return "";
-        return `<div class="ats-skill-line"><span class="ats-skill-category">${escapeHtml(
-          cat.name,
-        )}:</span> ${escapeHtml(skills.join(", "))}</div>`;
-      })
-      .join("");
-  } else {
-    body = `<div class="ats-skill-line">${escapeHtml(flatSkills.join(", "))}</div>`;
+  const lines: string[] = [];
+
+  if (flatSkills.length > 0) {
+    lines.push(
+      `<div class="ats-skill-line">${escapeHtml(flatSkills.join(", "))}</div>`,
+    );
   }
-  if (!body) return "";
+
+  for (const cat of categories) {
+    const skills = (cat.skills || []).filter((s) => s.trim());
+    if (skills.length === 0) continue;
+    lines.push(
+      `<div class="ats-skill-line"><span class="ats-skill-category">${escapeHtml(
+        cat.name,
+      )}:</span> ${escapeHtml(skills.join(", "))}</div>`,
+    );
+  }
+
+  if (lines.length === 0) return "";
   return `<div class="ats-section">
     <div class="ats-section-title">Skills</div>
-    ${body}
+    ${lines.join("")}
   </div>`;
 };
 
 const buildEducation = (content: ResumeContent): string => {
   const items = (content.education || []).filter(
-    (edu) => edu.degree?.trim() || edu.institution?.trim(),
+    (edu) =>
+      edu.institution?.trim() ||
+      edu.degree?.trim() ||
+      edu.areaOfStudy?.trim(),
   );
   if (items.length === 0) return "";
   return `<div class="ats-section">
     <div class="ats-section-title">Education</div>
     ${items
-      .map(
-        (edu) => `<div class="ats-item">
-          <div class="ats-strong">${escapeHtml(edu.degree)}</div>
-          ${
-            edu.institution
-              ? `<div class="ats-sub">${escapeHtml(edu.institution)}</div>`
-              : ""
-          }
-          ${
-            edu.date
-              ? `<div class="ats-date">${escapeHtml(edu.date)}</div>`
-              : ""
-          }
-        </div>`,
-      )
+      .map((edu) => {
+        const dr = dateRange(edu.startDate, edu.endDate);
+        const study = [edu.areaOfStudy?.trim(), edu.degree?.trim()]
+          .filter(Boolean)
+          .join(" | ");
+        const parts: string[] = [];
+        if (edu.institution?.trim())
+          parts.push(
+            `<div class="ats-item-head"><span class="ats-strong">${escapeHtml(
+              edu.institution.trim(),
+            )}</span>${
+              dr ? `<span class="ats-date">${escapeHtml(dr)}</span>` : ""
+            }</div>`,
+          );
+        if (study) parts.push(`<div class="ats-sub">${escapeHtml(study)}</div>`);
+        if (edu.gpa?.trim())
+          parts.push(
+            `<div class="ats-sub">GPA: ${escapeHtml(edu.gpa.trim())}</div>`,
+          );
+        return `<div class="ats-item">${parts.join("")}</div>`;
+      })
       .join("")}
   </div>`;
 };

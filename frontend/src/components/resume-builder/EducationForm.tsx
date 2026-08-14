@@ -39,24 +39,60 @@ export default function EducationForm({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Input
-              label="Degree / Certification"
-              value={edu.degree || ""}
-              onChange={(e) => onUpdate(index, { degree: e.target.value })}
-              placeholder="B.Sc. in Computer Science"
-            />
-            <Input
-              label="Institution"
-              value={edu.institution || ""}
-              onChange={(e) => onUpdate(index, { institution: e.target.value })}
-              placeholder="University of Dhaka"
-            />
             <div className="sm:col-span-2">
               <Input
-                label="Year(s)"
-                value={edu.date || ""}
-                onChange={(e) => onUpdate(index, { date: e.target.value })}
-                placeholder="2020 - 2024"
+                label="Institution"
+                value={edu.institution || ""}
+                onChange={(e) =>
+                  onUpdate(index, { institution: e.target.value })
+                }
+                placeholder="Agricultural University, Mymensingh"
+              />
+            </div>
+            <Input
+              label="Degree"
+              value={edu.degree || ""}
+              onChange={(e) => onUpdate(index, { degree: e.target.value })}
+              placeholder="Bachelor of Science (BS)"
+            />
+            <Input
+              label="Area of Study"
+              value={edu.areaOfStudy || ""}
+              onChange={(e) =>
+                onUpdate(index, { areaOfStudy: e.target.value })
+              }
+              placeholder="Science"
+            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Start Date
+              </label>
+              <input
+                type="month"
+                value={edu.startDate || ""}
+                onChange={(e) =>
+                  onUpdate(index, { startDate: e.target.value })
+                }
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                End Date
+              </label>
+              <input
+                type="month"
+                value={edu.endDate || ""}
+                onChange={(e) => onUpdate(index, { endDate: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Input
+                label="GPA / Score (optional)"
+                value={edu.gpa || ""}
+                onChange={(e) => onUpdate(index, { gpa: e.target.value })}
+                placeholder="4.17"
               />
             </div>
           </div>

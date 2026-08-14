@@ -881,7 +881,7 @@ function generateHtmlContent(content: ResumeContent): string {
         <div class="resume-item">
           <div class="resume-item-header">
             <span class="resume-school">${edu.institution}</span>
-            <span class="resume-date">${edu.date || ""}</span>
+            <span class="resume-date">${[edu.startDate, edu.endDate].filter(Boolean).join(" - ") || ""}</span>
           </div>
           <p class="resume-degree">${edu.degree}</p>
         </div>

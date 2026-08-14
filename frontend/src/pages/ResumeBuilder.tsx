@@ -98,9 +98,6 @@ export default function ResumeBuilder() {
     setContent((prev) => ({
       ...prev,
       skillCategories: categories,
-      skills: categories.flatMap((c) =>
-        (c.skills || []).map((s) => s.trim()).filter(Boolean),
-      ),
     }));
 
   const addExperience = () =>
@@ -167,7 +164,17 @@ export default function ResumeBuilder() {
   const addEducation = () =>
     setContent((prev) => ({
       ...prev,
-      education: [...prev.education, { institution: "", degree: "", date: "" }],
+      education: [
+        ...prev.education,
+        {
+          institution: "",
+          degree: "",
+          areaOfStudy: "",
+          startDate: "",
+          endDate: "",
+          gpa: "",
+        },
+      ],
     }));
 
   const updateEducation = (index: number, patch: Partial<Education>) =>
@@ -274,7 +281,7 @@ export default function ResumeBuilder() {
           <div className="lg:col-span-2 space-y-4">
             <ResumeBuilderSection
               title="Personal Info"
-              subtitle="Name, title & contact details"
+              subtitle="Include email, phone & linkedin for easy employer access"
               defaultOpen
             >
               <PersonalInfoForm
@@ -285,7 +292,7 @@ export default function ResumeBuilder() {
 
             <ResumeBuilderSection
               title="Summary"
-              subtitle="Short professional summary"
+              subtitle="Highlight your top skills and achievements"
             >
               <SummaryForm
                 value={content.summary || ""}
@@ -295,7 +302,7 @@ export default function ResumeBuilder() {
 
             <ResumeBuilderSection
               title="Work Experience"
-              subtitle="Roles, companies & bullet points"
+              subtitle="List relevant jobs and key accomplishments"
             >
               <ExperienceForm
                 experience={content.experience}
@@ -307,9 +314,11 @@ export default function ResumeBuilder() {
 
             <ResumeBuilderSection
               title="Skills"
-              subtitle="Group skills into categories"
+              subtitle="Add your main skills for recruiters to see at a glance"
             >
               <SkillsForm
+                skills={content.skills || []}
+                onSkillsChange={(skills) => updateContent({ skills })}
                 categories={content.skillCategories || []}
                 onChange={setSkillCategories}
               />
@@ -317,7 +326,7 @@ export default function ResumeBuilder() {
 
             <ResumeBuilderSection
               title="Education"
-              subtitle="Degrees & institutions"
+              subtitle="Include degrees, schools, and graduation years"
             >
               <EducationForm
                 education={content.education}
@@ -329,7 +338,7 @@ export default function ResumeBuilder() {
 
             <ResumeBuilderSection
               title="Projects"
-              subtitle="Projects with bullet points"
+              subtitle="Projects you've worked on"
             >
               <ProjectsForm
                 projects={content.projects || []}

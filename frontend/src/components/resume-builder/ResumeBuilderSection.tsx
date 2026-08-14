@@ -121,6 +121,9 @@ export default function ResumeBuilderSection({
                   <GripVertical className="w-4 h-4" />
                 </button>
               )}
+              {!sortable && (
+                <span className="w-4 flex-shrink-0" aria-hidden="true" />
+              )}
               <button
                 type="button"
                 onClick={() => setOpen((v) => !v)}

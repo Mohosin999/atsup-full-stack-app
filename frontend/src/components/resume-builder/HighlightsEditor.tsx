@@ -3,7 +3,7 @@ Bullet Point (Highlights) Editor
 Each added item appears as a bullet
 point in the resume preview.
 =================================== */
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plus, X, Trash2, GripVertical } from "lucide-react";
 import {
   DndContext,
@@ -26,6 +26,7 @@ import ConfirmModal from "../ui/ConfirmModal";
 interface HighlightsEditorProps {
   highlights: string[];
   onAdd: (text: string) => void;
+  onUpdate: (index: number, text: string) => void;
   onRemove: (index: number) => void;
   onReorder: (highlights: string[]) => void;
   placeholder?: string;
@@ -34,10 +35,22 @@ interface HighlightsEditorProps {
 function SortableHighlight({
   id,
   onDelete,
+  onStartEdit,
+  editing,
+  editValue,
+  onEditChange,
+  onEditSave,
+  onEditCancel,
   children,
 }: {
   id: string;
   onDelete: () => void;
+  onStartEdit: () => void;
+  editing: boolean;
+  editValue: string;
+  onEditChange: (value: string) => void;
+  onEditSave: () => void;
+  onEditCancel: () => void;
   children: React.ReactNode;
 }) {
   const {
@@ -48,13 +61,26 @@ function SortableHighlight({
     transition,
     isDragging,
   } = useSortable({ id });
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (editing && textareaRef.current) {
+      const el = textareaRef.current;
+      el.style.height = "auto";
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [editing, editValue]);
 
   return (
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex items-start gap-2 border border-gray-200 rounded-lg px-3 py-3 bg-white ${
+      className={`flex items-start gap-2 border rounded-lg px-3 py-3 bg-white ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
+      } ${
+        editing
+          ? "border-black ring-2 ring-black/10"
+          : "border-gray-200"
       }`}
     >
       <button
@@ -66,9 +92,31 @@ function SortableHighlight({
       >
         <GripVertical className="w-4 h-4" />
       </button>
-      <span className="flex-1 text-xs text-gray-700 break-words">
-        {children}
-      </span>
+      {editing ? (
+        <textarea
+          ref={textareaRef}
+          value={editValue}
+          onChange={(e) => onEditChange(e.target.value)}
+          onBlur={onEditSave}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              e.preventDefault();
+              onEditCancel();
+            }
+          }}
+          autoFocus
+          rows={1}
+          className="flex-1 text-xs text-gray-700 bg-white resize-none overflow-hidden focus:outline-none"
+        />
+      ) : (
+        <span
+          className="flex-1 text-xs text-gray-700 break-words cursor-text hover:bg-gray-50 rounded px-1 py-0.5 -mx-1"
+          onClick={onStartEdit}
+          title="Click to edit"
+        >
+          {children}
+        </span>
+      )}
       <button
         type="button"
         onClick={onDelete}
@@ -83,6 +131,7 @@ function SortableHighlight({
 export default function HighlightsEditor({
   highlights,
   onAdd,
+  onUpdate,
   onRemove,
   onReorder,
   placeholder,
@@ -90,6 +139,8 @@ export default function HighlightsEditor({
   const [text, setText] = useState("");
   const [adding, setAdding] = useState(false);
   const [removeIndex, setRemoveIndex] = useState<number | null>(null);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
@@ -116,6 +167,27 @@ export default function HighlightsEditor({
     setAdding(false);
   };
 
+  const startEdit = (index: number) => {
+    setEditingIndex(index);
+    setEditText(highlights[index]);
+  };
+
+  const saveEdit = () => {
+    if (editingIndex === null) return;
+    const trimmed = editText.trim();
+    const current = highlights[editingIndex];
+    if (trimmed && trimmed !== current) {
+      onUpdate(editingIndex, trimmed);
+    }
+    setEditingIndex(null);
+    setEditText("");
+  };
+
+  const cancelEdit = () => {
+    setEditingIndex(null);
+    setEditText("");
+  };
+
   return (
     <div>
       <DndContext
@@ -133,6 +205,12 @@ export default function HighlightsEditor({
                 key={`${highlight}-${index}`}
                 id={highlight}
                 onDelete={() => setRemoveIndex(index)}
+                onStartEdit={() => startEdit(index)}
+                editing={editingIndex === index}
+                editValue={editText}
+                onEditChange={setEditText}
+                onEditSave={saveEdit}
+                onEditCancel={cancelEdit}
               >
                 {highlight}
               </SortableHighlight>

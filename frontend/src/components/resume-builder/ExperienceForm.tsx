@@ -118,6 +118,13 @@ export default function ExperienceForm({
                       highlights: [...(exp.highlights || []), text],
                     })
                   }
+                  onUpdate={(i, edited) =>
+                    onUpdate(index, {
+                      highlights: (exp.highlights || []).map((h, idx) =>
+                        idx === i ? edited : h,
+                      ),
+                    })
+                  }
               onRemove={(i) =>
                 onUpdate(index, {
                   highlights: (exp.highlights || []).filter(

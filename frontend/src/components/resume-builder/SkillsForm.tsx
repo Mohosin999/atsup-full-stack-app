@@ -105,23 +105,29 @@ function SortableChip({
     isDragging,
   } = useSortable({ id });
 
-  return (
+return (
     <span
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      {...attributes}
-      {...listeners}
-      className={`inline-flex items-center gap-1.5 rounded-full bg-green-50 border border-green-200 px-2.5 py-1 text-xs text-green-800 cursor-grab active:cursor-grabbing touch-none select-none ${
+      className={`inline-flex items-center gap-1.5 rounded-full bg-green-50 border border-green-600 px-2.5 py-1 text-xs text-green-800 select-none ${
         isDragging ? "opacity-60 z-10 shadow-md" : ""
       }`}
     >
-      <GripVertical className="w-3 h-3 text-green-400" />
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        title="Drag to reorder"
+        className="flex items-center text-green-400 hover:text-green-600 cursor-grab active:cursor-grabbing touch-none"
+      >
+        <GripVertical className="w-3 h-3 text-gray-400" />
+      </button>
       {children}
       <button
         type="button"
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onRemove}
-        className="text-green-600 hover:text-red-600 transition-colors"
+        className="text-green-700 hover:text-red-600 transition-colors"
         aria-label={`Remove ${children}`}
       >
         <X className="w-3 h-3" />
@@ -265,7 +271,7 @@ function SortableCategory({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`rounded-lg border border-gray-200 bg-gray-100 p-3 space-y-3 ${
+      className={`rounded-lg border border-gray-200 p-3 space-y-3 ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
       }`}
     >
@@ -281,7 +287,7 @@ function SortableCategory({
             <GripVertical className="w-4 h-4" />
           </button>
           <span className="text-xs font-semibold text-gray-700">
-            Category {index + 1}
+            Cat. {index + 1}
           </span>
         </div>
         <button

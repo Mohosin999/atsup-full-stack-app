@@ -102,6 +102,13 @@ export default function ProjectsForm({
                       highlights: [...(proj.highlights || []), text],
                     })
                   }
+                  onUpdate={(i, edited) =>
+                    onUpdate(index, {
+                      highlights: (proj.highlights || []).map((h, idx) =>
+                        idx === i ? edited : h,
+                      ),
+                    })
+                  }
                   onRemove={(i) =>
                     onUpdate(index, {
                       highlights: (proj.highlights || []).filter(

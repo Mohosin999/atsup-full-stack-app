@@ -454,9 +454,6 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
         address,
         email,
         phone,
-        linkedin,
-        github,
-        portfolio,
       },
     },
     summary,
@@ -465,7 +462,6 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
     skills: { hardSkills, softSkills },
     projects,
     yearsOfExperience: yearsOfExperience ? `${yearsOfExperience} years` : "",
-    measurableResults,
     resumeTone,
     wordCount: Number(wordCount),
     educationSection,
@@ -617,7 +613,10 @@ const parseRoleHeader = (
 } | null => {
   let cleaned = line.replace(/^[•·▪*\-–—\s]+/, "");
   // Insert space before month names when directly attached to a word (e.g. "DeveloperApr" → "Developer Apr")
-  cleaned = cleaned.replace(/([a-zA-Z])(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)/g, '$1 $2');
+  cleaned = cleaned.replace(
+    /([a-zA-Z])(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)/g,
+    "$1 $2",
+  );
   if (!cleaned || cleaned.length > 100) return null;
   // Requires an uppercase word near start to be a heading, not a sentence.
   if (!/^[A-Z]/.test(cleaned)) return null;
@@ -706,7 +705,12 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
   const pushCurrent = (
     name: string,
   ): DictionaryResumeJson["projects"][number] => {
-    current = { name: name.slice(0, 80), description: [] };
+    current = {
+      name: name.slice(0, 80),
+      description: [],
+      startDate: "",
+      endDate: "",
+    };
     projects.push(current);
     return current;
   };
@@ -731,10 +735,18 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
       "$1 $2",
     );
 
-    if (!current || (!current.description.length && !isDescriptionLine(spaced))) {
+    if (
+      !current ||
+      (!current.description.length && !isDescriptionLine(spaced))
+    ) {
       // A standalone date range ("Feb 2024 - Present") right after a project
       // name is that project's start/end dates, not a new project.
-      if (current && DATE_RANGE_RE.test(spaced)) continue;
+      if (current && DATE_RANGE_RE.test(spaced)) {
+        const dm = spaced.match(DATE_RANGE_RE)!;
+        current.startDate = dm[1];
+        current.endDate = dm[2];
+        continue;
+      }
       current = pushCurrent(spaced);
       continue;
     }
@@ -777,6 +789,8 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
         degree,
         field,
         education_level: educationLevel,
+        startDate: dates?.groups?.start || "",
+        endDate: dates?.groups?.end || "",
       });
     }
   }
@@ -840,11 +854,6 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
         email: json.personal_info?.contact?.email || "",
         phone: json.personal_info?.contact?.phone || "",
         address: parseAddress(json.personal_info?.contact?.address || ""),
-        linkedIn: json.personal_info?.contact?.linkedin || "",
-        socialLinks: {
-          github: json.personal_info?.contact?.github || "",
-          portfolio: json.personal_info?.contact?.portfolio || "",
-        },
       },
     },
     summary: json.summary || "",
@@ -860,6 +869,8 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
         degree: edu.degree || edu.education_level || "",
         field: edu.field || "",
         education_level: edu.education_level || "",
+        startDate: edu.startDate || "",
+        endDate: edu.endDate || "",
       }))
       .filter((e: any) => e.institution || e.degree || e.date),
     skills: {
@@ -869,6 +880,8 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
     projects: (json.projects || []).map((p: any) => ({
       name: p.name || "",
       description: p.description || [],
+      startDate: p.startDate || "",
+      endDate: p.endDate || "",
     })),
     yearsOfExperience: json.yearsOfExperience || "",
     resumeTone: json.resumeTone || "bad",

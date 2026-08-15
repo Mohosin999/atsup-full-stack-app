@@ -53,6 +53,8 @@ const mapAIResearchToResumeContent = (ai: any): ResumeContent | null => {
         degree: edu.degree || "",
         field: edu.field || "",
         education_level: edu.education_level || "",
+        startDate: edu.startDate || "",
+        endDate: edu.endDate || "",
       }))
       .filter((e: any) => e.degree || e.field || e.education_level),
     skills: {
@@ -62,6 +64,8 @@ const mapAIResearchToResumeContent = (ai: any): ResumeContent | null => {
     projects: (ai.projects || []).map((proj: any) => ({
       name: proj.name || "",
       description: proj.description || [],
+      startDate: proj.startDate || "",
+      endDate: proj.endDate || "",
     })),
     yearsOfExperience: ai.yearsOfExperience || "",
     resumeTone: ai.resumeTone || "bad",

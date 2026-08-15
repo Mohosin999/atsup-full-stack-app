@@ -23,6 +23,8 @@ export interface AIResumeResearchResult {
     degree: string;
     field: string;
     education_level: string;
+    startDate: string;
+    endDate: string;
   }>;
   skills: {
     hardSkills: string[];
@@ -31,6 +33,8 @@ export interface AIResumeResearchResult {
   projects: Array<{
     name: string;
     description: string[];
+    startDate: string;
+    endDate: string;
   }>;
   yearsOfExperience: string;
   resumeTone: string;
@@ -99,11 +103,11 @@ RESEARCH THE FOLLOWING DETAILS:
 1. Personal info (full name, job title, contact: address, email, phone)
 2. Professional summary
 3. Work experience (role, company, startDate, endDate, responsibilities as bullet points)
-4. Education (degree, field of study, education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's"))
+4. Education (degree, field of study, education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's"), startDate, endDate)
 5. Skills:
    - hardSkills: ONLY technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, DevOps tools, software, technologies, APIs, etc.) - return ONLY the keyword names
    - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
-6. Projects (name, description as bullet points)
+6. Projects (name, description as bullet points, startDate, endDate)
 7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
 8. resumeTone: assess the overall tone and quality of the resume writing. Use one of: "good", "bad", "professional", "weak".
 9. wordCount: total number of words in the resume.
@@ -155,6 +159,8 @@ JSON STRUCTURE:
       "degree": "",
       "field": "",
       "education_level": "",
+      "startDate": "",
+      "endDate": "",
     }
   ],
   "skills": {
@@ -165,6 +171,8 @@ JSON STRUCTURE:
     {
       "name": "",
       "description": [""],
+      "startDate": "",
+      "endDate": "",
     }
   ]
   ],
@@ -286,6 +294,8 @@ const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
       degree: str(edu?.degree),
       field: str(edu?.field),
       education_level: str(edu?.education_level),
+      startDate: str(edu?.startDate),
+      endDate: str(edu?.endDate),
     })),
     skills: {
       // hardSkills: normalizeHardSkills(
@@ -297,6 +307,8 @@ const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
     projects: arr(raw?.projects).map((proj: any) => ({
       name: str(proj?.name),
       description: arr(proj?.description).map((v: any) => str(v)),
+      startDate: str(proj?.startDate),
+      endDate: str(proj?.endDate),
     })),
     yearsOfExperience: str(raw?.yearsOfExperience),
     resumeTone: str(raw?.resumeTone, "bad"),

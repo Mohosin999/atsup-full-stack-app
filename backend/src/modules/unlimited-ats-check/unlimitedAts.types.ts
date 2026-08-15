@@ -23,9 +23,6 @@ export interface DictionaryResumeJson {
       address: string;
       email: string;
       phone: string;
-      linkedin: string;
-      github: string;
-      portfolio: string;
     };
   };
   summary: string;
@@ -40,6 +37,8 @@ export interface DictionaryResumeJson {
     degree: string;
     field: string;
     education_level: string;
+    startDate: string;
+    endDate: string;
   }>;
   skills: {
     hardSkills: string[];
@@ -48,9 +47,10 @@ export interface DictionaryResumeJson {
   projects: Array<{
     name: string;
     description: string[];
+    startDate: string;
+    endDate: string;
   }>;
   yearsOfExperience: string;
-  measurableResults: string[];
   resumeTone: string;
   wordCount?: number;
   educationSection: boolean;

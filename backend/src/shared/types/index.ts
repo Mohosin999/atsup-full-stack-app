@@ -61,6 +61,8 @@ export interface ResumeContent {
     degree: string;
     field: string;
     education_level: string;
+    startDate?: string;
+    endDate?: string;
   }>;
   skills: {
     hardSkills: string[];
@@ -69,6 +71,8 @@ export interface ResumeContent {
   projects?: Array<{
     name: string;
     description: string[];
+    startDate?: string;
+    endDate?: string;
   }>;
   yearsOfExperience?: string;
   resumeTone?: string;

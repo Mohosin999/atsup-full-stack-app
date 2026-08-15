@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import { logoutUser } from "../store/slices/authSlice";
 import ConfirmModal from "./ui/ConfirmModal";
-import HistoryDropdown from "./ui/HistoryDropdown";
 import NavLinks from "./NavLinks";
 import UpgradeButton from "./ui/UpgradeButton";
 import CreditsBadge from "./ui/CreditsBadge";
@@ -55,9 +54,6 @@ export default function Navbar() {
               {user ? (
                 <>
                   <NavLinks navLinks={NAV_LINKS} />
-                  <div className="hidden lg:flex">
-                    <HistoryDropdown />
-                  </div>
                   <div className="hidden lg:flex">
                     <UpgradeButton />
                   </div>

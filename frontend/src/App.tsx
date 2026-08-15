@@ -8,7 +8,6 @@ import Settings from "./pages/Settings";
 import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScore";
 import AtsScoreDetail from "./pages/AtsScoreDetail";
-import AtsScoreHistory from "./pages/AtsScoreHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ResumeDashboard from "./pages/ResumeDashboard";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
@@ -85,18 +84,14 @@ function App() {
           }
         />
         <Route
+          path="/ats-score-history"
+          element={<Navigate to="/ats-score" replace />}
+        />
+        <Route
           path="/ats-score/:id"
           element={
             <PrivateRoute>
               <AtsScoreDetail />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/ats-score-history"
-          element={
-            <PrivateRoute>
-              <AtsScoreHistory />
             </PrivateRoute>
           }
         />

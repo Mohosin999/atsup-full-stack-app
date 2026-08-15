@@ -1,10 +1,8 @@
 /* ===================================
 Mobile Menu Component
 =================================== */
-import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
 
 interface NavLink {
   path: string;
@@ -12,15 +10,7 @@ interface NavLink {
 }
 
 export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navLinks: NavLink[]; user: any; setMobileMenuOpen: (v: boolean) => void }) {
-  const [historyOpen, setHistoryOpen] = useState(false);
   const location = useLocation();
-
-  const historyOptions = [
-    { title: "ATS Score History", path: "/ats-score-history" },
-    { title: "Resume Build History", path: "/resume-build-history" },
-  ];
-
-  const isHistoryActive = historyOptions.some(opt => location.pathname === opt.path);
 
   return (
     <motion.div
@@ -44,53 +34,6 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
             {link.label}
           </Link>
         ))}
-
-        <Link
-          to="/resumes"
-          className={`block px-3 py-2 rounded-lg text-sm font-medium ${
-            location.pathname === "/resumes"
-              ? "bg-green-500/20 text-green-600"
-              : "text-gray-700"
-          }`}
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          Resume Builder
-        </Link>
-
-        <button
-          onClick={() => setHistoryOpen(!historyOpen)}
-          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium ${
-            isHistoryActive
-              ? "bg-green-500/20 text-green-600"
-              : "text-gray-700"
-          }`}
-        >
-          <span>History</span>
-          <ChevronDown className={`w-4 h-4 transition-transform ${historyOpen ? "rotate-180" : ""}`} />
-        </button>
-
-        {historyOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="pl-4 space-y-1"
-          >
-            {historyOptions.map((option) => (
-              <Link
-                key={option.path}
-                to={option.path}
-                className={`block px-3 py-2 rounded-lg text-sm font-medium ${
-                  location.pathname === option.path
-                    ? "bg-green-500/20 text-green-600"
-                    : "text-gray-600"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {option.title}
-              </Link>
-            ))}
-          </motion.div>
-        )}
 
         <Link to="/plans" className="block px-3 py-2 rounded-lg text-sm font-medium text-orange-600" onClick={() => setMobileMenuOpen(false)}>
           Upgrade Plan

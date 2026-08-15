@@ -50,11 +50,13 @@ export default function ResumeDashboard() {
         setPageLoading(true);
       }
       const response = await resumeApi.getAll(pageNum, 1, "builder");
-      setResumes(response.data.data || []);
+      const items = response.data.data || [];
+      setResumes(items);
       setTotalPages(response.data.pagination?.pages || 1);
       setPage(pageNum);
+      return items;
     } catch {
-      // silent fail
+      return [];
     } finally {
       setLoading(false);
       setPageLoading(false);
@@ -69,11 +71,15 @@ export default function ResumeDashboard() {
     try {
       await resumeApi.delete(id);
       toast.success("Resume deleted");
-      fetchResumes(page);
+      setDeleteId(null);
+      const items = await fetchResumes(page);
+      if (items.length === 0 && page > 1) {
+        await fetchResumes(page - 1);
+      }
     } catch {
       toast.error("Failed to delete resume");
+      setDeleteId(null);
     }
-    setDeleteId(null);
   };
 
   const getResumeTitle = (resume: ResumeListItem) =>

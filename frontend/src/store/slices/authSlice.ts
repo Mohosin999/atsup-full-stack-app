@@ -129,10 +129,9 @@ const authSlice = createSlice({
       })
       // tokenRefresh
       .addCase(tokenRefresh.rejected, (state) => {
-        // Clear user data if refresh fails
-        state.user = null;
-        state.isAuthenticated = false;
-        localStorage.removeItem('user');
+        // Silent background refresh failed - keep the user logged in.
+        // Logout only happens when an actual request 401s and its
+        // refresh retry also fails (handled by the api interceptor).
       });
   },
 });

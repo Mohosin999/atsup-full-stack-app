@@ -208,6 +208,7 @@ export const ATS_STYLE = `
   }
   .ats-link {
     color: #333333;
+    font-size: 9pt;
     text-decoration: none;
   }
   .ats-link:hover {
@@ -354,10 +355,10 @@ const buildEducation = (content: ResumeContent): string => {
         const parts: string[] = [];
         if (edu.institution?.trim())
           parts.push(
-            `<div class="ats-item-head"><span class="ats-strong">${escapeHtml(
+            `<div class="ats-header-title-date"><div class="ats-strong">${escapeHtml(
               edu.institution.trim(),
-            )}</span>${
-              dr ? `<span class="ats-date">${escapeHtml(dr)}</span>` : ""
+            )}</div>${
+              dr ? `<div class="ats-date">${escapeHtml(dr)}</div>` : ""
             }</div>`,
           );
         if (study) parts.push(`<div class="ats-bullet">${escapeHtml(study)}</div>`);
@@ -393,9 +394,9 @@ const buildProjects = (content: ResumeContent): string => {
           );
         const bullets = (proj.highlights || []).filter((h) => h.trim());
         return `<div class="ats-item">
-          <div class="ats-item-head">
-            <span class="ats-strong">${escapeHtml(proj.name)}</span>
-            ${dr ? `<span class="ats-date">${escapeHtml(dr)}</span>` : ""}
+          <div class="ats-header-title-date">
+            <div class="ats-strong">${escapeHtml(proj.name)}</div>
+            ${dr ? `<div class="ats-date">${escapeHtml(dr)}</div>` : ""}
           </div>
           ${
             links.length

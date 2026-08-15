@@ -51,7 +51,7 @@ router.get(
         secure: env.nodeEnv === "production",
         sameSite: env.nodeEnv === "production" ? "none" : "lax",
         path: "/",
-        maxAge: 15 * 60 * 1000,
+        maxAge: 24 * 60 * 60 * 1000,
       });
 
       res.cookie("refreshToken", refreshToken, {

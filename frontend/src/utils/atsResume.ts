@@ -104,6 +104,12 @@ export const ATS_STYLE = `
     align-items: flex-start;
     margin-bottom: 0px;
   }
+  .ats-header-title-date {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0px;
+  }
   .ats-name {
     font-size: 17pt;
     font-weight: 500;
@@ -269,9 +275,9 @@ const buildExperience = (content: ResumeContent): string => {
           : "";
         const bullets = (exp.highlights || []).filter((h) => h.trim());
         return `<div class="ats-item">
-          <div class="ats-item-head">
-            <span class="ats-strong">${escapeHtml(exp.title)}</span>
-            ${dr ? `<span class="ats-date">${escapeHtml(dr)}</span>` : ""}
+          <div class="ats-header-title-date">
+            <div class="ats-strong">${escapeHtml(exp.title)}</div>
+            ${dr ? `<div class="ats-date">${escapeHtml(dr)}</div>` : ""}
           </div>
           ${
             exp.company || exp.location

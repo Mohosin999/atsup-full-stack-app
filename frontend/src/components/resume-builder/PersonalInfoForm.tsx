@@ -71,7 +71,7 @@ export default function PersonalInfoForm({
           type="tel"
           value={contact.phone || ""}
           onChange={(e) => setContact("phone", e.target.value)}
-          placeholder="+8801XXXXXXXXX"
+          placeholder="+880 1XXXXXXXXX"
         />
       </div>
       <div>

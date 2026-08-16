@@ -4,14 +4,14 @@ import { JWTPayload } from "../types";
 
 export const generateAccessToken = (payload: JWTPayload): string => {
   return jwt.sign(payload, env.jwtSecret, {
-    expiresIn: "15m",
+    expiresIn: "1m",
   });
 };
 
 
 export const generateRefreshToken = (payload: JWTPayload): string => {
   return jwt.sign(payload, env.jwtRefreshSecret, {
-    expiresIn: "1d",
+    expiresIn: "3m",
   });
 };
 

@@ -8,6 +8,7 @@ import {
   getSingleResume,
   updateResume,
   deleteResume,
+  duplicateResume,
 } from "./resumeBuilder.controller";
 
 const router = Router();
@@ -15,6 +16,8 @@ const router = Router();
 router.post("/content", authenticate, createResumeFromContent);
 
 router.delete("/delete-all", authenticate, deleteAllResumes);
+
+router.post("/:id/duplicate", authenticate, duplicateResume);
 
 router.get("/:id", authenticate, getSingleResume);
 

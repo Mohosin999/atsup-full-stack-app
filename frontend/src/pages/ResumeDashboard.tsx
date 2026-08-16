@@ -15,6 +15,7 @@ import {
   FileText,
   Calendar,
   Sparkles,
+  Copy,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { resumeApi } from "../api/api";
@@ -79,6 +80,16 @@ export default function ResumeDashboard() {
     } catch {
       toast.error("Failed to delete resume");
       setDeleteId(null);
+    }
+  };
+
+  const handleDuplicate = async (id: string) => {
+    try {
+      await resumeApi.duplicate(id);
+      toast.success("Resume duplicated");
+      fetchResumes(page);
+    } catch {
+      toast.error("Failed to duplicate resume");
     }
   };
 
@@ -241,12 +252,20 @@ export default function ResumeDashboard() {
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => setDeleteId(resume.id)}
-                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors flex-shrink-0"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        onClick={() => handleDuplicate(resume.id)}
+                        className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-500/10 rounded-lg transition-colors"
+                      >
+                        <Copy className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => setDeleteId(resume.id)}
+                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               ))}

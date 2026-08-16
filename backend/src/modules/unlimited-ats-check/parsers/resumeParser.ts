@@ -1134,13 +1134,35 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
     pendingLines = [];
   };
 
+  // Check if pending group already has degree info (meaning a previous entry exists).
+  const pendingHasDegree = (): boolean => {
+    if (pendingLines.length === 0) return false;
+    const combined = pendingLines.join(" ");
+    return !!matchDictionary(combined, DEGREE_KEYWORDS).find(
+      (d) => d.toLowerCase() !== "certification",
+    );
+  };
+
+  // Check if pending group already has a date line (meaning a previous entry exists).
+  const pendingHasDate = (): boolean => {
+    if (pendingLines.length === 0) return false;
+    return pendingLines.some(
+      (l) => /^\d{4}\s*[-–—]\s*\d{4}$/i.test(l) || DATE_RANGE_RE.test(l),
+    );
+  };
+
   for (const raw of lines) {
     const line = cleanLine(raw);
     if (!line || line.length > 160) continue;
 
     // A standalone date range or a pure date-only line belongs to the
-    // previous education entry, not a new one.
+    // previous education entry, not a new one. But if the pending group
+    // already has a date (a previous entry's dates), this date starts a
+    // NEW entry — flush the old group first.
     if (/^\d{4}\s*[-–—]\s*\d{4}$/i.test(line) || DATE_RANGE_RE.test(line)) {
+      if (pendingHasDate()) {
+        flushPending();
+      }
       pendingLines.push(line);
       continue;
     }
@@ -1152,8 +1174,13 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
     const field = matchDictionary(line, FIELD_OF_STUDY_KEYWORDS)[0] || "";
     const educationLevel = matchDictionary(line, EDUCATION_LEVELS)[0] || "";
 
-    // If this line has degree/field/level info, it starts or continues an entry.
+    // If this line has degree/field/level info...
     if (degree || field || educationLevel) {
+      // ...and pending group already has a degree from a previous entry,
+      // flush the old group first — this line starts a NEW education entry.
+      if (pendingHasDegree()) {
+        flushPending();
+      }
       pendingLines.push(line);
       continue;
     }
@@ -1257,7 +1284,7 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
         startDate: edu.startDate || "",
         endDate: edu.endDate || "",
       }))
-      .filter((e: any) => e.institution || e.degree || e.date),
+      .filter((e: any) => e.degree || e.field || e.education_level),
     skills: {
       hardSkills: json.skills?.hardSkills || [],
       softSkills: json.skills?.softSkills || [],

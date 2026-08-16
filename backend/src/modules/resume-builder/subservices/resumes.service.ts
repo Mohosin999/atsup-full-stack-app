@@ -193,6 +193,46 @@ export const updateResumeById = async (
   });
 };
 
+export const duplicateResumeById = async (resumeId: string, userId: string) => {
+  const existing = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+  });
+
+  if (!existing) {
+    return null;
+  }
+
+  const resume = await prisma.resume.create({
+    data: {
+      userId,
+      sourceType: existing.sourceType,
+      content: existing.content as any,
+      metadata: {
+        filename: `resume_${Date.now()}.json`,
+        originalName: `${(existing.metadata as any)?.originalName || "Resume"} (Copy)`,
+        size: JSON.stringify(existing.content).length,
+        type: "application/json",
+      },
+      tags: existing.tags,
+      isActive: true,
+    },
+    select: {
+      id: true,
+      sourceType: true,
+      originalFormat: true,
+      content: true,
+      metadata: true,
+      tags: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      userId: true,
+    },
+  });
+
+  return resume;
+};
+
 export const deleteResumeById = async (resumeId: string, userId: string) => {
   const existing = await prisma.resume.findFirst({
     where: { id: resumeId, userId },

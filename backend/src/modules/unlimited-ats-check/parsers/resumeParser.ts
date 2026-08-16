@@ -300,7 +300,7 @@ const isProjectNameLine = (l: string): boolean =>
 // using content-based heuristics and heading detection.
 // ============================================================================
 
-const BULLET_RE = /^(?:[•·▪*\-–—o]|\d+[.)])\s*/;
+const BULLET_RE = /^(?:[•·▪*\-–—]\s*|\d+[.)]\s*|o\s+)/;
 
 const isContactLine = (l: string): boolean =>
   /@/.test(l) ||
@@ -998,10 +998,20 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
     return current;
   };
 
-  for (const raw of lines) {
+  // A project name followed by its dates: "E-Commerce Platform" then "Feb 2024 - Present".
+  const isDateRangeLine = (l: string): boolean => {
+    const spaced = l.replace(
+      /([a-zA-Z])(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)/g,
+      "$1 $2",
+    );
+    return DATE_RANGE_RE.test(spaced) || /^\d{4}\s*[-–—]\s*\d{4}$/i.test(spaced);
+  };
+
+  for (let idx = 0; idx < lines.length; idx++) {
+    const raw = lines[idx];
     const line = cleanLine(raw);
     if (!line) continue;
-    const bullet = /^[•·▪o*\-–—]+\s*/;
+    const bullet = /^(?:[•·▪*\-–—]+\s*|o\s+)/;
     const isBullet = bullet.test(line) || /^\d+[.)]\s+/.test(line);
 
     if (isBullet) {
@@ -1009,6 +1019,11 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
       current.description.push(line.replace(bullet, "").trim());
       continue;
     }
+
+    // Skip standalone link labels ("Live link", "Live demo", "Preview",
+    // "GitHub", ...) and pure URL lines so they never become project names
+    // or pollute the description.
+    if (isLinkLabelLine(line)) continue;
 
     // PDF text extraction often concatenates a month to the previous word
     // with no space ("E-Commerce PlatformFeb 2024 - Present"). Insert the
@@ -1042,15 +1057,27 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
       continue;
     }
 
-    if (
+    const isDesc = isDescriptionLine(spaced);
+    const startsNewProject =
       !current ||
-      (!current.description.length && !isDescriptionLine(spaced))
-    ) {
+      // Fresh entry: no project yet, or current project has neither
+      // description nor dates yet.
+      (!isDesc &&
+        !current.description.length &&
+        !current.startDate) ||
+      // Once the current project has content/dates, only treat a short
+      // title-like line as a NEW project when it is immediately followed by
+      // its date range. Otherwise it is a description continuation.
+      (!isDesc &&
+        idx + 1 < lines.length &&
+        isDateRangeLine(cleanLine(lines[idx + 1])));
+
+    if (startsNewProject) {
       current = pushCurrent(spaced);
       continue;
     }
 
-    current.description.push(spaced);
+    current!.description.push(spaced);
   }
 
   // Flush pending dates to the last project.
@@ -1073,6 +1100,18 @@ const isDescriptionLine = (l: string): boolean =>
   /^(developed|designed|built|implemented|created|used|built with|technologies|features|role|responsibilities)/i.test(
     l,
   ) || l.length > 60;
+
+// Link / preview labels that commonly appear inside the projects section
+// (e.g. "Live link", "Live demo", "Preview", "GitHub") followed by a URL.
+// These are not project names or description content, so skip them.
+const isLinkLabelLine = (l: string): boolean => {
+  const trimmed = l.trim();
+  if (!trimmed) return false;
+  if (/^(?:https?:\/\/|www\.)\S+/i.test(trimmed)) return true;
+  return /^(?:live\s+(?:link|demo|preview|url|site|app)|live|preview|demo|link|website|site|url|repo|repository|source\s+code|code|github|gitlab|deployment|deployed\s+link|video|youtube|app\s+store|play\s+store)\s*:?$/i.test(
+    trimmed,
+  );
+};
 
 // ============================================================================
 // Education Parsing

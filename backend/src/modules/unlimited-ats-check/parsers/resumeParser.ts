@@ -1,3 +1,11 @@
+// ============================================================================
+// Resume Parser (Dictionary-Based, No LLM)
+// ============================================================================
+// Parses raw resume text into structured JSON using regex patterns and
+// dictionary matching. Extracts personal info, experience, education,
+// skills, projects, and computes derived metrics for ATS scoring.
+// ============================================================================
+
 import {
   HARD_SKILLS_DICTIONARY,
   HARD_SKILL_STOPWORDS,
@@ -32,8 +40,14 @@ import {
   ResumeSection,
 } from "../unlimitedAts.types";
 
+// ============================================================================
+// Constants & Defaults
+// ============================================================================
+// Fallback values for layout and font analysis (not yet implemented).
+// ============================================================================
+
 const DEFAULT_LAYOUT: LayoutInfo = {
-  isSingleColumn: true,
+  isSingleColumn: false,
   hasTables: false,
   hasImages: false,
   hasIcons: false,
@@ -49,11 +63,18 @@ const DEFAULT_FONT_CHECK: FontCheckInfo = {
 
 const cleanLine = (l: string): string => l.trim();
 
+// ============================================================================
+// Location Detection
+// ============================================================================
+// Identifies location-like strings (cities, countries, employment types)
+// to distinguish them from role titles during experience parsing.
+// ============================================================================
+
 /** True if the line looks like an employment/location continuation rather than a role. */
 const isLocationLike = (role: string): boolean => {
   const lower = role.toLowerCase();
   if (
-    /^(freelance|self[- ]employed|remote|contract|independent|part[- ]time|full[- ]time)/.test(
+    /^(freelance|contract|self[- ]employed|remote|contract|independent|part[- ]time|full[- ]time)/.test(
       lower,
     )
   )
@@ -62,6 +83,13 @@ const isLocationLike = (role: string): boolean => {
     role,
   );
 };
+
+// ============================================================================
+// Name Parsing
+// ============================================================================
+// Extracts and validates the candidate's full name from the header block.
+// Rejects emails, URLs, section headings, and non-name-like strings.
+// ============================================================================
 
 const sanitizeName = (name: string): string => {
   const trimmed = name.trim();
@@ -82,6 +110,13 @@ const sanitizeName = (name: string): string => {
   return trimmed;
 };
 
+// ============================================================================
+// Job Title Detection
+// ============================================================================
+// Identifies the candidate's job title from header lines or summary text
+// by matching against common role suffixes (Engineer, Developer, etc.).
+// ============================================================================
+
 const detectJobTitle = (text: string): string => {
   const candidates = [
     /(?:^|\n)\s*([A-Z][A-Za-z+.#\-\s]{2,40}(?:Engineer|Developer|Designer|Manager|Analyst|Architect|Scientist|Consultant|Lead|Director|Specialist|Administrator|Coordinator|Officer|Executive|Head|Principal|Intern|Trainee|Researcher|Writer|Tester|Support|Recruiter))\s*(?:\||$|\n)/,
@@ -93,12 +128,150 @@ const detectJobTitle = (text: string): string => {
   return "";
 };
 
+// ============================================================================
+// Years of Experience Calculation
+// ============================================================================
+// Computes total professional experience by parsing date ranges from
+// experience entries, merging overlaps, and summing durations.
+// ============================================================================
+
 const extractExperienceYears = (text: string): number => {
   const m = text.match(
     /(?:^|\W)(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)(?:\W|$)/i,
   );
   return m ? Math.round(parseFloat(m[1])) : 0;
 };
+
+const calculateExperienceYears = (experiences: RawExperience[]): number => {
+  if (!experiences || experiences.length === 0) return 0;
+
+  const allDates: { start: Date; end: Date }[] = [];
+
+  for (const exp of experiences) {
+    const startDate = parseDateString(exp.startDate);
+    const endDate = parseDateString(exp.endDate);
+
+    if (startDate) {
+      const end = endDate || new Date(); // If no end date, assume current
+      if (end > startDate) {
+        allDates.push({ start: startDate, end });
+      }
+    }
+  }
+
+  if (allDates.length === 0) return 0;
+
+  // Sort by start date
+  allDates.sort((a, b) => a.start.getTime() - b.start.getTime());
+
+  // Merge overlapping date ranges and calculate total years
+  const mergedRanges: { start: Date; end: Date }[] = [];
+  let currentRange = { ...allDates[0] };
+
+  for (let i = 1; i < allDates.length; i++) {
+    if (allDates[i].start <= currentRange.end) {
+      // Overlapping or adjacent ranges
+      currentRange.end = new Date(
+        Math.max(currentRange.end.getTime(), allDates[i].end.getTime()),
+      );
+    } else {
+      mergedRanges.push(currentRange);
+      currentRange = { ...allDates[i] };
+    }
+  }
+  mergedRanges.push(currentRange);
+
+  // Calculate total months
+  let totalMonths = 0;
+  for (const range of mergedRanges) {
+    const months =
+      (range.end.getFullYear() - range.start.getFullYear()) * 12 +
+      (range.end.getMonth() - range.start.getMonth());
+    totalMonths += months;
+  }
+
+  // Convert to years (round to 1 decimal place)
+  return Math.round((totalMonths / 12) * 10) / 10;
+};
+
+// ============================================================================
+// Date Parsing Helpers
+// ============================================================================
+// Converts date strings (e.g. "Jan 2024", "2023-06", "Present") into
+// Date objects for duration calculations.
+// ============================================================================
+
+const parseDateString = (dateStr: string): Date | null => {
+  if (!dateStr) return null;
+
+  // Handle "Present", "Current", "Now"
+  if (/present|current|now|ongoing/i.test(dateStr)) {
+    return new Date();
+  }
+
+  // Handle "2024", "Jan 2024", "January 2024", "01/2024", "01/15/2024"
+  let match = dateStr.match(
+    /^(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+)?(\d{4})$/i,
+  );
+  if (match) {
+    const year = parseInt(match[1]);
+    const monthMatch = dateStr.match(
+      /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?/i,
+    );
+    const month = monthMatch ? getMonthNumber(monthMatch[1]) : 0;
+    return new Date(year, month, 1);
+  }
+
+  // Handle "Jan 2024", "January 2024"
+  match = dateStr.match(
+    /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(\d{4})$/i,
+  );
+  if (match) {
+    return new Date(parseInt(match[2]), getMonthNumber(match[1]), 1);
+  }
+
+  // Handle "01/2024", "01/15/2024"
+  match = dateStr.match(/^(\d{1,2})\/(\d{4})$/);
+  if (match) {
+    return new Date(parseInt(match[2]), parseInt(match[1]) - 1, 1);
+  }
+
+  match = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (match) {
+    return new Date(
+      parseInt(match[3]),
+      parseInt(match[1]) - 1,
+      parseInt(match[2]),
+    );
+  }
+
+  return null;
+};
+
+const getMonthNumber = (month: string): number => {
+  const months: { [key: string]: number } = {
+    jan: 0,
+    feb: 1,
+    mar: 2,
+    apr: 3,
+    may: 4,
+    jun: 5,
+    jul: 6,
+    aug: 7,
+    sep: 8,
+    oct: 9,
+    nov: 10,
+    dec: 11,
+  };
+  return months[month.toLowerCase()] || 0;
+};
+
+// ============================================================================
+// Utility Predicates
+// ============================================================================
+// Small helper functions that classify lines as dates, titles, education,
+// locations, or section headings to guide the segmentation logic.
+// ============================================================================
 
 const detectSectionPresence = (
   sections: ResumeSection[],
@@ -120,12 +293,11 @@ const isProjectNameLine = (l: string): boolean =>
   !isEducationLine(l);
 
 // ============================================================================
-// Content-based section segmentation.
-//
-// PDF text extraction often dumps section headings at the very END (or out of
-// order), so heading-position parsing is unreliable. Instead we walk the lines
-// in order and bucket each line into a logical section using content signals:
-// contact info, date ranges, degree keywords, skill lines, bullets, etc.
+// Content-Based Section Segmentation
+// ============================================================================
+// Walks resume lines top-to-bottom and buckets each line into a section
+// (header, summary, experience, skills, education, projects, certifications)
+// using content-based heuristics and heading detection.
 // ============================================================================
 
 const BULLET_RE = /^(?:[•·▪*\-–—o]|\d+[.)])\s*/;
@@ -204,8 +376,6 @@ const pushBucket = (seg: ResumeSegments, key: Bucket, line: string): void => {
 
 /**
  * Walk resume lines top-to-bottom and bucket each into a section.
- * Handles the common case where headings are missing/out-of-order by relying on
- * content cues. Keeps the document reading order for reliability.
  */
 export const segmentResume = (lines: string[]): ResumeSegments => {
   const seg: ResumeSegments = {
@@ -233,21 +403,18 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
 
     const bullet = BULLET_RE.test(l);
 
-    // --- Header phase: personal info block (until summary sentence). ---
+    // --- Header phase ---
     if (phase === "header") {
-      // If this looks like the summary paragraph, move into summary phase.
       if (isSummarySentence(l) && !isContactLine(l)) {
         phase = "summary";
         pushBucket(seg, "summary", l);
         continue;
       }
-      // A date range like "Jan 2024 – Feb 2025" signals the experience start.
       if (DATE_RANGE_RE.test(l)) {
         phase = "experience";
         pushBucket(seg, "experience", l);
         continue;
       }
-      // Education content appearing early (e.g. degree right under header).
       if (isEducationLine(l) && l.length < 60) {
         phase = "education";
         pushBucket(seg, "education", l);
@@ -257,10 +424,8 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
       continue;
     }
 
-    // --- Summary phase: own the paragraph. ---
+    // --- Summary phase ---
     if (phase === "summary") {
-      // A short title-case line (role title) ends the summary and starts
-      // the experience section. E.g. "Frontend Developer".
       if (
         !bullet &&
         !isContactLine(l) &&
@@ -271,7 +436,6 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
         pushBucket(seg, "experience", l);
         continue;
       }
-      // Summary continues until we hit anything structural.
       if (DATE_RANGE_RE.test(l) || isContactLine(l) || bullet) {
         phase = "experience";
         if (DATE_RANGE_RE.test(l) || bullet) pushBucket(seg, "experience", l);
@@ -281,7 +445,7 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
       continue;
     }
 
-    // --- Experience phase. ---
+    // --- Experience phase ---
     if (phase === "experience") {
       if (isEducationLine(l) && l.length < 60 && !DATE_RANGE_RE.test(l)) {
         phase = "education";
@@ -297,7 +461,7 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
       continue;
     }
 
-    // --- Skills phase. ---
+    // --- Skills phase ---
     if (phase === "skills") {
       if (isEducationLine(l) && l.length < 60) {
         phase = "education";
@@ -317,13 +481,8 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
       continue;
     }
 
-    // --- Education phase. ---
+    // --- Education phase ---
     if (phase === "education") {
-      // A project name followed by a date/description that has no degree
-      // keywords starts the projects section. Year-only ranges (e.g.
-      // "2020 - 2024") are characteristic of education entries, so a
-      // short institution name like "BUET" followed by a year range must
-      // NOT flip the phase to projects.
       const nextLine = (lines[i + 1] || "").trim();
       if (
         isProjectNameLine(l) &&
@@ -343,7 +502,7 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
       continue;
     }
 
-    // --- Projects phase. ---
+    // --- Projects phase ---
     if (phase === "projects") {
       if (/^(certifications?|licenses?|courses?|training)$/i.test(l)) {
         phase = "certifications";
@@ -353,12 +512,20 @@ export const segmentResume = (lines: string[]): ResumeSegments => {
       continue;
     }
 
-    // --- Certifications phase. ---
+    // --- Certifications phase ---
     pushBucket(seg, "certifications", l);
   }
 
   return seg;
 };
+
+// ============================================================================
+// Main Parser Entry Point
+// ============================================================================
+// Orchestrates the full parsing pipeline: segments resume into sections,
+// extracts structured data from each, and returns both raw JSON and the
+// mapped ResumeContent used by the scoring engine.
+// ============================================================================
 
 export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
   const lines = text
@@ -423,8 +590,6 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
   const hasSkillsSection = skillsSectionText.trim().length > 0;
   const skillsAllText = hasSkillsSection ? skillsSectionText : allText;
   let hardSkills = matchDictionary(skillsAllText, HARD_SKILLS_DICTIONARY);
-  // Stopwords (react, node, express, ...) prevent false positives when scanning
-  // general prose, but in a dedicated skills section they are legitimate skills.
   if (!hasSkillsSection) {
     hardSkills = hardSkills.filter(
       (s) => !HARD_SKILL_STOPWORDS.has(s.toLowerCase()),
@@ -435,14 +600,20 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
   // ---- Derived metrics ----
   const wordCount = countWords(allText);
   const measurableResults = extractMeasurableResults(allText);
-  const yearsOfExperience = extractExperienceYears(allText);
+
+  // Calculate years of experience from experience section dates
+  const yearsOfExperience = calculateExperienceYears(experience);
 
   const educationSection = segmented.education.length > 0;
   const experienceSection = segmented.experience.length > 0;
   const workHistory = experience.length > 0;
 
-  // Date formatting check across experience lines.
-  const dateFormatting = detectDateFormatting(segmented.experience);
+  // Date formatting check across experience, education and project lines.
+  const dateFormatting = detectDateFormatting([
+    ...segmented.experience,
+    ...segmented.education,
+    ...segmented.projects,
+  ]);
 
   const resumeTone = inferTone(allText, measurableResults.length);
 
@@ -478,8 +649,131 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
 };
 
 // ============================================================================
-// Experience parsing
+// Experience Parsing
 // ============================================================================
+// Parses work experience entries from segmented lines. Detects role/company
+// headers, date ranges, bullet-point responsibilities, and location info.
+// Handles various formats: "Role | Company | Location", "Role at Company",
+// standalone date lines, and PDF text concatenation artifacts.
+// ============================================================================
+
+// const parseExperience = (lines: string[]): RawExperience[] => {
+//   const entries: RawExperience[] = [];
+//   let current: RawExperience | null = null;
+//   let pendingDates: { start: string; end: string } | null = null;
+
+//   const startNew = (
+//     role: string,
+//     company: string,
+//     location: string,
+//     start: string,
+//     end: string,
+//   ) => {
+//     if (current) entries.push(current);
+//     current = {
+//       role,
+//       company,
+//       location,
+//       startDate: start,
+//       endDate: end,
+//       responsibilities: [],
+//     };
+//     pendingDates = null;
+//   };
+
+//   for (const rawLine of lines) {
+//     const line = cleanLine(rawLine);
+//     if (!line) continue;
+
+//     const bullet = /^[•·▪*\-–—]+\s*/;
+//     const isBullet = bullet.test(line) || /^\d+[.)]\s+/.test(line);
+
+//     // Pure date-range line (e.g. "Jan 2021 - Present", "2018 - 2020").
+//     if (!isBullet && DATE_RANGE_RE.test(line)) {
+//       const m = line.match(DATE_RANGE_RE)!;
+//       const range = { start: m[1], end: m[2] };
+//       if (current) {
+//         current.startDate = current.startDate || range.start;
+//         current.endDate = current.endDate || range.end;
+//       } else {
+//         pendingDates = range;
+//       }
+//       continue;
+//     }
+
+//     // Date-only line (e.g. "2021", "Mar 2019").
+//     if (!isBullet && isDateOnly(line)) {
+//       const parts = line.split(/[-–—]/).map((p) => p.trim());
+//       const start = parts[0] || "";
+//       let end = parts[1] || "";
+//       if (!end && /(present|current|now|ongoing)/i.test(line)) end = parts[0];
+//       if (current) {
+//         current.startDate = current.startDate || start;
+//         current.endDate = current.endDate || end;
+//       } else {
+//         pendingDates = { start, end };
+//       }
+//       continue;
+//     }
+
+//     // Try to detect a role/company header line.
+//     const header = parseRoleHeader(line);
+//     if (header && !isBullet) {
+//       if (
+//         current &&
+//         current.role &&
+//         !current.company &&
+//         !current.location &&
+//         isLocationLike(header.role)
+//       ) {
+//         const parts = header.role
+//           .split(/\s*[•·|–—,-]\s*/)
+//           .map((p) => p.trim())
+//           .filter(Boolean);
+//         if (parts.length > 1) {
+//           current.company = parts[0];
+//           current.location = parts.slice(1).join(", ");
+//         } else {
+//           current.location = header.role;
+//         }
+//         continue;
+//       }
+//       startNew(
+//         header.role,
+//         header.company,
+//         header.location,
+//         header.startDate || pendingDates?.start || "",
+//         header.endDate || pendingDates?.end || "",
+//       );
+//       continue;
+//     }
+
+//     // If we have an active entry and this isn't a bullet, treat as continuation of last bullet or role info.
+//     if (!current) {
+//       current = {
+//         role: line,
+//         company: "",
+//         location: "",
+//         startDate: pendingDates?.start || "",
+//         endDate: pendingDates?.end || "",
+//         responsibilities: [],
+//       };
+//       pendingDates = null;
+//       continue;
+//     }
+
+//     if (isBullet) {
+//       current.responsibilities.push(line.replace(bullet, "").trim());
+//     } else if (!current.role && line.length < 60) {
+//       current.role = line;
+//     } else {
+//       current.responsibilities.push(line);
+//     }
+//   }
+
+//   if (current) entries.push(current);
+//   return entries;
+// };
 
 const parseExperience = (lines: string[]): RawExperience[] => {
   const entries: RawExperience[] = [];
@@ -489,7 +783,6 @@ const parseExperience = (lines: string[]): RawExperience[] => {
   const startNew = (
     role: string,
     company: string,
-    location: string,
     start: string,
     end: string,
   ) => {
@@ -497,7 +790,6 @@ const parseExperience = (lines: string[]): RawExperience[] => {
     current = {
       role,
       company,
-      location,
       startDate: start,
       endDate: end,
       responsibilities: [],
@@ -543,32 +835,23 @@ const parseExperience = (lines: string[]): RawExperience[] => {
     // Try to detect a role/company header line.
     const header = parseRoleHeader(line);
     if (header && !isBullet) {
-      // A role with an open entry that still lacks company/location may actually
-      // be the location line of the current entry (e.g. "Freelance • Mymensingh,
-      // Bangladesh"). Attach it instead of starting a new experience.
-      if (
-        current &&
-        current.role &&
-        !current.company &&
-        !current.location &&
-        isLocationLike(header.role)
-      ) {
+      // Case: Current entry exists, has role but missing company
+      if (current && current.role && !current.company) {
         const parts = header.role
           .split(/\s*[•·|–—,-]\s*/)
           .map((p) => p.trim())
           .filter(Boolean);
+
         if (parts.length > 1) {
-          current.company = parts[0];
-          current.location = parts.slice(1).join(", ");
-        } else {
-          current.location = header.role;
+          current.company = parts[0]; // Set company from first part
         }
         continue;
       }
+
+      // Case: Start a new entry
       startNew(
         header.role,
         header.company,
-        header.location,
         header.startDate || pendingDates?.start || "",
         header.endDate || pendingDates?.end || "",
       );
@@ -580,7 +863,6 @@ const parseExperience = (lines: string[]): RawExperience[] => {
       current = {
         role: line,
         company: "",
-        location: "",
         startDate: pendingDates?.start || "",
         endDate: pendingDates?.end || "",
         responsibilities: [],
@@ -602,27 +884,31 @@ const parseExperience = (lines: string[]): RawExperience[] => {
   return entries;
 };
 
+// ============================================================================
+// Role Header Parsing
+// ============================================================================
+// Parses a single line into role, company, location, and date components.
+// Handles separators like "|", "at", "@" and embedded date ranges.
+// ============================================================================
+
 const parseRoleHeader = (
   line: string,
 ): {
   role: string;
   company: string;
-  location: string;
   startDate: string;
   endDate: string;
 } | null => {
   let cleaned = line.replace(/^[•·▪*\-–—\s]+/, "");
-  // Insert space before month names when directly attached to a word (e.g. "DeveloperApr" → "Developer Apr")
+  // Insert space before month names when directly attached to a word
   cleaned = cleaned.replace(
     /([a-zA-Z])(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)/g,
     "$1 $2",
   );
   if (!cleaned || cleaned.length > 100) return null;
-  // Requires an uppercase word near start to be a heading, not a sentence.
   if (!/^[A-Z]/.test(cleaned)) return null;
 
-  // Reject full sentences (responsibility bullets): a real role header rarely
-  // contains a verb past-tense action, a trailing period, or more than ~6 words.
+  // Reject full sentences
   if (/\.$/.test(cleaned)) return null;
   if (
     /^(developed|designed|built|implemented|created|managed|led|worked|collaborated|delivered|improved|optimized|reduced|maintained|tested|wrote|architected|launched|owned|handled|assisted|spearheaded|responsible for|contributed|supported|helped|applied)\b/i.test(
@@ -631,8 +917,6 @@ const parseRoleHeader = (
   )
     return null;
 
-  // A role header must contain at least two words or a separator/date range,
-  // otherwise a wrapped continuation word (e.g. "PostgreSQL") is treated as a role.
   const wordCount = cleaned.split(/\s+/).length;
   if (wordCount > 8) return null;
   if (wordCount < 2 && !/[-–—|,|]|\s+at\s+|\s+@\s+|\d{4}/i.test(cleaned)) {
@@ -642,29 +926,30 @@ const parseRoleHeader = (
   const result = {
     role: "",
     company: "",
-    location: "",
     startDate: "",
     endDate: "",
   };
 
-  // Split date range "Mar 2019 - Present" or "2020 - 2022" off the end.
-  const dateMatch = cleaned.match(
-    /\s+[-–—|]\s+((?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}|present|current|now|ongoing))\s*$/i,
+  // First try to find a full date range "Start - End" anywhere in the line.
+  const fullRangeMatch = cleaned.match(
+    /((?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}))\s*[-–—]\s*((?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}|present|current|now|ongoing))/i,
   );
   let body = cleaned;
-  if (dateMatch) {
-    const afterDate = cleaned.slice(0, dateMatch.index).trim();
-    const rangeStart = afterDate.match(
-      /(?:^|[\s|])((?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}))\s*$/i,
+  if (fullRangeMatch) {
+    result.startDate = fullRangeMatch[1];
+    result.endDate = fullRangeMatch[2];
+    body = (
+      cleaned.slice(0, fullRangeMatch.index) +
+      cleaned.slice(fullRangeMatch.index! + fullRangeMatch[0].length)
+    ).trim();
+  } else {
+    // Fallback: split date range off the end.
+    const dateMatch = cleaned.match(
+      /\s+[-–—|]\s+((?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}|present|current|now|ongoing))\s*$/i,
     );
-    if (rangeStart) {
-      result.startDate = rangeStart[1];
+    if (dateMatch) {
       result.endDate = dateMatch[1];
-      body = afterDate.slice(0, rangeStart.index).trim();
-    } else {
-      result.startDate = "";
-      result.endDate = dateMatch[1];
-      body = afterDate;
+      body = cleaned.slice(0, dateMatch.index).trim();
     }
   }
 
@@ -675,36 +960,34 @@ const parseRoleHeader = (
     .filter(Boolean);
   if (parts.length >= 1) result.role = parts[0];
   if (parts.length >= 2) {
-    // Second part is company or location; guess by keyword.
-    const second = parts[1];
-    if (
-      /\b(?:remote|hybrid|onsite|on-site|bangladesh|dhaka|usa|uk|germany|india|australia|canada)\b/i.test(
-        second,
-      ) ||
-      /\b(?:city|district|division)\b/i.test(second)
-    ) {
-      result.location = second;
-    } else {
-      result.company = second;
-    }
+    result.company = parts[1];
   }
-  if (parts.length >= 3) result.location = parts[2];
 
   if (!result.role) return null;
   return result;
 };
 
 // ============================================================================
-// Projects
+// Project Parsing
+// ============================================================================
+// Extracts project entries with names, descriptions, and date ranges.
+// Handles PDF month-name concatenation and standalone date assignment.
 // ============================================================================
 
 const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
   const projects: DictionaryResumeJson["projects"] = [];
   let current: DictionaryResumeJson["projects"][number] | null = null;
+  let pendingDates: { start: string; end: string } | null = null;
 
   const pushCurrent = (
     name: string,
   ): DictionaryResumeJson["projects"][number] => {
+    // Apply any pending dates to the previous project before creating new one.
+    if (current && pendingDates && !current.startDate) {
+      current.startDate = pendingDates.start;
+      current.endDate = pendingDates.end;
+      pendingDates = null;
+    }
     current = {
       name: name.slice(0, 80),
       description: [],
@@ -735,26 +1018,56 @@ const parseProjects = (lines: string[]): DictionaryResumeJson["projects"] => {
       "$1 $2",
     );
 
+    // Standalone date range — assign to current project or hold as pending.
+    if (DATE_RANGE_RE.test(spaced)) {
+      const dm = spaced.match(DATE_RANGE_RE)!;
+      if (current && !current.startDate) {
+        current.startDate = dm[1];
+        current.endDate = dm[2];
+      } else {
+        pendingDates = { start: dm[1], end: dm[2] };
+      }
+      continue;
+    }
+
+    // Year-only range (e.g. "2020 - 2024").
+    if (/^\d{4}\s*[-–—]\s*\d{4}$/i.test(spaced)) {
+      const parts = spaced.split(/[-–—]/).map((p) => p.trim());
+      if (current && !current.startDate) {
+        current.startDate = parts[0];
+        current.endDate = parts[1] || "";
+      } else {
+        pendingDates = { start: parts[0], end: parts[1] || "" };
+      }
+      continue;
+    }
+
     if (
       !current ||
       (!current.description.length && !isDescriptionLine(spaced))
     ) {
-      // A standalone date range ("Feb 2024 - Present") right after a project
-      // name is that project's start/end dates, not a new project.
-      if (current && DATE_RANGE_RE.test(spaced)) {
-        const dm = spaced.match(DATE_RANGE_RE)!;
-        current.startDate = dm[1];
-        current.endDate = dm[2];
-        continue;
-      }
       current = pushCurrent(spaced);
       continue;
     }
 
     current.description.push(spaced);
   }
+
+  // Flush pending dates to the last project.
+  if (current && pendingDates && !current.startDate) {
+    current.startDate = pendingDates.start;
+    current.endDate = pendingDates.end;
+  }
+
   return projects;
 };
+
+// ============================================================================
+// Project Description Detection
+// ============================================================================
+// Determines if a line is a project description rather than a project name
+// by checking for action verbs or excessive length.
+// ============================================================================
 
 const isDescriptionLine = (l: string): boolean =>
   /^(developed|designed|built|implemented|created|used|built with|technologies|features|role|responsibilities)/i.test(
@@ -762,15 +1075,75 @@ const isDescriptionLine = (l: string): boolean =>
   ) || l.length > 60;
 
 // ============================================================================
-// Education
+// Education Parsing
+// ============================================================================
+// Groups consecutive education-related lines and extracts degree, field,
+// education level, and date ranges using dictionary matching.
 // ============================================================================
 
 const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
   const education: DictionaryResumeJson["education"] = [];
 
+  // Education entries often span multiple lines:
+  //   "Bachelor of Science in Computer Science"
+  //   "University of Dhaka"
+  //   "2013 - 2017"
+  // Accumulate consecutive lines that belong together, then extract fields.
+  const DATE_LINE_RE =
+    /(?<start>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4})|\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})\s*[-–—]\s*(?<end>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4})|present|current)/i;
+
+  let pendingLines: string[] = [];
+
+  const flushPending = () => {
+    if (pendingLines.length === 0) return;
+    const combined = pendingLines.join(" ");
+
+    const degree =
+      matchDictionary(combined, DEGREE_KEYWORDS).find(
+        (d) => d.toLowerCase() !== "certification",
+      ) || "";
+    const field = matchDictionary(combined, FIELD_OF_STUDY_KEYWORDS)[0] || "";
+    const educationLevel = matchDictionary(combined, EDUCATION_LEVELS)[0] || "";
+
+    // Try dates from each individual line first, then from combined text.
+    let startDate = "";
+    let endDate = "";
+    for (const l of pendingLines) {
+      const dm = l.match(DATE_LINE_RE);
+      if (dm) {
+        startDate = dm.groups?.start || "";
+        endDate = dm.groups?.end || "";
+        break;
+      }
+    }
+    if (!startDate) {
+      const dm = combined.match(DATE_LINE_RE);
+      startDate = dm?.groups?.start || "";
+      endDate = dm?.groups?.end || "";
+    }
+
+    if (degree || field || educationLevel) {
+      education.push({
+        degree,
+        field,
+        education_level: educationLevel,
+        startDate,
+        endDate,
+      });
+    }
+    pendingLines = [];
+  };
+
   for (const raw of lines) {
     const line = cleanLine(raw);
     if (!line || line.length > 160) continue;
+
+    // A standalone date range or a pure date-only line belongs to the
+    // previous education entry, not a new one.
+    if (/^\d{4}\s*[-–—]\s*\d{4}$/i.test(line) || DATE_RANGE_RE.test(line)) {
+      pendingLines.push(line);
+      continue;
+    }
 
     const degree =
       matchDictionary(line, DEGREE_KEYWORDS).find(
@@ -779,40 +1152,46 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
     const field = matchDictionary(line, FIELD_OF_STUDY_KEYWORDS)[0] || "";
     const educationLevel = matchDictionary(line, EDUCATION_LEVELS)[0] || "";
 
-    // Dates: "2013 - 2017", "Mar 2017–May 2018" (spaces around dash optional)
-    const dates = line.match(
-      /(?<start>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4})|\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})\s*[-–—]\s*(?<end>(?:\d{4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4})|present|current)/i,
-    );
-
+    // If this line has degree/field/level info, it starts or continues an entry.
     if (degree || field || educationLevel) {
-      education.push({
-        degree,
-        field,
-        education_level: educationLevel,
-        startDate: dates?.groups?.start || "",
-        endDate: dates?.groups?.end || "",
-      });
+      pendingLines.push(line);
+      continue;
     }
+
+    // If we have pending lines and this line is short (institution name,
+    // GPA, etc.), it likely belongs to the same entry.
+    if (pendingLines.length > 0 && line.length < 80) {
+      pendingLines.push(line);
+      continue;
+    }
+
+    // Otherwise flush whatever we have and skip this line.
+    flushPending();
   }
 
+  flushPending();
   return education;
 };
 
 // ============================================================================
-// Helpers
+// Derived Metrics & Formatting Helpers
+// ============================================================================
+// Detects date formatting consistency, infers resume tone from measurable
+// results count, and maps parsed JSON to the shared ResumeContent type.
 // ============================================================================
 
-const detectDateFormatting = (experienceLines: string[]): boolean => {
-  const text = experienceLines.join("\n");
+const detectDateFormatting = (lines: string[]): boolean => {
+  const text = lines.join("\n");
   const dateMatches = text.match(
-    /\b((?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})|(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{4})|(?:present|current))\b/gi,
+    /\b((?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})|(?:\d{1,2}[\/-]\d{2,4})|(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s*\d{4})|(?:present|current))\b/gi,
   );
-  if (!dateMatches || dateMatches.length === 0) return true; // no dates to validate
+  if (!dateMatches || dateMatches.length === 0) return true;
   return dateMatches.every(
     (d) =>
       /present|current/i.test(d) ||
       /^\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}$/.test(d) ||
-      /(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{4}/i.test(
+      /^\d{1,2}[\/-]\d{2,4}$/.test(d) ||
+      /^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s*\d{4}$/i.test(
         d,
       ),
   );
@@ -825,6 +1204,13 @@ const inferTone = (text: string, measurableCount: number): string => {
   if (wordCount < 100) return "weak";
   return "bad";
 };
+
+// ============================================================================
+// ResumeContent Mapping
+// ============================================================================
+// Converts the dictionary-parsed JSON output into the shared ResumeContent
+// type used by the scoring engine and other modules.
+// ============================================================================
 
 const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
   const parseAddress = (address: string) => {

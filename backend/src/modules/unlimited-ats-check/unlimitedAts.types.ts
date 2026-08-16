@@ -107,7 +107,7 @@ export type Bucket = keyof ResumeSegments;
 export interface RawExperience {
   role: string;
   company: string;
-  location: string;
+  // location: string;
   startDate: string;
   endDate: string;
   responsibilities: string[];

@@ -953,7 +953,7 @@ const parseRoleHeader = (
     }
   }
 
-  // Split on " | " or " at " or " , " separators.
+  // Split on " | " or " · " or " at " or " , " separators.
   const parts = body
     .split(/\s+[|,]\s+|\s+at\s+|\s+@\s+/i)
     .map((p) => p.trim().replace(/[|,]$/, "").trim())

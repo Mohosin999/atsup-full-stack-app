@@ -1183,13 +1183,12 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
 const detectDateFormatting = (lines: string[]): boolean => {
   const text = lines.join("\n");
   const dateMatches = text.match(
-    /\b((?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4})|(?:\d{1,2}[\/-]\d{2,4})|(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s*\d{4})|(?:present|current))\b/gi,
+    /\b((?:\d{1,2}[\/-]\d{2,4})|(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s*\d{4})|(?:present|current))\b/gi,
   );
   if (!dateMatches || dateMatches.length === 0) return true;
   return dateMatches.every(
     (d) =>
       /present|current/i.test(d) ||
-      /^\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}$/.test(d) ||
       /^\d{1,2}[\/-]\d{2,4}$/.test(d) ||
       /^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s*\d{4}$/i.test(
         d,

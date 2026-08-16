@@ -108,10 +108,10 @@ export const extractMeasurableResults = (text: string): string[] => {
 
 // ---- Dates ----
 export const NORMAL_DATE_RE =
-  /^(?:present|current|now|ongoing|to date|till date|till now|until now|\d{1,2}[\/-]\d{2}(?:\/\d{4}|\d{2})?|\d{4}|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*\d{0,4})$/i;
+  /^(?:present|current|now|ongoing|to date|till date|till now|until now|\d{1,2}[\/-]\d{1,2}(?:\/\d{4}|\d{2})?|\d{1,2}[\/-]\d{2,4}|\d{4}|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*\d{0,4})$/i;
 
 const SINGLE_DATE_TOKEN =
-  /\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{4}|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*\d{0,4}|present|current|now|ongoing/i;
+  /\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{1,2}[\/-]\d{2,4}|\d{4}|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*\d{0,4}|present|current|now|ongoing/i;
 
 /** A line that is purely a date range, e.g. "Jan 2021 - Present" or "2018 - 2020". */
 export const DATE_RANGE_RE = new RegExp(

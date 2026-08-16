@@ -1,7 +1,6 @@
 import { Response } from "express";
-import { AuthRequest } from "../../shared/types";
+import { AuthRequest, ResumeContent } from "../../shared/types";
 import { prisma } from "../../lib/prisma";
-import { ResumeContent } from "../../shared/types";
 import { parseResume as parseResumeService } from "./services/resumeParser.service";
 import {
   parseJobDescription as parseJDService,
@@ -15,13 +14,21 @@ import {
   deleteAllAtsScoreHistory,
 } from "./services/history.service";
 
+const parseAddress = (
+  raw: string,
+): { city?: string; state?: string } | undefined => {
+  if (!raw) return undefined;
+  const parts = raw
+    .split(/[,•\-]/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  if (parts.length === 0) return undefined;
+  if (parts.length === 1) return { city: parts[0] };
+  return { city: parts[0], state: parts[1] };
+};
+
 const mapAIResearchToResumeContent = (ai: any): ResumeContent | null => {
   if (!ai) return null;
-
-  const addressParts = (ai.personal_info?.contact?.address || "")
-    .split(/[,|-]/)
-    .map((part: string) => part.trim())
-    .filter(Boolean);
 
   return {
     personalInfo: {
@@ -30,52 +37,55 @@ const mapAIResearchToResumeContent = (ai: any): ResumeContent | null => {
       contact: {
         email: ai.personal_info?.contact?.email || "",
         phone: ai.personal_info?.contact?.phone || "",
-        linkedIn: ai.personal_info?.contact?.links?.linkedin || "",
-        address:
-          addressParts.length === 1
-            ? { city: addressParts[0] }
-            : addressParts.length > 1
-              ? {
-                  city: addressParts[0],
-                  division: addressParts[addressParts.length - 1],
-                }
-              : undefined,
+        address: parseAddress(ai.personal_info?.contact?.address || ""),
       },
     },
     summary: ai.summary || "",
     experience: (ai.experience || []).map((exp: any) => ({
-      title: exp.role || "",
+      role: exp.role || "",
       company: exp.company || "",
-      location: exp.location || "",
       startDate: exp.startDate || "",
       endDate: exp.endDate || "",
-      highlights: exp.responsibilities || [],
+      responsibilities: exp.responsibilities || [],
     })),
-    education: (ai.education || []).map((edu: any) => ({
-      degree: edu.degree || "",
-      field: edu.field || "",
-      institution: "",
-      education_level: edu.education_level || "",
-      startDate: edu.startDate || "",
-      endDate: edu.endDate || "",
-    })),
-    skills: [
-      ...(ai.skills?.hardSkills || []),
-      ...(ai.skills?.softSkills || []),
-    ],
-    hardSkills: ai.skills?.hardSkills || [],
-    softSkills: ai.skills?.softSkills || [],
+    education: (ai.education || [])
+      .map((edu: any) => ({
+        degree: edu.degree || "",
+        field: edu.field || "",
+        education_level: edu.education_level || "",
+        startDate: edu.startDate || "",
+        endDate: edu.endDate || "",
+      }))
+      .filter((e: any) => e.degree || e.field || e.education_level),
+    skills: {
+      hardSkills: ai.skills?.hardSkills || [],
+      softSkills: ai.skills?.softSkills || [],
+    },
     projects: (ai.projects || []).map((proj: any) => ({
       name: proj.name || "",
-      highlights: proj.description || [],
-      link: proj.link || "",
+      description: proj.description || [],
+      startDate: proj.startDate || "",
+      endDate: proj.endDate || "",
     })),
-    certifications: (ai.certifications || []).map((cert: any) => ({
-      name: cert.name || "",
-      issuer: cert.issuer || "",
-      date: cert.date || "",
-      link: cert.link || "",
-    })),
+    yearsOfExperience: ai.yearsOfExperience || "",
+    resumeTone: ai.resumeTone || "bad",
+    wordCount: ai.wordCount || 0,
+    educationSection: ai.educationSection || false,
+    experienceSection: ai.experienceSection || false,
+    workHistory: ai.workHistory || false,
+    dateFormatting: ai.dateFormatting || false,
+    layout: {
+      isSingleColumn: ai.layout?.isSingleColumn || false,
+      hasTables: ai.layout?.hasTables || false,
+      hasImages: ai.layout?.hasImages || false,
+      hasIcons: ai.layout?.hasIcons || false,
+      hasMultiColumn: ai.layout?.hasMultiColumn || false,
+    },
+    fontCheck: {
+      isStandardFont: ai.fontCheck?.isStandardFont || false,
+      fontName: ai.fontCheck?.fontName || "",
+      isReadableSize: ai.fontCheck?.isReadableSize || false,
+    },
   } as ResumeContent;
 };
 
@@ -118,10 +128,7 @@ export const parseResume = async (req: AuthRequest, res: Response) => {
 
 // ─── Job Description Parse ───────────────────────────────────────────────────
 
-export const parseJobDescription = async (
-  req: AuthRequest,
-  res: Response,
-) => {
+export const parseJobDescription = async (req: AuthRequest, res: Response) => {
   try {
     const { description } = req.body;
 
@@ -166,11 +173,8 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       summary: "",
       experience: [],
       education: [],
-      skills: [],
-      hardSkills: [],
-      softSkills: [],
+      skills: { hardSkills: [], softSkills: [] },
       projects: [],
-      certifications: [],
     };
 
     const finalStructuredJD = structuredJD?.skills
@@ -182,11 +186,20 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       select: { subscription: true },
     });
 
-    const credits = (user?.subscription as any)?.credits ?? 0;
-    if (!user || credits < 1) {
+    const subscription = (user?.subscription as any) || {};
+    const today = new Date().toISOString().slice(0, 10);
+    const lastReset = subscription?.lastAiScanResetDate ?? "";
+    const credits = subscription?.credits ?? 0;
+
+    // Daily credit: every account has exactly 1 credit per day (GMT midnight).
+    const effectiveCredits = lastReset !== today ? 1 : credits;
+
+    if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: `Insufficient credits. This task requires 1 credit. You have ${credits} credits.`,
+        message:
+          "No AI scan credit available. A new credit will be granted at midnight (GMT).",
+        code: "AI_SCAN_UNAVAILABLE",
       });
     }
 
@@ -194,30 +207,34 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       req.user.id,
       resumeName || "Untitled Resume",
       resumeContent,
-      jobDescription,
       finalStructuredJD || null,
       aiResearch || null,
     );
 
-    const updated = await prisma.user.update({
+    const remainingCredits = effectiveCredits - 1;
+    await prisma.user.update({
       where: { id: req.user.id },
       data: {
         subscription: {
-          ...((user.subscription as any) || {}),
-          credits: credits - 1,
+          ...subscription,
+          credits: remainingCredits,
+          lastAiScanResetDate: today,
         },
       },
       select: { subscription: true },
     });
 
-    const remainingCredits = (updated.subscription as any)?.credits ?? 0;
-
     res.status(201).json({
       success: true,
       data: score,
       credits: remainingCredits,
+      aiScan: {
+        available: false,
+        credits: remainingCredits,
+        lastAiScanResetDate: today,
+      },
       message:
-        "Credit deducted successfully! Task: ATS Score Analysis, Credits deducted: 1",
+        "AI scan used. A new credit will be available at midnight (GMT).",
     });
   } catch (error: any) {
     console.error("ATS Score analysis error:", error);

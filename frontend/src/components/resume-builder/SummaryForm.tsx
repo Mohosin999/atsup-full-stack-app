@@ -11,11 +11,10 @@ interface SummaryFormProps {
 export default function SummaryForm({ value, onChange }: SummaryFormProps) {
   return (
     <Textarea
-      label="Professional Summary"
       value={value || ""}
       onChange={(e) => onChange(e.target.value)}
-      rows={5}
-      placeholder="Write a brief summary of your professional background, key strengths, and career goals."
+      rows={8}
+      placeholder="Write a brief summary with highlights of your top skills and achievements."
     />
   );
 }

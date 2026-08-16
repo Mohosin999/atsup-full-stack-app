@@ -3,8 +3,10 @@ import { CategoryResult, CheckStatus, MatchCategoryResult } from "./types";
 import { CATEGORY_WEIGHTS } from "./constants";
 import { scoreFromChecks, deriveFeedback } from "./utils";
 
+// =============================================================
+// Hard skills
+// =============================================================
 export const buildHardSkills = (
-  resume: ResumeContent,
   resumeHardSkills: string[],
   jd: StructuredJD | null,
   hardSkillsMatch: MatchCategoryResult,
@@ -13,21 +15,16 @@ export const buildHardSkills = (
     {
       label: "Technical skills present",
       status:
-        resumeHardSkills.length >= 5
+        resumeHardSkills.length > 0
           ? ("passed" as CheckStatus)
-          : resumeHardSkills.length > 0
-            ? ("partial" as CheckStatus)
-            : ("failed" as CheckStatus),
+          : ("failed" as CheckStatus),
       detail: `${resumeHardSkills.length} technical skill(s) identified.`,
       weight: 100,
     },
   ];
 
   let summary = `${resumeHardSkills.length} technical skills identified.`;
-  let score =
-    resumeHardSkills.length > 0
-      ? Math.min(100, 55 + resumeHardSkills.length * 3)
-      : 0;
+  let score = 0;
 
   let matched: string[] = [];
   let missing: string[] = [];
@@ -40,8 +37,7 @@ export const buildHardSkills = (
     checks = [
       {
         label: "Required hard skills matched",
-        status:
-          missing.length === 0 ? "passed" : score >= 50 ? "partial" : "failed",
+        status: missing.length === 0 ? "passed" : "failed",
         detail: `${matched.length} of ${total} required technical skills found.`,
         weight: 100,
       },
@@ -59,7 +55,7 @@ export const buildHardSkills = (
     summary = `${matched.length} of ${total} required technical skills matched.`;
   } else if (jd) {
     score = 0;
-    missing = jd.hardSkills;
+    missing = jd.skills?.hardSkills;
     checks = [
       {
         label: "Required hard skills matched",
@@ -68,7 +64,8 @@ export const buildHardSkills = (
         weight: 100,
       },
     ];
-    summary = "No required technical skills found.";
+    summary =
+      "No hard skills detected from your provided job description. Please add a perfect job description of your role before applying.";
   }
 
   const { strengths, improvements } = deriveFeedback(checks);
@@ -86,19 +83,22 @@ export const buildHardSkills = (
   };
 };
 
+// =============================================================
+// Soft skills
+// =============================================================
 export const buildSoftSkills = (
   resume: ResumeContent,
   jd: StructuredJD | null,
   softSkillsMatch: MatchCategoryResult,
 ): CategoryResult => {
-  const resumeSoft = (resume.softSkills || []).filter(Boolean);
+  const resumeSoft = (resume.skills?.softSkills || []).filter(Boolean);
   let checks = [
     {
       label: "Soft skills highlighted",
       status:
         resumeSoft.length > 0
           ? ("passed" as CheckStatus)
-          : ("partial" as CheckStatus),
+          : ("failed" as CheckStatus),
       detail:
         resumeSoft.length > 0
           ? `${resumeSoft.length} soft skill(s) highlighted.`
@@ -110,8 +110,8 @@ export const buildSoftSkills = (
     resumeSoft.length > 0
       ? `${resumeSoft.length} soft skill(s) highlighted.`
       : "Soft skills not explicitly listed.";
-  let score =
-    resumeSoft.length > 0 ? Math.min(100, 60 + resumeSoft.length * 5) : 70;
+
+  let score = 0;
   let matched: string[] = [];
   let missing: string[] = [];
 
@@ -123,8 +123,7 @@ export const buildSoftSkills = (
     checks = [
       {
         label: "Soft skills matched",
-        status:
-          missing.length === 0 ? "passed" : score >= 50 ? "partial" : "failed",
+        status: missing.length === 0 ? "passed" : "failed",
         detail: `${matched.length} of ${total} soft skills found.`,
         weight: 100,
       },
@@ -132,7 +131,7 @@ export const buildSoftSkills = (
     summary = `${matched.length} of ${total} expected soft skills found.`;
   } else if (jd) {
     score = 0;
-    missing = jd.softSkills;
+    missing = jd.skills?.softSkills;
     checks = [
       {
         label: "Soft skills matched",
@@ -141,7 +140,8 @@ export const buildSoftSkills = (
         weight: 100,
       },
     ];
-    summary = "No soft skills from JD detected.";
+    summary =
+      "No soft skills detected from job description. Please add a perfect job description of your role before applying.";
   }
 
   const { strengths, improvements } = deriveFeedback(checks);

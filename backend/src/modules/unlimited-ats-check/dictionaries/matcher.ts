@@ -1,6 +1,9 @@
 /**
  * Whole-word dictionary matching helpers used across the dictionary parsers.
  * Matching is case-insensitive and boundary-aware to avoid false positives.
+ *
+ * Dictionaries use grouped format: string[][] where each group is
+ * [canonical, alias1, alias2, ...]. On match, the canonical (first) name is returned.
  */
 
 export const escapeRegex = (str: string): string =>
@@ -9,36 +12,46 @@ export const escapeRegex = (str: string): string =>
 export const normalize = (text: string): string => text.toLowerCase().trim();
 
 /**
- * Find dictionary entries present in the given text as whole words.
- * Returns entries in the order they appear in the dictionary.
+ * Find dictionary groups present in the given text as whole words.
+ * Returns the canonical (first) name from each matched group.
+ * Groups are checked in order; shorter contained terms are dropped.
  */
 export const matchDictionary = (
   text: string,
-  dictionary: string[],
+  dictionary: string[][],
 ): string[] => {
   const haystack = text;
   const found: string[] = [];
-  for (const entry of dictionary) {
-    const escaped = escapeRegex(entry);
-    const re = new RegExp(`(?<![\\w-])${escaped}(?![\\w-])`, "i");
-    if (re.test(haystack)) found.push(entry);
-  }
-  // De-duplicate case-insensitively while preserving first-seen order.
-  const seen = new Set<string>();
-  const unique: string[] = [];
-  for (const entry of found) {
-    const key = entry.toLowerCase();
-    if (!seen.has(key)) {
-      seen.add(key);
-      unique.push(entry);
+
+  for (const group of dictionary) {
+    if (!group || !group.length) continue;
+    const canonical = group[0];
+
+    // Check if ANY variant in the group matches
+    let matched = false;
+    for (const variant of group) {
+      const escaped = escapeRegex(variant);
+      const re = new RegExp(`(?<![\\w-])${escaped}(?![\\w-])`, "i");
+      if (re.test(haystack)) {
+        matched = true;
+        break;
+      }
+    }
+
+    if (matched) {
+      // Deduplicate case-insensitively (only add canonical once per group)
+      const key = canonical.toLowerCase();
+      if (!found.some((f) => f.toLowerCase() === key)) {
+        found.push(canonical);
+      }
     }
   }
 
   // Drop short generic terms that are contained inside a longer matched term
   // (e.g. "Node" is redundant when "Node.js" is present).
-  const filtered = unique.filter(
+  const filtered = found.filter(
     (entry) =>
-      !unique.some(
+      !found.some(
         (other) =>
           other !== entry &&
           other.toLowerCase().includes(entry.toLowerCase()) &&
@@ -55,15 +68,18 @@ export const matchDictionary = (
  */
 export const countDictionaryMatches = (
   text: string,
-  dictionary: string[],
+  dictionary: string[][],
 ): number => {
   const haystack = text;
   let total = 0;
-  for (const entry of dictionary) {
-    const escaped = escapeRegex(entry);
-    const re = new RegExp(`(?<![\\w-])${escaped}(?![\\w-])`, "gi");
-    const matches = haystack.match(re);
-    if (matches) total += matches.length;
+  for (const group of dictionary) {
+    if (!group || !group.length) continue;
+    for (const variant of group) {
+      const escaped = escapeRegex(variant);
+      const re = new RegExp(`(?<![\\w-])${escaped}(?![\\w-])`, "gi");
+      const matches = haystack.match(re);
+      if (matches) total += matches.length;
+    }
   }
   return total;
 };

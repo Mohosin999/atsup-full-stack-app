@@ -13,6 +13,7 @@ export interface User {
     plan: 'free' | 'pro';
     credits: number;
     expiresAt?: string;
+    lastAiScanResetDate?: string | null;
   };
   createdAt: string;
   updatedAt: string;
@@ -88,7 +89,6 @@ export interface AIResumeResearch {
     link: string;
   }>;
   yearsOfExperience: string;
-  measurableResults: string[];
   resumeTone: string;
   wordCount: string;
   educationSection: boolean;
@@ -121,6 +121,18 @@ export interface Certification {
   date?: string;
 }
 
+export const SECTION_KEYS = [
+  "summary",
+  "experience",
+  "skills",
+  "education",
+  "projects",
+  "achievements",
+  "certifications",
+] as const;
+
+export type SectionKey = (typeof SECTION_KEYS)[number];
+
 export interface ResumeContent {
   personalInfo: {
     fullName?: string;
@@ -132,8 +144,6 @@ export interface ResumeContent {
       address?: {
         city?: string;
         state?: string;
-        division?: string;
-        zipCode?: string;
       };
       socialLinks?: {
         github?: string;
@@ -152,8 +162,30 @@ export interface ResumeContent {
   hardSkills?: string[];
   softSkills?: string[];
   keywords?: string[];
-  measurableResults?: string[];
   certifications?: Certification[];
+  sectionTitles?: {
+    summary?: string;
+    experience?: string;
+    skills?: string;
+    education?: string;
+    projects?: string;
+    achievements?: string;
+    certifications?: string;
+  };
+  sectionOrder?: SectionKey[];
+  layout?: {
+    isSingleColumn?: boolean;
+    hasTables?: boolean;
+    hasImages?: boolean;
+    hasIcons?: boolean;
+    hasMultiColumn?: boolean;
+  };
+  fontCheck?: {
+    isStandardFont?: boolean;
+    fontName?: string;
+    isReadableSize?: boolean;
+    hasMixedFonts?: boolean;
+  };
 }
 
 export interface Experience {
@@ -176,7 +208,6 @@ export interface Project {
   current?: boolean;
   links?: {
     live?: string;
-    github?: string;
     caseStudy?: string;
   };
   technologies?: string[];
@@ -191,7 +222,10 @@ export interface Achievement {
 export interface Education {
   institution: string;
   degree: string;
-  date?: string;
+  areaOfStudy?: string;
+  startDate?: string;
+  endDate?: string;
+  gpa?: string;
 }
 
 export interface MissingKeywords {
@@ -313,6 +347,12 @@ export interface AtsScore {
       count: number;
       found: string[];
     };
+    actionVerbs?: {
+      score: number;
+      feedback: string;
+      count: number;
+      found: string[];
+    };
   };
   atsFriendliness: number;
   suggestions: string[];
@@ -327,7 +367,7 @@ export interface AtsCheckResult {
   isAtsFriendly: boolean;
 }
 
-export type MatchStatus = "matched" | "partial" | "missing";
+export type MatchStatus = "matched" | "missing";
 
 export interface MatchItemResult {
   item: string;
@@ -339,14 +379,13 @@ export interface MatchItemResult {
 export interface MatchCategoryResult {
   score: number;
   matched: string[];
-  partial: string[];
   missing: string[];
   items: MatchItemResult[];
 }
 
 // 5-category ATS scoring (Searchability 30% / Hard Skills 35% / Soft Skills
 // 15% / Recruiter Tips 10% / Formatting 10%)
-export type CheckStatus = "passed" | "partial" | "failed" | "na";
+export type CheckStatus = "passed" | "failed" | "not-applicable";
 
 export interface CategoryCheck {
   label: string;
@@ -401,6 +440,12 @@ export interface AtsScoreHistory {
     skills: { score: number; feedback: string };
     contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
     measurableResults: {
+      score: number;
+      feedback: string;
+      count: number;
+      found: string[];
+    };
+    actionVerbs?: {
       score: number;
       feedback: string;
       count: number;

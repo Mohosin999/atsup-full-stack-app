@@ -51,14 +51,14 @@ router.get(
         secure: env.nodeEnv === "production",
         sameSite: env.nodeEnv === "production" ? "none" : "lax",
         path: "/",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: 10 * 60 * 1000,
       });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: env.nodeEnv === "production",
         sameSite: env.nodeEnv === "production" ? "none" : "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: 20 * 60 * 1000,
       });
 
       // res.redirect(env.frontendUrl || "http://localhost:4173");

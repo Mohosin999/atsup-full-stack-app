@@ -1,12 +1,20 @@
 import { ResumeContent, StructuredJD } from "../types";
 
-export type MatchStatus = "matched" | "partial" | "missing";
-export type CheckStatus = "passed" | "partial" | "failed" | "na";
+export type MatchStatus = "matched" | "missing";
+export type CheckStatus = "passed" | "failed" | "not-applicable";
+
+// export interface LocalSectionScore {
+//   score: number;
+//   feedback: string;
+//   wordCount?: number;
+//   hasContactInfo?: boolean;
+//   count?: number;
+//   found?: string[];
+// }
 
 export interface LocalSectionScore {
   score: number;
   feedback: string;
-  wordCount?: number;
   hasContactInfo?: boolean;
   count?: number;
   found?: string[];
@@ -22,7 +30,6 @@ export interface MatchItemResult {
 export interface MatchCategoryResult {
   score: number;
   matched: string[];
-  partial: string[];
   missing: string[];
   items: MatchItemResult[];
 }
@@ -71,10 +78,10 @@ export interface LocalAtsResult {
   sectionScores: {
     summary: LocalSectionScore;
     experience: LocalSectionScore;
-    projects: LocalSectionScore;
     skills: LocalSectionScore;
     contactInfo: LocalSectionScore;
     measurableResults: LocalSectionScore;
+    actionVerbs: LocalSectionScore;
   };
   atsFriendliness: number;
   suggestions: string[];
@@ -82,4 +89,28 @@ export interface LocalAtsResult {
     hardSkills: MatchCategoryResult;
     softSkills: MatchCategoryResult;
   };
+}
+
+// export interface LocalAtsResult {
+//   overallScore: number;
+//   categories: CategoriesResult;
+//   sectionScores: {
+//     summary: LocalSectionScore;
+//     experience: LocalSectionScore;
+//     skills: LocalSectionScore;
+//     contactInfo: LocalSectionScore;
+//     measurableResults: LocalSectionScore;
+//   };
+//   atsFriendliness: number;
+//   suggestions: string[];
+//   matchBreakdown?: {
+//     hardSkills: MatchCategoryResult;
+//     softSkills: MatchCategoryResult;
+//   };
+// }
+
+export interface jdEducationType {
+  degree: string;
+  field: string;
+  education_level: string;
 }

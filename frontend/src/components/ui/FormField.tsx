@@ -12,7 +12,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-1">
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-700 mb-1">
             {label}
           </label>
         )}
@@ -25,8 +25,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             className={clsx(
-              'w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all',
-              icon && 'pl-10',
+              'w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-xs',
+              icon && 'pl-8',
               error && 'border-red-500 focus:ring-red-500',
               className
             )}
@@ -51,23 +51,23 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, label, error, ...props }, ref) => {
     return (
-      <div className="w-full">
+      <div className="w-full mt-2">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-1">
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-700 mb-1">
             {label}
           </label>
         )}
         <textarea
           ref={ref}
           className={clsx(
-            'w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none',
+            'w-full text-xs px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none leading-5',
             error && 'border-red-500 focus:ring-red-500',
             className
           )}
           {...props}
         />
         {error && (
-          <p className="mt-1 text-sm text-red-500">{error}</p>
+          <p className="mt-1 text-xs text-red-500">{error}</p>
         )}
       </div>
     );

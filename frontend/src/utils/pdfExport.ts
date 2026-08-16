@@ -719,7 +719,7 @@ function generateHtmlContent(content: ResumeContent): string {
     }
     
     a {
-      color: #2563eb !important;
+      color: #222222 !important;
       text-decoration: none !important;
     }
     
@@ -805,13 +805,7 @@ function generateHtmlContent(content: ResumeContent): string {
             <span>
               ${
                 proj.links?.live
-                  ? `<a href="${proj.links.live}" target="_blank">Live</a>`
-                  : ""
-              }
-              
-              ${
-                proj.links?.github
-                  ? `<a href="${proj.links.github}" target="_blank" style="margin-left: 6px;">GitHub</a>`
+                  ? `<a href="${proj.links.live}" target="_blank">Live link</a>`
                   : ""
               }
             </span>
@@ -881,7 +875,7 @@ function generateHtmlContent(content: ResumeContent): string {
         <div class="resume-item">
           <div class="resume-item-header">
             <span class="resume-school">${edu.institution}</span>
-            <span class="resume-date">${edu.date || ""}</span>
+            <span class="resume-date">${[edu.startDate, edu.endDate].filter(Boolean).join(" - ") || ""}</span>
           </div>
           <p class="resume-degree">${edu.degree}</p>
         </div>
@@ -930,8 +924,7 @@ function buildContactInfo(content: ResumeContent): string {
 
   const locationParts = [
     content.personalInfo.contact?.address?.city,
-    content.personalInfo.contact?.address?.division,
-    content.personalInfo.contact?.address?.zipCode,
+    content.personalInfo.contact?.address?.state,
   ].filter(Boolean);
 
   if (locationParts.length > 0) {

@@ -28,6 +28,7 @@ export const runUnlimitedAtsCheck = async (
 
   return {
     resume: resumeParsed.json,
+    resumeContent: resumeParsed.content,
     jd: jdParsed.json,
     score,
   };

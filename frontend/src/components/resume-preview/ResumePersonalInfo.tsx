@@ -29,8 +29,7 @@ export default function ResumePersonalInfo({
   // Build location string (comma after city, then spaces)
   const locationParts = [
     content.personalInfo.contact?.address?.city,
-    content.personalInfo.contact?.address?.division,
-    content.personalInfo.contact?.address?.zipCode,
+    content.personalInfo.contact?.address?.state,
   ].filter(Boolean);
   const locationString =
     locationParts.length > 0

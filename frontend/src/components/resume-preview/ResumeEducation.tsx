@@ -21,10 +21,14 @@ export default function ResumeEducation({ education, forPdf }: ResumeEducationPr
       {education.map((edu, index) => (
         <div key={index} className="mb-2">
           <div className="flex justify-between items-start gap-2">
-            <span className={`font-bold ${titleColor} text-base`}>{edu.degree}</span>
-            <span className={`text-sm ${textColor} flex-shrink-0`}>{edu.date}</span>
+            <span className={`font-bold ${titleColor} text-base`}>
+              {edu.institution}
+            </span>
+            <span className={`text-sm ${textColor} flex-shrink-0`}>
+              {[edu.startDate, edu.endDate].filter(Boolean).join(" - ")}
+            </span>
           </div>
-          <p className={`${textColor} text-sm mt-0.5`}>{edu.institution}</p>
+          <p className={`${textColor} text-sm mt-0.5`}>{edu.degree}</p>
         </div>
       ))}
     </div>

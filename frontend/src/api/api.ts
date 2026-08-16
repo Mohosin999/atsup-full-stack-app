@@ -84,6 +84,7 @@ export const resumeApi = {
   createFromContent: (content: ResumeContent) =>
     api.post("/resumes/content", { content }),
   update: (id: string, data: any) => api.put(`/resumes/${id}`, data),
+  duplicate: (id: string) => api.post(`/resumes/${id}/duplicate`),
   delete: (id: string) => api.delete(`/resumes/${id}`),
   deleteAll: () => api.delete("/resumes/delete-all"),
 };

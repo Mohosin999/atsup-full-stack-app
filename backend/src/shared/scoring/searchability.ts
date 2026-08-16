@@ -5,6 +5,7 @@ import {
   CheckStatus,
 } from "./types";
 import { CATEGORY_WEIGHTS, ATS_DATE_RE } from "./constants";
+import { jobTitleMatches } from "./keywords";
 import {
   scoreFromChecks,
   scoreFromSubgroups,
@@ -13,27 +14,34 @@ import {
 } from "./utils";
 import { ResumeContent, StructuredJD } from "../types";
 
+// ============================================================
+// Contact Info
+// ============================================================
 const buildContactInfoSubgroup = (resume: ResumeContent): CategorySubgroup => {
   const contact = resume.personalInfo?.contact || {};
   const address = contact.address;
   const hasEmail = !!contact.email;
   const hasPhone = !!contact.phone || !!(resume.personalInfo as any)?.phone;
-  // FIXME: modify hasAddress
-  const hasAddress = !!(address?.city || address?.division || address?.zipCode);
+  const hasAddress =
+    typeof address === "string"
+      ? address.trim().length > 0
+      : !!(address?.city || address?.state);
 
   const checks: CategoryCheck[] = [
     {
       label: "Physical address",
       status: hasAddress ? "passed" : "failed",
       detail: hasAddress
-        ? "You provided your physical address."
-        : "No physical address found.",
+        ? "Your physical address is included, allowing recruiters to verify your location eligibility for role requirements."
+        : "No physical address found. Adding your city and state helps recruiters assess location fit for your role.",
       weight: 10,
     },
     {
       label: "Email address",
       status: hasEmail ? "passed" : "failed",
-      detail: hasEmail ? "You provided your email." : "No email address found.",
+      detail: hasEmail
+        ? "You provided your email. Recruiters use your email to contact you for job matches."
+        : "No email address found. This is a critical missing field—without it, recruiters cannot reach you for opportunities.",
       weight: 10,
     },
     {
@@ -41,13 +49,13 @@ const buildContactInfoSubgroup = (resume: ResumeContent): CategorySubgroup => {
       status: hasPhone ? "passed" : "failed",
       detail: hasPhone
         ? "You provided your phone number."
-        : "No phone number found.",
+        : "No phone number found. You should include it.",
       weight: 10,
     },
   ];
 
   const passed = checks.filter((c) => c.status === "passed").length;
-  
+
   return {
     key: "contactInfo",
     title: "Contact Information",
@@ -61,6 +69,9 @@ const buildContactInfoSubgroup = (resume: ResumeContent): CategorySubgroup => {
   };
 };
 
+// ============================================================
+// Section Headings
+// ============================================================
 const buildSectionHeadingsSubgroup = (
   resume: ResumeContent,
 ): CategorySubgroup => {
@@ -74,24 +85,24 @@ const buildSectionHeadingsSubgroup = (
       label: "Education section",
       status: hasEducation ? "passed" : "failed",
       detail: hasEducation
-        ? `${educationCount} education entr${educationCount === 1 ? "y" : "ies"} found.`
-        : "No education section found.",
+        ? `Your resume includes an education section heading, which helps ATS systems properly identify and parse your academic credentials for better job matching.`
+        : `Your resume is missing an education section heading. ATS systems rely on standard section labels to categorize your information correctly.`,
       weight: 10,
     },
     {
       label: "Experience section heading",
       status: hasExperience ? "passed" : "failed",
       detail: hasExperience
-        ? "Work history section recognized."
-        : "Name your experience section clearly.",
+        ? `Your resume includes a recognized experience section heading, which helps ATS properly identify your work history.`
+        : `Your resume is missing a recognized experience section heading. ATS systems rely on standard section labels to categorize your information correctly.`,
       weight: 10,
     },
     {
       label: "Work history found",
       status: hasExperience ? "passed" : "failed",
       detail: hasExperience
-        ? `${experienceCount} position(s) found.`
-        : "No work history found.",
+        ? `We found work history in your resume.`
+        : "No work history found in your resume.",
       weight: 10,
     },
   ];
@@ -110,30 +121,33 @@ const buildSectionHeadingsSubgroup = (
   };
 };
 
+// ============================================================
+// Job title match
+// ============================================================
 const buildJobTitleSubgroup = (
-  resume: ResumeContent,
   resumeText: string,
   jd: StructuredJD | null,
 ): CategorySubgroup => {
   const title = jd?.jobTitle || "";
-  let status: CheckStatus = "na";
+  let status: CheckStatus;
   let detail = "";
 
   if (!title) {
-    detail = "No job title detected from job description.";
-    // OPTIMIZE: here is trying to match job title with resume title directly
-  } else if (resumeText.includes(title)) {
-    status = "passed";
-    detail = `Your resume includes the job title "${title}".`;
-  } else {
     status = "failed";
-    detail = `The job title "${title}" from the JD was not found in your resume.`;
+    detail =
+      "No job title detected from job description. Add a job title at the top of your provided job description.";
+  } else {
+    const hasMatch = jobTitleMatches(resumeText, title);
+    status = hasMatch ? "passed" : "failed";
+    detail = hasMatch
+      ? `The job title "${title}" from the job description was found in your resume, indicating a strong match with the role you're applying for.`
+      : `The job title "${title}" from the job description was not found in your resume. We recommend having the exact title of the job for which you're applying in your resume.`;
   }
 
   const checks: CategoryCheck[] = [
     { label: "Job title match", status, detail, weight: 20 },
   ];
-  
+
   return {
     key: "jobTitleMatch",
     title: "Job Title Match",
@@ -142,13 +156,14 @@ const buildJobTitleSubgroup = (
     summary:
       status === "passed"
         ? `Job title "${title}" found.`
-        : status === "na"
-          ? "Not evaluated."
-          : `Job title "${title}" not found.`,
+        : `Job title "${title}" not found.`,
     checks,
   };
 };
 
+// ============================================================
+// Date Formatting
+// ============================================================
 const buildDateFormattingSubgroup = (
   resume: ResumeContent,
 ): CategorySubgroup => {
@@ -159,13 +174,15 @@ const buildDateFormattingSubgroup = (
   let detail: string;
   if (!dates.length) {
     status = "failed";
-    detail = "No dates found to validate.";
+    detail =
+      "No dates found to check for ATS-friendly formats (e.g. 03/26, 03/2026, Mar 2026 or March 2026).";
   } else if (!bad.length) {
     status = "passed";
-    detail = "All dates use ATS-friendly formats.";
+    detail =
+      "All dates are properly formatted in ATS-friendly format (e.g. 03/26, 03/2026, Mar 2026 or March 2026).";
   } else {
-    status = "partial";
-    detail = `${bad.length} of ${dates.length} date(s) need updating (e.g. "${bad[0]}").`;
+    status = "failed";
+    detail = `ATS and recruiters prefer specific date formatting for your work experience. Please use the following formats: “MM/YY or MM/YYYY or Month YYYY” (e.g. 03/26, 03/2026, Mar 2026 or March 2026).`;
   }
 
   const checks: CategoryCheck[] = [
@@ -179,31 +196,28 @@ const buildDateFormattingSubgroup = (
     summary:
       status === "passed"
         ? "All dates ATS-friendly."
-        : status === "partial"
-          ? `Some dates need updating (e.g. "${bad[0]}").`
-          : "Dates missing or not ATS-friendly.",
+        : "Dates missing or not ATS-friendly.",
     checks,
   };
 };
 
+// ============================================================
+// Education Match
+// ============================================================
 const buildEducationMatchSubgroup = (
   jd: StructuredJD | null,
   eduScore: number,
 ): CategorySubgroup => {
-  const requirementLabel = jd?.educationRequirement?.replace("|", ", ") || "";
-  let status: CheckStatus = "na";
+  let status: CheckStatus = "not-applicable";
   let detail = "No education requirement listed.";
 
-  if (jd?.educationRequirement) {
+  if (jd?.education?.education_level) {
     if (eduScore >= 80) {
       status = "passed";
-      detail = `Education matches the preferred (${requirementLabel}).`;
-    } else if (eduScore >= 50) {
-      status = "partial";
-      detail = `Education partially matches (${requirementLabel}).`;
+      detail = `Your education matches the preferred (Bachelor's, ged) education listed in the job description.`;
     } else {
       status = "failed";
-      detail = `Education doesn't match (${requirementLabel}).`;
+      detail = `Your education doesn't match the preferred (Bachelor's, ged) education listed in the job description.`;
     }
   }
 
@@ -218,13 +232,16 @@ const buildEducationMatchSubgroup = (
     summary:
       status === "passed"
         ? "Education matches JD."
-        : status === "na"
+        : status === "not-applicable"
           ? "Not evaluated."
           : "Education doesn't meet JD requirements.",
     checks,
   };
 };
 
+// ============================================================
+// Build
+// ============================================================
 export const buildSearchability = (
   resume: ResumeContent,
   resumeText: string,
@@ -234,14 +251,14 @@ export const buildSearchability = (
   const subgroups = [
     buildContactInfoSubgroup(resume),
     buildSectionHeadingsSubgroup(resume),
-    buildJobTitleSubgroup(resume, resumeText, jd),
+    buildJobTitleSubgroup(resumeText, jd),
     buildDateFormattingSubgroup(resume),
     buildEducationMatchSubgroup(jd, eduScore),
   ];
 
   const checks = subgroups.flatMap((s) => s.checks);
   const { strengths, improvements } = deriveFeedback(checks);
-  const active = checks.filter((c) => c.status !== "na");
+  const active = checks.filter((c) => c.status !== "not-applicable");
   const passed = active.filter((c) => c.status === "passed").length;
 
   return {

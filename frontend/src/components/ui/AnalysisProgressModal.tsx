@@ -1,3 +1,5 @@
+
+
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, CheckCircle2, Circle, Sparkles } from "lucide-react";
@@ -59,7 +61,7 @@ export default function AnalysisProgressModal({
                   Analyzing your resume
                 </h3>
               </div>
-              <Loader2 className="w-5 h-5 text-green-600 animate-spin" />
+              {/* <Loader2 className="w-5 h-5 text-green-600 animate-spin" /> */}
             </div>
 
             <div className="space-y-3 mb-6">

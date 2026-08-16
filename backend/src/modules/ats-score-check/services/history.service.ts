@@ -1,13 +1,30 @@
 import { prisma } from "../../../lib/prisma";
-import { ResumeContent } from "../../../shared/types";
-import { StructuredJD } from "../../../shared/types";
+import { ResumeContent, StructuredJD } from "../../../shared/types";
 import { calculateAtsScore } from "./scoring.service";
+
+const CATEGORY_TITLES: Record<string, string> = {
+  searchability: "Searchability",
+  hardSkills: "Hard Skills",
+  softSkills: "Soft Skills",
+  recruiterTips: "Recruiter Tips",
+  formatting: "Formatting",
+};
+
+const normalizeCategories = (sectionScores: any) => {
+  if (!sectionScores?.categories) return sectionScores;
+  const categories = { ...sectionScores.categories };
+  for (const key of Object.keys(categories)) {
+    if (CATEGORY_TITLES[key] && categories[key]) {
+      categories[key] = { ...categories[key], title: CATEGORY_TITLES[key] };
+    }
+  }
+  return { ...sectionScores, categories };
+};
 
 export const createAtsScoreHistory = async (
   userId: string,
   resumeName: string,
   resumeContent: ResumeContent,
-  jobDescription?: string,
   structuredJD?: StructuredJD | null,
   aiResearch?: any | null,
 ) => {
@@ -15,14 +32,14 @@ export const createAtsScoreHistory = async (
 
   const hasContactInfo =
     !!resumeContent.personalInfo?.contact?.email ||
-    !!(resumeContent.personalInfo as any)?.phone ||
-    !!resumeContent.personalInfo?.contact?.linkedIn;
+    !!resumeContent.personalInfo?.contact?.phone ||
+    !!resumeContent.personalInfo?.contact?.address;
 
   if (!analysis.sectionScores.contactInfo.hasContactInfo && hasContactInfo) {
     analysis.sectionScores.contactInfo.hasContactInfo = true;
   }
 
-  const title = `${resumeName || "Resume"} – ATS Score v${Date.now().toString(36).slice(-4)}`;
+  const title = `${resumeName || "Untitled Resume"}`;
 
   return prisma.atsScoreHistory.create({
     data: {
@@ -39,7 +56,7 @@ export const createAtsScoreHistory = async (
       } as any,
       atsFriendliness: analysis.atsFriendliness,
       suggestions: analysis.suggestions,
-      resumeContent,
+      resumeContent: resumeContent as any,
       aiResearch,
     },
   });
@@ -63,7 +80,10 @@ export const getAtsScoreHistory = async (
   ]);
 
   return {
-    scores,
+    scores: scores.map((s) => ({
+      ...s,
+      sectionScores: normalizeCategories(s.sectionScores),
+    })),
     pagination: {
       page,
       limit,
@@ -85,7 +105,10 @@ export const getAtsScoreHistoryById = async (
     throw new Error("ATS Score history not found");
   }
 
-  return score;
+  return {
+    ...score,
+    sectionScores: normalizeCategories(score.sectionScores),
+  };
 };
 
 export const deleteAtsScoreHistory = async (

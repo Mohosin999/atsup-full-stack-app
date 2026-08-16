@@ -8,30 +8,22 @@ import {
 import { matchDictionary } from "../dictionaries/matcher";
 import { DictionaryJdJson, JdParseOutput } from "../unlimitedAts.types";
 import { StructuredJD } from "../../../shared/types";
+import { JOB_TITLES_DICTIONARY } from "../dictionaries/job-titles.dictionary";
 
-const TITLE_KEYWORDS =
-  /(Engineer|Developer|Designer|Manager|Analyst|Architect|Scientist|Consultant|Lead|Director|Specialist|Administrator|Coordinator|Tester|Researcher|Writer|Intern|Trainee|Executive|Head|Principal|Officer|Support|Recruiter|Data|Machine Learning|Software|Product|UX|UI|Full Stack|Full-Stack|Backend|Back-end|Frontend|Front-end|DevOps|QA|Cloud|Security|Mobile|Web)/i;
+const detectJobTitle = (text: string): string => {
+  const lowerText = text.toLowerCase();
+  let earliestIndex = Infinity;
+  let detectedTitle = "";
 
-const detectJobTitle = (lines: string[]): string => {
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (!line || line.length > 60) continue;
-    if (/^\d/.test(line)) continue;
-    if (/^about the role|^we are looking|^the role|^responsibilities|^requirements|^job description/i.test(line)) break;
-    if (/\b(?:job|position|role|title)\b\s*:/i.test(line)) {
-      const m = line.match(/:\s*(.+)/);
-      if (m && m[1]) return m[1].trim();
-    }
-    if (
-      TITLE_KEYWORDS.test(line) &&
-      /^[A-Z][A-Za-z+.#&\-\s]+$/.test(line) &&
-      !/^\s*[a-z]/.test(line) &&
-      line.split(/\s+/).length <= 6
-    ) {
-      return line;
+  for (const title of JOB_TITLES_DICTIONARY) {
+    const index = lowerText.indexOf(title.toLowerCase());
+    if (index !== -1 && index < earliestIndex) {
+      earliestIndex = index;
+      detectedTitle = title;
     }
   }
-  return "";
+
+  return detectedTitle;
 };
 
 const extractYears = (text: string): { years: number; raw: string } => {
@@ -45,9 +37,7 @@ const extractYears = (text: string): { years: number; raw: string } => {
     };
   }
 
-  const single = text.match(
-    /(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)/i,
-  );
+  const single = text.match(/(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)/i);
   if (single) {
     return {
       years: Math.round(parseFloat(single[1])),
@@ -64,9 +54,12 @@ export const parseJdByDictionary = (description: string): JdParseOutput => {
     throw new Error("Job description is empty");
   }
 
-  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  const lines = text
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
 
-  const jobTitle = detectJobTitle(lines);
+  const jobTitle = detectJobTitle(text);
 
   const hardSkills = matchDictionary(text, HARD_SKILLS_DICTIONARY);
   const softSkills = matchDictionary(text, SOFT_SKILLS_DICTIONARY);
@@ -94,17 +87,18 @@ export const parseJdByDictionary = (description: string): JdParseOutput => {
     yearsOfExperience: years.raw,
   };
 
-  const educationRequirement = [field, degree]
-    .filter(Boolean)
-    .join("|") || null;
-
   const structured: StructuredJD = {
     jobTitle,
-    company: "",
-    location: "",
-    hardSkills,
-    softSkills,
-    educationRequirement,
+    education: {
+      degree,
+      field,
+      education_level: educationLevel,
+    },
+    skills: {
+      hardSkills,
+      softSkills,
+    },
+    yearsOfExperience: years.raw,
     experienceYearsRequired: years.years,
   };
 

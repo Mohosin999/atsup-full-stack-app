@@ -1,6 +1,6 @@
 import { researchJobDescription } from "../../../shared/ai/gemini/jobDescriptionResearch";
-import { ParsedJD } from "../atsScoreCheck.types";
 import { StructuredJD } from "../../../shared/types";
+import { ParsedJD } from "../atsScoreCheck.types";
 
 export const parseJobDescription = async (
   description: string,
@@ -11,25 +11,21 @@ export const parseJobDescription = async (
 export const mapAIToStructuredJD = (aiJD: any): StructuredJD | null => {
   if (!aiJD || !aiJD.skills) return null;
 
-  const educationParts = [
-    aiJD.education?.field,
-    aiJD.education?.degree,
-  ].filter(Boolean);
-  const educationRequirement =
-    educationParts.length > 0 ? educationParts.join("|") : null;
-
   const yearsMatch = (aiJD.yearsOfExperience || "").match(/(\d+)/);
-  const experienceYearsRequired = yearsMatch
-    ? parseInt(yearsMatch[1], 10)
-    : 0;
+  const experienceYearsRequired = yearsMatch ? parseInt(yearsMatch[1], 10) : 0;
 
   return {
     jobTitle: aiJD.jobTitle || "",
-    company: "",
-    location: "",
-    hardSkills: aiJD.skills?.hardSkills || [],
-    softSkills: aiJD.skills?.softSkills || [],
-    educationRequirement,
+    education: {
+      degree: aiJD.education?.degree || "",
+      field: aiJD.education?.field || "",
+      education_level: aiJD.education?.education_level || "",
+    },
+    skills: {
+      hardSkills: aiJD.skills.hardSkills || [],
+      softSkills: aiJD.skills.softSkills || [],
+    },
+    yearsOfExperience: aiJD.yearsOfExperience || "",
     experienceYearsRequired,
   };
 };

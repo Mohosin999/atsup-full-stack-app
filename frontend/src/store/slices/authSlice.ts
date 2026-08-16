@@ -94,6 +94,17 @@ const authSlice = createSlice({
         localStorage.setItem('user', JSON.stringify(state.user));
       }
     },
+    setUserAiScanState: (
+      state,
+      action: PayloadAction<{ credits: number; lastAiScanResetDate: string }>,
+    ) => {
+      if (state.user) {
+        state.user.subscription.credits = action.payload.credits;
+        state.user.subscription.lastAiScanResetDate =
+          action.payload.lastAiScanResetDate;
+        localStorage.setItem('user', JSON.stringify(state.user));
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -118,13 +129,12 @@ const authSlice = createSlice({
       })
       // tokenRefresh
       .addCase(tokenRefresh.rejected, (state) => {
-        // Clear user data if refresh fails
-        state.user = null;
-        state.isAuthenticated = false;
-        localStorage.removeItem('user');
+        // Silent background refresh failed - keep the user logged in.
+        // Logout only happens when an actual request 401s and its
+        // refresh retry also fails (handled by the api interceptor).
       });
   },
 });
 
-export const { login, clearUser, setUser, setUserCredits } = authSlice.actions;
+export const { login, clearUser, setUser, setUserCredits, setUserAiScanState } = authSlice.actions;
 export default authSlice.reducer;

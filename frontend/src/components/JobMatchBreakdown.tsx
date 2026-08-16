@@ -16,9 +16,66 @@ interface JobMatchBreakdownProps {
 interface CategorySectionProps {
   title: string;
   color: string;
-  category: { score: number; matched: string[]; missing: string[] };
+  category: { score: number; matched: string[]; missing: string[]; items?: { item: string; status: string }[] };
   hint: string;
 }
+
+const SkillsTable: React.FC<{
+  items: { item: string; status: string }[];
+}> = ({ items }) => {
+  if (!items || items.length === 0) return null;
+
+  return (
+    <div className="overflow-x-auto -mx-1">
+      <table className="w-full min-w-[300px] text-sm border-collapse">
+        <thead>
+          <tr className="text-left text-[11px] uppercase tracking-wide text-gray-500 border-b border-gray-200">
+            <th className="py-2 pr-3 font-medium">Skill</th>
+            <th className="py-2 px-3 font-medium text-center">Resume</th>
+            <th className="py-2 pl-3 font-medium text-center">Job Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item) => (
+            <tr
+              key={item.item}
+              className="border-b border-gray-100 last:border-b-0"
+            >
+              <td className="py-2.5 pr-3 text-gray-900 font-medium break-words">
+                {item.item}
+              </td>
+              <td className="py-2.5 px-3 text-center">
+                {item.status === "matched" ? (
+                  <span
+                    className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                    title={`${item.item} found in resume`}
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                  </span>
+                ) : (
+                  <span
+                    className="inline-flex w-6 h-6 rounded-full bg-red-500/15 text-red-600 items-center justify-center"
+                    title={`${item.item} missing from resume`}
+                  >
+                    <XCircle className="w-4 h-4" />
+                  </span>
+                )}
+              </td>
+              <td className="py-2.5 pl-3 text-center">
+                <span
+                  className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                  title="Required by the job description"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 const CategorySection: React.FC<CategorySectionProps> = ({
   title,
@@ -54,26 +111,30 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         </span>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {category.matched.map((item) => (
-          <span
-            key={item}
-            className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-green-500/10 text-green-600 border-green-500/30"
-          >
-            <CheckCircle className="w-3 h-3" />
-            {item}
-          </span>
-        ))}
-        {category.missing.map((item) => (
-          <span
-            key={item}
-            className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-red-500/10 text-red-600 border-red-500/30"
-          >
-            <XCircle className="w-3 h-3" />
-            {item}
-          </span>
-        ))}
-      </div>
+      {category.items && category.items.length > 0 ? (
+        <SkillsTable items={category.items} />
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {category.matched.map((item) => (
+            <span
+              key={item}
+              className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-green-500/10 text-green-600 border-green-500/30"
+            >
+              <CheckCircle className="w-3 h-3" />
+              {item}
+            </span>
+          ))}
+          {category.missing.map((item) => (
+            <span
+              key={item}
+              className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-red-500/10 text-red-600 border-red-500/30"
+            >
+              <XCircle className="w-3 h-3" />
+              {item}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

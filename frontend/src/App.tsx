@@ -8,10 +8,8 @@ import Settings from "./pages/Settings";
 import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScore";
 import AtsScoreDetail from "./pages/AtsScoreDetail";
-import AtsScoreHistory from "./pages/AtsScoreHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import PaymentCancel from "./pages/PaymentCancel";
+import ResumeDashboard from "./pages/ResumeDashboard";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
 import GoToTop from "./components/ui/GoToTop";
 import ThemeWrapper from "./components/ThemeWrapper";
@@ -86,6 +84,10 @@ function App() {
           }
         />
         <Route
+          path="/ats-score-history"
+          element={<Navigate to="/ats-score" replace />}
+        />
+        <Route
           path="/ats-score/:id"
           element={
             <PrivateRoute>
@@ -94,15 +96,19 @@ function App() {
           }
         />
         <Route
-          path="/ats-score-history"
+          path="/resumes"
           element={
             <PrivateRoute>
-              <AtsScoreHistory />
+              <ResumeDashboard />
             </PrivateRoute>
           }
         />
         <Route
           path="/resume-builder"
+          element={<Navigate to="/resumes" replace />}
+        />
+        <Route
+          path="/resume-builder/new"
           element={
             <PrivateRoute>
               <ResumeBuilder />
@@ -110,18 +116,10 @@ function App() {
           }
         />
         <Route
-          path="/payment/success"
+          path="/resume-builder/:id"
           element={
             <PrivateRoute>
-              <PaymentSuccess />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/payment/cancel"
-          element={
-            <PrivateRoute>
-              <PaymentCancel />
+              <ResumeBuilder />
             </PrivateRoute>
           }
         />

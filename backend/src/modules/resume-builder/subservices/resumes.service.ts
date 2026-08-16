@@ -132,33 +132,6 @@ export const createResumeFromContent = async (
     throw new Error('User not found');
   }
 
-  const subscription = (user.subscription as any) || {};
-  const credits = subscription.credits ?? 0;
-
-  if (credits <= 0) {
-    throw new Error('Insufficient credits. Please upgrade your plan.');
-  }
-
-  const updated = await prisma.user.update({
-    where: { id: userId },
-    data: {
-      subscription: {
-        ...subscription,
-        credits: credits - 1,
-      },
-    },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      picture: true,
-      preferences: true,
-      subscription: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-
   const resume = await prisma.resume.create({
     data: {
       userId,
@@ -186,7 +159,7 @@ export const createResumeFromContent = async (
     },
   });
 
-  return { resume, remainingCredits: (updated.subscription as any).credits };
+  return { resume };
 };
 
 export const updateResumeById = async (
@@ -218,6 +191,46 @@ export const updateResumeById = async (
       userId: true,
     },
   });
+};
+
+export const duplicateResumeById = async (resumeId: string, userId: string) => {
+  const existing = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+  });
+
+  if (!existing) {
+    return null;
+  }
+
+  const resume = await prisma.resume.create({
+    data: {
+      userId,
+      sourceType: existing.sourceType,
+      content: existing.content as any,
+      metadata: {
+        filename: `resume_${Date.now()}.json`,
+        originalName: `${(existing.metadata as any)?.originalName || "Resume"} (Copy)`,
+        size: JSON.stringify(existing.content).length,
+        type: "application/json",
+      },
+      tags: existing.tags,
+      isActive: true,
+    },
+    select: {
+      id: true,
+      sourceType: true,
+      originalFormat: true,
+      content: true,
+      metadata: true,
+      tags: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      userId: true,
+    },
+  });
+
+  return resume;
 };
 
 export const deleteResumeById = async (resumeId: string, userId: string) => {

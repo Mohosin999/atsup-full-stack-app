@@ -10,21 +10,27 @@ import {
   generateNewAccessToken,
 } from "./auth.service";
 import { env } from "../../shared/config/env";
+import { applyDailyCreditReset } from "../../shared/utils/credits";
 
-const setAuthCookies = (res: Response, accessToken: string, refreshToken: string) => {
+const setAuthCookies = (
+  res: Response,
+  accessToken: string,
+  refreshToken: string,
+) => {
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: env.nodeEnv === "production",
     sameSite: env.nodeEnv === "production" ? "none" : "lax",
     path: "/",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    maxAge: 10 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: env.nodeEnv === "production",
     sameSite: env.nodeEnv === "production" ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/",
+    maxAge: 20 * 60 * 1000,
   });
 };
 
@@ -110,6 +116,11 @@ export const login = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    const subscription = await applyDailyCreditReset(
+      user.id,
+      user.subscription,
+    );
+
     const { accessToken, refreshToken } = createTokens(user.id, user.email);
 
     setAuthCookies(res, accessToken, refreshToken);
@@ -124,7 +135,7 @@ export const login = async (req: AuthRequest, res: Response) => {
           email: user.email,
           picture: user.picture,
           preferences: user.preferences,
-          subscription: user.subscription,
+          subscription,
         },
       },
     });
@@ -182,7 +193,7 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
       secure: env.nodeEnv === "production",
       sameSite: env.nodeEnv === "production" ? "none" : "lax",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 60 * 1000,
     });
 
     res.json({

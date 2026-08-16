@@ -29,19 +29,9 @@ export default function ResumeProjects({ projects, forPdf, formatDescription }: 
                   href={proj.links.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-emerald-600 hover:text-emerald-500 underline"
+                  className="text-sm text-gray-900 dark:text-gray-800 underline"
                 >
-                  Live
-                </a>
-              )}
-              {proj.links?.github && (
-                <a
-                  href={proj.links.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-emerald-600 hover:text-emerald-500 underline"
-                >
-                  GitHub
+                  Live link
                 </a>
               )}
             </div>

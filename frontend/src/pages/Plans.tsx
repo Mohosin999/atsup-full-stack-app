@@ -1,22 +1,13 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Check,
-  CreditCard,
   Zap,
   Crown,
   Star,
   Building,
-  Coins,
 } from "lucide-react";
-import { toast } from "react-toastify";
-import { useAppSelector, useAppDispatch } from "../hooks/redux";
-import { fetchUser } from "../store/slices/authSlice";
-import { showUpgradePlan } from "../components/ui/Toast";
 import BackButton from "../components/ui/BackButton";
-import { createCheckoutSession } from "../services/payment";
-import { getStripe } from "../lib/stripe";
 import Wrapper from "../components/Wrapper";
 
 interface Plan {
@@ -74,55 +65,11 @@ const plans: Plan[] = [
 ];
 
 export default function Plans() {
-  const { user } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState<string | null>(null);
 
-  const handleSelectPlan = async (planId: string) => {
+  const handleSelectPlan = (planId: string) => {
     if (planId === "free") {
       navigate("/dashboard");
-      return;
-    }
-
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    setLoading(planId);
-    try {
-      const { url } = await createCheckoutSession(planId);
-      
-      // Redirect to Stripe Checkout
-      const stripe = await getStripe();
-      if (stripe) {
-        window.location.href = url;
-      } else {
-        toast.error("Failed to initialize Stripe");
-        setLoading(null);
-      }
-    } catch (error: any) {
-      console.error("Checkout error:", error);
-      toast.error(error.response?.data?.message || "Failed to start checkout");
-      setLoading(null);
-    }
-  };
-
-  const handleBuyCredits = async (credits: number, price: number) => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    setLoading("buyCredits");
-    try {
-      toast.success(`Successfully purchased ${credits} credits! (Demo)`);
-      await dispatch(fetchUser());
-    } catch (error) {
-      toast.error("Failed to purchase credits");
-    } finally {
-      setLoading(null);
     }
   };
 
@@ -214,26 +161,26 @@ export default function Plans() {
                   ))}
                 </ul>
 
-                <button
-                  onClick={() => handleSelectPlan(plan.id)}
-                  disabled={loading === plan.id}
-                  className={`w-full py-3 rounded-xl font-medium transition-colors ${
-                    plan.popular
-                      ? "gradient-btn"
-                      : "bg-gray-100 dark:bg-gray-100 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-200"
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  {loading === plan.id ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                      Processing...
-                    </span>
-                  ) : plan.price === 0 ? (
-                    "Current Plan"
-                  ) : (
-                    `Upgrade to ${plan.name}`
+                <div className="relative group">
+                  <button
+                    onClick={() => handleSelectPlan(plan.id)}
+                    disabled={plan.price > 0}
+                    className={`w-full py-3 rounded-xl font-medium transition-colors ${
+                      plan.popular
+                        ? "gradient-btn"
+                        : "bg-gray-100 dark:bg-gray-100 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-200"
+                    } disabled:opacity-60 disabled:cursor-not-allowed`}
+                  >
+                    {plan.price === 0
+                      ? "Current Plan"
+                      : `Upgrade to ${plan.name}`}
+                  </button>
+                  {plan.price > 0 && (
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-gray-900 text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                      Upcoming
+                    </div>
                   )}
-                </button>
+                </div>
               </div>
             </motion.div>
           ))}

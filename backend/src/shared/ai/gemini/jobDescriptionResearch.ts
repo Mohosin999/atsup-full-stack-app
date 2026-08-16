@@ -1,4 +1,5 @@
 import { genAI, GEMINI_MODEL } from "../../config/gemini";
+import { normalizeHardSkills } from "../../skills/skillNormalizer";
 
 export interface AIJobResearchResult {
   jobTitle: string;
@@ -32,6 +33,8 @@ STRICT RULES:
 - NO field is required. If a piece of information is NOT present in the job description, set it to empty: "" for strings, [] for arrays.
 - Do NOT invent or hallucinate information. Only extract what is actually present.
 - hardSkills must ONLY contain pure keyword names, never descriptions or phrases.
+- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript"; "Next.js", "NextJS" → "Next.js"). NEVER list two different spellings of the same skill as separate entries.
+- Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
 - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
 
 JSON STRUCTURE:
@@ -50,6 +53,9 @@ JSON STRUCTURE:
 }
 `;
 
+/** --------------------------------------------------------------
+ * Job description result
+ ----------------------------------------------------------------*/
 export const researchJobDescription = async (
   jdText: string,
 ): Promise<AIJobResearchResult> => {
@@ -81,14 +87,10 @@ Research this job description thoroughly and return ONLY the valid JSON structur
   }
 };
 
+/** --------------------------------------------------------------
+ * Normalize job description result
+ ----------------------------------------------------------------*/
 const normalizeJDResearchResult = (raw: any): AIJobResearchResult => {
-  // const str = (v: any, fallback = "") =>
-  //   typeof v === "string"
-  //     ? v
-  //     : v === null || v === undefined
-  //       ? fallback
-  //       : String(v);
-  // const arr = (v: any) => (Array.isArray(v) ? v : []);
 
   const str = (v: any, fallback = "") => {
     if (typeof v === "string") return v;
@@ -109,9 +111,14 @@ const normalizeJDResearchResult = (raw: any): AIJobResearchResult => {
       education_level: str(raw?.education?.education_level),
     },
     skills: {
+      // hardSkills: normalizeHardSkills(
+      //   arr(raw?.skills?.hardSkills).map((v: any) => str(v)),
+      // ),
       hardSkills: arr(raw?.skills?.hardSkills).map((v: any) => str(v)),
       softSkills: arr(raw?.skills?.softSkills).map((v: any) => str(v)),
     },
     yearsOfExperience: str(raw?.yearsOfExperience),
   };
 };
+
+// - Remove filler words around keywords. From "this is a pure react app, react.js and react js", extract ONLY "React" - never "react app", "pure react", or a duplicate "react.js".

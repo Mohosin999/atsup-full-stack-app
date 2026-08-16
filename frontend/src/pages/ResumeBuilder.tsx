@@ -1,7 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Download, RotateCcw, Sparkles } from "lucide-react";
 import { toast } from "react-toastify";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import {
   ResumeContent,
   SkillCategory,
@@ -10,8 +24,11 @@ import {
   Education,
   Achievement,
   Certification,
+  SECTION_KEYS,
+  SectionKey,
 } from "../types";
-import { downloadAtsPdf } from "../utils/atsResume";
+import { downloadAtsPdf, getSectionTitle } from "../utils/atsResume";
+import { resumeApi } from "../api/api";
 import BackButton from "../components/ui/BackButton";
 import ResumeBuilderSection from "../components/resume-builder/ResumeBuilderSection";
 import PersonalInfoForm from "../components/resume-builder/PersonalInfoForm";
@@ -23,9 +40,18 @@ import ProjectsForm from "../components/resume-builder/ProjectsForm";
 import AchievementsForm from "../components/resume-builder/AchievementsForm";
 import CertificationsForm from "../components/resume-builder/CertificationsForm";
 import AtsResumePreview from "../components/resume-builder/AtsResumePreview";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 import Wrapper from "../components/Wrapper";
 
-const STORAGE_KEY = "cvcoach-resume-builder";
+const SECTION_SUBTITLES: Record<SectionKey, string> = {
+  summary: "Highlight your top skills and achievements",
+  experience: "List relevant jobs and key accomplishments",
+  skills: "Add your main skills for recruiters to see at a glance",
+  education: "Include degrees, schools, and graduation years",
+  projects: "Projects you've worked on",
+  achievements: "Awards, recognitions & wins",
+  certifications: "Licenses & certificates",
+};
 
 const defaultContent = (): ResumeContent => ({
   personalInfo: {},
@@ -37,33 +63,100 @@ const defaultContent = (): ResumeContent => ({
   skills: [],
   skillCategories: [],
   certifications: [],
+  sectionTitles: {},
+  sectionOrder: [...SECTION_KEYS],
 });
 
-const loadSavedContent = (): ResumeContent => {
-  const defaults = defaultContent();
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return { ...defaults, ...parsed };
-    }
-  } catch {
-    // ignore corrupted storage
-  }
-  return defaults;
-};
-
 export default function ResumeBuilder() {
-  const [content, setContent] = useState<ResumeContent>(loadSavedContent);
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isNew = location.pathname === "/resume-builder/new";
+  const [content, setContent] = useState<ResumeContent>(defaultContent);
+  const [resumeId, setResumeId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(isNew ? false : true);
   const [downloading, setDownloading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const initializedRef = useRef(false);
+  const skipAutosaveRef = useRef(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  const sectionOrder =
+    content.sectionOrder && content.sectionOrder.length
+      ? content.sectionOrder
+      : [...SECTION_KEYS];
+
+  const handleSectionDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = sectionOrder.indexOf(active.id as SectionKey);
+    const newIndex = sectionOrder.indexOf(over.id as SectionKey);
+    if (oldIndex === -1 || newIndex === -1) return;
+    setContent((prev) => ({
+      ...prev,
+      sectionOrder: arrayMove(sectionOrder, oldIndex, newIndex),
+    }));
+  };
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
-    } catch {
-      // storage full / unavailable
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    if (isNew) {
+      resumeApi
+        .createFromContent(defaultContent())
+        .then((res) => {
+          const rid = res.data.data.id;
+          setResumeId(rid);
+          navigate(`/resume-builder/${rid}`, { replace: true });
+        })
+        .catch(() => {
+          toast.error("Failed to create resume. Please try again.");
+        })
+        .finally(() => setLoading(false));
+    } else if (id) {
+      resumeApi
+        .getById(id)
+        .then((res) => {
+          skipAutosaveRef.current = true;
+          setContent({ ...defaultContent(), ...(res.data.data.content || {}) });
+          setResumeId(id);
+        })
+        .catch(() => {
+          toast.error("Failed to load resume.");
+          navigate("/resumes", { replace: true });
+        })
+        .finally(() => setLoading(false));
+    } else {
+      navigate("/resumes", { replace: true });
     }
-  }, [content]);
+  }, [id, isNew, navigate]);
+
+  useEffect(() => {
+    if (!resumeId) return;
+    if (skipAutosaveRef.current) {
+      skipAutosaveRef.current = false;
+      return;
+    }
+    setSaving(true);
+    const timer = setTimeout(() => {
+      resumeApi
+        .update(resumeId, { content })
+        .then((res) => {
+          setResumeId(res.data.data?.id || resumeId);
+          setSavedAt(new Date().toLocaleTimeString());
+        })
+        .catch(() => {
+          toast.error("Failed to save resume.");
+        })
+        .finally(() => setSaving(false));
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [content, resumeId]);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -98,10 +191,16 @@ export default function ResumeBuilder() {
     setContent((prev) => ({
       ...prev,
       skillCategories: categories,
-      skills: categories.flatMap((c) =>
-        (c.skills || []).map((s) => s.trim()).filter(Boolean),
-      ),
     }));
+
+  const setSectionTitle = (key: SectionKey, value: string) =>
+    setContent((prev) => {
+      const current = prev.sectionTitles || {};
+      const next = { ...current };
+      if (value.trim()) next[key] = value.trim();
+      else delete next[key];
+      return { ...prev, sectionTitles: next };
+    });
 
   const addExperience = () =>
     setContent((prev) => ({
@@ -167,7 +266,17 @@ export default function ResumeBuilder() {
   const addEducation = () =>
     setContent((prev) => ({
       ...prev,
-      education: [...prev.education, { institution: "", degree: "", date: "" }],
+      education: [
+        ...prev.education,
+        {
+          institution: "",
+          degree: "",
+          areaOfStudy: "",
+          startDate: "",
+          endDate: "",
+          gpa: "",
+        },
+      ],
     }));
 
   const updateEducation = (index: number, patch: Partial<Education>) =>
@@ -230,28 +339,113 @@ export default function ResumeBuilder() {
       certifications: (prev.certifications || []).filter((_, i) => i !== index),
     }));
 
+  const renderSectionForm = (key: SectionKey) => {
+    switch (key) {
+      case "summary":
+        return (
+          <SummaryForm
+            value={content.summary || ""}
+            onChange={(value) => updateContent({ summary: value })}
+          />
+        );
+      case "experience":
+        return (
+          <ExperienceForm
+            experience={content.experience}
+            onAdd={addExperience}
+            onUpdate={updateExperience}
+            onRemove={removeExperience}
+          />
+        );
+      case "skills":
+        return (
+          <SkillsForm
+            skills={content.skills || []}
+            onSkillsChange={(skills) => updateContent({ skills })}
+            categories={content.skillCategories || []}
+            onChange={setSkillCategories}
+          />
+        );
+      case "education":
+        return (
+          <EducationForm
+            education={content.education}
+            onAdd={addEducation}
+            onUpdate={updateEducation}
+            onRemove={removeEducation}
+          />
+        );
+      case "projects":
+        return (
+          <ProjectsForm
+            projects={content.projects || []}
+            onAdd={addProject}
+            onUpdate={updateProject}
+            onRemove={removeProject}
+          />
+        );
+      case "achievements":
+        return (
+          <AchievementsForm
+            achievements={content.achievements || []}
+            onAdd={addAchievement}
+            onUpdate={updateAchievement}
+            onRemove={removeAchievement}
+          />
+        );
+      case "certifications":
+        return (
+          <CertificationsForm
+            certifications={content.certifications || []}
+            onAdd={addCertification}
+            onUpdate={updateCertification}
+            onRemove={removeCertification}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <Wrapper>
-        <div className="mt-6 mb-4">
-          <BackButton />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          className="my-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-lg font-bold text-gray-900 mb-1">
               ATS Resume Builder
             </h1>
-            <p className="text-gray-600 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-green-600" />
+            <p className="text-sm text-gray-600">
               ATS-friendly layout — no images, emojis, tables or underlines.
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-500 flex items-center gap-1.5">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  saving ? "bg-amber-400 animate-pulse" : "bg-green-500"
+                }`}
+              />
+              {saving
+                ? "Saving..."
+                : savedAt
+                  ? `Saved at ${savedAt}`
+                  : resumeId
+                    ? "Saved"
+                    : ""}
+            </span>
             <button
               onClick={handleReset}
               className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 transition-colors"
@@ -269,13 +463,12 @@ export default function ResumeBuilder() {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
           {/* LEFT: form (1/3) */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:col-span-2 space-y-4">
             <ResumeBuilderSection
-              title="Personal Info"
-              subtitle="Name, title & contact details"
-              defaultOpen
+              title="Profile Info"
+              subtitle="Include email, phone & linkedin for easy employer access"
             >
               <PersonalInfoForm
                 personalInfo={content.personalInfo}
@@ -283,100 +476,33 @@ export default function ResumeBuilder() {
               />
             </ResumeBuilderSection>
 
-            <ResumeBuilderSection
-              title="Summary"
-              subtitle="Short professional summary"
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleSectionDragEnd}
             >
-              <SummaryForm
-                value={content.summary || ""}
-                onChange={(value) => updateContent({ summary: value })}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title="Work Experience"
-              subtitle="Roles, companies & bullet points"
-            >
-              <ExperienceForm
-                experience={content.experience}
-                onAdd={addExperience}
-                onUpdate={updateExperience}
-                onRemove={removeExperience}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title="Skills"
-              subtitle="Group skills into categories"
-            >
-              <SkillsForm
-                categories={content.skillCategories || []}
-                onChange={setSkillCategories}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title="Education"
-              subtitle="Degrees & institutions"
-            >
-              <EducationForm
-                education={content.education}
-                onAdd={addEducation}
-                onUpdate={updateEducation}
-                onRemove={removeEducation}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title="Projects"
-              subtitle="Projects with bullet points"
-            >
-              <ProjectsForm
-                projects={content.projects || []}
-                onAdd={addProject}
-                onUpdate={updateProject}
-                onRemove={removeProject}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title="Achievements"
-              subtitle="Awards, recognitions & wins"
-            >
-              <AchievementsForm
-                achievements={content.achievements || []}
-                onAdd={addAchievement}
-                onUpdate={updateAchievement}
-                onRemove={removeAchievement}
-              />
-            </ResumeBuilderSection>
-
-            <ResumeBuilderSection
-              title="Certifications"
-              subtitle="Licenses & certificates"
-            >
-              <CertificationsForm
-                certifications={content.certifications || []}
-                onAdd={addCertification}
-                onUpdate={updateCertification}
-                onRemove={removeCertification}
-              />
-            </ResumeBuilderSection>
+              <SortableContext
+                items={sectionOrder}
+                strategy={verticalListSortingStrategy}
+              >
+                {sectionOrder.map((key) => (
+                  <ResumeBuilderSection
+                    key={key}
+                    sortableId={key}
+                    title={getSectionTitle(content, key)}
+                    onTitleChange={(v) => setSectionTitle(key, v)}
+                    subtitle={SECTION_SUBTITLES[key]}
+                  >
+                    {renderSectionForm(key)}
+                  </ResumeBuilderSection>
+                ))}
+              </SortableContext>
+            </DndContext>
           </div>
 
           {/* RIGHT: preview (2/3) */}
-          <div className="lg:col-span-2 lg:sticky lg:top-20">
-            <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Live Preview
-                </h2>
-                <span className="text-xs text-gray-600">
-                  Auto-saved to your browser
-                </span>
-              </div>
-              <AtsResumePreview content={content} />
-            </div>
+          <div className="lg:col-span-3 lg:sticky lg:top-20">
+            <AtsResumePreview content={content} />
           </div>
         </div>
       </Wrapper>

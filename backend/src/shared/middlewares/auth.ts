@@ -2,6 +2,7 @@ import { Response, NextFunction } from "express";
 import { verifyAccessToken } from "../config/jwt";
 import { prisma } from "../../lib/prisma";
 import { AuthRequest } from "../types";
+import { applyDailyCreditReset } from "../utils/credits";
 
 interface UserRecord {
   id: string;
@@ -49,6 +50,8 @@ export const authenticate = async (
       });
     }
 
+    const subscription = await applyDailyCreditReset(user.id, user.subscription);
+
     const userRecord: UserRecord = {
       id: user.id,
       email: user.email,
@@ -69,30 +72,4 @@ export const authenticate = async (
       message: "Unauthorized - Invalid token",
     });
   }
-};
-
-export const requireCredits = (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  if (!req.user) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized",
-    });
-  }
-
-  const subscription = (req.user.subscription as any) || {};
-  const credits = subscription.credits ?? 0;
-
-  if (credits <= 0) {
-    return res.status(403).json({
-      success: false,
-      message: "Insufficient credits. Please upgrade your plan.",
-      code: "INSUFFICIENT_CREDITS",
-    });
-  }
-
-  next();
 };

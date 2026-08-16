@@ -23,18 +23,12 @@ export interface DictionaryResumeJson {
       address: string;
       email: string;
       phone: string;
-      links: {
-        linkedin: string;
-        portfolio: string;
-        github: string;
-      };
     };
   };
   summary: string;
   experience: Array<{
     role: string;
     company: string;
-    location: string;
     startDate: string;
     endDate: string;
     responsibilities: string[];
@@ -53,24 +47,16 @@ export interface DictionaryResumeJson {
   projects: Array<{
     name: string;
     description: string[];
-    link: string;
-  }>;
-  certifications: Array<{
-    name: string;
-    issuer: string;
-    date: string;
-    link: string;
+    startDate: string;
+    endDate: string;
   }>;
   yearsOfExperience: string;
-  measurableResults: string[];
   resumeTone: string;
-  wordCount: string;
+  wordCount?: number;
   educationSection: boolean;
   experienceSection: boolean;
   workHistory: boolean;
   dateFormatting: boolean;
-  layout: LayoutInfo;
-  fontCheck: FontCheckInfo;
 }
 
 export interface ResumeParseOutput {
@@ -99,6 +85,7 @@ export interface JdParseOutput {
 
 export interface UnlimitedAtsResult {
   resume: DictionaryResumeJson;
+  resumeContent: ResumeContent;
   jd: DictionaryJdJson;
   score: any;
 }
@@ -118,7 +105,7 @@ export type Bucket = keyof ResumeSegments;
 export interface RawExperience {
   role: string;
   company: string;
-  location: string;
+  // location: string;
   startDate: string;
   endDate: string;
   responsibilities: string[];

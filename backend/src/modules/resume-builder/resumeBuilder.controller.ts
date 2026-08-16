@@ -8,6 +8,7 @@ import {
   updateResumeById,
   deleteResumeById,
   deleteAllResumesByUser,
+  duplicateResumeById,
 } from "./subservices/resumes.service";
 import { upload, uploadErrorHandler } from "../../shared/config/multer";
 import fs from "fs";
@@ -90,7 +91,6 @@ export const createResumeFromContent = async (
     res.status(201).json({
       success: true,
       data: result.resume,
-      remainingCredits: result.remainingCredits,
     });
   } catch (error: any) {
     res.status(500).json({
@@ -169,6 +169,29 @@ export const deleteResume = async (req: AuthRequest, res: Response) => {
     res.status(500).json({
       success: false,
       message: "Error deleting resume",
+    });
+  }
+};
+
+export const duplicateResume = async (req: AuthRequest, res: Response) => {
+  try {
+    const resume = await duplicateResumeById(req.params.id, req.user.id);
+
+    if (!resume) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found",
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      data: resume,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error duplicating resume",
     });
   }
 };

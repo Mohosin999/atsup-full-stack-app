@@ -638,9 +638,7 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
     educationSection,
     experienceSection,
     workHistory,
-    dateFormatting,
-    layout: DEFAULT_LAYOUT,
-    fontCheck: DEFAULT_FONT_CHECK,
+    dateFormatting
   };
 
   const content: ResumeContent = mapToResumeContent(json);
@@ -1341,17 +1339,5 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
     experienceSection: json.experienceSection || false,
     workHistory: json.workHistory || false,
     dateFormatting: json.dateFormatting || false,
-    layout: {
-      isSingleColumn: json.layout?.isSingleColumn || false,
-      hasTables: json.layout?.hasTables || false,
-      hasImages: json.layout?.hasImages || false,
-      hasIcons: json.layout?.hasIcons || false,
-      hasMultiColumn: json.layout?.hasMultiColumn || false,
-    },
-    fontCheck: {
-      isStandardFont: json.fontCheck?.isStandardFont || false,
-      fontName: json.fontCheck?.fontName || "",
-      isReadableSize: json.fontCheck?.isReadableSize || false,
-    },
   };
 };

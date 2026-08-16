@@ -57,8 +57,6 @@ export interface DictionaryResumeJson {
   experienceSection: boolean;
   workHistory: boolean;
   dateFormatting: boolean;
-  layout: LayoutInfo;
-  fontCheck: FontCheckInfo;
 }
 
 export interface ResumeParseOutput {

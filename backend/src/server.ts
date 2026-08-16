@@ -17,6 +17,8 @@ if (!isVercel) {
       await connectDB();
 
       server.listen(env.port);
+
+      console.log(`🚀 Server is running on http://localhost:${env.port}`);
     } catch (error) {
       console.error("❌ Failed to connect to PostgreSQL:", error);
       process.exit(1);

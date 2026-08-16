@@ -173,6 +173,19 @@ export interface ResumeContent {
     certifications?: string;
   };
   sectionOrder?: SectionKey[];
+  layout?: {
+    isSingleColumn?: boolean;
+    hasTables?: boolean;
+    hasImages?: boolean;
+    hasIcons?: boolean;
+    hasMultiColumn?: boolean;
+  };
+  fontCheck?: {
+    isStandardFont?: boolean;
+    fontName?: string;
+    isReadableSize?: boolean;
+    hasMixedFonts?: boolean;
+  };
 }
 
 export interface Experience {

@@ -10,8 +10,11 @@ import {
   XCircle,
   AlertTriangle,
   MinusCircle,
+  Sparkles,
+  EyeOff,
 } from "lucide-react";
 import { CategoryResult, CategorySubgroup, CheckStatus } from "../../types";
+import FormattingTipsModal from "./FormattingTipsModal";
 
 const CATEGORY_META: Record<
   string,
@@ -200,15 +203,100 @@ const SkillsTable: React.FC<{
 // ==========================================================================
 // Feedback card component (searchability, hard skills etc..)
 // ==========================================================================
-const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
-  category,
-  index,
+const isFormattingCategory = (key: string) => key === "formatting";
+
+const FormattingLock: React.FC<{ onShowTips: () => void }> = ({
+  onShowTips,
 }) => {
+  return (
+    <div className="relative rounded-xl border border-cyan-500/30 bg-cyan-500/5 overflow-hidden">
+      {/* Blurred content placeholder */}
+      <div className="blur-[5px] select-none pointer-events-none p-4 opacity-60">
+        <div className="space-y-3">
+          <div className="rounded-xl bg-gray-100 p-4 space-y-2.5">
+            <div className="w-24 h-4 rounded bg-gray-300" />
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-gray-300 flex-shrink-0" />
+                <div className="flex-1 h-3 rounded bg-gray-300" />
+              </div>
+            ))}
+          </div>
+          <div className="rounded-xl bg-gray-100 p-4 space-y-2.5">
+            <div className="w-20 h-4 rounded bg-gray-300" />
+            {[0, 1].map((i) => (
+              <div key={i} className="flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-gray-300 flex-shrink-0" />
+                <div className="flex-1 h-3 rounded bg-gray-300" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Overlay text on top of blur */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 py-6">
+        <p className="text-lg md:text-xl font-bold text-gray-900 leading-tight mb-1.5">
+          Unavailable for Free
+        </p>
+        <p className="text-sm text-gray-700 mb-4 max-w-md">
+          This section only works with AI scans. Get free tips to make your
+          resume formatting perfect.
+        </p>
+        <button
+          onClick={onShowTips}
+          className="inline-flex items-center gap-2 px-5 py-2 bg-cyan-600 hover:bg-cyan-600/90 text-white text-sm font-semibold shadow-lg"
+        >
+          <EyeOff className="w-4 h-4" />
+          Show Tips
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const FeedbackCard: React.FC<{
+  category: CategoryResult;
+  index: number;
+  hasFormattingData?: boolean;
+}> = ({ category, index, hasFormattingData = false }) => {
   const meta = CATEGORY_META[category.key] || CATEGORY_META.hardSkills;
   const hasSkillChips =
     (category.matched && category.matched.length > 0) ||
     (category.missing && category.missing.length > 0);
   const hasSubgroups = !!category.subgroups && category.subgroups.length > 0;
+  const [tipsOpen, setTipsOpen] = useState(false);
+
+  const content = (
+    <>
+      {/* Sub-group breakdown (e.g. Searchability) */}
+      {hasSubgroups && (
+        <div className="space-y-3 mb-4">
+          {category.subgroups!.map((subgroup) => (
+            <SubgroupBlock key={subgroup.key} subgroup={subgroup} />
+          ))}
+        </div>
+      )}
+
+      {/* Skills table */}
+      {hasSkillChips && (
+        <div className="mb-4">
+          <SkillsTable
+            skills={[
+              ...(category.matched?.map((item) => ({
+                item,
+                status: "matched",
+              })) || []),
+              ...(category.missing?.map((item) => ({
+                item,
+                status: "missing",
+              })) || []),
+            ]}
+          />
+        </div>
+      )}
+    </>
+  );
 
   return (
     <motion.div
@@ -237,32 +325,16 @@ const FeedbackCard: React.FC<{ category: CategoryResult; index: number }> = ({
         </span>
       </div>
 
-      {/* Sub-group breakdown (e.g. Searchability) */}
-      {hasSubgroups && (
-        <div className="space-y-3 mb-4">
-          {category.subgroups!.map((subgroup) => (
-            <SubgroupBlock key={subgroup.key} subgroup={subgroup} />
-          ))}
-        </div>
+      {isFormattingCategory(category.key) && !hasFormattingData ? (
+        <FormattingLock onShowTips={() => setTipsOpen(true)} />
+      ) : (
+        content
       )}
 
-      {/* Skills table */}
-      {hasSkillChips && (
-        <div className="mb-4">
-          <SkillsTable
-            skills={[
-              ...(category.matched?.map((item) => ({
-                item,
-                status: "matched",
-              })) || []),
-              ...(category.missing?.map((item) => ({
-                item,
-                status: "missing",
-              })) || []),
-            ]}
-          />
-        </div>
-      )}
+      <FormattingTipsModal
+        isOpen={tipsOpen}
+        onClose={() => setTipsOpen(false)}
+      />
 
       {/* Strengths */}
       {/* {!hasSubgroups && category.strengths.length > 0 && (

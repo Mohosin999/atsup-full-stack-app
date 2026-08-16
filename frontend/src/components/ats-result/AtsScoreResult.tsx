@@ -14,6 +14,10 @@ interface AtsScoreResultProps {
 }
 
 export default function AtsScoreResult({ result }: AtsScoreResultProps) {
+  const hasFormattingData = !!(
+    result.resumeContent?.layout && result.resumeContent?.fontCheck
+  );
+
   return (
     <div className="space-y-6">
       {result.sectionScores.categories ? (
@@ -41,6 +45,7 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
                 key={key}
                 category={result.sectionScores.categories![key]}
                 index={idx}
+                hasFormattingData={hasFormattingData}
               />
             ))}
 

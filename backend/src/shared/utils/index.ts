@@ -15,9 +15,9 @@ export const paginate = (page: number, limit: number) => {
 
 export const experienceText = (
   exp: ResumeContent["experience"][number],
-): string => (exp.highlights ?? []).join(" ");
+): string => (exp.responsibilities ?? []).join(" ");
 
 export const projectText = (
   proj: NonNullable<ResumeContent["projects"]>[number],
-): string => (proj.highlights ?? []).join(" ");
+): string => (proj.description ?? []).join(" ");
 

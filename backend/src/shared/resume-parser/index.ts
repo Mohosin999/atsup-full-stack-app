@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import pdf from "pdf-parse";
 
 export interface ParsedResume {
   text: string;
@@ -21,7 +20,7 @@ export const parseResumeFile = async (
 
 const parsePDF = async (filePath: string): Promise<ParsedResume> => {
   try {
-    // const pdf = require("pdf-parse");
+    const { default: pdf } = await import("pdf-parse");
     const dataBuffer = fs.readFileSync(filePath);
     const data = await pdf(dataBuffer);
 

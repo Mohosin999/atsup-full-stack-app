@@ -80,7 +80,7 @@ export const getAtsScoreHistory = async (
   ]);
 
   return {
-    scores: scores.map((s) => ({
+    scores: scores.map((s: any) => ({
       ...s,
       sectionScores: normalizeCategories(s.sectionScores),
     })),

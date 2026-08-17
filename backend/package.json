@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "CVCoach is provides direction to correct your cv",
   "main": "dist/server.js",
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "prisma generate && esbuild src/server.ts --bundle --platform=node --format=esm --target=node20 --packages=external --outfile=dist/server.js",
     "start": "node dist/server.js"
   },
   "dependencies": {
@@ -43,6 +44,7 @@
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
+    "esbuild": "^0.28.2",
     "eslint": "^8.56.0",
     "prisma": "^7.9.1",
     "tsx": "^4.7.0",

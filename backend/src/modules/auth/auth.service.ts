@@ -26,7 +26,7 @@ export const createUser = async (userData: {
       },
       subscription: {
         plan: 'free',
-        credits: 1,
+        credits: 5,
       },
     },
     select: {

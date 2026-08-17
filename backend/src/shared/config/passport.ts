@@ -57,7 +57,7 @@ export const configureGoogleStrategy = () => {
                 picture: profile.photos?.[0]?.value,
                 subscription: {
                   plan: 'free',
-                  credits: 1,
+                  credits: 5,
                 },
               },
             });

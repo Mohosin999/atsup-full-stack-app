@@ -192,7 +192,7 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
     const credits = subscription?.credits ?? 0;
 
     // Daily credit: every account has exactly 1 credit per day (GMT midnight).
-    const effectiveCredits = lastReset !== today ? 1 : credits;
+    const effectiveCredits = lastReset !== today ? 5 : credits;
 
     if (effectiveCredits < 1) {
       return res.status(403).json({

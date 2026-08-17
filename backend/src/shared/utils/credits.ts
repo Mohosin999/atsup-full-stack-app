@@ -7,7 +7,7 @@ export const applyDailyCreditReset = async (userId: string, subscription: any) =
   const updatedSubscription = { ...(subscription || {}) };
 
   if ((updatedSubscription.lastAiScanResetDate ?? "") !== today) {
-    updatedSubscription.credits = 1;
+    updatedSubscription.credits = 5;
     updatedSubscription.lastAiScanResetDate = today;
     await prisma.user.update({
       where: { id: userId },

@@ -40,7 +40,7 @@ var init_resume_parser = __esm({
     };
     parsePDF = async (filePath) => {
       try {
-        const pdf = __require("pdf-parse");
+        const { default: pdf } = await import("pdf-parse");
         const dataBuffer = fs2.readFileSync(filePath);
         const data = await pdf(dataBuffer);
         console.log(data.text);
@@ -187,7 +187,7 @@ var applyDailyCreditReset = async (userId, subscription) => {
   const today = getGmtDateKey();
   const updatedSubscription = { ...subscription || {} };
   if ((updatedSubscription.lastAiScanResetDate ?? "") !== today) {
-    updatedSubscription.credits = 1;
+    updatedSubscription.credits = 5;
     updatedSubscription.lastAiScanResetDate = today;
     await prisma.user.update({
       where: { id: userId },
@@ -261,7 +261,7 @@ var createUser = async (userData) => {
       },
       subscription: {
         plan: "free",
-        credits: 1
+        credits: 5
       }
     },
     select: {
@@ -2634,7 +2634,7 @@ var analyzeAtsScore = async (req, res) => {
     const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 1 : credits;
+    const effectiveCredits = lastReset !== today ? 5 : credits;
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
@@ -5721,7 +5721,7 @@ var configureGoogleStrategy = () => {
                 picture: profile.photos?.[0]?.value,
                 subscription: {
                   plan: "free",
-                  credits: 1
+                  credits: 5
                 }
               }
             });

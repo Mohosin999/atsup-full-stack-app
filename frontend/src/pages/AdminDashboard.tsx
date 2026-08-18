@@ -162,11 +162,6 @@ const AdminDashboard: React.FC = () => {
     bestFeatureToday,
   } = metrics;
 
-  const growthMax = {
-    atsUse: Math.max(1, ...(growth?.series.atsUse ?? [0])),
-    resumeBuild: Math.max(1, ...(growth?.series.resumeBuild ?? [0])),
-  };
-
   const periodLabel = PERIOD_OPTIONS.find((p) => p.value === period)?.label ?? 'Today';
   const changeIsUp = (growth?.change ?? 0) >= 0;
 
@@ -298,8 +293,14 @@ const AdminDashboard: React.FC = () => {
                 </div>
               ) : (
                 <div className="overflow-x-auto scrollbar-hide">
-                  <div className="min-w-[480px]">
+                  <div className="min-w-[480px] pt-8">
                     <div className="relative h-40 md:h-48 border-b border-gray-200">
+                      {/* Y-axis scale: 50 activities = full height */}
+                      <div className="absolute inset-y-0 left-0 flex flex-col justify-between text-[10px] leading-none text-gray-400 pointer-events-none select-none">
+                        {[50, 37, 25, 12, 0].map((v) => (
+                          <span key={v}>{v}</span>
+                        ))}
+                      </div>
                       {/* Horizontal gridlines */}
                       <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
                         {[0, 1, 2, 3, 4].map((n) => (
@@ -309,8 +310,8 @@ const AdminDashboard: React.FC = () => {
                           />
                         ))}
                       </div>
-                      {/* Bars, baseline-aligned, percentage heights */}
-                      <div className="absolute inset-0 flex items-end gap-1">
+                      {/* Bars, baseline-aligned, scaled so 50 activities fill the chart */}
+                      <div className="absolute inset-0 flex items-end gap-1 pl-7">
                         {growth &&
                           growth.labels.map((label, i) => (
                             <div
@@ -322,7 +323,7 @@ const AdminDashboard: React.FC = () => {
                                 const pct =
                                   val === 0
                                     ? 0
-                                    : Math.max(6, (val / growthMax[m.key]) * 100);
+                                    : Math.min(100, Math.max(2, (val / 50) * 100));
                                 return (
                                   <div
                                     key={m.key}
@@ -333,7 +334,7 @@ const AdminDashboard: React.FC = () => {
                                       style={{ height: `${pct}%` }}
                                     >
                                       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-10 whitespace-nowrap bg-gray-900 text-white text-xs rounded-md px-2 py-1">
-                                        {label} · {m.label}: {val}
+                                        {val} {m.label}
                                       </div>
                                     </div>
                                   </div>
@@ -344,7 +345,7 @@ const AdminDashboard: React.FC = () => {
                       </div>
                     </div>
                     {/* Bucket labels aligned with bars */}
-                    <div className="flex gap-1 mt-1">
+                    <div className="flex gap-1 mt-1 pl-7">
                       {growth &&
                         growth.labels.map((label, i) => (
                           <div

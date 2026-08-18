@@ -14,6 +14,7 @@ interface UserRecord {
   subscription?: any;
   createdAt?: Date;
   updatedAt?: Date;
+  role?: string;
 }
 
 export const authenticate = async (
@@ -62,6 +63,7 @@ export const authenticate = async (
       subscription: user.subscription,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      role: user.role,
     };
 
     req.user = userRecord as any;

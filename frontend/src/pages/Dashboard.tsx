@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Zap,
@@ -37,6 +37,11 @@ export default function Dashboard() {
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
   }, []);
+
+  // Redirect admin to admin dashboard (SPA navigation, no full page reload)
+  if (user && user.role === 'admin') {
+    return <Navigate to="/admin-dashboard" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">

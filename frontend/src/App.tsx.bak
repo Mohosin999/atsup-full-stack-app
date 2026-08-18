@@ -1,8 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
-import { connectPresenceSocket, disconnectPresenceSocket } from "./socket/presenceSocket";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -16,7 +14,6 @@ import LoadingSpinner from "./components/ui/LoadingSpinner";
 import GoToTop from "./components/ui/GoToTop";
 import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
-import AdminDashboard from "./pages/AdminDashboard";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -37,21 +34,10 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     return <LoadingSpinner fullScreen />;
   }
 
-  return user ? <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/dashboard"} /> : <>{children}</>;
+  return user ? <Navigate to="/dashboard" /> : <>{children}</>;
 }
 
 function App() {
-  const user = useSelector((state: RootState) => state.auth.user);
-
-  // Live presence: connect the user's socket while logged in, disconnect on logout.
-  useEffect(() => {
-    if (user) {
-      connectPresenceSocket();
-    } else {
-      disconnectPresenceSocket();
-    }
-  }, [user]);
-
   return (
     <ThemeWrapper>
       <ScrollToTop />
@@ -137,7 +123,6 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <GoToTop />

@@ -19,8 +19,8 @@ interface NavLink {
   label: string;
 }
 
-const NAV_LINKS: NavLink[] = [
-  { path: "/dashboard", label: "Dashboard" },
+const getNavLinks = (role?: string): NavLink[] => [
+  { path: role === "admin" ? "/admin-dashboard" : "/dashboard", label: "Dashboard" },
   { path: "/resumes", label: "Resume Builder" },
   { path: "/ats-score", label: "ATS Score" },
 ];
@@ -53,7 +53,7 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               {user ? (
                 <>
-                  <NavLinks navLinks={NAV_LINKS} />
+                  <NavLinks navLinks={getNavLinks(user.role)} />
                   <div className="hidden lg:flex">
                     <UpgradeButton />
                   </div>
@@ -94,7 +94,7 @@ export default function Navbar() {
         <AnimatePresence>
           {mobileMenuOpen && user && (
             <MobileMenu
-              navLinks={NAV_LINKS}
+              navLinks={getNavLinks(user.role)}
               user={user}
               setMobileMenuOpen={setMobileMenuOpen}
             />

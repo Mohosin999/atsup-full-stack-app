@@ -193,7 +193,7 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
       secure: env.nodeEnv === "production",
       sameSite: env.nodeEnv === "production" ? "none" : "lax",
       path: "/",
-      maxAge: 60 * 1000,
+      maxAge: 10 * 60 * 1000,
     });
 
     res.json({

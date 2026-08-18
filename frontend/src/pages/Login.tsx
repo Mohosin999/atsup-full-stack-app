@@ -2,12 +2,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux";
 import { login, fetchUser } from "../store/slices/authSlice";
 import api from "../api/api";
 
 export default function Login() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,8 +36,9 @@ export default function Login() {
       const response = await api.post(endpoint, formData);
 
       if (response.data.success) {
-        await dispatch(fetchUser());
-        window.location.href = "/dashboard";
+        const result = await dispatch(fetchUser());
+        const user = result.payload as { role?: string } | null;
+        navigate(user?.role === "admin" ? "/admin-dashboard" : "/dashboard", { replace: true });
       }
     } catch (err: any) {
       setError(err.response?.data?.message || "An error occurred");

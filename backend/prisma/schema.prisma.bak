@@ -18,8 +18,6 @@ model User {
   subscription Json?
   createdAt    DateTime @default(now()) @db.Timestamp()
   updatedAt    DateTime @updatedAt @db.Timestamp()
-  lastLoginAt   DateTime?   @db.Timestamp()
-  role              String              @default("user")
 
   resumes           Resume[]
   analyses          Analysis[]

@@ -17,7 +17,6 @@ export interface User {
   };
   createdAt: string;
   updatedAt: string;
-  role: string;
 }
 
 export interface Resume {
@@ -463,42 +462,4 @@ export interface AtsScoreHistory {
   resumeContent: ResumeContent;
   createdAt: string;
   updatedAt: string;
-}
-
-export type GrowthPeriod = 'yesterday' | 'today' | '7d' | '14d' | '30d';
-
-export interface OnlineUser {
-  id: string;
-  name: string;
-  email: string;
-  picture?: string;
-}
-
-export interface PresenceData {
-  onlineCount: number;
-  users: OnlineUser[];
-}
-
-export interface AdminDashboardMetrics {
-  totalUsers: number;
-  activeUsers: number;
-  todayNewUsers: number;
-  resumeBuilderUsersToday: number;
-  atsCheckUsersToday: number;
-  bestFeatureToday: string;
-}
-
-export interface GrowthData {
-  period: GrowthPeriod;
-  labels: string[];
-  series: {
-    atsUse: number[];
-    resumeBuild: number[];
-  };
-  totals: {
-    atsUse: number;
-    resumeBuild: number;
-    activity: number;
-  };
-  change: number;
 }

@@ -10,8 +10,10 @@ import {
   TrendingUp,
   TrendingDown,
   Users,
+  LayoutDashboard,
 } from 'lucide-react';
 import api from '../api/api';
+import UserManagement from '../components/admin/UserManagement';
 
 const PERIOD_OPTIONS: { value: GrowthPeriod; label: string }[] = [
   { value: 'yesterday', label: 'Yesterday' },
@@ -56,6 +58,7 @@ const AdminDashboard: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [onlineCount, setOnlineCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
+  const [activeView, setActiveView] = useState<'overview' | 'users'>('overview');
 
   useEffect(() => {
     // Only admins may connect. Cookies are httpOnly, so we never read the
@@ -108,6 +111,12 @@ const AdminDashboard: React.FC = () => {
       setOnlineUsers(data.users);
     });
 
+    // Listen for live growth-chart updates (real-time, no refresh needed)
+    newSocket.on('growth', (data: GrowthData) => {
+      setGrowth(data);
+      setGrowthLoading(false);
+    });
+
     newSocket.on('connect_error', (err) => {
       console.error('Socket connection error:', err);
       setLoading(false);
@@ -124,6 +133,9 @@ const AdminDashboard: React.FC = () => {
     if (!user || user.role !== 'admin') return;
     let cancelled = false;
     setGrowthLoading(true);
+    // Tell the server which period to stream over the socket, so the chart
+    // updates in real time.
+    socket?.emit('set-period', period);
     api
       .get(`/admin-dashboard/growth?period=${period}`)
       .then((response) => {
@@ -138,7 +150,7 @@ const AdminDashboard: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [period, user]);
+  }, [period, user, socket]);
 
   // Guard: only admins can access this page. Non-admins go to the regular
   // dashboard.
@@ -166,55 +178,70 @@ const AdminDashboard: React.FC = () => {
   const changeIsUp = (growth?.change ?? 0) >= 0;
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-gray-50">
+    <div className="min-h-[calc(100vh-64px)] bg-gray-50 mt-20">
       <div className="flex h-full">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200">
+        <aside className="w-64 bg-white border-r border-gray-200 shrink-0">
           <div className="p-4">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">User Management</h2>
-            <div className="space-y-2">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-800">Admin Panel</h2>
+              <p className="text-sm text-gray-500 truncate">{user?.email}</p>
+            </div>
+
+            <nav className="space-y-1">
+              <button
+                type="button"
+                onClick={() => setActiveView('overview')}
+                className={`w-full inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  activeView === 'overview'
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <LayoutDashboard className="w-4 h-4 me-2" />
+                Overview
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveView('users')}
+                className={`w-full inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  activeView === 'users'
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Users className="w-4 h-4 me-2" />
+                User Management
+              </button>
+            </nav>
+
+            <div className="mt-8 p-3 bg-gray-50 rounded-lg">
               <p className="text-sm font-medium text-gray-500">
                 Online Users
                 <span className="ml-1 inline-flex items-center px-1.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700">
                   {onlineCount}
                 </span>
               </p>
-              {onlineUsers.length === 0 ? (
-                <div className="p-3 bg-gray-50 rounded text-sm text-gray-500">
-                  No users online right now
-                </div>
-              ) : (
-                <ul className="space-y-2">
-                  {onlineUsers.map((u) => (
-                    <li key={u.id} className="flex items-center p-2 bg-gray-50 rounded">
-                      <span className="relative flex h-2.5 w-2.5 mr-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-                      </span>
-                      <span className="min-w-0">
-                        <p className="text-sm font-medium text-gray-800 truncate">{u.name}</p>
-                        <p className="text-xs text-gray-500 truncate">{u.email}</p>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
             </div>
           </div>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 min-w-0">
           <header className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800 flex items-center">
-              Admin Dashboard
+              {activeView === 'users' ? 'User Management' : 'Overview'}
               <Link to="/" className="ml-4 text-sm text-gray-500 hover:text-gray-700">
                 ← Back to Dashboard
               </Link>
             </h1>
           </header>
 
-          {/* Summary Cards */}
+          {activeView === 'users' ? (
+            <UserManagement onlineUsers={onlineUsers} currentAdminId={user._id} />
+          ) : (
+            <>
+              {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-white rounded-lg shadow p-4">
               <h3 className="text-sm font-medium text-gray-500">Total Users</h3>
@@ -435,6 +462,8 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
           </div>
+            </>
+          )}
         </main>
       </div>
     </div>

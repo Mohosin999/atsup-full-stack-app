@@ -116,6 +116,13 @@ export const login = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    if (user.isBanned) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been banned. Contact support.",
+      });
+    }
+
     const subscription = await applyDailyCreditReset(
       user.id,
       user.subscription,

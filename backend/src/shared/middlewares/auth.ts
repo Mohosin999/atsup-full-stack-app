@@ -51,6 +51,13 @@ export const authenticate = async (
       });
     }
 
+    if (user.isBanned) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been banned",
+      });
+    }
+
     const subscription = await applyDailyCreditReset(user.id, user.subscription);
 
     const userRecord: UserRecord = {

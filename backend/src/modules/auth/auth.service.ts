@@ -58,6 +58,7 @@ export const findUserByEmail = async (email: string) => {
       picture: true,
       preferences: true,
       role: true,
+      isBanned: true,
       subscription: true,
       createdAt: true,
       updatedAt: true,

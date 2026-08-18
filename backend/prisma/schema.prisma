@@ -20,6 +20,7 @@ model User {
   updatedAt    DateTime @updatedAt @db.Timestamp()
   lastLoginAt   DateTime?   @db.Timestamp()
   role              String              @default("user")
+  isBanned          Boolean             @default(false)
 
   resumes           Resume[]
   analyses          Analysis[]

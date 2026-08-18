@@ -488,6 +488,22 @@ export interface AdminDashboardMetrics {
   bestFeatureToday: string;
 }
 
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string;
+  picture?: string | null;
+  role: string;
+  isBanned: boolean;
+  createdAt: string;
+  lastLoginAt?: string | null;
+  subscription?: {
+    plan?: string;
+    credits?: number;
+    expiresAt?: string | null;
+  } | null;
+}
+
 export interface GrowthData {
   period: GrowthPeriod;
   labels: string[];

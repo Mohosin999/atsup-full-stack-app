@@ -242,3 +242,109 @@ export const getAdminDashboardMetrics = async () => {
     bestFeatureToday,
   };
 };
+
+export const getUsersForAdmin = async () => {
+  return prisma.user.findMany({
+    orderBy: [{ createdAt: "desc" }],
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      picture: true,
+      role: true,
+      isBanned: true,
+      createdAt: true,
+      lastLoginAt: true,
+      subscription: true,
+    },
+  });
+};
+
+const getTargetUser = async (userId: string) => {
+  const target = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, role: true },
+  });
+  if (!target) {
+    throw Object.assign(new Error("User not found"), { status: 404 });
+  }
+  return target;
+};
+
+export const setUserBan = async (
+  adminId: string,
+  userId: string,
+  isBanned: boolean,
+) => {
+  if (adminId === userId) {
+    throw Object.assign(new Error("You cannot ban your own account"), {
+      status: 400,
+    });
+  }
+  return prisma.user.update({
+    where: { id: userId },
+    data: { isBanned },
+    select: { id: true, name: true, email: true, role: true, isBanned: true },
+  });
+};
+
+export const adminUpdateUser = async (
+  adminId: string,
+  userId: string,
+  data: { name?: string; role?: string; credits?: number },
+) => {
+  if (data.role && !["admin", "user"].includes(data.role)) {
+    throw Object.assign(new Error("Invalid role"), { status: 400 });
+  }
+  const target = await getTargetUser(userId);
+  if (data.role === "user" && adminId === userId) {
+    throw Object.assign(new Error("You cannot remove your own admin role"), {
+      status: 400,
+    });
+  }
+
+  const updateData: any = {};
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.role !== undefined) updateData.role = data.role;
+  if (data.credits !== undefined) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { subscription: true },
+    });
+    const sub = (user?.subscription as any) || {};
+    updateData.subscription = { ...sub, credits: data.credits };
+  }
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      picture: true,
+      role: true,
+      isBanned: true,
+      createdAt: true,
+      lastLoginAt: true,
+      subscription: true,
+    },
+  });
+};
+
+export const adminDeleteUser = async (adminId: string, userId: string) => {
+  if (adminId === userId) {
+    throw Object.assign(new Error("You cannot delete your own account"), {
+      status: 400,
+    });
+  }
+
+  await prisma.payment.deleteMany({ where: { userId } });
+  await prisma.atsScoreHistory.deleteMany({ where: { userId } });
+  await prisma.analysis.deleteMany({ where: { userId } });
+  await prisma.atsScore.deleteMany({ where: { userId } });
+  await prisma.resume.deleteMany({ where: { userId } });
+  await prisma.jobDescription.deleteMany({ where: { userId } });
+
+  return prisma.user.delete({ where: { id: userId } });
+};

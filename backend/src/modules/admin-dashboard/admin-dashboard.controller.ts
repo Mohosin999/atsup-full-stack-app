@@ -3,19 +3,35 @@ import { AuthRequest } from "../../shared/types";
 import {
   getAdminDashboardMetrics,
   getGrowthData,
+  getUsersForAdmin,
+  setUserBan,
+  adminUpdateUser,
+  adminDeleteUser,
   GrowthPeriod,
 } from "./admin-dashboard.service";
 
-export const getMetrics = async (req: AuthRequest, res: Response) => {
-  try {
-    // Check if user is admin
-    if (!req.user || req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: "Access denied. Admin only.",
-      });
-    }
+const ensureAdmin = (req: AuthRequest, res: Response): boolean => {
+  if (!req.user || req.user.role !== "admin") {
+    res.status(403).json({
+      success: false,
+      message: "Access denied. Admin only.",
+    });
+    return false;
+  }
+  return true;
+};
 
+const sendError = (res: Response, error: any) => {
+  const status = error?.status || 500;
+  res.status(status).json({
+    success: false,
+    message: error?.message || "Internal server error",
+  });
+};
+
+export const getMetrics = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
     const metrics = await getAdminDashboardMetrics();
     res.json({
       success: true,
@@ -31,16 +47,10 @@ export const getMetrics = async (req: AuthRequest, res: Response) => {
 };
 
 export const getGrowth = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
   try {
-    if (!req.user || req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: "Access denied. Admin only.",
-      });
-    }
-
-    const period = (req.query.period as GrowthPeriod) || 'today';
-    if (!['yesterday', 'today', '7d', '14d', '30d'].includes(period)) {
+    const period = (req.query.period as GrowthPeriod) || "today";
+    if (!["yesterday", "today", "7d", "14d", "30d"].includes(period)) {
       return res.status(400).json({
         success: false,
         message: "Invalid period",
@@ -58,5 +68,66 @@ export const getGrowth = async (req: AuthRequest, res: Response) => {
       success: false,
       message: "Internal server error",
     });
+  }
+};
+
+export const getUsers = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const users = await getUsersForAdmin();
+    res.json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.error("Error fetching admin user list:", error);
+    sendError(res, error);
+  }
+};
+
+export const toggleBan = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const { id } = req.params;
+    const isBanned = !!req.body.isBanned;
+    const user = await setUserBan(req.user.id, id, isBanned);
+    res.json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error("Error toggling user ban:", error);
+    sendError(res, error);
+  }
+};
+
+export const updateUser = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const { id } = req.params;
+    const { name, role, credits } = req.body || {};
+    const user = await adminUpdateUser(req.user.id, id, { name, role, credits });
+    res.json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    sendError(res, error);
+  }
+};
+
+export const deleteUser = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const { id } = req.params;
+    await adminDeleteUser(req.user.id, id);
+    res.json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    sendError(res, error);
   }
 };

@@ -8,6 +8,7 @@ import { prisma } from "./lib/prisma";
 import { applyDailyCreditReset } from "./shared/utils/credits";
 import {
   getAdminDashboardMetrics,
+  getGrowthData,
 } from "./modules/admin-dashboard/admin-dashboard.service";
 
 interface OnlineUser {
@@ -48,6 +49,10 @@ const authenticateSocket = async (socket: Socket, next: (err?: Error) => void) =
 
     if (!user) {
       return next(new Error("Authentication error: User not found"));
+    }
+
+    if (user.isBanned) {
+      return next(new Error("Authentication error: Account banned"));
     }
 
     const subscription = await applyDailyCreditReset(user.id, user.subscription);
@@ -155,6 +160,10 @@ if (!isVercel) {
     // Send the current presence snapshot immediately
     socket.emit("presence", getPresencePayload());
 
+    // Track which period the client is viewing so the growth chart can be
+    // streamed live, just like the metrics.
+    socket.data.growthPeriod = "today";
+
     // Send metrics immediately upon connection
     const sendMetrics = async () => {
       try {
@@ -166,11 +175,33 @@ if (!isVercel) {
       }
     };
 
-    // Send metrics every 5 seconds
-    const interval = setInterval(sendMetrics, 5000);
+    // Stream the growth chart data for the client's selected period
+    const sendGrowth = async () => {
+      try {
+        const growth = await getGrowthData(socket.data.growthPeriod as any);
+        socket.emit("growth", growth);
+      } catch (error) {
+        console.error("Error sending growth data:", error);
+      }
+    };
 
-    // Send initial metrics
+    // Client changes the chart period (e.g. Today / Last 7 days)
+    socket.on("set-period", (period: string) => {
+      if (["yesterday", "today", "7d", "14d", "30d"].includes(period)) {
+        socket.data.growthPeriod = period;
+        sendGrowth();
+      }
+    });
+
+    // Send metrics and growth every 5 seconds
+    const interval = setInterval(() => {
+      sendMetrics();
+      sendGrowth();
+    }, 5000);
+
+    // Send initial metrics and growth
     sendMetrics();
+    sendGrowth();
 
     socket.on("disconnect", () => {
       console.log(`Admin dashboard client disconnected: ${socket.id}`);

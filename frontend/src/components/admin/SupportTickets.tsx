@@ -120,10 +120,10 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-xl box-shadow p-4 md:p-6">
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <h2 className="text-lg font-medium text-gray-800">Support Tickets</h2>
-        <div className="flex gap-1">
+        <div className="flex flex-wrap gap-1">
           {FILTERS.map((f) => (
             <button
               key={f.value}
@@ -163,12 +163,29 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                     {t.user?.name?.charAt(0)?.toUpperCase() || '?'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 truncate">{t.title}</p>
-                    <p className="text-xs text-gray-500 truncate">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-gray-900 truncate flex-1">{t.title}</p>
+                      <div className="shrink-0 sm:hidden">
+                        {expanded ? (
+                          <ChevronUp className="w-4 h-4 text-gray-400" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 truncate mt-0.5">
                       {t.user?.name || 'Unknown'} · {t.user?.email || ''} · {formatDate(t.createdAt)}
                     </p>
+                    <div className="flex flex-wrap items-center gap-2 mt-2 sm:hidden">
+                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                        {TYPE_LABELS[t.type] || t.type}
+                      </span>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[t.status]}`}>
+                        {STATUS_LABELS[t.status]}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="hidden sm:flex items-center gap-2 shrink-0">
                     <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
                       {TYPE_LABELS[t.type] || t.type}
                     </span>

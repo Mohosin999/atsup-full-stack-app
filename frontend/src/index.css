@@ -82,7 +82,7 @@ body {
     display: none;
   }
 
-  /* Custom Scrollbar - Emerald Green */
+  /* Custom Scrollbar - Cyan */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -94,12 +94,12 @@ body {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #10b981;
+    background: #06b6d4;
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #059669;
+    background: #0891b2;
   }
 }
 

@@ -122,8 +122,80 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
   const isSelf = (u: AdminUser) => u.id === currentAdminId;
   const isOtherAdmin = (u: AdminUser) => u.role === 'admin' && !isSelf(u);
 
+  const renderRole = (u: AdminUser) =>
+    u.role === 'admin' ? (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-medium">
+        <ShieldCheck className="w-3 h-3" /> Admin
+      </span>
+    ) : (
+      <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-medium">
+        User
+      </span>
+    );
+
+  const renderStatus = (u: AdminUser, online: boolean) =>
+    u.isBanned ? (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-medium">
+        <Ban className="w-3 h-3" /> Banned
+      </span>
+    ) : online ? (
+      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-700 text-xs font-medium">
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
+        </span>
+        Online
+      </span>
+    ) : (
+      <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-medium">
+        Active
+      </span>
+    );
+
+  const renderActions = (u: AdminUser) => (
+    <div className="flex items-center gap-1">
+      <button
+        type="button"
+        onClick={() => setEditingUser(u)}
+        disabled={isOtherAdmin(u) || busyId === u.id}
+        title={isOtherAdmin(u) ? "Can't edit another admin" : 'Edit'}
+        className="p-1.5 rounded-md text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        <Pencil className="w-4 h-4" />
+      </button>
+      <button
+        type="button"
+        onClick={() => setConfirmAction({ type: u.isBanned ? 'unban' : 'ban', user: u })}
+        disabled={isSelf(u) || isOtherAdmin(u) || busyId === u.id}
+        title={
+          isSelf(u)
+            ? "Can't ban yourself"
+            : isOtherAdmin(u)
+              ? "Can't ban another admin"
+              : u.isBanned
+                ? 'Unban'
+                : 'Ban'
+        }
+        className="p-1.5 rounded-md text-gray-500 hover:text-amber-600 hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        {u.isBanned ? <RotateCcw className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+      </button>
+      <button
+        type="button"
+        onClick={() => setConfirmAction({ type: 'delete', user: u })}
+        disabled={isSelf(u) || isOtherAdmin(u) || busyId === u.id}
+        title={
+          isSelf(u) ? "Can't delete yourself" : isOtherAdmin(u) ? "Can't delete another admin" : 'Delete'
+        }
+        className="p-1.5 rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        <Trash2 className="w-4 h-4" />
+      </button>
+    </div>
+  );
+
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-xl box-shadow p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-medium text-gray-800">All Users</h2>
         <span className="text-sm text-gray-500">{users.length} total</span>
@@ -133,23 +205,25 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
         <div className="flex items-center justify-center py-12">
           <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
         </div>
+      ) : sortedUsers.length === 0 ? (
+        <div className="py-8 text-center text-gray-500">No users found</div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-gray-500 border-b border-gray-200">
-                <th className="py-2 pr-4 font-medium">User</th>
-                <th className="py-2 pr-4 font-medium">Role</th>
-                <th className="py-2 pr-4 font-medium">Status</th>
-                <th className="py-2 pr-4 font-medium">Credits</th>
-                <th className="py-2 pr-4 font-medium">Joined</th>
-                <th className="py-2 font-medium text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedUsers.map((u) => {
-                const online = onlineIds.has(u.id);
-                return (
+        <>
+          {/* Desktop table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-gray-500 border-b border-gray-200">
+                  <th className="py-2 pr-4 font-medium">User</th>
+                  <th className="py-2 pr-4 font-medium">Role</th>
+                  <th className="py-2 pr-4 font-medium">Status</th>
+                  <th className="py-2 pr-4 font-medium">Credits</th>
+                  <th className="py-2 pr-4 font-medium">Joined</th>
+                  <th className="py-2 font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedUsers.map((u) => (
                   <tr key={u.id} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-3 pr-4">
                       <div className="flex items-center gap-3">
@@ -165,92 +239,66 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                         </div>
                       </div>
                     </td>
-                    <td className="py-3 pr-4">
-                      {u.role === 'admin' ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-medium">
-                          <ShieldCheck className="w-3 h-3" /> Admin
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-medium">
-                          User
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 pr-4">
-                      {u.isBanned ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-medium">
-                          <Ban className="w-3 h-3" /> Banned
-                        </span>
-                      ) : online ? (
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-700 text-xs font-medium">
-                          <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
-                          </span>
-                          Online
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-medium">
-                          Active
-                        </span>
-                      )}
-                    </td>
+                    <td className="py-3 pr-4">{renderRole(u)}</td>
+                    <td className="py-3 pr-4">{renderStatus(u, onlineIds.has(u.id))}</td>
                     <td className="py-3 pr-4 text-gray-700">{u.subscription?.credits ?? 0}</td>
                     <td className="py-3 pr-4 text-gray-500">{formatDate(u.createdAt)}</td>
                     <td className="py-3">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          type="button"
-                          onClick={() => setEditingUser(u)}
-                          disabled={isOtherAdmin(u) || busyId === u.id}
-                          title={isOtherAdmin(u) ? "Can't edit another admin" : 'Edit'}
-                          className="p-1.5 rounded-md text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setConfirmAction({ type: u.isBanned ? 'unban' : 'ban', user: u })}
-                          disabled={isSelf(u) || isOtherAdmin(u) || busyId === u.id}
-                          title={
-                            isSelf(u)
-                              ? "Can't ban yourself"
-                              : isOtherAdmin(u)
-                                ? "Can't ban another admin"
-                                : u.isBanned
-                                  ? 'Unban'
-                                  : 'Ban'
-                          }
-                          className="p-1.5 rounded-md text-gray-500 hover:text-amber-600 hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                          {u.isBanned ? <RotateCcw className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setConfirmAction({ type: 'delete', user: u })}
-                          disabled={isSelf(u) || isOtherAdmin(u) || busyId === u.id}
-                          title={
-                            isSelf(u) ? "Can't delete yourself" : isOtherAdmin(u) ? "Can't delete another admin" : 'Delete'
-                          }
-                          className="p-1.5 rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
+                      <div className="flex items-center justify-end">{renderActions(u)}</div>
                     </td>
                   </tr>
-                );
-              })}
-              {sortedUsers.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="py-8 text-center text-gray-500">
-                    No users found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="md:hidden space-y-3">
+            {sortedUsers.map((u) => {
+              const online = onlineIds.has(u.id);
+              return (
+                <div key={u.id} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-semibold shrink-0">
+                      {u.name?.charAt(0)?.toUpperCase() || '?'}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-gray-900 truncate">
+                        {u.name}
+                        {isSelf(u) && <span className="ml-1 text-xs text-gray-400">(you)</span>}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">{u.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    {renderRole(u)}
+                    {renderStatus(u, online)}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                      <span className="text-xs text-gray-500">Credits</span>
+                      <span className="text-[10px] lg:text-sm font-semibold text-gray-900">
+                        {u.subscription?.credits ?? 0}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                      <span className="text-xs text-gray-500">Joined</span>
+                      <span className="text-[10px] lg:text-sm font-medium text-gray-900">
+                        {formatDate(u.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end border-t border-gray-100 pt-3">
+                    {renderActions(u)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
       {editingUser && (

@@ -230,21 +230,17 @@ const AdminDashboard: React.FC = () => {
   const changeIsUp = (growth?.change ?? 0) >= 0;
 
   return (
-    <div className="bg-[#F6F9FC] pt-24">
+    <div className="bg-[#F6F9FC] pt-24 pb-12">
       <Wrapper>
-        <div className="flex flex-col md:flex-row items-start gap-6">
+        <div className="md:flex md:flex-row items-start gap-6">
           {/* ==============================================================
            * Sidebar
           ================================================================*/}
-          <aside className="w-full md:w-64 shrink-0 md:sticky md:top-24">
+          <aside className="w-full md:w-48 lg:w-44 xl:w-64 shrink-0 md:sticky md:top-24">
             <div>
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  Admin Panel
-                </h2>
-              </div>
+             
 
-              <nav className="flex flex-col items-start md:space-y-1">
+              <nav className="space-y-1">
                 <SidebarButton
                   icon={LayoutDashboard}
                   label="Overview"
@@ -271,7 +267,7 @@ const AdminDashboard: React.FC = () => {
           {/* ==============================================================
            * Main content
           ================================================================*/}
-          <main className="flex-1 min-w-0">
+          <main className="md:flex-1 md:min-w-0 mt-8 md:mt-0">
             {activeView === "users" ? (
               <UserManagement
                 onlineUsers={onlineUsers}

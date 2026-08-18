@@ -22,7 +22,7 @@ const setAuthCookies = (
     secure: env.nodeEnv === "production",
     sameSite: env.nodeEnv === "production" ? "none" : "lax",
     path: "/",
-    maxAge: 10 * 60 * 1000,
+    maxAge: 24 * 60 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
@@ -30,7 +30,7 @@ const setAuthCookies = (
     secure: env.nodeEnv === "production",
     sameSite: env.nodeEnv === "production" ? "none" : "lax",
     path: "/",
-    maxAge: 20 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
 
@@ -200,7 +200,7 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
       secure: env.nodeEnv === "production",
       sameSite: env.nodeEnv === "production" ? "none" : "lax",
       path: "/",
-      maxAge: 10 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.json({

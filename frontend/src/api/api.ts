@@ -43,12 +43,12 @@ api.interceptors.response.use(
         await api.post("/auth/refresh");
         return api(originalRequest);
       } catch (refreshError) {
-        // Clear local storage on refresh failure
+        // Clear the auth state; PrivateRoute redirects to login only on
+        // protected pages, so public pages (e.g. home) stay visible.
         localStorage.removeItem("user");
-        // Redirect to login page (not /auth/login which doesn't exist)
-        if (window.location.pathname !== "/login") {
-          window.location.href = "/login";
-        }
+        const { store } = await import("../store");
+        const { clearUser } = await import("../store/slices/authSlice");
+        store.dispatch(clearUser());
         return Promise.reject(refreshError);
       }
     }

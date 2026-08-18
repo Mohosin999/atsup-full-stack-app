@@ -17,6 +17,7 @@ import ScanActions from "../components/ats-scan/ScanActions";
 import { getAiScanStatus } from "../utils/aiScan";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setUserAiScanState } from "@/store/slices/authSlice";
+import { goToLogin } from "../utils/authGuard";
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: "resume", label: "Resume Analysis" },
@@ -59,6 +60,10 @@ export default function AtsScorePage() {
 
   const fetchHistory = async (pageNum: number = 1) => {
     try {
+      if (!user) {
+        setHistoryLoading(false);
+        return;
+      }
       if (history.length === 0) {
         setHistoryLoading(true);
       }
@@ -129,6 +134,10 @@ export default function AtsScorePage() {
     });
 
   const handleScan = async () => {
+    if (!user) {
+      goToLogin(navigate, "/ats-score");
+      return;
+    }
     if (!resumeFile) {
       toast.error("Please upload a resume");
       return;
@@ -216,6 +225,10 @@ export default function AtsScorePage() {
   };
 
   const handleAiScan = async () => {
+    if (!user) {
+      goToLogin(navigate, "/ats-score");
+      return;
+    }
     if (!resumeFile) {
       toast.error("Please upload a resume");
       return;

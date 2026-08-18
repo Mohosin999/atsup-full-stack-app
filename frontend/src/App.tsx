@@ -1,7 +1,8 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import { consumeRedirect } from "./utils/authGuard";
 import { connectPresenceSocket, disconnectPresenceSocket } from "./socket/presenceSocket";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
@@ -44,6 +45,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function App() {
   const user = useSelector((state: RootState) => state.auth.user);
+  const navigate = useNavigate();
 
   // Live presence: connect the user's socket while logged in, disconnect on logout.
   useEffect(() => {
@@ -53,6 +55,16 @@ function App() {
       disconnectPresenceSocket();
     }
   }, [user]);
+
+  // After a successful login (incl. Google OAuth round-trip), return to the
+  // page the user came from.
+  useEffect(() => {
+    if (!user) return;
+    const redirect = consumeRedirect();
+    if (redirect) {
+      navigate(redirect, { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <ThemeWrapper>
@@ -93,11 +105,7 @@ function App() {
         />
         <Route
           path="/ats-score"
-          element={
-            <PrivateRoute>
-              <AtsScore />
-            </PrivateRoute>
-          }
+          element={<AtsScore />}
         />
         <Route
           path="/ats-score-history"
@@ -113,11 +121,7 @@ function App() {
         />
         <Route
           path="/resumes"
-          element={
-            <PrivateRoute>
-              <ResumeDashboard />
-            </PrivateRoute>
-          }
+          element={<ResumeDashboard />}
         />
         <Route
           path="/resume-builder"
@@ -125,19 +129,11 @@ function App() {
         />
         <Route
           path="/resume-builder/new"
-          element={
-            <PrivateRoute>
-              <ResumeBuilder />
-            </PrivateRoute>
-          }
+          element={<ResumeBuilder />}
         />
         <Route
           path="/resume-builder/:id"
-          element={
-            <PrivateRoute>
-              <ResumeBuilder />
-            </PrivateRoute>
-          }
+          element={<ResumeBuilder />}
         />
         <Route path="/my-reports" element={<PrivateRoute><MyReports /></PrivateRoute>} />
         <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />

@@ -1,6 +1,7 @@
 import { Router, Response } from "express";
 import passport from "passport";
 import { authenticate } from "../../shared/middlewares/auth";
+import { generalLimiter } from "../../shared/middlewares/middlewareConfig";
 import { AuthRequest } from "../../shared/types";
 import { generateAccessToken, generateRefreshToken } from "../../shared/config/jwt";
 import {
@@ -51,14 +52,14 @@ router.get(
         secure: env.nodeEnv === "production",
         sameSite: env.nodeEnv === "production" ? "none" : "lax",
         path: "/",
-        maxAge: 10 * 60 * 1000,
+        maxAge: 24 * 60 * 60 * 1000,
       });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: env.nodeEnv === "production",
         sameSite: env.nodeEnv === "production" ? "none" : "lax",
-        maxAge: 20 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
       // res.redirect(env.frontendUrl || "http://localhost:4173");
@@ -70,7 +71,7 @@ router.get(
   },
 );
 
-router.get("/me", authenticate, getMe);
+router.get("/me", authenticate, generalLimiter, getMe);
 
 router.post("/refresh", refreshToken);
 

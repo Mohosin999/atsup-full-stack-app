@@ -20,7 +20,14 @@ interface NavLink {
 }
 
 const getNavLinks = (role?: string): NavLink[] => [
-  { path: role === "admin" ? "/admin-dashboard" : "/dashboard", label: "Dashboard" },
+  ...(role
+    ? [
+        {
+          path: role === "admin" ? "/admin-dashboard" : "/dashboard",
+          label: "Dashboard",
+        },
+      ]
+    : []),
   { path: "/resumes", label: "Resume Builder" },
   { path: "/ats-score", label: "ATS Score" },
 ];
@@ -51,9 +58,9 @@ export default function Navbar() {
               </span>
             </Link>
             <div className="flex items-center gap-4">
+              <NavLinks navLinks={getNavLinks(user?.role)} />
               {user ? (
                 <>
-                  <NavLinks navLinks={getNavLinks(user.role)} />
                   <div className="hidden lg:flex">
                     <UpgradeButton />
                   </div>
@@ -106,6 +113,18 @@ export default function Navbar() {
               exit={{ opacity: 0, y: -10 }}
               className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 py-6 px-4"
             >
+              <div className="flex flex-col gap-1 mb-4">
+                {getNavLinks().map((link) => (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
               <div className="flex flex-col gap-4">
                 <Link
                   to="/login"

@@ -29,6 +29,8 @@ import {
 } from "../types";
 import { downloadAtsPdf, getSectionTitle } from "../utils/atsResume";
 import { resumeApi } from "../api/api";
+import { goToLogin } from "../utils/authGuard";
+import { useAppSelector } from "@/hooks";
 import BackButton from "../components/ui/BackButton";
 import ResumeBuilderSection from "../components/resume-builder/ResumeBuilderSection";
 import PersonalInfoForm from "../components/resume-builder/PersonalInfoForm";
@@ -71,6 +73,7 @@ export default function ResumeBuilder() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
   const isNew = location.pathname === "/resume-builder/new";
   const [content, setContent] = useState<ResumeContent>(defaultContent);
   const [resumeId, setResumeId] = useState<string | null>(null);
@@ -105,6 +108,12 @@ export default function ResumeBuilder() {
   useEffect(() => {
     if (initializedRef.current) return;
     initializedRef.current = true;
+
+    if (!user) {
+      setLoading(false);
+      goToLogin(navigate, isNew ? "/resume-builder/new" : `/resume-builder/${id}`);
+      return;
+    }
 
     if (isNew) {
       resumeApi

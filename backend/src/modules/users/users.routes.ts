@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth";
+import { generalLimiter } from "../../shared/middlewares/middlewareConfig";
 import {
   getProfile,
   updateProfile,
@@ -8,10 +9,10 @@ import {
 
 const router = Router();
 
-router.get("/profile", authenticate, getProfile);
+router.get("/profile", authenticate, generalLimiter, getProfile);
 
-router.put("/profile", authenticate, updateProfile);
+router.put("/profile", authenticate, generalLimiter, updateProfile);
 
-router.delete("/account", authenticate, deleteAccount);
+router.delete("/account", authenticate, generalLimiter, deleteAccount);
 
 export default router;

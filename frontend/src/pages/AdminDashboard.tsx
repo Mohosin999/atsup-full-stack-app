@@ -231,20 +231,20 @@ const AdminDashboard: React.FC = () => {
   const changeIsUp = (growth?.change ?? 0) >= 0;
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-gray-50">
+    <div className="bg-[#F6F9FC] pt-24">
       <Wrapper>
-        <div className="flex h-full">
+        <div className="flex flex-col md:flex-row items-start gap-6">
           {/* ==============================================================
            * Sidebar
           ================================================================*/}
-          <aside className="w-64 bg-white border-r border-gray-200 shrink-0">
-            <div className="p-4">
-              {/* <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">
+          <aside className="w-64 shrink-0 sticky top-24 bg-white rounded-lg p-4 box-shadow">
+            <div>
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold text-gray-800">
                   Admin Panel
                 </h2>
-                <p className="text-sm text-gray-500 truncate">{user?.email}</p>
-              </div> */}
+                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+              </div>
 
               <nav className="space-y-1">
                 <button
@@ -252,7 +252,7 @@ const AdminDashboard: React.FC = () => {
                   onClick={() => setActiveView("overview")}
                   className={`w-full inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                     activeView === "overview"
-                      ? "bg-emerald-50 text-emerald-700"
+                      ? "bg-cyan-100 text-cyan-700"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
@@ -264,7 +264,7 @@ const AdminDashboard: React.FC = () => {
                   onClick={() => setActiveView("users")}
                   className={`w-full inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                     activeView === "users"
-                      ? "bg-emerald-50 text-emerald-700"
+                      ? "bg-cyan-100 text-cyan-700"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
@@ -276,7 +276,7 @@ const AdminDashboard: React.FC = () => {
                   onClick={() => setActiveView("support")}
                   className={`w-full inline-flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                     activeView === "support"
-                      ? "bg-emerald-50 text-emerald-700"
+                      ? "bg-cyan-100 text-cyan-700"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
@@ -291,38 +291,13 @@ const AdminDashboard: React.FC = () => {
                   )}
                 </button>
               </nav>
-
-              <div className="mt-8 p-3 bg-gray-50 rounded-lg">
-                <p className="text-sm font-medium text-gray-500">
-                  Online Users
-                  <span className="ml-1 inline-flex items-center px-1.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700">
-                    {onlineCount}
-                  </span>
-                </p>
-              </div>
             </div>
           </aside>
 
           {/* ==============================================================
            * Main content
           ================================================================*/}
-          <main className="flex-1 p-6 min-w-0">
-            <header className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-800 flex items-center">
-                {activeView === "users"
-                  ? "User Management"
-                  : activeView === "support"
-                    ? "Support"
-                    : "Overview"}
-                <Link
-                  to="/"
-                  className="ml-4 text-sm text-gray-500 hover:text-gray-700"
-                >
-                  ← Back to Dashboard
-                </Link>
-              </h1>
-            </header>
-
+          <main className="flex-1 min-w-0">
             {activeView === "users" ? (
               <UserManagement
                 onlineUsers={onlineUsers}
@@ -335,60 +310,83 @@ const AdminDashboard: React.FC = () => {
               />
             ) : (
               <>
-                {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                {/* =====================================================
+                  * Summary cards
+                 ======================================================*/}
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+                  {/* New users (today) */}
                   <div className="bg-white rounded-lg shadow p-4">
-                    <h3 className="text-sm font-medium text-gray-500">
-                      Total Users
+                    <h3 className="text-xs font-medium text-gray-600">
+                      New Users (Today)
                     </h3>
-                    <p className="text-2xl font-bold text-gray-900 mt-2">
-                      {totalUsers}
+                    <p className="text-xl font-bold text-gray-700 mt-2">
+                      {todayNewUsers}
                     </p>
                   </div>
+
+                  {/* Online users */}
                   <div className="bg-white rounded-lg shadow p-4">
-                    <h3 className="text-sm font-medium text-gray-500 flex items-center">
+                    <h3 className="text-xs font-medium text-gray-600 flex items-center">
                       Online Users
                       <span className="relative flex h-2 w-2 ml-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
                       </span>
                     </h3>
-                    <p className="text-2xl font-bold text-emerald-600 mt-2">
+                    <p className="text-xl font-bold text-gray-700 mt-2">
                       {onlineCount}
                     </p>
                   </div>
+
+                  {/* Total users */}
                   <div className="bg-white rounded-lg shadow p-4">
-                    <h3 className="text-sm font-medium text-gray-500">
-                      New Users (Today)
+                    <h3 className="text-xs font-medium text-gray-600">
+                      Total Users
                     </h3>
-                    <p className="text-2xl font-bold text-blue-600 mt-2">
-                      {todayNewUsers}
+                    <p className="text-xl font-bold text-gray-700 mt-2">
+                      {totalUsers}
+                    </p>
+                  </div>
+
+                  {/* Best performing feature */}
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <h3 className="text-xs font-medium text-gray-600">
+                      Best Performing Feature
+                    </h3>
+                    <p
+                      className="text-xl font-bold w-full py-2 rounded text-cyan-600"
+                    >
+                      {bestFeatureToday === "resume-builder"
+                        ? "Resume Builder"
+                        : "ATS Check"}
                     </p>
                   </div>
                 </div>
 
-                {/* User Activity Chart */}
-                <div className="max-w-4xl w-full bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6 mb-6">
+                {/* =====================================================
+                  * User activity chart
+                 ======================================================*/}
+                <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6 mb-6">
                   {/* Header */}
                   <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200">
                     <div className="flex items-center">
-                      <div className="w-12 h-12 bg-gray-100 border border-gray-200 flex items-center justify-center rounded-full me-3">
-                        <Users className="w-7 h-7 text-gray-600" />
+                      <div className="w-8 h-8 bg-gray-100 border border-gray-200 flex items-center justify-center rounded-full me-3">
+                        <Users className="w-4 h-4 text-gray-600" />
                       </div>
-                      <div>
-                        <h5 className="text-2xl font-semibold text-gray-900">
+                      <div className="flex items-center gap-1">
+                        <p className="text-sm text-gray-600">
+                          User activity in {periodLabel.toLowerCase()} ➤
+                        </p>
+                        <h5 className="text-sm font-semibold text-gray-900">
                           {(growth?.totals.activity ?? 0).toLocaleString()}
                         </h5>
-                        <p className="text-sm text-gray-500">
-                          User activity in {periodLabel.toLowerCase()}
-                        </p>
                       </div>
                     </div>
                     <div>
                       <span
-                        className={`inline-flex items-center text-xs font-medium px-1.5 py-0.5 rounded border ${
+                        className={`inline-flex items-center text-xs font-medium px-2 py-1.5 rounded border ${
                           changeIsUp
-                            ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+                            ? "bg-cyan-100 border-cyan-100 text-cyan-700"
                             : "bg-red-50 border-red-200 text-red-700"
                         }`}
                       >
@@ -405,18 +403,18 @@ const AdminDashboard: React.FC = () => {
                   {/* Two stats */}
                   <div className="grid grid-cols-2">
                     <dl className="flex items-center">
-                      <dt className="text-gray-500 text-sm font-normal me-1">
+                      <dt className="text-gray-600 text-xs font-normal me-1">
                         Resume builds:
                       </dt>
-                      <dd className="text-gray-900 text-sm font-semibold">
+                      <dd className="text-gray-900 text-xs font-semibold">
                         {growth?.totals.resumeBuild ?? "—"}
                       </dd>
                     </dl>
                     <dl className="flex items-center justify-end">
-                      <dt className="text-gray-500 text-sm font-normal me-1">
+                      <dt className="text-gray-600 text-xs font-normal me-1">
                         ATS checks:
                       </dt>
-                      <dd className="text-gray-900 text-sm font-semibold">
+                      <dd className="text-gray-900 text-xs font-semibold">
                         {growth?.totals.atsUse ?? "—"}
                       </dd>
                     </dl>
@@ -431,10 +429,10 @@ const AdminDashboard: React.FC = () => {
                     ) : (
                       <div className="overflow-x-auto scrollbar-hide">
                         <div className="min-w-[480px] pt-8">
-                          <div className="relative h-40 md:h-48 border-b border-gray-200">
+                          <div className="relative h-40 md:h-64 border-b border-gray-200">
                             {/* Y-axis scale: 50 activities = full height */}
                             <div className="absolute inset-y-0 left-0 flex flex-col justify-between text-[10px] leading-none text-gray-400 pointer-events-none select-none">
-                              {[50, 37, 25, 12, 0].map((v) => (
+                              {[50, 40, 30, 20, 10, 0].map((v) => (
                                 <span key={v}>{v}</span>
                               ))}
                             </div>
@@ -544,51 +542,6 @@ const AdminDashboard: React.FC = () => {
                           </>
                         )}
                       </div>
-                      <a
-                        href="#"
-                        className="inline-flex items-center text-emerald-600 hover:bg-gray-50 font-medium leading-5 rounded-lg text-sm px-3 py-2"
-                      >
-                        Activity Report
-                        <ArrowRight className="w-4 h-4 ms-1.5" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Feature Usage */}
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-lg font-medium text-gray-800 mb-4">
-                    Feature Usage Today
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="text-center">
-                      <h3 className="text-sm font-medium text-gray-500">
-                        Resume Builder Users
-                      </h3>
-                      <p className="text-2xl font-bold text-indigo-600 mt-2">
-                        {resumeBuilderUsersToday}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <h3 className="text-sm font-medium text-gray-500">
-                        ATS Check Users
-                      </h3>
-                      <p className="text-2xl font-bold text-purple-600 mt-2">
-                        {atsCheckUsersToday}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <h3 className="text-sm font-medium text-gray-500">
-                        Best Performing Feature
-                      </h3>
-                      <p
-                        className="text-2xl font-bold w-full px-4 py-2 rounded 
-                        {bestFeatureToday === 'resume-builder' ? 'bg-indigo-100 text-indigo-800' : 'bg-purple-100 text-purple-800'}"
-                      >
-                        {bestFeatureToday === "resume-builder"
-                          ? "Resume Builder"
-                          : "ATS Check"}
-                      </p>
                     </div>
                   </div>
                 </div>

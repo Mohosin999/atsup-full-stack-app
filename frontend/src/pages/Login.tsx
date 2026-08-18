@@ -5,6 +5,11 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux";
 import { login, fetchUser } from "../store/slices/authSlice";
+import {
+  getLoginRedirect,
+  saveRedirectForOAuth,
+  consumeRedirect,
+} from "../utils/authGuard";
 import api from "../api/api";
 
 export default function Login() {
@@ -38,7 +43,12 @@ export default function Login() {
       if (response.data.success) {
         const result = await dispatch(fetchUser());
         const user = result.payload as { role?: string } | null;
-        navigate(user?.role === "admin" ? "/admin-dashboard" : "/dashboard", { replace: true });
+        const redirect = getLoginRedirect() || consumeRedirect();
+        if (redirect) {
+          navigate(redirect, { replace: true });
+        } else {
+          navigate(user?.role === "admin" ? "/admin-dashboard" : "/dashboard", { replace: true });
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.message || "An error occurred");
@@ -67,7 +77,10 @@ export default function Login() {
 
         <div className="card">
           <button
-            onClick={() => dispatch(login())}
+            onClick={() => {
+              saveRedirectForOAuth();
+              dispatch(login());
+            }}
             className="w-full inline-flex items-center justify-center px-4 py-3 font-medium rounded-lg transition-all duration-200 text-lg border border-gray-300 hover:border-green-600"
           >
             <FcGoogle className="w-6 h-6 mr-2" />

@@ -20,6 +20,8 @@ import {
 import { toast } from "react-toastify";
 import { resumeApi } from "../api/api";
 import { ResumeContent } from "../types";
+import { goToLogin } from "../utils/authGuard";
+import { useAppSelector } from "@/hooks";
 import Wrapper from "../components/Wrapper";
 import Pagination from "../components/ui/Pagination";
 import ConfirmModal from "../components/ui/ConfirmModal";
@@ -36,6 +38,7 @@ interface ResumeListItem {
 
 export default function ResumeDashboard() {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
   const [resumes, setResumes] = useState<ResumeListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [pageLoading, setPageLoading] = useState(false);
@@ -45,6 +48,10 @@ export default function ResumeDashboard() {
 
   const fetchResumes = async (pageNum: number = 1) => {
     try {
+      if (!user) {
+        setLoading(false);
+        return [];
+      }
       if (resumes.length === 0) {
         setLoading(true);
       } else {
@@ -154,7 +161,11 @@ export default function ResumeDashboard() {
               and watch an ATS-friendly resume render in real time.
             </p>
             <button
-              onClick={() => navigate("/resume-builder/new")}
+              onClick={() =>
+                user
+                  ? navigate("/resume-builder/new")
+                  : goToLogin(navigate, "/resumes")
+              }
               className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-lg shadow-green-500/25 transition-all"
             >
               <FilePlus2 className="w-5 h-5" />
@@ -298,7 +309,11 @@ export default function ResumeDashboard() {
               get started.
             </p>
             <button
-              onClick={() => navigate("/resume-builder/new")}
+              onClick={() =>
+                user
+                  ? navigate("/resume-builder/new")
+                  : goToLogin(navigate, "/resumes")
+              }
               className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
             >
               <FilePlus2 className="w-5 h-5" />

@@ -518,3 +518,24 @@ export interface GrowthData {
   };
   change: number;
 }
+
+export type SupportType = 'bug' | 'feature' | 'other';
+export type SupportStatus = 'open' | 'in-progress' | 'resolved';
+
+export interface SupportTicket {
+  id: string;
+  userId: string;
+  type: SupportType;
+  title: string;
+  message: string;
+  attachment?: string | null;
+  status: SupportStatus;
+  createdAt: string;
+  updatedAt: string;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    picture?: string | null;
+  } | null;
+}

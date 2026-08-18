@@ -117,4 +117,13 @@ export const unlimitedAtsApi = {
     }),
 };
 
+// Support / problem reporting
+export const supportApi = {
+  create: (formData: FormData) =>
+    api.post("/support", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  getMine: () => api.get("/support/mine"),
+};
+
 export default api;

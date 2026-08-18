@@ -10,6 +10,7 @@ import {
   getAdminDashboardMetrics,
   getGrowthData,
 } from "./modules/admin-dashboard/admin-dashboard.service";
+import { setAdminNamespace } from "./socket/adminSocket";
 
 interface OnlineUser {
   id: string;
@@ -107,6 +108,7 @@ if (!isVercel) {
 
   // Define the admin dashboard namespace
   const adminNamespace = io.of("/admin-dashboard");
+  setAdminNamespace(adminNamespace);
 
   adminNamespace.use(authenticateSocket);
   adminNamespace.use((socket, next) => {

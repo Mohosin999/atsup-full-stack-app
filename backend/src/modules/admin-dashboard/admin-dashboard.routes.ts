@@ -7,6 +7,9 @@ import {
   toggleBan,
   updateUser,
   deleteUser,
+  getSupportTickets,
+  updateSupportTicket,
+  deleteSupportTicket,
 } from "./admin-dashboard.controller";
 
 const router = Router();
@@ -19,5 +22,8 @@ router.get("/users", getUsers);
 router.patch("/users/:id/ban", toggleBan);
 router.patch("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
+router.get("/support", getSupportTickets);
+router.patch("/support/:id", updateSupportTicket);
+router.delete("/support/:id", deleteSupportTicket);
 
 export default router;

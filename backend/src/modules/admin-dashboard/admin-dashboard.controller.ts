@@ -9,6 +9,11 @@ import {
   adminDeleteUser,
   GrowthPeriod,
 } from "./admin-dashboard.service";
+import {
+  getAllTickets,
+  updateTicketStatus,
+  deleteTicket,
+} from "../support/support.service";
 
 const ensureAdmin = (req: AuthRequest, res: Response): boolean => {
   if (!req.user || req.user.role !== "admin") {
@@ -128,6 +133,51 @@ export const deleteUser = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     console.error("Error deleting user:", error);
+    sendError(res, error);
+  }
+};
+
+export const getSupportTickets = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const tickets = await getAllTickets();
+    res.json({
+      success: true,
+      data: tickets,
+    });
+  } catch (error) {
+    console.error("Error fetching support tickets:", error);
+    sendError(res, error);
+  }
+};
+
+export const updateSupportTicket = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const { id } = req.params;
+    const { status } = req.body || {};
+    const ticket = await updateTicketStatus(id, status);
+    res.json({
+      success: true,
+      data: ticket,
+    });
+  } catch (error) {
+    console.error("Error updating support ticket:", error);
+    sendError(res, error);
+  }
+};
+
+export const deleteSupportTicket = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const { id } = req.params;
+    await deleteTicket(id);
+    res.json({
+      success: true,
+      message: "Ticket deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting support ticket:", error);
     sendError(res, error);
   }
 };

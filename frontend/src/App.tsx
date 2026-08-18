@@ -17,6 +17,8 @@ import GoToTop from "./components/ui/GoToTop";
 import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
+import MyReports from "./pages/MyReports";
+import ReportButton from "./components/support/ReportButton";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -137,9 +139,11 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/my-reports" element={<PrivateRoute><MyReports /></PrivateRoute>} />
         <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      {user && <ReportButton />}
       <GoToTop />
     </ThemeWrapper>
   );

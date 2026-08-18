@@ -9,17 +9,20 @@ import {
 import api from '../../api/api';
 import { AdminUser, OnlineUser } from '../../types';
 import EditUserModal from './EditUserModal';
+import ConfirmModal from '../ui/ConfirmModal';
 
 interface Props {
   onlineUsers: OnlineUser[];
   currentAdminId: string;
 }
 
+type ConfirmAction = { type: 'ban' | 'unban' | 'delete'; user: AdminUser } | null;
+
 const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
   const fetchUsers = async () => {
@@ -71,13 +74,23 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
       const res = await api.delete(`/admin-dashboard/users/${user.id}`);
       if (res.data.success) {
         setUsers((prev) => prev.filter((u) => u.id !== user.id));
-        setConfirmDeleteId(null);
       }
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Failed to delete user');
     } finally {
       setBusyId(null);
     }
+  };
+
+  const handleConfirm = async () => {
+    if (!confirmAction) return;
+    const { type, user } = confirmAction;
+    if (type === 'delete') {
+      await deleteUser(user);
+    } else {
+      await toggleBan(user);
+    }
+    setConfirmAction(null);
   };
 
   const handleSave = async (data: { name: string; role: string; credits: number }) => {
@@ -197,7 +210,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                         </button>
                         <button
                           type="button"
-                          onClick={() => toggleBan(u)}
+                          onClick={() => setConfirmAction({ type: u.isBanned ? 'unban' : 'ban', user: u })}
                           disabled={isSelf(u) || isOtherAdmin(u) || busyId === u.id}
                           title={
                             isSelf(u)
@@ -212,37 +225,17 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                         >
                           {u.isBanned ? <RotateCcw className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
                         </button>
-                        {confirmDeleteId === u.id ? (
-                          <div className="flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => deleteUser(u)}
-                              disabled={busyId === u.id}
-                              className="px-2 py-1 text-xs font-medium rounded-md bg-red-600 text-white hover:bg-red-700"
-                            >
-                              Confirm
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setConfirmDeleteId(null)}
-                              className="px-2 py-1 text-xs font-medium rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => setConfirmDeleteId(u.id)}
-                            disabled={isSelf(u) || isOtherAdmin(u) || busyId === u.id}
-                            title={
-                              isSelf(u) ? "Can't delete yourself" : isOtherAdmin(u) ? "Can't delete another admin" : 'Delete'
-                            }
-                            className="p-1.5 rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => setConfirmAction({ type: 'delete', user: u })}
+                          disabled={isSelf(u) || isOtherAdmin(u) || busyId === u.id}
+                          title={
+                            isSelf(u) ? "Can't delete yourself" : isOtherAdmin(u) ? "Can't delete another admin" : 'Delete'
+                          }
+                          className="p-1.5 rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -269,6 +262,22 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
           onSave={handleSave}
         />
       )}
+
+      <ConfirmModal
+        isOpen={!!confirmAction}
+        title={confirmAction?.type === 'delete' ? 'Delete User' : confirmAction?.type === 'unban' ? 'Unban User' : 'Ban User'}
+        message={
+          confirmAction?.type === 'delete'
+            ? `Are you sure you want to permanently delete "${confirmAction.user?.name}"? This will remove their account, resumes and all data.`
+            : confirmAction?.type === 'unban'
+              ? `Are you sure you want to unban "${confirmAction.user?.name}"? They will be able to log in again.`
+              : `Are you sure you want to ban "${confirmAction?.user?.name}"? They will be blocked from logging in.`
+        }
+        confirmText={confirmAction?.type === 'delete' ? 'Delete' : confirmAction?.type === 'unban' ? 'Unban' : 'Ban'}
+        type={confirmAction?.type === 'unban' ? 'info' : 'danger'}
+        onConfirm={handleConfirm}
+        onCancel={() => setConfirmAction(null)}
+      />
     </div>
   );
 };

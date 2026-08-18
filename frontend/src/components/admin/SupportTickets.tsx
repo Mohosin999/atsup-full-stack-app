@@ -14,7 +14,7 @@ type Filter = 'all' | SupportStatus;
 const STATUS_STYLES: Record<SupportStatus, string> = {
   open: 'bg-amber-100 text-amber-700',
   'in-progress': 'bg-blue-100 text-blue-700',
-  resolved: 'bg-emerald-100 text-emerald-700',
+  resolved: 'bg-cyan-100 text-cyan-700',
 };
 
 const STATUS_LABELS: Record<SupportStatus, string> = {
@@ -130,7 +130,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
               type="button"
               onClick={() => setFilter(f.value)}
               className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-                filter === f.value ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                filter === f.value ? 'bg-cyan-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
               {f.label}
@@ -141,7 +141,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-gray-500">
@@ -192,7 +192,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                         href={attachmentUrl(t.attachment)}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-3 inline-flex items-center gap-1.5 text-sm text-emerald-600 hover:underline"
+                        className="mt-3 inline-flex items-center gap-1.5 text-sm text-cyan-600 hover:underline"
                       >
                         <Paperclip className="w-4 h-4" />
                         View attachment
@@ -216,7 +216,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                             type="button"
                             disabled={busyId === t.id}
                             onClick={() => setStatus(t.id, 'resolved')}
-                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50"
+                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
                           >
                             Resolve
                           </button>

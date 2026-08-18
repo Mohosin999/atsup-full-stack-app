@@ -131,7 +131,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -182,10 +182,10 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                           <Ban className="w-3 h-3" /> Banned
                         </span>
                       ) : online ? (
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-medium">
+                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-700 text-xs font-medium">
                           <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
                           </span>
                           Online
                         </span>

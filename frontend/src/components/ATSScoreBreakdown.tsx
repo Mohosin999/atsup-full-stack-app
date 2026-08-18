@@ -20,7 +20,7 @@ const getScoreColor = (score: number) => {
 };
 
 const getScoreBg = (score: number) => {
-  if (score >= 80) return "bg-gradient-to-br from-green-500 to-emerald-600";
+  if (score >= 80) return "bg-gradient-to-br from-green-500 to-cyan-600";
   if (score >= 60) return "bg-gradient-to-br from-blue-500 to-indigo-600";
   if (score >= 40) return "bg-gradient-to-br from-yellow-500 to-orange-600";
   return "bg-gradient-to-br from-red-500 to-rose-600";

@@ -47,7 +47,7 @@ export default function ProfileMenu({
         onClick={() => setProfileMenuOpen(!profileMenuOpen)}
         className="flex items-center gap-2"
       >
-        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 hover:from-emerald-700 hover:to-emerald-500 flex items-center justify-center text-white font-medium">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-800 via-cyan-700 to-cyan-600 hover:from-cyan-700 hover:to-cyan-500 flex items-center justify-center text-white font-medium">
           {user.name?.charAt(0).toUpperCase() || "U"}
         </div>
       </button>

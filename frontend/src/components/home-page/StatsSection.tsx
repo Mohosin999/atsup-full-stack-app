@@ -12,7 +12,7 @@ export default function StatsSection() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8 }}
-      className="py-16 bg-gradient-to-r from-green-600 via-emerald-600 to-green-700"
+      className="py-16 bg-gradient-to-r from-green-600 via-cyan-600 to-green-700"
     >
       <Wrapper>
         <motion.div

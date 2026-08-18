@@ -41,7 +41,7 @@ export default function TestimonialsSection({
           </motion.div>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">
             Loved by{" "}
-            <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">
               Thousands
             </span>
           </h2>
@@ -80,7 +80,7 @@ export default function TestimonialsSection({
                 "{testimonial.content}"
               </p>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
                   {testimonial.name.charAt(0)}
                 </div>
                 <div>

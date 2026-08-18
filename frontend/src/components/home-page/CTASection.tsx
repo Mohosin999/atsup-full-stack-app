@@ -21,7 +21,7 @@ export default function CTASection() {
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative bg-gradient-to-br from-green-600 via-emerald-600 to-green-700 rounded-3xl p-12 overflow-hidden shadow-2xl shadow-green-500/40"
+          className="relative bg-gradient-to-br from-green-600 via-cyan-600 to-green-700 rounded-3xl p-12 overflow-hidden shadow-2xl shadow-green-500/40"
         >
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />

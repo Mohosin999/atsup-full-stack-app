@@ -16,7 +16,7 @@ export default function HeroCards() {
       <div className="relative h-[600px]">
         <motion.div variants={floatAnimation} animate="animate" className="absolute top-10 left-0 right-0 bg-white rounded-3xl shadow-2xl shadow-green-500/20 p-8 border border-green-200">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center">
+            <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-cyan-500 rounded-2xl flex items-center justify-center">
               <TrendingUp className="w-7 h-7 text-white" />
             </div>
             <div>
@@ -36,14 +36,14 @@ export default function HeroCards() {
                     initial={{ width: 0 }}
                     animate={{ width: item.value }}
                     transition={{ duration: 1.5, delay: 1 }}
-                    className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
+                    className="h-full bg-gradient-to-r from-green-500 to-cyan-500 rounded-full"
                   />
                 </div>
               </div>
             ))}
           </div>
         </motion.div>
-        <motion.div variants={floatAnimation} animate="animate" transition={{ delay: 0.5 }} className="absolute top-40 -right-4 bg-gradient-to-br from-green-500 to-emerald-500 text-white rounded-2xl p-5 shadow-xl">
+        <motion.div variants={floatAnimation} animate="animate" transition={{ delay: 0.5 }} className="absolute top-40 -right-4 bg-gradient-to-br from-green-500 to-cyan-500 text-white rounded-2xl p-5 shadow-xl">
           <Award className="w-8 h-8 mb-2" />
           <p className="text-2xl font-bold">95%</p>
           <p className="text-sm opacity-90">Success Rate</p>
@@ -59,7 +59,7 @@ export default function HeroCards() {
             </div>
           </div>
         </motion.div>
-        <motion.div variants={floatAnimation} animate="animate" transition={{ delay: 1.5 }} className="absolute bottom-10 right-10 bg-gradient-to-br from-green-400 to-emerald-500 text-white rounded-2xl p-5 shadow-xl">
+        <motion.div variants={floatAnimation} animate="animate" transition={{ delay: 1.5 }} className="absolute bottom-10 right-10 bg-gradient-to-br from-green-400 to-cyan-500 text-white rounded-2xl p-5 shadow-xl">
           <TrendingUp className="w-8 h-8 mb-2" />
           <p className="text-2xl font-bold">3x</p>
           <p className="text-sm opacity-90">More Interviews</p>

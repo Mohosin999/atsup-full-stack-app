@@ -35,7 +35,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full text-green-700 text-sm font-semibold mb-8 border border-green-200"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-100 to-cyan-100 rounded-full text-green-700 text-sm font-semibold mb-8 border border-green-200"
             >
               <Sparkles className="w-4 h-4" /> Powered by AI
               <span className="flex h-2 w-2">
@@ -92,7 +92,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 1 + i * 0.1 }}
-                    className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold"
+                    className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-cyan-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold"
                   >
                     <Users className="w-5 h-5" />
                   </motion.div>

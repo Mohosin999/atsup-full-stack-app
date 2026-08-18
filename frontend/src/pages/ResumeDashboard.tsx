@@ -148,9 +148,9 @@ export default function ResumeDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 flex flex-col items-start"
+            className="bg-gradient-to-br from-green-50 to-cyan-50 border border-green-200 rounded-2xl p-6 flex flex-col items-start"
           >
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-4 shadow-lg shadow-green-500/25">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-cyan-600 flex items-center justify-center mb-4 shadow-lg shadow-green-500/25">
               <FilePlus2 className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -166,7 +166,7 @@ export default function ResumeDashboard() {
                   ? navigate("/resume-builder/new")
                   : goToLogin(navigate, "/resumes")
               }
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-lg shadow-green-500/25 transition-all"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-green-500 to-cyan-600 hover:from-green-600 hover:to-cyan-700 text-white font-semibold shadow-lg shadow-green-500/25 transition-all"
             >
               <FilePlus2 className="w-5 h-5" />
               Create Resume
@@ -314,7 +314,7 @@ export default function ResumeDashboard() {
                   ? navigate("/resume-builder/new")
                   : goToLogin(navigate, "/resumes")
               }
-              className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-green-500 to-cyan-600 hover:from-green-600 hover:to-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
             >
               <FilePlus2 className="w-5 h-5" />
               Create Your First Resume

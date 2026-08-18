@@ -36,19 +36,19 @@ body {
   }
 
   .gradient-btn {
-    @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 text-white hover:from-emerald-700 hover:to-emerald-500 shadow-lg shadow-emerald-700/30;
+    @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-cyan-800 via-cyan-700 to-cyan-600 text-white hover:from-cyan-700 hover:to-cyan-500 shadow-lg shadow-cyan-700/30;
   }
 
   .gradient-btn-lg {
-    @apply inline-flex items-center justify-center px-6 py-3 font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 text-white hover:from-emerald-700 hover:to-emerald-500 shadow-lg shadow-emerald-700/30 text-lg;
+    @apply inline-flex items-center justify-center px-6 py-3 font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-cyan-800 via-cyan-700 to-cyan-600 text-white hover:from-cyan-700 hover:to-cyan-500 shadow-lg shadow-cyan-700/30 text-lg;
   }
 
   .gradient-btn-sm {
-    @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 text-white hover:from-emerald-700 hover:to-emerald-500 shadow-lg shadow-emerald-700/30;
+    @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-cyan-800 via-cyan-700 to-cyan-600 text-white hover:from-cyan-700 hover:to-cyan-500 shadow-lg shadow-cyan-700/30;
   }
 
   .gradient-btn-outline {
-    @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 focus:outline-none border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-600/10 hover:text-emerald-700;
+    @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 focus:outline-none border-2 border-cyan-600 text-cyan-600 hover:bg-cyan-600/10 hover:text-cyan-700;
   }
 
   .input {
@@ -191,7 +191,7 @@ body {
   color: #6b7280;
 }
 
-.pdf-exporting .text-emerald-600 {
+.pdf-exporting .text-cyan-600 {
   color: #059669;
 }
 

@@ -42,7 +42,7 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
         
         <div className="border-t border-gray-200 mt-2 pt-2">
           <div className="flex items-center gap-3 px-3 py-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 flex items-center justify-center text-white text-sm font-medium">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-800 via-cyan-700 to-cyan-600 flex items-center justify-center text-white text-sm font-medium">
               {user.name?.charAt(0).toUpperCase() || "U"}
             </div>
             <div className="flex-1 min-w-0">

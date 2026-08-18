@@ -9,7 +9,7 @@ import BackButton from '../components/ui/BackButton';
 const STATUS_STYLES: Record<SupportStatus, string> = {
   open: 'bg-amber-100 text-amber-700',
   'in-progress': 'bg-blue-100 text-blue-700',
-  resolved: 'bg-emerald-100 text-emerald-700',
+  resolved: 'bg-cyan-100 text-cyan-700',
 };
 
 const STATUS_LABELS: Record<SupportStatus, string> = {
@@ -62,7 +62,7 @@ const MyReports: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Reports</h1>
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700"
           >
             <MessageSquare className="w-4 h-4" />
             Report a problem
@@ -71,7 +71,7 @@ const MyReports: React.FC = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : tickets.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
@@ -102,7 +102,7 @@ const MyReports: React.FC = () => {
                         href={attachmentUrl(t.attachment)}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-2 inline-block text-sm text-emerald-600 hover:underline"
+                        className="mt-2 inline-block text-sm text-cyan-600 hover:underline"
                       >
                         View attachment
                       </a>

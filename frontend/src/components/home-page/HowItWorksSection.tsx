@@ -37,7 +37,7 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
             <Award className="w-4 h-4" /> Simple Process
           </motion.div>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">
-            How It <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Works</span>
+            How It <span className="bg-gradient-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">Works</span>
           </h2>
         </motion.div>
         <motion.div
@@ -53,7 +53,7 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
               variants={fadeInUp}
               className="relative group"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-cyan-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative p-8 rounded-2xl bg-white/70 border border-gray-200 hover:border-green-500/50 transition-colors h-full">
                 <div className="text-6xl font-bold text-green-500/20 mb-4">{step.number}</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>

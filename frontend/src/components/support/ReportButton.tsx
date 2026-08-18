@@ -82,14 +82,14 @@ const ReportButton: React.FC = () => {
 
             {done ? (
               <div className="text-center py-6">
-                <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+                <CheckCircle2 className="w-12 h-12 text-cyan-500 mx-auto mb-3" />
                 <p className="text-gray-700 mb-1">Thank you! Your report has been sent to our team.</p>
                 <p className="text-sm text-gray-500 mb-5">You can track its status from My Reports.</p>
                 <div className="flex items-center justify-center gap-2">
                   <Link
                     to="/my-reports"
                     onClick={close}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+                    className="px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700"
                   >
                     My Reports
                   </Link>
@@ -109,7 +109,7 @@ const ReportButton: React.FC = () => {
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value as SupportType)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   >
                     <option value="bug">Bug / Something is broken</option>
                     <option value="feature">Feature request</option>
@@ -125,7 +125,7 @@ const ReportButton: React.FC = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Short summary of the problem"
                     maxLength={255}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
 
@@ -136,7 +136,7 @@ const ReportButton: React.FC = () => {
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Tell us what happened and what you expected..."
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
                   />
                 </div>
 
@@ -145,7 +145,7 @@ const ReportButton: React.FC = () => {
                     Screenshot <span className="text-gray-400 font-normal">(optional)</span>
                   </label>
                   <div className="flex items-center gap-2">
-                    <label className="flex-1 flex items-center gap-2 px-3 py-2 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 cursor-pointer hover:border-emerald-500 hover:text-emerald-600">
+                    <label className="flex-1 flex items-center gap-2 px-3 py-2 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 cursor-pointer hover:border-cyan-500 hover:text-cyan-600">
                       <Paperclip className="w-4 h-4" />
                       <span className="truncate">{attachment ? attachment.name : 'Attach an image'}</span>
                       <input
@@ -170,13 +170,13 @@ const ReportButton: React.FC = () => {
                 {error && <p className="text-sm text-red-600">{error}</p>}
 
                 <div className="flex items-center justify-between gap-2 pt-1">
-                  <Link to="/my-reports" onClick={close} className="text-sm text-emerald-600 hover:underline">
+                  <Link to="/my-reports" onClick={close} className="text-sm text-cyan-600 hover:underline">
                     My reports
                   </Link>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
                   >
                     <Send className="w-4 h-4" />
                     {submitting ? 'Submitting...' : 'Submit'}

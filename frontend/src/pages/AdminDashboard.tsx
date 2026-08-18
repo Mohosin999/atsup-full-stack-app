@@ -9,10 +9,9 @@ import {
   PresenceData,
   OnlineUser,
 } from "../types";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import {
   ChevronDown,
-  ArrowRight,
   TrendingUp,
   TrendingDown,
   Users,
@@ -23,6 +22,8 @@ import api from "../api/api";
 import UserManagement from "../components/admin/UserManagement";
 import SupportTickets from "../components/admin/SupportTickets";
 import Wrapper from "@/components/Wrapper";
+import SidebarButton from "../components/ui/SidebarButton";
+
 
 const PERIOD_OPTIONS: { value: GrowthPeriod; label: string }[] = [
   { value: "yesterday", label: "Yesterday" },
@@ -43,14 +44,14 @@ const METRIC_CONFIG: {
   {
     key: "resumeBuild",
     label: "Resume Build",
-    bar: "from-orange-500 to-amber-400",
-    barHover: "group-hover:from-orange-600 group-hover:to-amber-500",
+    bar: "bg-teal-500",
+    barHover: "group-hover:bg-teal-500",
   },
   {
     key: "atsUse",
     label: "ATS Check",
-    bar: "from-purple-600 to-purple-400",
-    barHover: "group-hover:from-purple-700 group-hover:to-purple-500",
+    bar: "bg-cyan-500",
+    barHover: "group-hover:bg-cyan-500",
   },
 ];
 
@@ -161,7 +162,7 @@ const AdminDashboard: React.FC = () => {
       }
     });
 
-    newSocket.on("connect_error", (err) => {
+    newSocket.on("connect_error", (err: Error) => {
       console.error("Socket connection error:", err);
       setLoading(false);
     });
@@ -221,8 +222,6 @@ const AdminDashboard: React.FC = () => {
   const {
     totalUsers,
     todayNewUsers,
-    resumeBuilderUsersToday,
-    atsCheckUsersToday,
     bestFeatureToday,
   } = metrics;
 
@@ -237,59 +236,34 @@ const AdminDashboard: React.FC = () => {
           {/* ==============================================================
            * Sidebar
           ================================================================*/}
-          <aside className="w-64 shrink-0 sticky top-24 bg-white rounded-lg p-4 box-shadow">
+          <aside className="w-full md:w-64 shrink-0 md:sticky md:top-24">
             <div>
-              <div className="mb-8">
+              <div className="mb-6">
                 <h2 className="text-lg font-semibold text-gray-800">
                   Admin Panel
                 </h2>
-                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
               </div>
 
-              <nav className="space-y-1">
-                <button
-                  type="button"
+              <nav className="flex flex-col items-start md:space-y-1">
+                <SidebarButton
+                  icon={LayoutDashboard}
+                  label="Overview"
+                  active={activeView === "overview"}
                   onClick={() => setActiveView("overview")}
-                  className={`w-full inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeView === "overview"
-                      ? "bg-cyan-100 text-cyan-700"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  <LayoutDashboard className="w-4 h-4 me-2" />
-                  Overview
-                </button>
-                <button
-                  type="button"
+                />
+                <SidebarButton
+                  icon={Users}
+                  label="User Management"
+                  active={activeView === "users"}
                   onClick={() => setActiveView("users")}
-                  className={`w-full inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeView === "users"
-                      ? "bg-cyan-100 text-cyan-700"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  <Users className="w-4 h-4 me-2" />
-                  User Management
-                </button>
-                <button
-                  type="button"
+                />
+                <SidebarButton
+                  icon={LifeBuoy}
+                  label="Support"
+                  active={activeView === "support"}
+                  badge={supportOpenCount}
                   onClick={() => setActiveView("support")}
-                  className={`w-full inline-flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeView === "support"
-                      ? "bg-cyan-100 text-cyan-700"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  <span className="inline-flex items-center">
-                    <LifeBuoy className="w-4 h-4 me-2" />
-                    Support
-                  </span>
-                  {supportOpenCount > 0 && (
-                    <span className="inline-flex items-center px-1.5 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-700">
-                      {supportOpenCount}
-                    </span>
-                  )}
-                </button>
+                />
               </nav>
             </div>
           </aside>
@@ -313,49 +287,43 @@ const AdminDashboard: React.FC = () => {
                 {/* =====================================================
                   * Summary cards
                  ======================================================*/}
-                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-2 xl:grid-cols-4 gap-0 mb-6 bg-cyan-600 text-white box-shadow rounded-xl">
                   {/* New users (today) */}
-                  <div className="bg-white rounded-lg shadow p-4">
-                    <h3 className="text-xs font-medium text-gray-600">
-                      New Users (Today)
-                    </h3>
-                    <p className="text-xl font-bold text-gray-700 mt-2">
+                  <div className="p-4 xl:p-6 text-center border-r border-b border-white/30 xl:border-b-0">
+                    <h3 className="text-xs font-medium">New Users (Today)</h3>
+                    <p className="text-2xl lg:text-3xl font-bold mt-2">
                       {todayNewUsers}
                     </p>
                   </div>
 
                   {/* Online users */}
-                  <div className="bg-white rounded-lg shadow p-4">
-                    <h3 className="text-xs font-medium text-gray-600 flex items-center">
+                  <div className="p-4 xl:p-6 text-center border-b border-white/30 xl:border-r xl:border-b-0">
+                    <h3 className="text-xs font-medium flex items-center justify-center">
                       Online Users
                       <span className="relative flex h-2 w-2 ml-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
                       </span>
                     </h3>
-                    <p className="text-xl font-bold text-gray-700 mt-2">
+                    <p className="text-2xl lg:text-3xl font-bold mt-2">
                       {onlineCount}
                     </p>
                   </div>
 
                   {/* Total users */}
-                  <div className="bg-white rounded-lg shadow p-4">
-                    <h3 className="text-xs font-medium text-gray-600">
-                      Total Users
-                    </h3>
-                    <p className="text-xl font-bold text-gray-700 mt-2">
+                  <div className="p-4 xl:p-6 text-center border-r border-white/30 xl:border-b-0">
+                    <h3 className="text-xs font-medium">Total Users</h3>
+                    <p className="text-2xl lg:text-3xl font-bold mt-2">
                       {totalUsers}
                     </p>
                   </div>
 
                   {/* Best performing feature */}
-                  <div className="bg-white rounded-lg shadow p-4">
-                    <h3 className="text-xs font-medium text-gray-600">
+                  <div className="p-4 xl:p-6 text-center xl:border-l border-white/30">
+                    <h3 className="text-xs font-medium">
                       Best Performing Feature
                     </h3>
-                    <p
-                      className="text-xl font-bold w-full py-2 rounded text-cyan-600"
-                    >
+                    <p className="text-2xl font-bold w-full py-2 rounded">
                       {bestFeatureToday === "resume-builder"
                         ? "Resume Builder"
                         : "ATS Check"}
@@ -366,7 +334,7 @@ const AdminDashboard: React.FC = () => {
                 {/* =====================================================
                   * User activity chart
                  ======================================================*/}
-                <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm p-4 md:p-6 mb-6">
+                <div className="w-full bg-white border border-gray-200 rounded-xl box-shadow p-4 md:p-6 mb-6 text-">
                   {/* Header */}
                   <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200">
                     <div className="flex items-center">
@@ -424,24 +392,42 @@ const AdminDashboard: React.FC = () => {
                   <div id="column-chart">
                     {growthLoading && !growth ? (
                       <div className="flex items-center justify-center h-40 md:h-48">
-                        <div className="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
                       </div>
                     ) : (
                       <div className="overflow-x-auto scrollbar-hide">
                         <div className="min-w-[480px] pt-8">
                           <div className="relative h-40 md:h-64 border-b border-gray-200">
                             {/* Y-axis scale: 50 activities = full height */}
-                            <div className="absolute inset-y-0 left-0 flex flex-col justify-between text-[10px] leading-none text-gray-400 pointer-events-none select-none">
+                            <div className="absolute inset-y-0 left-0 pointer-events-none select-none">
                               {[50, 40, 30, 20, 10, 0].map((v) => (
-                                <span key={v}>{v}</span>
+                                <span
+                                  key={v}
+                                  className={`absolute text-[10px] leading-none text-gray-400 ${
+                                    v === 0
+                                      ? "-translate-y-full"
+                                      : "-translate-y-1/2"
+                                  }`}
+                                  style={{ top: `${100 - v * 2}%` }}
+                                >
+                                  {v}
+                                </span>
                               ))}
                             </div>
-                            {/* Horizontal gridlines */}
-                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                              {[0, 1, 2, 3, 4].map((n) => (
+                            {/* Horizontal gridlines: major every 10, minor every 5 */}
+                            <div className="absolute inset-0 pointer-events-none">
+                              {[50, 40, 30, 20, 10].map((v) => (
                                 <div
-                                  key={n}
-                                  className="w-full border-t border-dashed border-gray-100"
+                                  key={`major-${v}`}
+                                  className="absolute left-7 right-0 border-t border-gray-300"
+                                  style={{ top: `${100 - v * 2}%` }}
+                                />
+                              ))}
+                              {[45, 35, 25, 15, 5].map((v) => (
+                                <div
+                                  key={`minor-${v}`}
+                                  className="absolute left-7 right-0 border-t border-dashed border-gray-200"
+                                  style={{ top: `${100 - v * 2}%` }}
                                 />
                               ))}
                             </div>
@@ -509,7 +495,11 @@ const AdminDashboard: React.FC = () => {
                           className="text-sm font-medium text-gray-600 hover:text-gray-900 text-center inline-flex items-center"
                         >
                           {periodLabel}
-                          <ChevronDown className="w-4 h-4 ms-1.5" />
+                          <ChevronDown
+                            className={`w-4 h-4 ms-1.5 transition-transform duration-200 ${
+                              dropdownOpen ? "rotate-180" : ""
+                            }`}
+                          />
                         </button>
                         {dropdownOpen && (
                           <>
@@ -517,7 +507,7 @@ const AdminDashboard: React.FC = () => {
                               className="fixed inset-0 z-10"
                               onClick={() => setDropdownOpen(false)}
                             />
-                            <div className="absolute z-20 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg">
+                            <div className="absolute z-20 bottom-full mb-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg">
                               <ul className="p-2 text-sm text-gray-700 font-medium">
                                 {PERIOD_OPTIONS.map((opt) => (
                                   <li key={opt.value}>
@@ -529,7 +519,7 @@ const AdminDashboard: React.FC = () => {
                                       }}
                                       className={`inline-flex items-center w-full p-2 rounded hover:bg-gray-100 ${
                                         period === opt.value
-                                          ? "text-emerald-600"
+                                          ? "text-cyan-600"
                                           : "text-gray-700"
                                       }`}
                                     >

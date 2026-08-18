@@ -149,7 +149,7 @@ export default function ResumeBuilderSection({
                           }
                         }}
                         title="Edit section title"
-                        className="text-gray-400 hover:text-emerald-600 transition-colors cursor-pointer flex-shrink-0 opacity-0 group-hover/title:opacity-100 focus-visible:opacity-100"
+                        className="text-gray-400 hover:text-cyan-600 transition-colors cursor-pointer flex-shrink-0 opacity-0 group-hover/title:opacity-100 focus-visible:opacity-100"
                       >
                         <Pencil className="w-3.5 h-3.5" />
                       </span>

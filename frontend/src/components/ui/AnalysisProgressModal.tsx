@@ -96,7 +96,7 @@ export default function AnalysisProgressModal({
 
             <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden mb-6">
               <motion.div
-                className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
+                className="h-full bg-gradient-to-r from-green-500 to-cyan-500"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.5 }}

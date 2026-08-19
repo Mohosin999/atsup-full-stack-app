@@ -12,21 +12,30 @@ import { AtsScoreHistory } from "../types";
 import AtsScoreResult from "../components/ats-result/AtsScoreResult";
 import ResumeScanForm from "../components/ats-scan/ResumeScanForm";
 import { useAppSelector } from "@/hooks";
+import { clearScanDraft, getScanDraft } from "../utils/scanDraft";
 
 export default function AtsScorePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useAppSelector((state) => state.auth.user);
-  const [result, setResult] = useState<AtsScoreHistory | null>(
-    (location.state as { result?: AtsScoreHistory } | null)?.result ?? null,
+  const pendingDraft = getScanDraft();
+  const locationState = location.state as
+    | { result?: AtsScoreHistory; initialResumeFile?: File; initialResumeName?: string }
+    | null;
+  const stateFile = locationState?.initialResumeFile ?? null;
+  const stateName = locationState?.initialResumeName ?? "";
+
+  const [result] = useState<AtsScoreHistory | null>(
+    locationState?.result ?? null,
   );
-  const [initialResumeFile, setInitialResumeFile] = useState<File | null>(
-    (location.state as { initialResumeFile?: File } | null)
-      ?.initialResumeFile ?? null,
+  const [initialResumeFile] = useState<File | null>(
+    stateFile ?? pendingDraft?.resumeFile ?? null,
   );
-  const [initialResumeName, setInitialResumeName] = useState<string>(
-    (location.state as { initialResumeName?: string } | null)
-      ?.initialResumeName ?? "",
+  const [initialResumeName] = useState<string>(
+    stateName || pendingDraft?.resumeName || "",
+  );
+  const [initialJobDescription] = useState<string>(
+    pendingDraft?.jobDescription || "",
   );
   const [history, setHistory] = useState<AtsScoreHistory[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
@@ -36,20 +45,14 @@ export default function AtsScorePage() {
   const [clearAllOpen, setClearAllOpen] = useState(false);
 
   useEffect(() => {
-    const state = location.state as
-      | { result?: AtsScoreHistory; initialResumeFile?: File; initialResumeName?: string }
-      | null;
-    if (state?.result) {
-      setResult(state.result);
-    }
-    if (state?.initialResumeFile) {
-      setInitialResumeFile(state.initialResumeFile);
-      setInitialResumeName(state.initialResumeName ?? state.initialResumeFile.name);
-    }
-    if (state?.result || state?.initialResumeFile) {
+    clearScanDraft();
+  }, []);
+
+  useEffect(() => {
+    if (locationState?.result || locationState?.initialResumeFile) {
       navigate(location.pathname, { replace: true, state: null });
     }
-  }, [location.state, navigate, location.pathname]);
+  }, [locationState, navigate, location.pathname]);
 
   const fetchHistory = async (pageNum: number = 1) => {
     try {
@@ -137,6 +140,7 @@ export default function AtsScorePage() {
           <ResumeScanForm
             initialResumeFile={initialResumeFile}
             initialResumeName={initialResumeName}
+            initialJobDescription={initialJobDescription}
           />
         </motion.div>
 

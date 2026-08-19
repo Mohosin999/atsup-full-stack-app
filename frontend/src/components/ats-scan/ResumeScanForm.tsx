@@ -8,10 +8,12 @@ import AnalysisProgressModal, {
 } from "../ui/AnalysisProgressModal";
 import ScanActions from "./ScanActions";
 import { AtsScoreHistory, ResumeContent } from "../../types";
+import { demoJds } from "../../constants/demoJds";
 import { getAiScanStatus } from "../../utils/aiScan";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setUserAiScanState } from "@/store/slices/authSlice";
 import { goToLogin } from "../../utils/authGuard";
+import { saveScanDraft } from "../../utils/scanDraft";
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: "resume", label: "Resume Analysis" },
@@ -30,11 +32,13 @@ const PIPELINE_MESSAGES = [
 interface ResumeScanFormProps {
   initialResumeFile?: File | null;
   initialResumeName?: string;
+  initialJobDescription?: string;
 }
 
 export default function ResumeScanForm({
   initialResumeFile,
   initialResumeName,
+  initialJobDescription,
 }: ResumeScanFormProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -43,7 +47,10 @@ export default function ResumeScanForm({
   const [resumeFile, setResumeFile] = useState<File | null>(
     initialResumeFile || null,
   );
-  const [jobDescription, setJobDescription] = useState("");
+  const [jobDescription, setJobDescription] = useState(
+    initialJobDescription || "",
+  );
+  const [demoJdSelected, setDemoJdSelected] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [pipelineOpen, setPipelineOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
@@ -60,8 +67,11 @@ export default function ResumeScanForm({
       window.setTimeout(resolve, delay);
     });
 
-  const validate = () => {
+  const validate = async () => {
     if (!user) {
+      if (resumeFile) {
+        await saveScanDraft(resumeFile, resumeName, jobDescription);
+      }
       goToLogin(navigate, "/ats-score");
       return false;
     }
@@ -79,7 +89,7 @@ export default function ResumeScanForm({
   };
 
   const handleScan = async () => {
-    if (!validate()) return;
+    if (!(await validate())) return;
 
     setPipelineOpen(true);
     setAnalyzing(true);
@@ -156,7 +166,7 @@ export default function ResumeScanForm({
   };
 
   const handleAiScan = async () => {
-    if (!validate()) return;
+    if (!(await validate())) return;
 
     if (!aiScan.available) {
       toast.error("No credit available, wait for next day");
@@ -296,19 +306,45 @@ export default function ResumeScanForm({
 
         {/* RIGHT: Job Description */}
         <div className="flex flex-col">
-          <div className="flex items-center gap-3 mb-4">
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription.trim().length >= 20 ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
-            >
-              {jobDescription.trim().length >= 20 ? (
-                <CheckCircle className="w-5 h-5" />
-              ) : (
-                "2"
-              )}
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div className="flex items-center gap-3">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription.trim().length >= 20 ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
+              >
+                {jobDescription.trim().length >= 20 ? (
+                  <CheckCircle className="w-5 h-5" />
+                ) : (
+                  "2"
+                )}
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Paste Job Description
+              </h2>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">
-              Paste Job Description
-            </h2>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500 whitespace-nowrap">
+                Demo JD
+              </span>
+              <select
+                value={demoJdSelected}
+                onChange={(e) => {
+                  const selected = demoJds.find(
+                    (d) => d.label === e.target.value,
+                  );
+                  setDemoJdSelected(e.target.value);
+                  if (selected) setJobDescription(selected.description);
+                }}
+                className="text-sm bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">Select role</option>
+                {demoJds.map((d) => (
+                  <option key={d.label} value={d.label}>
+                    {d.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <textarea

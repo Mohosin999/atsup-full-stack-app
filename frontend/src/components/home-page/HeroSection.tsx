@@ -12,7 +12,7 @@ import {
   Shield,
   Zap,
 } from "lucide-react";
-import HeroCards from "./HeroCards";
+import HeroUploadBox from "./HeroUploadBox";
 import Wrapper from "../Wrapper";
 
 interface HeroSectionProps {
@@ -31,18 +31,6 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-left"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-100 to-cyan-100 rounded-full text-green-700 text-sm font-semibold mb-8 border border-green-200"
-            >
-              <Sparkles className="w-4 h-4" /> Powered by AI
-              <span className="flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              </span>
-            </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -50,7 +38,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
               className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
             >
               Turning Resume into{" "}
-              <span className="text-green-600">Opportunities with AI</span>
+              <span className="text-cyan-600">Opportunities with AI</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 30 }}
@@ -92,7 +80,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 1 + i * 0.1 }}
-                    className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-cyan-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold"
+                    className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-cyan-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold"
                   >
                     <Users className="w-5 h-5" />
                   </motion.div>
@@ -121,12 +109,12 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
                   transition={{ delay: 1.3 + 0.1 }}
                   className="flex items-center gap-2 text-sm text-gray-700"
                 >
-                  <item.icon className="w-4 h-4 text-green-500" /> {item.text}
+                  <item.icon className="w-4 h-4 text-cyan-500" /> {item.text}
                 </motion.div>
               ))}
             </motion.div>
           </motion.div>
-          <HeroCards />
+          <HeroUploadBox />
         </div>
       </Wrapper>
     </section>

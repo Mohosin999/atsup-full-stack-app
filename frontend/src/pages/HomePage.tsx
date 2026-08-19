@@ -11,7 +11,6 @@ import FloatingOrbs from "../components/home-page/FloatingOrbs";
 import HeroSection from "../components/home-page/HeroSection";
 import StatsSection from "../components/home-page/StatsSection";
 import FeaturesSection from "../components/home-page/FeaturesSection";
-import ResumeScanSection from "../components/home-page/ResumeScanSection";
 import HowItWorksSection from "../components/home-page/HowItWorksSection";
 import TestimonialsSection from "../components/home-page/TestimonialsSection";
 import CTASection from "../components/home-page/CTASection";
@@ -29,14 +28,13 @@ export default function HomePage() {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 overflow-hidden relative">
-        <FloatingOrbs />
+        {/* <FloatingOrbs /> */}
         <main className="relative z-10">
           <HeroSection
             user={undefined}
             onLogout={() => setShowLogoutConfirm(true)}
           />
           <StatsSection />
-          <ResumeScanSection />
           <FeaturesSection features={allFeatures} />
           <HowItWorksSection steps={analysisSteps} />
           <TestimonialsSection testimonials={testimonials} />

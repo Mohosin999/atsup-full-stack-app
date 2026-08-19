@@ -20,6 +20,14 @@ export default function AtsScorePage() {
   const [result, setResult] = useState<AtsScoreHistory | null>(
     (location.state as { result?: AtsScoreHistory } | null)?.result ?? null,
   );
+  const [initialResumeFile, setInitialResumeFile] = useState<File | null>(
+    (location.state as { initialResumeFile?: File } | null)
+      ?.initialResumeFile ?? null,
+  );
+  const [initialResumeName, setInitialResumeName] = useState<string>(
+    (location.state as { initialResumeName?: string } | null)
+      ?.initialResumeName ?? "",
+  );
   const [history, setHistory] = useState<AtsScoreHistory[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [historyPage, setHistoryPage] = useState(1);
@@ -28,10 +36,17 @@ export default function AtsScorePage() {
   const [clearAllOpen, setClearAllOpen] = useState(false);
 
   useEffect(() => {
-    const stateResult = (location.state as { result?: AtsScoreHistory } | null)
-      ?.result;
-    if (stateResult) {
-      setResult(stateResult);
+    const state = location.state as
+      | { result?: AtsScoreHistory; initialResumeFile?: File; initialResumeName?: string }
+      | null;
+    if (state?.result) {
+      setResult(state.result);
+    }
+    if (state?.initialResumeFile) {
+      setInitialResumeFile(state.initialResumeFile);
+      setInitialResumeName(state.initialResumeName ?? state.initialResumeFile.name);
+    }
+    if (state?.result || state?.initialResumeFile) {
       navigate(location.pathname, { replace: true, state: null });
     }
   }, [location.state, navigate, location.pathname]);
@@ -119,7 +134,10 @@ export default function AtsScorePage() {
           transition={{ delay: 0.1 }}
           className="bg-white rounded-lg p-6 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
         >
-          <ResumeScanForm />
+          <ResumeScanForm
+            initialResumeFile={initialResumeFile}
+            initialResumeName={initialResumeName}
+          />
         </motion.div>
 
         {result && (

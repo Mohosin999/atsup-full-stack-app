@@ -60,6 +60,21 @@ export interface GrowthData {
   change: number;
 }
 
+// GMT+6 (Bangladesh) has no daylight saving, so a fixed offset is safe.
+const TZ_OFFSET_MS = 6 * 60 * 60 * 1000;
+
+// Format a Date's GMT+6 wall-clock time as "YYYY-MM-DDTHH".
+const toGmt6HourKey = (date: Date) =>
+  new Date(date.getTime() + TZ_OFFSET_MS).toISOString().slice(0, 13);
+
+// Format a Date's GMT+6 wall-clock date as "YYYY-MM-DD".
+const toGmt6DayKey = (date: Date) =>
+  new Date(date.getTime() + TZ_OFFSET_MS).toISOString().slice(0, 10);
+
+// Build a Date (UTC instant) from GMT+6 wall-clock components.
+const fromGmt6 = (year: number, month: number, day: number, hour = 0) =>
+  new Date(Date.UTC(year, month, day, hour) - TZ_OFFSET_MS);
+
 const buildBuckets = (start: Date, end: Date, hourly: boolean) => {
   const keys: string[] = [];
   const labels: string[] = [];
@@ -67,15 +82,15 @@ const buildBuckets = (start: Date, end: Date, hourly: boolean) => {
 
   while (cursor < end) {
     if (hourly) {
-      const key = cursor.toISOString().slice(0, 13); // YYYY-MM-DDTHH
+      const key = toGmt6HourKey(cursor); // YYYY-MM-DDTHH in GMT+6
       keys.push(key);
       labels.push(`${key.slice(11)}:00`);
-      cursor.setHours(cursor.getHours() + 1);
+      cursor.setUTCHours(cursor.getUTCHours() + 1);
     } else {
-      const key = cursor.toISOString().split('T')[0]; // YYYY-MM-DD
+      const key = toGmt6DayKey(cursor); // YYYY-MM-DD in GMT+6
       keys.push(key);
       labels.push(`${key.slice(8)}/${key.slice(5, 7)}`);
-      cursor.setDate(cursor.getDate() + 1);
+      cursor.setUTCDate(cursor.getUTCDate() + 1);
     }
   }
 
@@ -102,7 +117,7 @@ const fetchSeries = async (
 
   records.forEach((record: any) => {
     const t = new Date(record[dateField]);
-    const key = hourly ? t.toISOString().slice(0, 13) : t.toISOString().split('T')[0];
+    const key = hourly ? toGmt6HourKey(t) : toGmt6DayKey(t);
     if (counts[key] !== undefined) counts[key]++;
   });
 
@@ -113,31 +128,33 @@ const sum = (values: number[]) => values.reduce((a, b) => a + b, 0);
 
 const getWindow = (period: GrowthPeriod) => {
   const now = new Date();
-  let start = new Date(now);
-  let end = new Date(now);
+  const shifted = new Date(now.getTime() + TZ_OFFSET_MS);
+  const year = shifted.getUTCFullYear();
+  const month = shifted.getUTCMonth();
+  const day = shifted.getUTCDate();
+
+  let start: Date;
+  let end: Date;
   let hourly = false;
 
   if (period === 'today') {
-    start.setHours(0, 0, 0, 0);
-    end = new Date(start);
-    end.setDate(end.getDate() + 1);
+    start = fromGmt6(year, month, day);
+    end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
     hourly = true;
   } else if (period === 'yesterday') {
-    start.setDate(start.getDate() - 1);
-    start.setHours(0, 0, 0, 0);
-    end = new Date(start);
-    end.setDate(end.getDate() + 1);
+    start = fromGmt6(year, month, day - 1);
+    end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
     hourly = true;
   } else if (period === '7d') {
-    start.setDate(start.getDate() - 6);
-    start.setHours(0, 0, 0, 0);
+    start = fromGmt6(year, month, day - 6);
+    end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
   } else if (period === '14d') {
-    start.setDate(start.getDate() - 13);
-    start.setHours(0, 0, 0, 0);
+    start = fromGmt6(year, month, day - 13);
+    end = new Date(start.getTime() + 14 * 24 * 60 * 60 * 1000);
   } else {
     // 30d
-    start.setDate(start.getDate() - 29);
-    start.setHours(0, 0, 0, 0);
+    start = fromGmt6(year, month, day - 29);
+    end = new Date(start.getTime() + 30 * 24 * 60 * 60 * 1000);
   }
 
   const length = end.getTime() - start.getTime();
@@ -183,29 +200,25 @@ export const getGrowthData = async (period: GrowthPeriod): Promise<GrowthData> =
 export const getResumeBuilderUsersToday = async () => {
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
-  const groups = await prisma.resume.groupBy({
-    by: ['userId'],
+  return prisma.resume.count({
     where: {
       createdAt: {
         gte: startOfToday,
       },
     },
   });
-  return groups.length;
 };
 
 export const getATSCheckUsersToday = async () => {
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
-  const groups = await prisma.atsScoreHistory.groupBy({
-    by: ['userId'],
+  return prisma.atsScoreHistory.count({
     where: {
       createdAt: {
         gte: startOfToday,
       },
     },
   });
-  return groups.length;
 };
 
 export const getBestFeatureToday = async () => {

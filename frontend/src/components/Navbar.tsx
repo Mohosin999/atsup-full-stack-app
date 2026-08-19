@@ -50,11 +50,11 @@ export default function Navbar() {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-white/80 backdrop-blur-md box-shadow">
         <Wrapper>
-          <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center gap-2">
-              <img src="/favicon.svg" alt="CVCoach" className="w-8 h-8" />
+          <div className="flex items-center justify-between h-14">
+            <Link to="/" className="flex items-center gap-2 font-mono">
+              <img src="/favicon.png" alt="CVCoach" className="w-10 h-8" />
               <span className="text-xl font-bold text-gray-900">
-                CV<span className="text-primary">Coach</span>
+                ATS<span className="text-cyan-500">Up</span>
               </span>
             </Link>
             <div className="flex items-center gap-4">

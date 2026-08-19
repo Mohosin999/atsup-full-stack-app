@@ -1,10 +1,6 @@
-/* ===================================
-Features Section Component
-=================================== */
 import { motion } from "framer-motion";
-import { Zap } from "lucide-react";
-import { fadeInUp, staggerContainer } from "../../animations";
-import Wrapper from "../Wrapper";
+import { fadeInUp } from "../../animations";
+import WrapperHome from "../WrapperHome";
 
 interface Feature {
   icon: React.ElementType;
@@ -18,52 +14,29 @@ interface FeaturesSectionProps {
 
 export default function FeaturesSection({ features }: FeaturesSectionProps) {
   return (
-    <section className="py-24">
-      <Wrapper>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ type: "spring", delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full text-green-700 text-sm font-semibold mb-4 border border-green-200"
-          >
-            <Zap className="w-4 h-4" /> Powerful Features
-          </motion.div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">
-            Why Choose CV
-            <span className="bg-gradient-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">
-              Coach?
-            </span>
+    <section className="pb-24">
+      <WrapperHome>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-semibold text-gray-800">
+            Why Choose ATS
+            <span className="text-cyan-500">Up</span>?
           </h2>
-          <p className="mt-4 text-base md:text-lg text-gray-700 max-w-2xl mx-auto">
-            Everything you need to analyze, create, and optimize your resume for
-            success
+          <p className="mt-4 text-base md:text-lg text-gray-700 max-w-4xl mx-auto">
+            There are many ATS-checking tools available in the market, but we’re giving you free, unlimited access to some of our features — so you can optimize your resume without any limits.
           </p>
-        </motion.div>
-        <motion.div
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature) => (
             <motion.div
               key={feature.title}
               variants={fadeInUp}
-              whileHover={{ y: -10, transition: { duration: 0.3 } }}
-              className="group relative bg-white/70 backdrop-blur rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:shadow-green-500/20 border border-gray-200 hover:border-green-600 transition-all duration-300 overflow-hidden"
+              whileHover={{ y: -10, transition: { duration: 0.1 } }}
+              className="group relative bg-white/70 backdrop-blur rounded-3xl p-8 shadow-md hover:shadow-lg hover:shadow-cyan-500/90 border border-gray-200 transition-all duration-300 overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-green-500 via-cyan-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-cyan-500 via-cyan-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30 group-hover:scale-110 transition-transform duration-300">
                   <feature.icon className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
@@ -75,8 +48,8 @@ export default function FeaturesSection({ features }: FeaturesSectionProps) {
               </div>
             </motion.div>
           ))}
-        </motion.div>
-      </Wrapper>
+        </div>
+      </WrapperHome>
     </section>
   );
 }

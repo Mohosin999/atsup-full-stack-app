@@ -39,16 +39,16 @@ body {
     @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-cyan-800 via-cyan-700 to-cyan-600 text-white hover:from-cyan-700 hover:to-cyan-500 shadow-lg shadow-cyan-700/30;
   }
 
-  .gradient-btn-lg {
-    @apply inline-flex items-center justify-center px-6 py-3 font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-cyan-800 via-cyan-700 to-cyan-600 text-white hover:from-cyan-700 hover:to-cyan-500 shadow-lg shadow-cyan-700/30 text-lg;
-  }
-
+  
   .gradient-btn-sm {
     @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-cyan-800 via-cyan-700 to-cyan-600 text-white hover:from-cyan-700 hover:to-cyan-500 shadow-lg shadow-cyan-700/30;
   }
-
+  
+  .gradient-btn-lg {
+    @apply inline-flex items-center justify-center px-6 py-2 font-semibold rounded-lg transition-all duration-200 focus:outline-none bg-cyan-600 text-white text-lg;
+  }
   .gradient-btn-outline {
-    @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 focus:outline-none border-2 border-cyan-600 text-cyan-600 hover:bg-cyan-600/10 hover:text-cyan-700;
+    @apply inline-flex items-center justify-center px-6 py-2 font-semibold rounded-lg transition-all duration-200 focus:outline-none border-2 border-cyan-600 text-cyan-600 hover:bg-cyan-600/10 hover:text-cyan-700;
   }
 
   .input {

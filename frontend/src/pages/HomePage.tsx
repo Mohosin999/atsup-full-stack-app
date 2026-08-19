@@ -34,7 +34,7 @@ export default function HomePage() {
             user={undefined}
             onLogout={() => setShowLogoutConfirm(true)}
           />
-          <StatsSection />
+          {/* <StatsSection /> */}
           <FeaturesSection features={allFeatures} />
           <HowItWorksSection steps={analysisSteps} />
           <TestimonialsSection testimonials={testimonials} />

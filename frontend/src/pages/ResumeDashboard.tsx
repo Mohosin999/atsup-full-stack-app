@@ -1,8 +1,4 @@
-/* ===================================
-Resume Dashboard Page
-Create a new resume / upcoming upload /
-list of previously built resumes.
-=================================== */
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -45,6 +41,7 @@ export default function ResumeDashboard() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [clearAllOpen, setClearAllOpen] = useState(false);
 
   const fetchResumes = async (pageNum: number = 1) => {
     try {
@@ -98,6 +95,19 @@ export default function ResumeDashboard() {
     } catch {
       toast.error("Failed to duplicate resume");
     }
+  };
+
+  const handleClearAll = async () => {
+    try {
+      await resumeApi.deleteAll();
+      toast.success("All resumes deleted");
+      setResumes([]);
+      setPage(1);
+      setTotalPages(1);
+    } catch {
+      toast.error("Failed to delete resumes");
+    }
+    setClearAllOpen(false);
   };
 
   const getResumeTitle = (resume: ResumeListItem) =>
@@ -217,9 +227,18 @@ export default function ResumeDashboard() {
               <h2 className="text-xl font-bold text-gray-900">
                 Previous Resumes
               </h2>
-              <span className="text-sm text-gray-500">
-                {totalPages} resume{totalPages === 1 ? "" : "s"}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-500">
+                  {totalPages} resume{totalPages === 1 ? "" : "s"}
+                </span>
+                <button
+                  onClick={() => setClearAllOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete All
+                </button>
+              </div>
             </div>
 
             <div
@@ -331,6 +350,17 @@ export default function ResumeDashboard() {
         cancelText="Cancel"
         onConfirm={() => deleteId && handleDelete(deleteId)}
         onCancel={() => setDeleteId(null)}
+        confirmClassName="bg-red-500 hover:bg-red-600"
+      />
+
+      <ConfirmModal
+        isOpen={clearAllOpen}
+        title="Delete All Resumes"
+        message="This will permanently delete all your resumes. This action cannot be undone."
+        confirmText="Delete All"
+        cancelText="Cancel"
+        onConfirm={handleClearAll}
+        onCancel={() => setClearAllOpen(false)}
         confirmClassName="bg-red-500 hover:bg-red-600"
       />
     </div>

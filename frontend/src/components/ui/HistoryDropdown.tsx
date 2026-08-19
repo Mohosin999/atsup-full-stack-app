@@ -18,7 +18,7 @@ export default function HistoryDropdown() {
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 pt-2 w-72 z-50">
+        <div className="absolute top-full right-0 pt-2 w-64 z-50">
           <div className="bg-white rounded-lg shadow-lg border border-gray-200 py-2">
             <Link
               to="/scan-history"

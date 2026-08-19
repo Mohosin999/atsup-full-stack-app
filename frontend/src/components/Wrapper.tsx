@@ -4,9 +4,16 @@ interface WrapperProps {
   className?: string;
 }
 
-const Wrapper = ({ children, maxWidth = "w-full", className }: WrapperProps) => {
+const Wrapper = ({
+  children,
+  maxWidth = "w-full",
+  className,
+}: WrapperProps) => {
   return (
-    <div className={`${maxWidth} mx-auto px-4 lg:px-16 ${className}`}>
+    // <div className={`${maxWidth} mx-auto px-4 lg:px-16 ${className}`}>
+    <div
+      className={`${maxWidth} mx-auto px-4 lg:px-24 xl:px-32 2xl:px-40 ${className}`}
+    >
       {children}
     </div>
   );

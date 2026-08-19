@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { fadeInUp } from "../../animations";
-import WrapperHome from "../WrapperHome";
+import Wrapper from "../Wrapper";
 
 interface Feature {
   icon: React.ElementType;
@@ -15,7 +15,7 @@ interface FeaturesSectionProps {
 export default function FeaturesSection({ features }: FeaturesSectionProps) {
   return (
     <section className="pb-24">
-      <WrapperHome>
+      <Wrapper>
         <div className="text-center mb-16">
           <h2 className="text-4xl font-semibold text-gray-800">
             Why Choose ATS
@@ -49,7 +49,7 @@ export default function FeaturesSection({ features }: FeaturesSectionProps) {
             </motion.div>
           ))}
         </div>
-      </WrapperHome>
+      </Wrapper>
     </section>
   );
 }

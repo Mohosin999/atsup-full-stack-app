@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ChevronRight, FilePlus2, Hammer } from "lucide-react";
-import WrapperHome from "../WrapperHome";
+import Wrapper from "../Wrapper";
 
 interface HeroSectionProps {
   user: any;
@@ -10,7 +10,7 @@ interface HeroSectionProps {
 export default function HeroSection({ user, onLogout }: HeroSectionProps) {
   return (
     <section className="pt-28 md:pt-32 lg:pt-10 xl:pt-20 2xl:pt-24 pb-24 text-center lg:text-start">
-      <WrapperHome>
+      <Wrapper>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-10 items-center">
           {/* Left Content - 2/3 */}
           <div className="lg:col-span-2 text-center lg:text-start">
@@ -67,7 +67,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
             />
           </div>
         </div>
-      </WrapperHome>
+      </Wrapper>
     </section>
   );
 }

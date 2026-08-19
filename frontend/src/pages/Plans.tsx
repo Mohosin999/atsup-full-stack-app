@@ -4,6 +4,7 @@ import {
   Check,
   Star,
 } from "lucide-react";
+import { useAppSelector } from "../hooks/redux";
 import BackButton from "../components/ui/BackButton";
 import Wrapper from "../components/Wrapper";
 
@@ -63,8 +64,13 @@ const plans: Plan[] = [
 
 export default function Plans() {
   const navigate = useNavigate();
+  const { user } = useAppSelector((state) => state.auth);
 
   const handleSelectPlan = (planId: string) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     if (planId === "free") {
       navigate("/dashboard");
     }
@@ -159,9 +165,11 @@ export default function Plans() {
                         : "bg-gray-100 dark:bg-gray-100 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-200"
                     } disabled:opacity-60 disabled:cursor-not-allowed`}
                   >
-                    {plan.price === 0
-                      ? "Current Plan"
-                      : `Upgrade to ${plan.name}`}
+                    {!user && plan.price === 0
+                      ? "Select"
+                      : plan.price === 0
+                        ? "Current Plan"
+                        : `Upgrade to ${plan.name}`}
                   </button>
                   {plan.price > 0 && (
                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-gray-900 text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">

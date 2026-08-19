@@ -1,6 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Menu } from "lucide-react";
+
 import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import { logoutUser } from "../store/slices/authSlice";
@@ -10,6 +10,7 @@ import ProfileMenu from "./ProfileMenu";
 import MobileMenuButton from "./MobileMenuButton";
 import MobileMenu from "./MobileMenu";
 import AuthButtons from "./ui/AuthButtons";
+import HistoryDropdown from "./ui/HistoryDropdown";
 import Wrapper from "./Wrapper";
 
 interface NavLink {
@@ -18,14 +19,19 @@ interface NavLink {
 }
 
 const getNavLinks = (role?: string): NavLink[] => [
-  ...(role
+  ...(role === "admin"
     ? [
         {
-          path: role === "admin" ? "/admin-dashboard" : "/dashboard",
+          path: "/admin-dashboard",
           label: "Dashboard",
         },
       ]
-    : []),
+    : [
+        {
+          path: "/dashboard",
+          label: "Dashboard",
+        },
+      ]),
     { path: "/ats-scan", label: "ATS Scan" },
   { path: "/resume-builder", label: "Resume Builder" },
 ];
@@ -34,6 +40,7 @@ export default function Navbar() {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -49,18 +56,32 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-white/80 backdrop-blur-md box-shadow">
         <Wrapper>
           <div className="flex items-center justify-between h-14">
-            {/* Logo with app name */}
-            <Link to="/" className="flex items-center gap-2 font-mono">
+            {/* Left: Logo */}
+            <Link to="/" className="flex items-center gap-2 font-mono shrink-0">
               <img src="/favicon.png" alt="CVCoach" className="w-10 h-8" />
               <span className="text-xl font-bold text-gray-900">
                 ATS<span className="text-cyan-500">Up</span>
               </span>
             </Link>
 
-            <div className="flex items-center gap-4">
-              {/* Navigation links for large screens */}
+            {/* Center: Navigation links + History + Pricing */}
+            <div className="hidden lg:flex items-center justify-center flex-1 gap-2">
               <NavLinks navLinks={getNavLinks(user?.role)} />
+              {user && <HistoryDropdown />}
+              <Link
+                to="/plans"
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  location.pathname === "/plans"
+                    ? "bg-cyan-500/20 text-cyan-600"
+                    : "text-gray-700 hover:text-cyan-600"
+                }`}
+              >
+                Pricing
+              </Link>
+            </div>
 
+            {/* Right: Auth / Profile */}
+            <div className="flex items-center gap-3 shrink-0">
               {user ? (
                 <>
                   <ProfileMenu
@@ -69,8 +90,6 @@ export default function Navbar() {
                     setProfileMenuOpen={setProfileMenuOpen}
                     onLogout={() => setShowLogoutConfirm(true)}
                   />
-                  
-                  {/* Mobile menu button (only visible on small screens) */}
                   <MobileMenuButton
                     mobileMenuOpen={mobileMenuOpen}
                     setMobileMenuOpen={setMobileMenuOpen}
@@ -78,19 +97,9 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <div className="hidden md:flex items-center gap-4">
+                  <div className="hidden md:flex items-center">
                     <AuthButtons />
                   </div>
-                  {/* <button
-                    className="md:hidden"
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  >
-                    {mobileMenuOpen ? (
-                      <X className="w-6 h-6 text-gray-900" />
-                    ) : (
-                      <Menu className="w-6 h-6 text-gray-900" />
-                    )}
-                  </button> */}
                 </>
               )}
             </div>
@@ -126,6 +135,13 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+                <Link
+                  to="/plans"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Pricing
+                </Link>
               </div>
 
               <Link

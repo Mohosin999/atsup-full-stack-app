@@ -11,6 +11,8 @@ import Settings from "./pages/Settings";
 import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScore";
 import AtsScoreDetail from "./pages/AtsScoreDetail";
+import ScanHistory from "./pages/ScanHistory";
+import ResumeHistory from "./pages/ResumeHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ResumeDashboard from "./pages/ResumeDashboard";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
@@ -97,11 +99,7 @@ function App() {
         />
         <Route
           path="/plans"
-          element={
-            <PrivateRoute>
-              <Plans />
-            </PrivateRoute>
-          }
+          element={<Plans />}
         />
         <Route
           path="/ats-scan"
@@ -116,6 +114,22 @@ function App() {
           element={
             <PrivateRoute>
               <AtsScoreDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/scan-history"
+          element={
+            <PrivateRoute>
+              <ScanHistory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/resume-history"
+          element={
+            <PrivateRoute>
+              <ResumeHistory />
             </PrivateRoute>
           }
         />

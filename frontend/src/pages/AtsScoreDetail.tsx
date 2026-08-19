@@ -81,7 +81,7 @@ export default function AtsScoreDetail() {
             </p>
           </div>
           <button
-            onClick={() => navigate("/ats-score")}
+            onClick={() => navigate("/ats-scan")}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:border-gray-400 rounded-lg transition-colors w-fit"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -97,7 +97,7 @@ export default function AtsScoreDetail() {
           <div className="bg-white rounded-lg p-8 text-center">
             <p className="text-red-600 font-medium mb-4">{error}</p>
             <button
-              onClick={() => navigate("/ats-score")}
+              onClick={() => navigate("/ats-scan")}
               className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg transition-colors"
             >
               Go to ATS Score

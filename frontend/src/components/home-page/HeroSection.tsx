@@ -41,7 +41,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
               <Link
-                to="/ats-score"
+                to="/ats-scan"
                 className="group gradient-btn-lg text-sm xl:text-lg gap-2"
               >
                 Scan Your Resume for Free

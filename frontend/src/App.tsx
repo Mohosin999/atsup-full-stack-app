@@ -104,15 +104,15 @@ function App() {
           }
         />
         <Route
-          path="/ats-score"
+          path="/ats-scan"
           element={<AtsScore />}
         />
         <Route
           path="/ats-score-history"
-          element={<Navigate to="/ats-score" replace />}
+          element={<Navigate to="/ats-scan" replace />}
         />
         <Route
-          path="/ats-score/:id"
+          path="/ats-scan/:id"
           element={
             <PrivateRoute>
               <AtsScoreDetail />
@@ -120,13 +120,10 @@ function App() {
           }
         />
         <Route
-          path="/resumes"
+          path="/resume-builder"
           element={<ResumeDashboard />}
         />
-        <Route
-          path="/resume-builder"
-          element={<Navigate to="/resumes" replace />}
-        />
+
         <Route
           path="/resume-builder/new"
           element={<ResumeBuilder />}

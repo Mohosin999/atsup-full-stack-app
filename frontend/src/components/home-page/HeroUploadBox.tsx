@@ -41,7 +41,7 @@ export default function HeroUploadBox() {
       window.setTimeout(() => {
         clearInterval(progressInterval);
         setProgress(100);
-        navigate("/ats-score", {
+        navigate("/ats-scan", {
           state: { initialResumeFile: file, initialResumeName: file.name },
         });
       }, 1200);

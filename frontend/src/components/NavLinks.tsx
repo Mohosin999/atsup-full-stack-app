@@ -1,6 +1,3 @@
-/* ===================================
-Nav Links Component
-=================================== */
 import { Link, useLocation } from "react-router-dom";
 
 interface NavLink {

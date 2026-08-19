@@ -137,11 +137,11 @@ export default function ResumeBuilder() {
         })
         .catch(() => {
           toast.error("Failed to load resume.");
-          navigate("/resumes", { replace: true });
+          navigate("/resume-builder", { replace: true });
         })
         .finally(() => setLoading(false));
     } else {
-      navigate("/resumes", { replace: true });
+      navigate("/resume-builder", { replace: true });
     }
   }, [id, isNew, navigate]);
 

@@ -174,7 +174,7 @@ export default function ResumeDashboard() {
               onClick={() =>
                 user
                   ? navigate("/resume-builder/new")
-                  : goToLogin(navigate, "/resumes")
+                  : goToLogin(navigate, "/resume-builder")
               }
               className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-green-500 to-cyan-600 hover:from-green-600 hover:to-cyan-700 text-white font-semibold shadow-lg shadow-green-500/25 transition-all"
             >
@@ -331,7 +331,7 @@ export default function ResumeDashboard() {
               onClick={() =>
                 user
                   ? navigate("/resume-builder/new")
-                  : goToLogin(navigate, "/resumes")
+                  : goToLogin(navigate, "/resume-builder")
               }
               className="px-6 py-3 bg-gradient-to-r from-green-500 to-cyan-600 hover:from-green-600 hover:to-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
             >

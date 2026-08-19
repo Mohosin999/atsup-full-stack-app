@@ -257,7 +257,7 @@ export default function AtsScorePage() {
 
                       <div className="mt-4">
                         <button
-                          onClick={() => navigate(`/ats-score/${item.id}`)}
+                          onClick={() => navigate(`/ats-scan/${item.id}`)}
                           className="px-4 py-2 bg-violet-500/20 border border-violet-500/30 text-violet-500 rounded-lg hover:bg-violet-500/30 transition-colors"
                         >
                           View Details

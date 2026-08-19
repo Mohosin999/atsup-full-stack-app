@@ -6,8 +6,6 @@ import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import { logoutUser } from "../store/slices/authSlice";
 import ConfirmModal from "./ui/ConfirmModal";
 import NavLinks from "./NavLinks";
-import UpgradeButton from "./ui/UpgradeButton";
-import CreditsBadge from "./ui/CreditsBadge";
 import ProfileMenu from "./ProfileMenu";
 import MobileMenuButton from "./MobileMenuButton";
 import MobileMenu from "./MobileMenu";
@@ -28,8 +26,8 @@ const getNavLinks = (role?: string): NavLink[] => [
         },
       ]
     : []),
-  { path: "/resumes", label: "Resume Builder" },
-  { path: "/ats-score", label: "ATS Score" },
+    { path: "/ats-scan", label: "ATS Scan" },
+  { path: "/resume-builder", label: "Resume Builder" },
 ];
 
 export default function Navbar() {
@@ -51,28 +49,28 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-white/80 backdrop-blur-md box-shadow">
         <Wrapper>
           <div className="flex items-center justify-between h-14">
+            {/* Logo with app name */}
             <Link to="/" className="flex items-center gap-2 font-mono">
               <img src="/favicon.png" alt="CVCoach" className="w-10 h-8" />
               <span className="text-xl font-bold text-gray-900">
                 ATS<span className="text-cyan-500">Up</span>
               </span>
             </Link>
+
             <div className="flex items-center gap-4">
+              {/* Navigation links for large screens */}
               <NavLinks navLinks={getNavLinks(user?.role)} />
+
               {user ? (
                 <>
-                  <div className="hidden lg:flex">
-                    <UpgradeButton />
-                  </div>
-                  <div className="hidden lg:flex">
-                    <CreditsBadge user={user} />
-                  </div>
                   <ProfileMenu
                     user={user}
                     profileMenuOpen={profileMenuOpen}
                     setProfileMenuOpen={setProfileMenuOpen}
                     onLogout={() => setShowLogoutConfirm(true)}
                   />
+                  
+                  {/* Mobile menu button (only visible on small screens) */}
                   <MobileMenuButton
                     mobileMenuOpen={mobileMenuOpen}
                     setMobileMenuOpen={setMobileMenuOpen}
@@ -83,7 +81,7 @@ export default function Navbar() {
                   <div className="hidden md:flex items-center gap-4">
                     <AuthButtons />
                   </div>
-                  <button
+                  {/* <button
                     className="md:hidden"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   >
@@ -92,12 +90,16 @@ export default function Navbar() {
                     ) : (
                       <Menu className="w-6 h-6 text-gray-900" />
                     )}
-                  </button>
+                  </button> */}
                 </>
               )}
             </div>
           </div>
         </Wrapper>
+        
+        {/* =============================================================
+         * Mobile menus when click on three dots
+         ==============================================================*/}
         <AnimatePresence>
           {mobileMenuOpen && user && (
             <MobileMenu
@@ -125,26 +127,19 @@ export default function Navbar() {
                   </Link>
                 ))}
               </div>
-              <div className="flex flex-col gap-4">
-                <Link
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 gradient-btn-outline"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="gradient-btn"
-                >
-                  Get Started
-                </Link>
-              </div>
+
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-2 font-medium rounded-md transition-all duration-200 focus:outline-none bg-cyan-600 text-white"
+              >
+                Login
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>
       </nav>
+
       <ConfirmModal
         isOpen={showLogoutConfirm}
         title="Logout"

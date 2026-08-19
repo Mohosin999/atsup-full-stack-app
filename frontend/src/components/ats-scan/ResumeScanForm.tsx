@@ -72,7 +72,7 @@ export default function ResumeScanForm({
       if (resumeFile) {
         await saveScanDraft(resumeFile, resumeName, jobDescription);
       }
-      goToLogin(navigate, "/ats-score");
+      goToLogin(navigate, "/ats-scan");
       return false;
     }
     if (!resumeFile) {
@@ -127,7 +127,7 @@ export default function ResumeScanForm({
       setAnalyzing(false);
 
       if (data.history?.id) {
-        navigate(`/ats-score/${data.history.id}`);
+        navigate(`/ats-scan/${data.history.id}`);
         return;
       }
 
@@ -152,7 +152,7 @@ export default function ResumeScanForm({
 
       setPipelineOpen(false);
       setAnalyzing(false);
-      navigate("/ats-score", { state: { result: analysisResult } });
+      navigate("/ats-scan", { state: { result: analysisResult } });
     } catch (error: any) {
       console.error("Analysis error:", error);
       setPipelineOpen(false);
@@ -228,7 +228,7 @@ export default function ResumeScanForm({
       setAnalyzing(false);
 
       const score = response.data.data;
-      navigate(`/ats-score/${score.id}`);
+      navigate(`/ats-scan/${score.id}`);
     } catch (error: any) {
       console.error("AI analysis error:", error);
       setPipelineOpen(false);

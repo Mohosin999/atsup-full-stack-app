@@ -2,10 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Check,
-  Zap,
-  Crown,
   Star,
-  Building,
 } from "lucide-react";
 import BackButton from "../components/ui/BackButton";
 import Wrapper from "../components/Wrapper";
@@ -112,16 +109,7 @@ export default function Plans() {
               )}
 
               <div className={`p-8 ${plan.popular ? "pt-10" : ""}`}>
-                <div className="flex items-center gap-3 mb-4">
-                  {plan.id === "free" && (
-                    <Zap className="w-6 h-6 text-yellow-500" />
-                  )}
-                  {plan.id === "pro" && (
-                    <Crown className="w-6 h-6 text-purple-500" />
-                  )}
-                  {plan.id === "enterprise" && (
-                    <Building className="w-6 h-6 text-blue-500" />
-                  )}
+                <div className="mb-4">
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                     {plan.name}
                   </h3>

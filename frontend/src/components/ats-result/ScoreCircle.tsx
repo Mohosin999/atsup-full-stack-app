@@ -8,7 +8,7 @@
 // }
 
 // const getScoreColor = (score: number) => {
-//   if (score >= 80) return "#22c55e";
+//   if (score >= 80) return "#06b6d4";
 //   if (score >= 60) return "#eab308";
 //   if (score >= 40) return "#f97316";
 //   return "#ef4444";
@@ -96,7 +96,7 @@ interface ScoreCircleProps {
 const getScoreColor = (score: number) => {
   if (score < 50) return "#9CA3AF"; // Full Gray
   if (score < 80) return "#F59E0B"; // Amber/Yellow
-  return "#10B981"; // Green
+  return "#06B6D4"; // Cyan
 };
 
 const getThickness = (size: string) => {

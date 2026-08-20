@@ -248,7 +248,7 @@ export default function ResumeScanForm({
         <div className="flex flex-col">
           <div className="flex items-center gap-3 mb-4">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${resumeFile ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${resumeFile ? "bg-cyan-500/20 text-cyan-600" : "bg-gray-100 text-gray-600"}`}
             >
               {resumeFile ? <CheckCircle className="w-5 h-5" /> : "1"}
             </div>
@@ -258,10 +258,10 @@ export default function ResumeScanForm({
           </div>
 
           {resumeFile ? (
-            <div className="relative flex-1 min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-green-400 bg-green-50 rounded-lg">
+            <div className="relative flex-1 min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-cyan-400 bg-cyan-50 rounded-lg">
               <div className="flex flex-col items-center gap-2">
-                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                  <CheckCircle className="w-8 h-8 text-green-500" />
+                <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center">
+                  <CheckCircle className="w-8 h-8 text-cyan-500" />
                 </div>
                 <p className="text-sm font-medium text-gray-900 text-center px-4">
                   {resumeName}
@@ -309,7 +309,7 @@ export default function ResumeScanForm({
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription.trim().length >= 20 ? "bg-green-500/20 text-green-600" : "bg-gray-100 text-gray-600"}`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription.trim().length >= 20 ? "bg-cyan-500/20 text-cyan-600" : "bg-gray-100 text-gray-600"}`}
               >
                 {jobDescription.trim().length >= 20 ? (
                   <CheckCircle className="w-5 h-5" />
@@ -335,7 +335,7 @@ export default function ResumeScanForm({
                   setDemoJdSelected(e.target.value);
                   if (selected) setJobDescription(selected.description);
                 }}
-                className="text-sm bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="text-sm bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="">Select role</option>
                 {demoJds.map((d) => (
@@ -351,7 +351,7 @@ export default function ResumeScanForm({
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste the job description here..."
-            className="flex-1 min-h-[280px] w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+            className="flex-1 min-h-[280px] w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
           />
         </div>
       </div>

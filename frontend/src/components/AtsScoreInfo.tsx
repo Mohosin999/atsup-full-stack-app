@@ -6,7 +6,7 @@ import { Target, BookOpen } from "lucide-react";
 const scoreBreakdown = [
   { label: "Keyword Matching (30%)", color: "bg-blue-500" },
   { label: "Skills Match (30%)", color: "bg-purple-500" },
-  { label: "Section Completeness (30%)", color: "bg-green-500" },
+  { label: "Section Completeness (30%)", color: "bg-cyan-500" },
   { label: "Experience Relevance (10%)", color: "bg-orange-500" },
 ];
 

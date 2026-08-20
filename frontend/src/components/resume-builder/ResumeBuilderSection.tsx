@@ -88,7 +88,7 @@ export default function ResumeBuilderSection({
                     autoFocus
                     maxLength={60}
                     placeholder={title}
-                    className="text-sm font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-green-300 bg-white focus:outline-none focus:border-green-500"
+                    className="text-sm font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:border-cyan-500"
                   />
                   <span
                     ref={measureRef}

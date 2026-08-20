@@ -35,13 +35,13 @@ export default function TestimonialsSection({
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 rounded-full text-green-700 text-sm font-semibold mb-4 border border-green-200"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-100 rounded-full text-cyan-700 text-sm font-semibold mb-4 border border-cyan-200"
           >
             <Star className="w-4 h-4" /> Success Stories
           </motion.div>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">
             Loved by{" "}
-            <span className="bg-gradient-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">
               Thousands
             </span>
           </h2>
@@ -61,7 +61,7 @@ export default function TestimonialsSection({
               key={testimonial.name}
               variants={fadeInUp}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:shadow-green-500/20 border border-gray-200 hover:border-green-600 transition-all duration-300"
+              className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-200 hover:border-cyan-600 transition-all duration-300"
             >
               <div className="flex gap-1 mb-6">
                 {[...Array(testimonial.rating)].map((_, i) => (
@@ -80,7 +80,7 @@ export default function TestimonialsSection({
                 "{testimonial.content}"
               </p>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
+                <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
                   {testimonial.name.charAt(0)}
                 </div>
                 <div>

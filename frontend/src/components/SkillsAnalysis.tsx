@@ -15,7 +15,7 @@ export default function SkillsAnalysis({ analysis }: { analysis: Analysis }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <CheckCircle className="w-4 h-4 text-green-500" />
+            <CheckCircle className="w-4 h-4 text-cyan-500" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-700">Matched Skills ({analysis.sectionScores?.skills?.matched?.length || 0})</span>
           </div>
           <SkillList skills={analysis.sectionScores?.skills?.matched || []} type="matched" maxDisplay={12} />

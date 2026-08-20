@@ -15,7 +15,7 @@ const getColorClasses = (
 ) => {
   switch (color) {
     case "success":
-      return "bg-green-500";
+      return "bg-cyan-500";
     case "warning":
       return "bg-yellow-500";
     case "danger":

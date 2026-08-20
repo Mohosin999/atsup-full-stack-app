@@ -17,7 +17,7 @@ const SuggestionList: React.FC<SuggestionListProps> = ({
       case "warning":
         return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
       case "success":
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return <CheckCircle className="w-5 h-5 text-cyan-500" />;
       default:
         return <Lightbulb className="w-5 h-5 text-blue-500" />;
     }
@@ -28,7 +28,7 @@ const SuggestionList: React.FC<SuggestionListProps> = ({
       case "warning":
         return "border-yellow-500";
       case "success":
-        return "border-green-500";
+        return "border-cyan-500";
       default:
         return "border-blue-500";
     }

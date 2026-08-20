@@ -12,7 +12,7 @@ export default function StatsSection() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8 }}
-      className="py-16 bg-gradient-to-r from-green-600 via-cyan-600 to-green-700"
+      className="py-16 bg-gradient-to-r from-cyan-600 via-cyan-600 to-cyan-700"
     >
       <Wrapper>
         <motion.div
@@ -37,7 +37,7 @@ export default function StatsSection() {
               >
                 {stat.value}
               </motion.p>
-              <p className="mt-2 text-green-100 font-medium">{stat.label}</p>
+              <p className="mt-2 text-cyan-100 font-medium">{stat.label}</p>
             </motion.div>
           ))}
         </motion.div>

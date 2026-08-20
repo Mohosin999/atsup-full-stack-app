@@ -5,7 +5,6 @@ import {
   Star,
 } from "lucide-react";
 import { useAppSelector } from "../hooks/redux";
-import BackButton from "../components/ui/BackButton";
 import Wrapper from "../components/Wrapper";
 
 interface Plan {
@@ -79,10 +78,6 @@ export default function Plans() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-50 pt-20 pb-12">
       <Wrapper>
-        <div className="mt-6 mb-1">
-          <BackButton />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -147,7 +142,7 @@ export default function Plans() {
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-cyan-500 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-600 dark:text-gray-700 text-sm">
                         {feature}
                       </span>

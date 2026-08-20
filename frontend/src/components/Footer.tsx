@@ -8,12 +8,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 via-cyan-500 to-green-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 via-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center">
                 <Flame className="w-6 h-6 text-white" />
               </div>
               <span className="text-2xl font-bold">
                 CV
-                <span className="bg-gradient-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">
                   Coach
                 </span>
               </span>
@@ -26,7 +26,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-lg mb-4 text-green-600">
+            <h4 className="font-bold text-lg mb-4 text-cyan-600">
               Quick Links
             </h4>
             <ul className="space-y-3">
@@ -35,7 +35,7 @@ const Footer = () => {
                   <li key={item}>
                     <a
                       href="#"
-                      className="text-gray-700 hover:text-green-600 transition-colors"
+                      className="text-gray-700 hover:text-cyan-600 transition-colors"
                     >
                       {item}
                     </a>
@@ -46,14 +46,14 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-lg mb-4 text-green-600">Legal</h4>
+            <h4 className="font-bold text-lg mb-4 text-cyan-600">Legal</h4>
             <ul className="space-y-3">
               {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(
                 (item) => (
                   <li key={item}>
                     <a
                       href="#"
-                      className="text-gray-700 hover:text-green-600 transition-colors"
+                      className="text-gray-700 hover:text-cyan-600 transition-colors"
                     >
                       {item}
                     </a>
@@ -73,7 +73,7 @@ const Footer = () => {
               <a
                 key={social}
                 href="#"
-                className="text-gray-700 hover:text-green-600 transition-colors text-sm"
+                className="text-gray-700 hover:text-cyan-600 transition-colors text-sm"
               >
                 {social}
               </a>

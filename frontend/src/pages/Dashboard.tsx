@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "../hooks/redux";
 import { atsScoreApi, resumeApi } from "../api/api";
-import BackButton from "../components/ui/BackButton";
 import Wrapper from "../components/Wrapper";
 import WelcomeHeader from "../components/user-dashboard/WelcomeHeader";
 import QuickStats from "../components/user-dashboard/QuickStats";

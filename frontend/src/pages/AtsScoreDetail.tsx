@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 import { atsScoreApi } from "../api/api";
 import { AtsScoreHistory, ResumeContent } from "../types";
@@ -80,13 +79,6 @@ export default function AtsScoreDetail() {
               Saved analysis details
             </p>
           </div>
-          <button
-            onClick={() => navigate("/ats-scan")}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:border-gray-400 rounded-lg transition-colors w-fit"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to ATS Score
-          </button>
         </div>
 
         {loading ? (

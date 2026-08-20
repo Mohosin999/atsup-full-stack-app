@@ -9,7 +9,6 @@ import {
   Calendar,
   FileText,
   Trash2,
-  ArrowLeft,
   Search,
   Pencil,
   Check,
@@ -84,7 +83,6 @@ export default function ScanHistory() {
     if (!editValue.trim()) return;
     try {
       await atsScoreApi.rename(id, editValue.trim());
-      toast.success("Renamed successfully");
       setHistory((prev) =>
         prev.map((item) =>
           (item.id || (item as any)._id) === id
@@ -126,16 +124,6 @@ export default function ScanHistory() {
   return (
     <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
       <Wrapper>
-        <div className="mt-6 mb-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back
-          </button>
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -240,7 +228,7 @@ export default function ScanHistory() {
                             {editValue || " "}
                           </span>
                         </div>
-                        <button onClick={() => handleRename(item.id)} className="p-1 text-green-600 hover:text-green-700">
+                        <button onClick={() => handleRename(item.id)} className="p-1 text-cyan-600 hover:text-cyan-700">
                           <Check className="w-4 h-4" />
                         </button>
                         <button onClick={() => setEditingId(null)} className="p-1 text-gray-400 hover:text-red-500">

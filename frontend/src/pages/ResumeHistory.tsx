@@ -6,7 +6,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  ArrowLeft,
   FileText,
   Calendar,
   Trash2,
@@ -95,19 +94,15 @@ export default function ResumeHistory() {
     try {
       const resume = resumes.find((r) => r.id === id);
       await resumeApi.update(id, {
-        content: {
-          ...resume?.content,
-          personalInfo: {
-            ...resume?.content?.personalInfo,
-            fullName: editValue.trim(),
-          },
+        metadata: {
+          ...resume?.metadata,
+          originalName: editValue.trim(),
         },
       });
-      toast.success("Renamed successfully");
       setResumes((prev) =>
         prev.map((r) =>
           r.id === id
-            ? { ...r, content: { ...r.content, personalInfo: { ...r.content?.personalInfo, fullName: editValue.trim() } } }
+            ? { ...r, metadata: { ...r.metadata, originalName: editValue.trim() } }
             : r
         )
       );
@@ -141,8 +136,9 @@ export default function ResumeHistory() {
   };
 
   const getResumeTitle = (resume: ResumeListItem) =>
+    resume.metadata?.originalName?.trim() ||
+    resume.content?.personalInfo?.jobTitle?.trim() ||
     resume.content?.personalInfo?.fullName?.trim() ||
-    resume.metadata?.originalName ||
     "Untitled Resume";
 
   const getResumeSubtitle = (resume: ResumeListItem) => {
@@ -156,23 +152,13 @@ export default function ResumeHistory() {
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <Wrapper maxWidth="max-w-6xl">
-        <div className="mt-6 mb-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back
-          </button>
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
           <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
-            <FileText className="w-8 h-8 text-green-600" />
+            <FileText className="w-8 h-8 text-cyan-600" />
             Resume History
           </h1>
           <p className="text-gray-600">
@@ -214,8 +200,8 @@ export default function ResumeHistory() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center text-center py-12 border border-dashed border-gray-200 rounded-2xl"
           >
-            <div className="w-16 h-16 rounded-2xl bg-green-500/10 flex items-center justify-center mb-4">
-              <FileText className="w-8 h-8 text-green-600" />
+            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-4">
+              <FileText className="w-8 h-8 text-cyan-600" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               No Resumes Yet
@@ -225,7 +211,7 @@ export default function ResumeHistory() {
             </p>
             <button
               onClick={() => navigate("/resume-builder/new")}
-              className="px-6 py-3 bg-gradient-to-r from-green-500 to-cyan-600 hover:from-green-600 hover:to-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
             >
               <FileText className="w-5 h-5" />
               Create Resume
@@ -243,7 +229,7 @@ export default function ResumeHistory() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-green-300 hover:shadow-md transition-all"
+                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-cyan-300 hover:shadow-md transition-all"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -261,7 +247,7 @@ export default function ResumeHistory() {
                               if (e.key === "Escape") setEditingId(null);
                             }}
                             autoFocus
-                            className="text-lg font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-green-300 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            className="text-lg font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                           />
                           <span
                             ref={measureRef}
@@ -271,7 +257,7 @@ export default function ResumeHistory() {
                             {editValue || " "}
                           </span>
                         </div>
-                        <button onClick={() => handleRename(resume.id)} className="p-1 text-green-600 hover:text-green-700">
+                        <button onClick={() => handleRename(resume.id)} className="p-1 text-cyan-600 hover:text-cyan-700">
                           <Check className="w-4 h-4" />
                         </button>
                         <button onClick={() => setEditingId(null)} className="p-1 text-gray-400 hover:text-red-500">
@@ -288,7 +274,7 @@ export default function ResumeHistory() {
                             setEditingId(resume.id);
                             setEditValue(getResumeTitle(resume));
                           }}
-                          className="p-1 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded transition-colors opacity-0 group-hover/title:opacity-100"
+                          className="p-1 text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors opacity-0 group-hover/title:opacity-100"
                           title="Rename"
                         >
                           <Pencil className="w-3.5 h-3.5" />
@@ -308,7 +294,7 @@ export default function ResumeHistory() {
                     <div className="mt-4 flex gap-3">
                       <button
                         onClick={() => navigate(`/resume-builder/${resume.id}`)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 border border-green-500/30 text-green-700 rounded-lg hover:bg-green-500/30 transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/20 border border-cyan-500/30 text-cyan-700 rounded-lg hover:bg-cyan-500/30 transition-colors"
                       >
                         <Pencil className="w-4 h-4" />
                         Edit Resume

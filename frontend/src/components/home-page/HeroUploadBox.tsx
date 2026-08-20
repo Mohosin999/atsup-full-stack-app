@@ -64,9 +64,9 @@ export default function HeroUploadBox() {
       transition={{ duration: 0.8, delay: 0.4 }}
       className="relative"
     >
-      <div className="bg-white rounded-3xl shadow-2xl shadow-green-500/20 p-8 border border-green-200">
+      <div className="bg-white rounded-3xl shadow-2xl shadow-cyan-500/20 p-8 border border-cyan-200">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-cyan-500 rounded-2xl flex items-center justify-center">
+          <div className="w-14 h-14 bg-gradient-to-br from-cyan-500 to-cyan-500 rounded-2xl flex items-center justify-center">
             <Upload className="w-7 h-7 text-white" />
           </div>
           <div>
@@ -82,17 +82,17 @@ export default function HeroUploadBox() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="min-h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-green-400 bg-green-50 rounded-2xl p-6"
+              className="min-h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-cyan-400 bg-cyan-50 rounded-2xl p-6"
             >
-              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-3">
-                <Loader2 className="w-7 h-7 text-green-600 animate-spin" />
+              <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center mb-3">
+                <Loader2 className="w-7 h-7 text-cyan-600 animate-spin" />
               </div>
               <p className="text-sm font-semibold text-gray-900">
                 Uploading {fileName}
               </p>
               <div className="w-full max-w-[200px] h-2 bg-gray-200 rounded-full overflow-hidden mt-4">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-green-500 to-cyan-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-cyan-500 to-cyan-500 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ ease: "easeInOut" }}
@@ -112,15 +112,15 @@ export default function HeroUploadBox() {
                 className={clsx(
                   "min-h-[180px] flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-6 cursor-pointer transition-colors",
                   isDragActive
-                    ? "border-green-500 bg-green-50"
+                    ? "border-cyan-500 bg-cyan-50"
                     : isDragReject
                       ? "border-red-400 bg-red-50"
                       : "border-gray-200 bg-white hover:bg-gray-50",
                 )}
               >
                 <input {...getInputProps()} />
-                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-3">
-                  <FileUp className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center mb-3">
+                  <FileUp className="w-6 h-6 text-cyan-600" />
                 </div>
                 <p className="text-sm text-gray-700 text-center">
                   <span className="font-semibold text-gray-900">
@@ -144,7 +144,7 @@ export default function HeroUploadBox() {
         </AnimatePresence>
 
         <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-500">
-          <CheckCircle className="w-3.5 h-3.5 text-green-500" />
+          <CheckCircle className="w-3.5 h-3.5 text-cyan-500" />
           Free ATS scan · No credit needed
         </div>
       </div>

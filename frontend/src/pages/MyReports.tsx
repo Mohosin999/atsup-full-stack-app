@@ -4,7 +4,6 @@ import { MessageSquare } from 'lucide-react';
 import { supportApi } from '../api/api';
 import { SupportStatus, SupportTicket } from '../types';
 import Wrapper from '../components/Wrapper';
-import BackButton from '../components/ui/BackButton';
 
 const STATUS_STYLES: Record<SupportStatus, string> = {
   open: 'bg-amber-100 text-amber-700',

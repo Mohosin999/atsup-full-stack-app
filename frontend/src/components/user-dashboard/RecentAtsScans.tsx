@@ -45,10 +45,10 @@ export default function RecentAtsScans({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
+        className="bg-white rounded-2xl box-shadow border border-gray-100 p-6"
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-gray-900">Recent ATS Scans</h2>
+          <h2 className="text-lg font-bold text-gray-800">Recent ATS Scans</h2>
           {!loading && scans.length > 0 && (
             <Link
               to="/scan-history"
@@ -68,18 +68,18 @@ export default function RecentAtsScans({
         ) : scans.length === 0 ? (
           <p className="text-sm text-gray-500 py-4 text-center">No scans yet</p>
         ) : (
-          <div className="space-y-2">
+          <div>
             {scans.map((scan) => (
               <div
                 key={scan.id || scan._id}
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-3 rounded-lg border-b border-gray-200 last:border-b-0"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <FileCheck className="w-4 h-4 text-blue-600" />
+                  <div className="w-9 h-9 rounded-lg bg-cyan-50 flex items-center justify-center">
+                    <FileCheck className="w-4 h-4 text-cyan-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900 truncate max-w-[200px]">
+                    <p className="text-sm font-medium text-gray-800 truncate max-w-[200px]">
                       {scan.resumeName}
                     </p>
                     <p className="text-xs text-gray-500">
@@ -88,17 +88,6 @@ export default function RecentAtsScans({
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`text-sm font-bold ${
-                      scan.overallScore >= 70
-                        ? "text-green-600"
-                        : scan.overallScore >= 40
-                          ? "text-amber-600"
-                          : "text-red-600"
-                    }`}
-                  >
-                    {scan.overallScore}
-                  </span>
                   <button
                     onClick={() => navigate(`/ats-scan/${scan.id || scan._id}`)}
                     className="p-1.5 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors"

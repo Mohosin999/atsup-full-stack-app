@@ -81,7 +81,7 @@ export default function Login() {
               saveRedirectForOAuth();
               dispatch(login());
             }}
-            className="w-full inline-flex items-center justify-center px-4 py-3 font-medium rounded-lg transition-all duration-200 text-lg border border-gray-300 hover:border-green-600"
+            className="w-full inline-flex items-center justify-center px-4 py-3 font-medium rounded-lg transition-all duration-200 text-lg border border-gray-300 hover:border-cyan-600"
           >
             <FcGoogle className="w-6 h-6 mr-2" />
             Continue with Google

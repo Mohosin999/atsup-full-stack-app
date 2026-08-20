@@ -18,7 +18,7 @@ interface HowItWorksSectionProps {
 
 export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
   return (
-    <section className="py-24 bg-gradient-to-br from-green-50 via-white to-green-50">
+    <section className="py-24 bg-gradient-to-br from-cyan-50 via-white to-cyan-50">
       <Wrapper>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -32,12 +32,12 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full text-green-700 text-sm font-semibold mb-4 border border-gray-200"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full text-cyan-700 text-sm font-semibold mb-4 border border-gray-200"
           >
             <Award className="w-4 h-4" /> Simple Process
           </motion.div>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">
-            How It <span className="bg-gradient-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">Works</span>
+            How It <span className="bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">Works</span>
           </h2>
         </motion.div>
         <motion.div
@@ -53,9 +53,9 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
               variants={fadeInUp}
               className="relative group"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-cyan-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative p-8 rounded-2xl bg-white/70 border border-gray-200 hover:border-green-500/50 transition-colors h-full">
-                <div className="text-6xl font-bold text-green-500/20 mb-4">{step.number}</div>
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-cyan-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative p-8 rounded-2xl bg-white/70 border border-gray-200 hover:border-cyan-500/50 transition-colors h-full">
+                <div className="text-6xl font-bold text-cyan-500/20 mb-4">{step.number}</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{step.description}</p>
               </div>

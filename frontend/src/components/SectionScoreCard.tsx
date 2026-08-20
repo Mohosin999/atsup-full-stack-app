@@ -16,7 +16,7 @@ const SectionScoreCard: React.FC<SectionScoreCardProps> = ({
   hasContactInfo,
 }) => {
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-500 bg-green-50 dark:bg-green-900/20";
+    if (score >= 80) return "text-cyan-500 bg-cyan-50 dark:bg-cyan-900/20";
     if (score >= 60)
       return "text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20";
     return "text-red-500 bg-red-50 dark:bg-red-900/20";
@@ -25,12 +25,12 @@ const SectionScoreCard: React.FC<SectionScoreCardProps> = ({
   const getIcon = () => {
     if (hasContactInfo !== undefined) {
       return hasContactInfo ? (
-        <CheckCircle className="w-5 h-5 text-green-500" />
+        <CheckCircle className="w-5 h-5 text-cyan-500" />
       ) : (
         <XCircle className="w-5 h-5 text-red-500" />
       );
     }
-    if (score >= 80) return <CheckCircle className="w-5 h-5 text-green-500" />;
+    if (score >= 80) return <CheckCircle className="w-5 h-5 text-cyan-500" />;
     if (score >= 60) return <AlertCircle className="w-5 h-5 text-yellow-500" />;
     return <XCircle className="w-5 h-5 text-red-500" />;
   };

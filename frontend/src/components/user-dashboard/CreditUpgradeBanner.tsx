@@ -17,7 +17,7 @@ export default function CreditUpgradeBanner({ credits }: { credits: number }) {
               <Award className="w-6 h-6 text-amber-600" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900">Running low on credits</h3>
+              <h3 className="text-lg font-bold text-gray-800">Running low on credits</h3>
               <p className="text-sm text-gray-600">
                 You have {credits} credits left. Upgrade to continue optimizing your resume
               </p>

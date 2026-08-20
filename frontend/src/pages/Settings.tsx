@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import { logoutUser, fetchUser } from "../store/slices/authSlice";
 import { userApi } from "../api/api";
-import BackButton from "../components/ui/BackButton";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import Wrapper from "../components/Wrapper";
 
@@ -47,9 +46,6 @@ export default function Settings() {
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
       <Wrapper maxWidth="max-w-3xl">
-        <div className="mt-6 mb-1">
-          <BackButton />
-        </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

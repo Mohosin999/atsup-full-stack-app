@@ -16,7 +16,6 @@ import ResumeHistory from "./pages/ResumeHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ResumeDashboard from "./pages/ResumeDashboard";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
-import GoToTop from "./components/ui/GoToTop";
 import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -151,7 +150,6 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       {user && <ReportButton />}
-      <GoToTop />
     </ThemeWrapper>
   );
 }

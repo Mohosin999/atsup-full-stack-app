@@ -295,3 +295,4 @@ app/
 3. Commit changes (`git commit -m 'Add feature'`)
 4. Push branch (`git push origin feature/name`)
 5. Open Pull Request
+

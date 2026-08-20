@@ -27,8 +27,8 @@ const CATEGORY_META: Record<
   },
   hardSkills: {
     icon: <Wrench className="w-5 h-5" />,
-    iconColor: "bg-green-500/15 text-green-600",
-    accent: "border-green-500/40",
+    iconColor: "bg-cyan-500/15 text-cyan-600",
+    accent: "border-cyan-500/40",
   },
   softSkills: {
     icon: <Users className="w-5 h-5" />,
@@ -48,7 +48,7 @@ const CATEGORY_META: Record<
 };
 
 const getScoreColor = (score: number) => {
-  if (score >= 80) return "text-green-600";
+  if (score >= 80) return "text-cyan-600";
   if (score >= 60) return "text-yellow-600";
   if (score >= 40) return "text-orange-600";
   return "text-red-600";
@@ -60,7 +60,7 @@ const STATUS_ICON: Record<
 > = {
   passed: {
     icon: <CheckCircle2 className="w-5 h-5" />,
-    color: "text-green-600",
+    color: "text-cyan-600",
     mark: "✓",
   },
   failed: {
@@ -99,7 +99,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
               <span
                 className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center border ${
                   check.status === "passed"
-                    ? "border-green-500/40 bg-green-500/15 text-green-600"
+                    ? "border-cyan-500/40 bg-cyan-500/15 text-cyan-600"
                     : check.status === "failed"
                       ? "border-red-500/40 bg-red-500/15 text-red-600"
                       : "border-gray-300/40 bg-gray-50 text-gray-500"
@@ -160,7 +160,7 @@ const SkillsTable: React.FC<{
                 <td className="py-2.5 px-2 text-center">
                   {s.status === "matched" ? (
                     <span
-                      className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                      className="inline-flex w-6 h-6 rounded-full bg-cyan-500/15 text-cyan-600 items-center justify-center"
                       title={`${s.item} found in resume`}
                     >
                       <CheckCircle2 className="w-4 h-4" />
@@ -176,7 +176,7 @@ const SkillsTable: React.FC<{
                 </td>
                 <td className="py-2.5 pr-5 pl-2 text-center">
                   <span
-                    className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                    className="inline-flex w-6 h-6 rounded-full bg-cyan-500/15 text-cyan-600 items-center justify-center"
                     title="Required by the job description"
                   >
                     <CheckCircle2 className="w-4 h-4" />
@@ -339,7 +339,7 @@ const FeedbackCard: React.FC<{
       {/* Strengths */}
       {/* {!hasSubgroups && category.strengths.length > 0 && (
         <div className="mb-3">
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-green-600 mb-2">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-cyan-600 mb-2">
             <CheckCircle2 className="w-3.5 h-3.5" />
             What you did well
           </p>
@@ -349,7 +349,7 @@ const FeedbackCard: React.FC<{
                 key={i}
                 className="flex items-start gap-2 text-[13px] text-gray-700"
               >
-                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-cyan-500 mt-0.5">✓</span>
                 {s}
               </li>
             ))}

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #22c55e;
-  --color-secondary: #10b981;
+  --color-primary: #06b6d4;
+  --color-secondary: #0891b2;
   --color-accent: #14b8a6;
 }
 
@@ -156,7 +156,7 @@ body {
 }
 .pdf-exporting a {
   font-size: 14px;
-  color: #059669;
+  color: #0891b2;
   text-decoration: underline;
 }
 .pdf-exporting span {
@@ -192,7 +192,7 @@ body {
 }
 
 .pdf-exporting .text-cyan-600 {
-  color: #059669;
+  color: #0891b2;
 }
 
 .pdf-exporting .border-gray-700 {
@@ -344,7 +344,7 @@ body.printing #resume-for-print {
   /* Ensure links are clickable and visible */
   a {
     text-decoration: underline;
-    color: #059669 !important;
+    color: #0891b2 !important;
   }
 
   a[href^="http"]::after {

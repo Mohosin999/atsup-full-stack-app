@@ -21,7 +21,7 @@ export default function CTASection() {
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative bg-gradient-to-br from-green-600 via-cyan-600 to-green-700 rounded-3xl p-12 overflow-hidden shadow-2xl shadow-green-500/40"
+          className="relative bg-gradient-to-br from-cyan-600 via-cyan-600 to-cyan-700 rounded-3xl p-12 overflow-hidden shadow-2xl shadow-cyan-500/40"
         >
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
@@ -40,7 +40,7 @@ export default function CTASection() {
             <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
               Ready to Boost Your Career?
             </h2>
-            <p className="text-base md:text-lg text-green-100 mb-10 max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-cyan-100 mb-10 max-w-2xl mx-auto">
               Join thousands of job seekers who have transformed their resumes
               and landed their dream jobs with ResumeAI.
             </p>
@@ -55,7 +55,7 @@ export default function CTASection() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
-              className="mt-6 text-green-100 text-sm"
+              className="mt-6 text-cyan-100 text-sm"
             >
               No credit card required • Free to start • Cancel anytime
             </motion.p>

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Zap, Sparkles } from "lucide-react";
+import { Zap, FileCheck } from "lucide-react";
 
 export default function WelcomeHeader({
   user,
@@ -27,13 +27,13 @@ export default function WelcomeHeader({
             <h1 className="text-3xl font-bold tracking-tight">
               Welcome back, {user?.name?.split(" ")[0] || "User"}!
             </h1>
-            <p className="mt-2 text-cyan-50 text-lg">
-              Let's optimize your resume and land your dream job
+            <p className="mt-2 text-cyan-50 text-sm md:text-base xl:text-lg">
+              All your activities are in one place. Keep track of your progress and improve your resume.
             </p>
           </div>
 
-          <div className="hidden md:block">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3">
+          <div className="hidden md:block w-72 xl:w-60">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 ml-20">
               <p className="text-xs font-medium text-cyan-50 uppercase tracking-wider">
                 Current Plan
               </p>
@@ -42,17 +42,17 @@ export default function WelcomeHeader({
           </div>
         </div>
 
-        <div className="mt-6 flex items-center gap-3">
+        <div className="mt-6 flex flex-col md:flex-row items-center gap-3">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
             <Zap className="w-4 h-4 text-yellow-300" fill="currentColor" />
             <span className="font-semibold">{credits} Credits Available</span>
           </div>
           <Link
-            to="/ats-checker"
+            to="/ats-scan"
             className="inline-flex items-center gap-2 bg-white text-cyan-700 rounded-full px-4 py-2 font-semibold hover:bg-cyan-50 transition-colors"
           >
-            <Sparkles className="w-4 h-4" />
-            Start Analysis
+            <FileCheck className="w-4 h-4" />
+            Start Scan
           </Link>
         </div>
       </div>

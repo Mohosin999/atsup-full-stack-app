@@ -70,7 +70,7 @@ export default function HeroUploadBox() {
             <Upload className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-gray-900">Upload Resume</h3>
+            <h3 className="text-xl font-bold text-gray-800">Upload Resume</h3>
             <p className="text-sm text-gray-700">Get instant ATS score</p>
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function HeroUploadBox() {
               <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center mb-3">
                 <Loader2 className="w-7 h-7 text-cyan-600 animate-spin" />
               </div>
-              <p className="text-sm font-semibold text-gray-900">
+              <p className="text-sm font-semibold text-gray-800">
                 Uploading {fileName}
               </p>
               <div className="w-full max-w-[200px] h-2 bg-gray-200 rounded-full overflow-hidden mt-4">
@@ -123,7 +123,7 @@ export default function HeroUploadBox() {
                   <FileUp className="w-6 h-6 text-cyan-600" />
                 </div>
                 <p className="text-sm text-gray-700 text-center">
-                  <span className="font-semibold text-gray-900">
+                  <span className="font-semibold text-gray-800">
                     {isDragActive
                       ? "Drop your resume here"
                       : "Click to upload"}

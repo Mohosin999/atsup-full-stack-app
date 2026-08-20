@@ -432,7 +432,7 @@ export default function ResumeBuilder() {
           className="my-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div>
-            <h1 className="text-lg font-bold text-gray-900 mb-1">
+            <h1 className="text-lg font-bold text-gray-800 mb-1">
               ATS Resume Builder
             </h1>
             <p className="text-sm text-gray-600">
@@ -463,7 +463,7 @@ export default function ResumeBuilder() {
             <button
               onClick={handleDownload}
               disabled={downloading}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white shadow-lg shadow-cyan-500/25 transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg shadow-cyan-500/25 transition-all disabled:opacity-50"
             >
               <Download className="w-4 h-4" />
               {downloading ? "Preparing..." : "Download PDF"}

@@ -85,7 +85,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
     <div className="rounded-xl border border-gray-200/60 bg-gray-100 overflow-hidden">
       <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-50 border-b border-gray-200/60">
         <div className="min-w-0">
-          <h4 className="text-sm font-semibold text-gray-900 leading-tight">
+          <h4 className="text-sm font-semibold text-gray-800 leading-tight">
             {subgroup.title}
           </h4>
         </div>
@@ -191,7 +191,7 @@ const SkillsTable: React.FC<{
       {skills.length > SeenMoreLimit && (
         <button
           onClick={() => setShowAll((v) => !v)}
-          className="mt-3 py-2 px-4 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          className="mt-3 py-2 px-4 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
         >
           {showAll ? "See Less" : `See More (${remaining} more)`}
         </button>
@@ -236,7 +236,7 @@ const FormattingLock: React.FC<{ onShowTips: () => void }> = ({
 
       {/* Overlay text on top of blur */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 py-6">
-        <p className="text-lg md:text-xl font-bold text-gray-900 leading-tight mb-1.5">
+        <p className="text-lg md:text-xl font-bold text-gray-800 leading-tight mb-1.5">
           Unavailable for Free
         </p>
         <p className="text-sm text-gray-700 mb-4 max-w-md">
@@ -314,7 +314,7 @@ const FeedbackCard: React.FC<{
             {meta.icon}
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 leading-tight">
+            <h3 className="font-semibold text-gray-800 leading-tight">
               {category.title}
             </h3>
             <p className="text-xs text-gray-500">{category.summary}</p>

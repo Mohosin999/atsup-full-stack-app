@@ -25,7 +25,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             className={clsx(
-              'w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-xs',
+              'w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-xs',
               icon && 'pl-8',
               error && 'border-red-500 focus:ring-red-500',
               className
@@ -94,7 +94,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         <select
           ref={ref}
           className={clsx(
-            'w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all',
+            'w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all',
             error && 'border-red-500 focus:ring-red-500',
             className
           )}

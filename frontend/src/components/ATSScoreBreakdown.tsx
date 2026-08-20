@@ -106,7 +106,7 @@ export default function ATSScoreBreakdown({ atsScore, breakdown, suggestions }: 
             <FileText className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">ATS Compatibility Score</h3>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">ATS Compatibility Score</h3>
             <p className="text-sm text-gray-500 dark:text-gray-600">How well your resume passes Applicant Tracking Systems</p>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function ATSScoreBreakdown({ atsScore, breakdown, suggestions }: 
         >
           <div className="flex items-center gap-2 mb-4">
             <FileText className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">ATS Optimization Tips</h3>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">ATS Optimization Tips</h3>
           </div>
           <ul className="space-y-2">
             {suggestions.map((suggestion, index) => (

@@ -341,7 +341,7 @@ const AdminDashboard: React.FC = () => {
                         <p className="text-sm text-gray-600">
                           User activity in {periodLabel.toLowerCase()} ➤
                         </p>
-                        <h5 className="text-sm font-semibold text-gray-900">
+                        <h5 className="text-sm font-semibold text-gray-800">
                           {(growth?.totals.activity ?? 0).toLocaleString()}
                         </h5>
                       </div>
@@ -370,7 +370,7 @@ const AdminDashboard: React.FC = () => {
                       <dt className="text-gray-600 text-xs font-normal me-1">
                         Resume builds:
                       </dt>
-                      <dd className="text-gray-900 text-xs font-semibold">
+                      <dd className="text-gray-800 text-xs font-semibold">
                         {growth?.totals.resumeBuild ?? "—"}
                       </dd>
                     </dl>
@@ -378,7 +378,7 @@ const AdminDashboard: React.FC = () => {
                       <dt className="text-gray-600 text-xs font-normal me-1">
                         ATS checks:
                       </dt>
-                      <dd className="text-gray-900 text-xs font-semibold">
+                      <dd className="text-gray-800 text-xs font-semibold">
                         {growth?.totals.atsUse ?? "—"}
                       </dd>
                     </dl>
@@ -488,7 +488,7 @@ const AdminDashboard: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setDropdownOpen(!dropdownOpen)}
-                          className="text-sm font-medium text-gray-600 hover:text-gray-900 text-center inline-flex items-center"
+                          className="text-sm font-medium text-gray-600 hover:text-gray-800 text-center inline-flex items-center"
                         >
                           {periodLabel}
                           <ChevronDown

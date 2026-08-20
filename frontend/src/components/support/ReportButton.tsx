@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MessageSquare, X, Paperclip, Send, CheckCircle2 } from "lucide-react";
 import { supportApi } from "../../api/api";
@@ -22,6 +22,15 @@ const ReportButton: React.FC = () => {
     setError("");
     setDone(false);
   };
+
+  useEffect(() => {
+    const handleOpen = () => {
+      setDone(false);
+      setOpen(true);
+    };
+    window.addEventListener("open-report-modal", handleOpen);
+    return () => window.removeEventListener("open-report-modal", handleOpen);
+  }, []);
 
   const close = () => {
     setOpen(false);
@@ -70,7 +79,7 @@ const ReportButton: React.FC = () => {
           <div className="absolute inset-0 bg-black/40" onClick={close} />
           <div className="relative w-full sm:max-w-md bg-white rounded-t-xl sm:rounded-lg shadow-xl p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-gray-800">
                 {done ? "Report Submitted" : "Report a Problem"}
               </h3>
               <button

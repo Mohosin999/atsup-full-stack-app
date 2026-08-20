@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { MessageSquare } from 'lucide-react';
 import { supportApi } from '../api/api';
 import { SupportStatus, SupportTicket } from '../types';
@@ -55,14 +54,16 @@ const MyReports: React.FC = () => {
     <div className="min-h-screen bg-gray-50 pt-24 pb-12">
       <Wrapper>
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Reports</h1>
-          <Link
-            to="/dashboard"
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">My Reports</h1>
+          <button
+            onClick={() =>
+              window.dispatchEvent(new Event("open-report-modal"))
+            }
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700"
           >
             <MessageSquare className="w-4 h-4" />
             Report a problem
-          </Link>
+          </button>
         </div>
 
         {loading ? (
@@ -91,7 +92,7 @@ const MyReports: React.FC = () => {
                         {STATUS_LABELS[t.status]}
                       </span>
                     </div>
-                    <h3 className="mt-2 font-semibold text-gray-900 dark:text-white">{t.title}</h3>
+                    <h3 className="mt-2 font-semibold text-gray-800 dark:text-white">{t.title}</h3>
                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">{t.message}</p>
                     {t.attachment && (
                       <a

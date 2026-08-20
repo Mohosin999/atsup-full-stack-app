@@ -231,7 +231,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                           {u.name?.charAt(0)?.toUpperCase() || '?'}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium text-gray-900 truncate">
+                          <p className="font-medium text-gray-800 truncate">
                             {u.name}
                             {isSelf(u) && <span className="ml-1 text-xs text-gray-400">(you)</span>}
                           </p>
@@ -263,7 +263,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                       {u.name?.charAt(0)?.toUpperCase() || '?'}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-gray-900 truncate">
+                      <p className="font-medium text-gray-800 truncate">
                         {u.name}
                         {isSelf(u) && <span className="ml-1 text-xs text-gray-400">(you)</span>}
                       </p>
@@ -279,13 +279,13 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                   <div className="grid grid-cols-2 gap-2 mb-3">
                     <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
                       <span className="text-xs text-gray-500">Credits</span>
-                      <span className="text-[10px] lg:text-sm font-semibold text-gray-900">
+                      <span className="text-[10px] lg:text-sm font-semibold text-gray-800">
                         {u.subscription?.credits ?? 0}
                       </span>
                     </div>
                     <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
                       <span className="text-xs text-gray-500">Joined</span>
-                      <span className="text-[10px] lg:text-sm font-medium text-gray-900">
+                      <span className="text-[10px] lg:text-sm font-medium text-gray-800">
                         {formatDate(u.createdAt)}
                       </span>
                     </div>

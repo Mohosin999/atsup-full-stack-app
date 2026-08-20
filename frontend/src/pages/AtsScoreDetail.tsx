@@ -72,7 +72,7 @@ export default function AtsScoreDetail() {
       <Wrapper>
         <div className="my-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-lg font-bold text-gray-900 mb-1">
+            <h1 className="text-lg font-bold text-gray-800 mb-1">
               ATS Score Report
             </h1>
             <p className="text-sm text-gray-600">
@@ -90,7 +90,7 @@ export default function AtsScoreDetail() {
             <p className="text-red-600 font-medium mb-4">{error}</p>
             <button
               onClick={() => navigate("/ats-scan")}
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg transition-colors"
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors"
             >
               Go to ATS Score
             </button>

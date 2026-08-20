@@ -51,7 +51,7 @@ export default function Navbar() {
             {/* Left: Logo */}
             <Link to="/" className="flex items-center gap-2 font-mono shrink-0">
               <img src="/favicon.png" alt="CVCoach" className="w-10 h-8" />
-              <span className="text-xl font-bold text-gray-900">
+              <span className="text-xl font-bold text-gray-800">
                 ATS<span className="text-cyan-500">Up</span>
               </span>
             </Link>

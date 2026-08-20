@@ -49,8 +49,8 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
               </Link>
 
               <Link
-                to="/resume-builder/new"
-                className="group text-sm xl:text-lg gradient-btn-outline flex items-center justify-center gap-2"
+                to="/resume-builder"
+                className="flex items-center gap-2 text-sm xl:text-lg border-2 border-gray-600 hover:bg-gray-600/10 px-6 py-2 rounded-lg"
               >
                 <FilePlus2 className="w-5 h-5" />
                 Create Resume

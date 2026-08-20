@@ -11,9 +11,11 @@ export default function AtsScorePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const pendingDraft = getScanDraft();
-  const locationState = location.state as
-    | { result?: AtsScoreHistory; initialResumeFile?: File; initialResumeName?: string }
-    | null;
+  const locationState = location.state as {
+    result?: AtsScoreHistory;
+    initialResumeFile?: File;
+    initialResumeName?: string;
+  } | null;
   const stateFile = locationState?.initialResumeFile ?? null;
   const stateName = locationState?.initialResumeName ?? "";
 
@@ -43,19 +45,15 @@ export default function AtsScorePage() {
   return (
     <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
       <Wrapper>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="my-8"
-        >
-          <h1 className="text-lg font-bold text-gray-900 mb-1">
+        <div className="my-8">
+          <h1 className="text-lg font-bold text-gray-800 mb-1">
             ATS Score Check
           </h1>
           <p className="text-sm text-gray-600">
             Analyze your resume for ATS (Applicant Tracking System)
             compatibility — unlimited, no credits used
           </p>
-        </motion.div>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

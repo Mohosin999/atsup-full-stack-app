@@ -8,7 +8,6 @@ import AnalysisProgressModal, {
 } from "../ui/AnalysisProgressModal";
 import ScanActions from "./ScanActions";
 import { AtsScoreHistory, ResumeContent } from "../../types";
-import { demoJds } from "../../constants/demoJds";
 import { getAiScanStatus } from "../../utils/aiScan";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setUserAiScanState } from "@/store/slices/authSlice";
@@ -50,7 +49,6 @@ export default function ResumeScanForm({
   const [jobDescription, setJobDescription] = useState(
     initialJobDescription || "",
   );
-  const [demoJdSelected, setDemoJdSelected] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [pipelineOpen, setPipelineOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
@@ -252,7 +250,7 @@ export default function ResumeScanForm({
             >
               {resumeFile ? <CheckCircle className="w-5 h-5" /> : "1"}
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-gray-800">
               Upload Resume
             </h2>
           </div>
@@ -263,7 +261,7 @@ export default function ResumeScanForm({
                 <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-cyan-500" />
                 </div>
-                <p className="text-sm font-medium text-gray-900 text-center px-4">
+                <p className="text-sm font-medium text-gray-800 text-center px-4">
                   {resumeName}
                 </p>
               </div>
@@ -317,42 +315,20 @@ export default function ResumeScanForm({
                   "2"
                 )}
               </div>
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-xl font-semibold text-gray-800">
                 Paste Job Description
               </h2>
             </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 whitespace-nowrap">
-                Demo JD
-              </span>
-              <select
-                value={demoJdSelected}
-                onChange={(e) => {
-                  const selected = demoJds.find(
-                    (d) => d.label === e.target.value,
-                  );
-                  setDemoJdSelected(e.target.value);
-                  if (selected) setJobDescription(selected.description);
-                }}
-                className="text-sm bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              >
-                <option value="">Select role</option>
-                {demoJds.map((d) => (
-                  <option key={d.label} value={d.label}>
-                    {d.label}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
 
-          <textarea
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-            placeholder="Paste the job description here..."
-            className="flex-1 min-h-[280px] w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
-          />
+          <div className="flex-1">
+            <textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="Paste the job description here..."
+              className="flex-1 min-h-[280px] w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
+            />
+          </div>
         </div>
       </div>
 

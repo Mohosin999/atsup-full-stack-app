@@ -33,7 +33,7 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Edit User</h3>
+          <h3 className="text-lg font-semibold text-gray-800">Edit User</h3>
           <button
             type="button"
             onClick={onClose}

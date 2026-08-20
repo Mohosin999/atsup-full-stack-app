@@ -39,7 +39,7 @@ export default function FeaturesSection({ features }: FeaturesSectionProps) {
                 <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-cyan-500 via-cyan-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30 group-hover:scale-110 transition-transform duration-300">
                   <feature.icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
+                <h3 className="text-xl font-bold text-gray-800 mb-3 text-center">
                   {feature.title}
                 </h3>
                 <p className="text-gray-700 text-center leading-relaxed">

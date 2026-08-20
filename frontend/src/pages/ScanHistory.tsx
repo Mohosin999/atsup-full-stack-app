@@ -13,6 +13,7 @@ import {
   Pencil,
   Check,
   X,
+  Eye,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { atsScoreApi } from "../api/api";
@@ -110,38 +111,23 @@ export default function ScanHistory() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-violet-400";
+    if (score >= 80) return "text-green-600";
     if (score >= 60) return "text-yellow-600";
-    return "text-red-600";
-  };
-
-  const getScoreBg = (score: number) => {
-    if (score >= 80) return "bg-violet-500/20 border-violet-500/30";
-    if (score >= 60) return "bg-yellow-500/20 border-yellow-500/30";
-    return "bg-red-500/20 border-red-500/30";
+    return "text-red-500";
   };
 
   return (
     <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
       <Wrapper>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
-            <Search className="w-8 h-8 text-violet-600" />
-            Scan History
-          </h1>
-          <p className="text-gray-600">
-            View and manage all your ATS scan results
-          </p>
-        </motion.div>
-
         {/* Header with Clear All */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900">All Scans</h2>
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 my-8">
+          <div>
+            <h2 className="text-lg font-bold text-gray-800 mb-1">All Scans</h2>
+            <p className="text-sm text-gray-600">
+              View and manage all your ATS scan results
+            </p>
+          </div>
+          <div className="flex items-center justify-between w-full sm:w-auto gap-3">
             {history.length > 0 && (
               <>
                 <span className="text-sm text-gray-500">
@@ -149,7 +135,7 @@ export default function ScanHistory() {
                 </span>
                 <button
                   onClick={() => setClearAllOpen(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                   Clear All
@@ -170,10 +156,10 @@ export default function ScanHistory() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center text-center py-12 border border-dashed border-gray-200 rounded-2xl"
           >
-            <div className="w-16 h-16 rounded-2xl bg-violet-500/10 flex items-center justify-center mb-4">
-              <FileText className="w-8 h-8 text-violet-500" />
+            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-4">
+              <FileText className="w-8 h-8 text-cyan-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">
               No Scan History
             </h3>
             <p className="text-gray-600 mb-6 max-w-md">
@@ -182,7 +168,7 @@ export default function ScanHistory() {
             </p>
             <button
               onClick={() => navigate("/ats-scan")}
-              className="px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
             >
               <Search className="w-5 h-5" />
               Start Scanning
@@ -190,7 +176,7 @@ export default function ScanHistory() {
           </motion.div>
         ) : (
           <div
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 transition-opacity duration-200 ${
+            className={`space-y-4 transition-opacity duration-200 ${
               loading ? "opacity-50" : ""
             }`}
           >
@@ -200,7 +186,7 @@ export default function ScanHistory() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-violet-300 hover:shadow-md transition-all"
+                className="bg-white rounded-xl border border-gray-200 p-6 box-shadow hover:border-cyan-300 hover:shadow-md transition-all"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
@@ -218,7 +204,7 @@ export default function ScanHistory() {
                               if (e.key === "Escape") setEditingId(null);
                             }}
                             autoFocus
-                            className="text-lg font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-violet-300 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                            className="text-lg font-semibold text-gray-800 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                           />
                           <span
                             ref={measureRef}
@@ -237,7 +223,7 @@ export default function ScanHistory() {
                       </div>
                     ) : (
                       <div className="group/title flex items-center gap-1 mb-1 relative w-fit">
-                        <h3 className="text-lg font-semibold text-gray-900 truncate">
+                        <h3 className="text-lg font-semibold text-gray-800 truncate">
                           {item.resumeName}
                         </h3>
                         <button
@@ -245,61 +231,42 @@ export default function ScanHistory() {
                             setEditingId(item.id);
                             setEditValue(item.resumeName);
                           }}
-                          className="p-1 text-gray-400 hover:text-violet-600 hover:bg-violet-50 rounded transition-colors opacity-0 group-hover/title:opacity-100"
+                          className="p-1 text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors opacity-0 group-hover/title:opacity-100"
                           title="Rename"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     )}
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-gray-600 mb-4">
+                      Overall score{" "}
+                      <span className={`font-semibold ${getScoreColor(item.overallScore)}`}>
+                        → {item.overallScore}%
+                      </span>
+                    </p>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         {new Date(item.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      <div
-                        className={`p-3 rounded-lg border ${getScoreBg(item.overallScore)}`}
-                      >
-                        <p className="text-xs text-gray-600 mb-1">Overall</p>
-                        <p
-                          className={`text-xl font-bold ${getScoreColor(item.overallScore)}`}
-                        >
-                          {item.overallScore}%
-                        </p>
-                      </div>
-                      <div
-                        className={`p-3 rounded-lg border ${getScoreBg(item.atsFriendliness)}`}
-                      >
-                        <p className="text-xs text-gray-600 mb-1">
-                          ATS Friendly
-                        </p>
-                        <p
-                          className={`text-xl font-bold ${getScoreColor(item.atsFriendliness)}`}
-                        >
-                          {item.atsFriendliness}%
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-4">
-                      <button
-                        onClick={() => navigate(`/ats-scan/${item.id}`)}
-                        className="w-full px-4 py-2 bg-violet-500/20 border border-violet-500/30 text-violet-500 rounded-lg hover:bg-violet-500/30 transition-colors text-sm font-medium"
-                      >
-                        View Details
-                      </button>
-                    </div>
                   </div>
 
-                  <button
-                    onClick={() => setDeleteId(item.id)}
-                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors flex-shrink-0"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                  <div className="flex items-center gap-1 flex-shrink-0 self-end md:self-auto">
+                    <button
+                      onClick={() => navigate(`/ats-scan/${item.id}`)}
+                      className="p-1.5 md:p-2 text-gray-600 hover:text-cyan-600 hover:bg-cyan-500/10 rounded-lg transition-colors"
+                      title="View"
+                    >
+                      <Eye className="w-4 h-4 md:w-5 md:h-5" />
+                    </button>
+                    <button
+                      onClick={() => setDeleteId(item.id)}
+                      className="p-1.5 md:p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}

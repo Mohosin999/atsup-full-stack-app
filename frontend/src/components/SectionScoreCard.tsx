@@ -44,7 +44,7 @@ const SectionScoreCard: React.FC<SectionScoreCardProps> = ({
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2">
           {getIcon()}
-          <h3 className="font-semibold text-gray-900 dark:text-white">
+          <h3 className="font-semibold text-gray-800 dark:text-white">
             {sectionName}
           </h3>
         </div>

@@ -30,7 +30,7 @@ export default function EmptyState({
           <Icon className={iconSize} />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">
         {title}
       </h3>
       {description && (

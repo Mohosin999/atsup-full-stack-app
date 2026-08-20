@@ -10,7 +10,7 @@ export default function SkillsAnalysis({ analysis }: { analysis: Analysis }) {
     <div className="card p-6">
       <div className="flex items-center gap-2 mb-6">
         <Zap className="w-5 h-5 text-primary" />
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Skills Analysis</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Skills Analysis</h3>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>

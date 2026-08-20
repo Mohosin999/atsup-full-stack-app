@@ -59,7 +59,7 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
                 Improvement Suggestions
               </h2>
               <SuggestionList
@@ -87,13 +87,13 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
             </div>
 
             <div className="md:col-span-2 bg-white rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Summary
               </h2>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-gray-100 rounded-lg p-4">
                   <p className="text-gray-600 text-sm mb-1">ATS Friendliness</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-gray-800">
                     {result.atsFriendliness}%
                   </p>
                 </div>
@@ -106,7 +106,7 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Section Breakdown
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -166,7 +166,7 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Improvement Suggestions
             </h2>
             <SuggestionList

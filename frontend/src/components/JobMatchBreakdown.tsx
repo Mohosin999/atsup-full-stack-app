@@ -41,7 +41,7 @@ const SkillsTable: React.FC<{
               key={item.item}
               className="border-b border-gray-100 last:border-b-0"
             >
-              <td className="py-2.5 pr-3 text-gray-900 font-medium break-words">
+              <td className="py-2.5 pr-3 text-gray-800 font-medium break-words">
                 {item.item}
               </td>
               <td className="py-2.5 px-3 text-center">
@@ -89,11 +89,11 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   return (
     <div className="bg-white rounded-lg p-5">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+        <h3 className="font-semibold text-gray-800 flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full ${color}`} />
           {title}
         </h3>
-        <span className="text-xl font-bold text-gray-900">{category.score}%</span>
+        <span className="text-xl font-bold text-gray-800">{category.score}%</span>
       </div>
       <p className="text-xs text-gray-600 mb-3">{hint}</p>
 
@@ -208,12 +208,12 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
       className="space-y-4"
     >
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
           <Target className="w-5 h-5 text-cyan-500" />
           Job Description Match
         </h2>
         <div className="flex items-center gap-2">
-          <span className="text-3xl font-bold text-gray-900">{avgScore}%</span>
+          <span className="text-3xl font-bold text-gray-800">{avgScore}%</span>
           <span className="text-sm text-gray-600">overall match</span>
         </div>
       </div>

@@ -40,6 +40,7 @@ export default function ResumeHistory() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [duplicateId, setDuplicateId] = useState<string | null>(null);
   const [clearAllOpen, setClearAllOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
@@ -102,9 +103,12 @@ export default function ResumeHistory() {
       setResumes((prev) =>
         prev.map((r) =>
           r.id === id
-            ? { ...r, metadata: { ...r.metadata, originalName: editValue.trim() } }
-            : r
-        )
+            ? {
+                ...r,
+                metadata: { ...r.metadata, originalName: editValue.trim() },
+              }
+            : r,
+        ),
       );
       setEditingId(null);
     } catch {
@@ -133,6 +137,7 @@ export default function ResumeHistory() {
     } catch {
       toast.error("Failed to duplicate resume");
     }
+    setDuplicateId(null);
   };
 
   const getResumeTitle = (resume: ResumeListItem) =>
@@ -151,27 +156,15 @@ export default function ResumeHistory() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
-      <Wrapper maxWidth="max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
-            <FileText className="w-8 h-8 text-cyan-600" />
-            Resume History
-          </h1>
-          <p className="text-gray-600">
-            View and manage all your built resumes
-          </p>
-        </motion.div>
-
-        {/* Header with Clear All */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900">
-            All Resumes
-          </h2>
-          <div className="flex items-center gap-3">
+      <Wrapper>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 my-8">
+          <div>
+            <h2 className="text-lg font-bold text-gray-800 mb-1">All Resumes</h2>
+            <p className="text-sm text-gray-600">
+              View and manage all your built resumes
+            </p>
+          </div>
+          <div className="flex items-center justify-between w-full sm:w-auto gap-3">
             {resumes.length > 0 && (
               <>
                 <span className="text-sm text-gray-500">
@@ -179,7 +172,7 @@ export default function ResumeHistory() {
                 </span>
                 <button
                   onClick={() => setClearAllOpen(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                   Delete All
@@ -203,15 +196,16 @@ export default function ResumeHistory() {
             <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-4">
               <FileText className="w-8 h-8 text-cyan-600" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">
               No Resumes Yet
             </h3>
             <p className="text-gray-600 mb-6 max-w-md">
-              Your built resumes will appear here. Create your first resume to get started.
+              Your built resumes will appear here. Create your first resume to
+              get started.
             </p>
             <button
               onClick={() => navigate("/resume-builder/new")}
-              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
             >
               <FileText className="w-5 h-5" />
               Create Resume
@@ -229,9 +223,9 @@ export default function ResumeHistory() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-cyan-300 hover:shadow-md transition-all"
+                className="bg-white rounded-xl border border-gray-200 p-6 box-shadow hover:border-cyan-300 hover:shadow-md transition-all"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col md:flex-row items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     {editingId === resume.id ? (
                       <div className="flex items-center gap-1 mb-1">
@@ -247,7 +241,7 @@ export default function ResumeHistory() {
                               if (e.key === "Escape") setEditingId(null);
                             }}
                             autoFocus
-                            className="text-lg font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                            className="text-lg font-semibold text-gray-800 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
                           />
                           <span
                             ref={measureRef}
@@ -257,16 +251,22 @@ export default function ResumeHistory() {
                             {editValue || " "}
                           </span>
                         </div>
-                        <button onClick={() => handleRename(resume.id)} className="p-1 text-cyan-600 hover:text-cyan-700">
+                        <button
+                          onClick={() => handleRename(resume.id)}
+                          className="p-1 text-cyan-600 hover:text-cyan-700"
+                        >
                           <Check className="w-4 h-4" />
                         </button>
-                        <button onClick={() => setEditingId(null)} className="p-1 text-gray-400 hover:text-red-500">
+                        <button
+                          onClick={() => setEditingId(null)}
+                          className="p-1 text-gray-400 hover:text-red-500"
+                        >
                           <X className="w-4 h-4" />
                         </button>
                       </div>
                     ) : (
                       <div className="group/title flex items-center gap-1 mb-1 relative w-fit">
-                        <h3 className="text-lg font-semibold text-gray-900 truncate">
+                        <h3 className="text-lg font-semibold text-gray-700 truncate">
                           {getResumeTitle(resume)}
                         </h3>
                         <button
@@ -281,8 +281,9 @@ export default function ResumeHistory() {
                         </button>
                       </div>
                     )}
-                    <p className="text-sm text-gray-500 mb-3 truncate">
-                      {getResumeSubtitle(resume) || "Resume"}
+                    <p className="text-sm text-gray-600 mb-3 truncate">
+                      {resume.content?.personalInfo?.fullName?.trim() ||
+                        "Resume"}
                     </p>
                     <div className="flex items-center gap-4 text-sm text-gray-600">
                       <span className="flex items-center gap-1">
@@ -290,30 +291,27 @@ export default function ResumeHistory() {
                         {new Date(resume.updatedAt).toLocaleDateString()}
                       </span>
                     </div>
-
-                    <div className="mt-4 flex gap-3">
-                      <button
-                        onClick={() => navigate(`/resume-builder/${resume.id}`)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/20 border border-cyan-500/30 text-cyan-700 rounded-lg hover:bg-cyan-500/30 transition-colors"
-                      >
-                        <Pencil className="w-4 h-4" />
-                        Edit Resume
-                      </button>
-                    </div>
                   </div>
 
-                  <div className="flex items-center gap-1 flex-shrink-0">
+                  <div className="flex items-center gap-1 flex-shrink-0 self-end md:self-auto">
                     <button
-                      onClick={() => handleDuplicate(resume.id)}
-                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-500/10 rounded-lg transition-colors"
+                      onClick={() => navigate(`/resume-builder/${resume.id}`)}
+                      className="p-1.5 md:p-2 text-gray-600 hover:text-cyan-600 hover:bg-cyan-500/10 rounded-lg transition-colors"
+                      title="Edit"
                     >
-                      <Copy className="w-5 h-5" />
+                      <Pencil className="w-4 h-4 md:w-5 md:h-5" />
+                    </button>
+                    <button
+                      onClick={() => setDuplicateId(resume.id)}
+                      className="p-1.5 md:p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-500/10 rounded-lg transition-colors"
+                    >
+                      <Copy className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
                     <button
                       onClick={() => setDeleteId(resume.id)}
-                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors"
+                      className="p-1.5 md:p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors"
                     >
-                      <Trash2 className="w-5 h-5" />
+                      <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
                   </div>
                 </div>
@@ -342,6 +340,18 @@ export default function ResumeHistory() {
         onConfirm={() => deleteId && handleDelete(deleteId)}
         onCancel={() => setDeleteId(null)}
         confirmClassName="bg-red-500 hover:bg-red-600"
+      />
+
+      <ConfirmModal
+        isOpen={!!duplicateId}
+        title="Duplicate Resume"
+        message="Are you sure you want to duplicate this resume?"
+        confirmText="Duplicate"
+        cancelText="Cancel"
+        onConfirm={() => duplicateId && handleDuplicate(duplicateId)}
+        onCancel={() => setDuplicateId(null)}
+        type="info"
+        confirmClassName="bg-cyan-500 hover:bg-cyan-600"
       />
 
       <ConfirmModal

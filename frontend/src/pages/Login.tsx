@@ -65,7 +65,7 @@ export default function Login() {
         className="max-w-md w-full"
       >
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
             Welcome to CV<span className="text-primary">Coach</span>
           </h1>
           <p className="mt-2 text-gray-600 dark:text-gray-600">
@@ -106,7 +106,7 @@ export default function Login() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -125,7 +125,7 @@ export default function Login() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -144,7 +144,7 @@ export default function Login() {
                     onChange={handleChange}
                     required
                     minLength={6}
-                    className="w-full pl-10 pr-12 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full pl-10 pr-12 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Enter your password"
                   />
                   <button

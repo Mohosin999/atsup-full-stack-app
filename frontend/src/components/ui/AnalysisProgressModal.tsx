@@ -57,7 +57,7 @@ export default function AnalysisProgressModal({
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-cyan-600" />
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-gray-800">
                   Analyzing your resume
                 </h3>
               </div>
@@ -83,7 +83,7 @@ export default function AnalysisProgressModal({
                         isDone
                           ? "text-cyan-600"
                           : isActive
-                            ? "text-gray-900"
+                            ? "text-gray-800"
                             : "text-gray-500",
                       )}
                     >

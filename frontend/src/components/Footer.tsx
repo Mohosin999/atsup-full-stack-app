@@ -3,7 +3,7 @@ import Wrapper from "./Wrapper";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 text-gray-900 py-16 border-t border-gray-200">
+    <footer className="bg-gray-50 text-gray-800 py-16 border-t border-gray-200">
       <Wrapper>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">

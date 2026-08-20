@@ -39,7 +39,7 @@ export default function TestimonialsSection({
           >
             <Star className="w-4 h-4" /> Success Stories
           </motion.div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-800">
             Loved by{" "}
             <span className="bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">
               Thousands
@@ -84,7 +84,7 @@ export default function TestimonialsSection({
                   {testimonial.name.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900">{testimonial.name}</p>
+                  <p className="font-bold text-gray-800">{testimonial.name}</p>
                   <p className="text-sm text-gray-700">{testimonial.role}</p>
                 </div>
               </div>

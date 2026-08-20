@@ -84,7 +84,7 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({
               <span className="text-gray-600 dark:text-gray-600">
                 {item.label}
               </span>
-              <span className="font-medium text-gray-900 dark:text-white">
+              <span className="font-medium text-gray-800 dark:text-white">
                 {item.score}% ({item.weight}%)
               </span>
             </div>

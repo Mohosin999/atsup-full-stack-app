@@ -71,7 +71,7 @@
 //             initial={{ opacity: 0, scale: 0.8 }}
 //             animate={{ opacity: 1, scale: 1 }}
 //             transition={{ delay: 0.6, duration: 0.4 }}
-//             className={`${textSize} font-bold text-gray-900`}
+//             className={`${textSize} font-bold text-gray-800`}
 //           >
 //             {score}
 //             <span className="text-2xl font-semibold text-gray-600">%</span>

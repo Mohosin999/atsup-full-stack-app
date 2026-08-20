@@ -93,12 +93,12 @@ var env = {
 // src/shared/config/jwt.ts
 var generateAccessToken = (payload) => {
   return jwt.sign(payload, env.jwtSecret, {
-    expiresIn: "10m"
+    expiresIn: "1d"
   });
 };
 var generateRefreshToken = (payload) => {
   return jwt.sign(payload, env.jwtRefreshSecret, {
-    expiresIn: "20m"
+    expiresIn: "7d"
   });
 };
 var verifyAccessToken = (token) => {
@@ -509,14 +509,14 @@ var setAuthCookies = (res, accessToken, refreshToken2) => {
     secure: env.nodeEnv === "production",
     sameSite: env.nodeEnv === "production" ? "none" : "lax",
     path: "/",
-    maxAge: 10 * 60 * 1e3
+    maxAge: 24 * 60 * 60 * 1e3
   });
   res.cookie("refreshToken", refreshToken2, {
     httpOnly: true,
     secure: env.nodeEnv === "production",
     sameSite: env.nodeEnv === "production" ? "none" : "lax",
     path: "/",
-    maxAge: 20 * 60 * 1e3
+    maxAge: 7 * 24 * 60 * 60 * 1e3
   });
 };
 var register = async (req, res) => {
@@ -660,7 +660,7 @@ var refreshToken = async (req, res) => {
       secure: env.nodeEnv === "production",
       sameSite: env.nodeEnv === "production" ? "none" : "lax",
       path: "/",
-      maxAge: 10 * 60 * 1e3
+      maxAge: 24 * 60 * 60 * 1e3
     });
     res.json({
       success: true,
@@ -715,13 +715,13 @@ router.get(
         secure: env.nodeEnv === "production",
         sameSite: env.nodeEnv === "production" ? "none" : "lax",
         path: "/",
-        maxAge: 10 * 60 * 1e3
+        maxAge: 24 * 60 * 60 * 1e3
       });
       res.cookie("refreshToken", refreshToken2, {
         httpOnly: true,
         secure: env.nodeEnv === "production",
         sameSite: env.nodeEnv === "production" ? "none" : "lax",
-        maxAge: 20 * 60 * 1e3
+        maxAge: 7 * 24 * 60 * 60 * 1e3
       });
       res.redirect(env.frontendUrl);
     } catch (error) {
@@ -2664,6 +2664,18 @@ var deleteAllAtsScoreHistory = async (userId) => {
   await prisma.atsScoreHistory.deleteMany({ where: { userId } });
   return { success: true };
 };
+var renameAtsScoreHistory = async (userId, historyId, resumeName) => {
+  const existing = await prisma.atsScoreHistory.findFirst({
+    where: { id: historyId, userId }
+  });
+  if (!existing) {
+    throw new Error("ATS Score history not found");
+  }
+  return prisma.atsScoreHistory.update({
+    where: { id: historyId },
+    data: { resumeName, title: resumeName }
+  });
+};
 
 // src/modules/ats-score-check/atsScoreCheck.controller.ts
 var parseAddress = (raw2) => {
@@ -2923,6 +2935,29 @@ var deleteAllAtsScoresController = async (req, res) => {
     });
   }
 };
+var renameAtsScoreController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { resumeName } = req.body;
+    if (!resumeName || !resumeName.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Resume name is required"
+      });
+    }
+    await renameAtsScoreHistory(req.user.id, id, resumeName.trim());
+    res.json({
+      success: true,
+      message: "Renamed successfully"
+    });
+  } catch (error) {
+    console.error("Rename ATS score error:", error);
+    res.status(404).json({
+      success: false,
+      message: error.message || "Failed to rename"
+    });
+  }
+};
 
 // src/modules/ats-score-check/atsScoreCheck.routes.ts
 var router3 = Router3();
@@ -2933,6 +2968,7 @@ router3.post("/analyze", aiLimiter, analyzeAtsScore);
 router3.get("/history", generalLimiter, getAtsScores);
 router3.get("/history/:id", generalLimiter, getAtsScore);
 router3.delete("/history/:id", generalLimiter, deleteAtsScoreController);
+router3.put("/history/:id/rename", generalLimiter, renameAtsScoreController);
 router3.delete("/history", generalLimiter, deleteAllAtsScoresController);
 var atsScoreCheck_routes_default = router3;
 
@@ -3044,7 +3080,7 @@ var createResumeFromContent = async (userId, content) => {
       content,
       metadata: {
         filename: `resume_${Date.now()}.json`,
-        originalName: content.personalInfo?.fullName || "Resume",
+        originalName: content.personalInfo?.jobTitle || content.personalInfo?.fullName || "",
         size: JSON.stringify(content).length,
         type: "application/json"
       },
@@ -3096,6 +3132,7 @@ var duplicateResumeById = async (resumeId, userId) => {
   if (!existing) {
     return null;
   }
+  const sourceTitle = existing.metadata?.originalName || existing.content?.personalInfo?.jobTitle || existing.content?.personalInfo?.fullName || "Resume";
   const resume = await prisma.resume.create({
     data: {
       userId,
@@ -3103,7 +3140,7 @@ var duplicateResumeById = async (resumeId, userId) => {
       content: existing.content,
       metadata: {
         filename: `resume_${Date.now()}.json`,
-        originalName: `${existing.metadata?.originalName || "Resume"} (Copy)`,
+        originalName: `${sourceTitle} (Copy)`,
         size: JSON.stringify(existing.content).length,
         type: "application/json"
       },
@@ -5866,21 +5903,25 @@ var getTodayNewUsers = async () => {
     }
   });
 };
+var TZ_OFFSET_MS = 6 * 60 * 60 * 1e3;
+var toGmt6HourKey = (date) => new Date(date.getTime() + TZ_OFFSET_MS).toISOString().slice(0, 13);
+var toGmt6DayKey = (date) => new Date(date.getTime() + TZ_OFFSET_MS).toISOString().slice(0, 10);
+var fromGmt6 = (year, month, day, hour = 0) => new Date(Date.UTC(year, month, day, hour) - TZ_OFFSET_MS);
 var buildBuckets = (start, end, hourly) => {
   const keys = [];
   const labels = [];
   const cursor = new Date(start);
   while (cursor < end) {
     if (hourly) {
-      const key = cursor.toISOString().slice(0, 13);
+      const key = toGmt6HourKey(cursor);
       keys.push(key);
       labels.push(`${key.slice(11)}:00`);
-      cursor.setHours(cursor.getHours() + 1);
+      cursor.setUTCHours(cursor.getUTCHours() + 1);
     } else {
-      const key = cursor.toISOString().split("T")[0];
+      const key = toGmt6DayKey(cursor);
       keys.push(key);
       labels.push(`${key.slice(8)}/${key.slice(5, 7)}`);
-      cursor.setDate(cursor.getDate() + 1);
+      cursor.setUTCDate(cursor.getUTCDate() + 1);
     }
   }
   return { keys, labels };
@@ -5897,7 +5938,7 @@ var fetchSeries = async (model, dateField, start, end, hourly) => {
   });
   records.forEach((record) => {
     const t = new Date(record[dateField]);
-    const key = hourly ? t.toISOString().slice(0, 13) : t.toISOString().split("T")[0];
+    const key = hourly ? toGmt6HourKey(t) : toGmt6DayKey(t);
     if (counts[key] !== void 0) counts[key]++;
   });
   return { labels, values: keys.map((k) => counts[k]) };
@@ -5905,29 +5946,30 @@ var fetchSeries = async (model, dateField, start, end, hourly) => {
 var sum = (values) => values.reduce((a, b) => a + b, 0);
 var getWindow = (period) => {
   const now = /* @__PURE__ */ new Date();
-  let start = new Date(now);
-  let end = new Date(now);
+  const shifted = new Date(now.getTime() + TZ_OFFSET_MS);
+  const year = shifted.getUTCFullYear();
+  const month = shifted.getUTCMonth();
+  const day = shifted.getUTCDate();
+  let start;
+  let end;
   let hourly = false;
   if (period === "today") {
-    start.setHours(0, 0, 0, 0);
-    end = new Date(start);
-    end.setDate(end.getDate() + 1);
+    start = fromGmt6(year, month, day);
+    end = new Date(start.getTime() + 24 * 60 * 60 * 1e3);
     hourly = true;
   } else if (period === "yesterday") {
-    start.setDate(start.getDate() - 1);
-    start.setHours(0, 0, 0, 0);
-    end = new Date(start);
-    end.setDate(end.getDate() + 1);
+    start = fromGmt6(year, month, day - 1);
+    end = new Date(start.getTime() + 24 * 60 * 60 * 1e3);
     hourly = true;
   } else if (period === "7d") {
-    start.setDate(start.getDate() - 6);
-    start.setHours(0, 0, 0, 0);
+    start = fromGmt6(year, month, day - 6);
+    end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1e3);
   } else if (period === "14d") {
-    start.setDate(start.getDate() - 13);
-    start.setHours(0, 0, 0, 0);
+    start = fromGmt6(year, month, day - 13);
+    end = new Date(start.getTime() + 14 * 24 * 60 * 60 * 1e3);
   } else {
-    start.setDate(start.getDate() - 29);
-    start.setHours(0, 0, 0, 0);
+    start = fromGmt6(year, month, day - 29);
+    end = new Date(start.getTime() + 30 * 24 * 60 * 60 * 1e3);
   }
   const length = end.getTime() - start.getTime();
   const prevStart = new Date(start.getTime() - length);
@@ -5963,28 +6005,24 @@ var getGrowthData = async (period) => {
 var getResumeBuilderUsersToday = async () => {
   const startOfToday = /* @__PURE__ */ new Date();
   startOfToday.setHours(0, 0, 0, 0);
-  const groups = await prisma.resume.groupBy({
-    by: ["userId"],
+  return prisma.resume.count({
     where: {
       createdAt: {
         gte: startOfToday
       }
     }
   });
-  return groups.length;
 };
 var getATSCheckUsersToday = async () => {
   const startOfToday = /* @__PURE__ */ new Date();
   startOfToday.setHours(0, 0, 0, 0);
-  const groups = await prisma.atsScoreHistory.groupBy({
-    by: ["userId"],
+  return prisma.atsScoreHistory.count({
     where: {
       createdAt: {
         gte: startOfToday
       }
     }
   });
-  return groups.length;
 };
 var getBestFeatureToday = async () => {
   const [resumeCount, atsCount] = await Promise.all([

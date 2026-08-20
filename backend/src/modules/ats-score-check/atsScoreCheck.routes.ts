@@ -10,6 +10,7 @@ import {
   getAtsScore,
   deleteAtsScoreController,
   deleteAllAtsScoresController,
+  renameAtsScoreController,
 } from "./atsScoreCheck.controller";
 
 const router = Router();
@@ -22,6 +23,7 @@ router.post("/analyze", aiLimiter, analyzeAtsScore);
 router.get("/history", generalLimiter, getAtsScores); // TODO: start revision from here
 router.get("/history/:id", generalLimiter, getAtsScore);
 router.delete("/history/:id", generalLimiter, deleteAtsScoreController);
+router.put("/history/:id/rename", generalLimiter, renameAtsScoreController);
 router.delete("/history", generalLimiter, deleteAllAtsScoresController);
 
 export default router;

@@ -2,10 +2,19 @@
 Scan History Page
 View and manage ATS scan history
 =================================== */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Calendar, FileText, Trash2, ArrowLeft, Search } from "lucide-react";
+import {
+  Calendar,
+  FileText,
+  Trash2,
+  ArrowLeft,
+  Search,
+  Pencil,
+  Check,
+  X,
+} from "lucide-react";
 import { toast } from "react-toastify";
 import { atsScoreApi } from "../api/api";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
@@ -24,6 +33,10 @@ export default function ScanHistory() {
   const [totalPages, setTotalPages] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [clearAllOpen, setClearAllOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
 
   const fetchHistory = async (pageNum: number = 1) => {
     try {
@@ -46,6 +59,13 @@ export default function ScanHistory() {
   };
 
   useEffect(() => {
+    if (editingId && inputRef.current && measureRef.current) {
+      const textWidth = measureRef.current.offsetWidth;
+      inputRef.current.style.width = `${Math.min(textWidth + 20, 480)}px`;
+    }
+  }, [editValue, editingId]);
+
+  useEffect(() => {
     fetchHistory();
   }, []);
 
@@ -58,6 +78,24 @@ export default function ScanHistory() {
       toast.error("Failed to delete");
     }
     setDeleteId(null);
+  };
+
+  const handleRename = async (id: string) => {
+    if (!editValue.trim()) return;
+    try {
+      await atsScoreApi.rename(id, editValue.trim());
+      toast.success("Renamed successfully");
+      setHistory((prev) =>
+        prev.map((item) =>
+          (item.id || (item as any)._id) === id
+            ? { ...item, resumeName: editValue.trim() }
+            : item,
+        ),
+      );
+      setEditingId(null);
+    } catch {
+      toast.error("Failed to rename");
+    }
   };
 
   const handleClearAll = async () => {
@@ -114,9 +152,7 @@ export default function ScanHistory() {
 
         {/* Header with Clear All */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900">
-            All Scans
-          </h2>
+          <h2 className="text-xl font-bold text-gray-900">All Scans</h2>
           <div className="flex items-center gap-3">
             {history.length > 0 && (
               <>
@@ -153,7 +189,8 @@ export default function ScanHistory() {
               No Scan History
             </h3>
             <p className="text-gray-600 mb-6 max-w-md">
-              Your ATS scan results will appear here. Run your first scan to get started.
+              Your ATS scan results will appear here. Run your first scan to get
+              started.
             </p>
             <button
               onClick={() => navigate("/ats-scan")}
@@ -179,9 +216,54 @@ export default function ScanHistory() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">
-                      {item.resumeName}
-                    </h3>
+                    {editingId === item.id ? (
+                      <div className="flex items-center gap-1 mb-1">
+                        <div className="relative inline-block">
+                          <input
+                            ref={inputRef}
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onBlur={() => handleRename(item.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleRename(item.id);
+                              if (e.key === "Escape") setEditingId(null);
+                            }}
+                            autoFocus
+                            className="text-lg font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-violet-300 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                          />
+                          <span
+                            ref={measureRef}
+                            aria-hidden="true"
+                            className="invisible whitespace-pre absolute top-0 left-0 text-lg font-semibold"
+                          >
+                            {editValue || " "}
+                          </span>
+                        </div>
+                        <button onClick={() => handleRename(item.id)} className="p-1 text-green-600 hover:text-green-700">
+                          <Check className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => setEditingId(null)} className="p-1 text-gray-400 hover:text-red-500">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="group/title flex items-center gap-1 mb-1 relative w-fit">
+                        <h3 className="text-lg font-semibold text-gray-900 truncate">
+                          {item.resumeName}
+                        </h3>
+                        <button
+                          onClick={() => {
+                            setEditingId(item.id);
+                            setEditValue(item.resumeName);
+                          }}
+                          className="p-1 text-gray-400 hover:text-violet-600 hover:bg-violet-50 rounded transition-colors opacity-0 group-hover/title:opacity-100"
+                          title="Rename"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
                     <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />

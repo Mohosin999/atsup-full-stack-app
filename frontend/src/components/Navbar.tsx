@@ -18,21 +18,13 @@ interface NavLink {
   label: string;
 }
 
-const getNavLinks = (role?: string): NavLink[] => [
-  ...(role === "admin"
-    ? [
-        {
-          path: "/admin-dashboard",
-          label: "Dashboard",
-        },
-      ]
-    : [
-        {
-          path: "/dashboard",
-          label: "Dashboard",
-        },
-      ]),
-    { path: "/ats-scan", label: "ATS Scan" },
+const getNavLinks = (user?: { role?: string } | null): NavLink[] => [
+  ...(user
+    ? user.role === "admin"
+      ? [{ path: "/admin-dashboard", label: "Dashboard" }]
+      : [{ path: "/dashboard", label: "Dashboard" }]
+    : []),
+  { path: "/ats-scan", label: "ATS Scan" },
   { path: "/resume-builder", label: "Resume Builder" },
 ];
 
@@ -66,7 +58,7 @@ export default function Navbar() {
 
             {/* Center: Navigation links + History + Pricing */}
             <div className="hidden lg:flex items-center justify-center flex-1 gap-2">
-              <NavLinks navLinks={getNavLinks(user?.role)} />
+              <NavLinks navLinks={getNavLinks(user)} />
               {user && <HistoryDropdown />}
               <Link
                 to="/plans"
@@ -112,7 +104,7 @@ export default function Navbar() {
         <AnimatePresence>
           {mobileMenuOpen && user && (
             <MobileMenu
-              navLinks={getNavLinks(user.role)}
+              navLinks={getNavLinks(user)}
               user={user}
               setMobileMenuOpen={setMobileMenuOpen}
             />
@@ -125,7 +117,7 @@ export default function Navbar() {
               className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 py-6 px-4"
             >
               <div className="flex flex-col gap-1 mb-4">
-                {getNavLinks().map((link) => (
+                {getNavLinks(null).map((link) => (
                   <Link
                     key={link.path}
                     to={link.path}

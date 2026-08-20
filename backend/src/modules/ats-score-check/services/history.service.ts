@@ -131,3 +131,22 @@ export const deleteAllAtsScoreHistory = async (userId: string) => {
   await prisma.atsScoreHistory.deleteMany({ where: { userId } });
   return { success: true };
 };
+
+export const renameAtsScoreHistory = async (
+  userId: string,
+  historyId: string,
+  resumeName: string,
+) => {
+  const existing = await prisma.atsScoreHistory.findFirst({
+    where: { id: historyId, userId },
+  });
+
+  if (!existing) {
+    throw new Error("ATS Score history not found");
+  }
+
+  return prisma.atsScoreHistory.update({
+    where: { id: historyId },
+    data: { resumeName, title: resumeName },
+  });
+};

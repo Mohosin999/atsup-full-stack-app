@@ -2,7 +2,7 @@
 Resume History Page
 View and manage resume builder history
 =================================== */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -12,6 +12,8 @@ import {
   Trash2,
   Pencil,
   Copy,
+  Check,
+  X,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { resumeApi } from "../api/api";
@@ -40,6 +42,10 @@ export default function ResumeHistory() {
   const [totalPages, setTotalPages] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [clearAllOpen, setClearAllOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
 
   const fetchResumes = async (pageNum: number = 1) => {
     try {
@@ -63,6 +69,13 @@ export default function ResumeHistory() {
   };
 
   useEffect(() => {
+    if (editingId && inputRef.current && measureRef.current) {
+      const textWidth = measureRef.current.offsetWidth;
+      inputRef.current.style.width = `${Math.min(textWidth + 20, 480)}px`;
+    }
+  }, [editValue, editingId]);
+
+  useEffect(() => {
     fetchResumes();
   }, []);
 
@@ -75,6 +88,33 @@ export default function ResumeHistory() {
       toast.error("Failed to delete resume");
     }
     setDeleteId(null);
+  };
+
+  const handleRename = async (id: string) => {
+    if (!editValue.trim()) return;
+    try {
+      const resume = resumes.find((r) => r.id === id);
+      await resumeApi.update(id, {
+        content: {
+          ...resume?.content,
+          personalInfo: {
+            ...resume?.content?.personalInfo,
+            fullName: editValue.trim(),
+          },
+        },
+      });
+      toast.success("Renamed successfully");
+      setResumes((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? { ...r, content: { ...r.content, personalInfo: { ...r.content?.personalInfo, fullName: editValue.trim() } } }
+            : r
+        )
+      );
+      setEditingId(null);
+    } catch {
+      toast.error("Failed to rename");
+    }
   };
 
   const handleClearAll = async () => {
@@ -207,9 +247,54 @@ export default function ResumeHistory() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">
-                      {getResumeTitle(resume)}
-                    </h3>
+                    {editingId === resume.id ? (
+                      <div className="flex items-center gap-1 mb-1">
+                        <div className="relative inline-block">
+                          <input
+                            ref={inputRef}
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onBlur={() => handleRename(resume.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleRename(resume.id);
+                              if (e.key === "Escape") setEditingId(null);
+                            }}
+                            autoFocus
+                            className="text-lg font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-green-300 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          />
+                          <span
+                            ref={measureRef}
+                            aria-hidden="true"
+                            className="invisible whitespace-pre absolute top-0 left-0 text-lg font-semibold"
+                          >
+                            {editValue || " "}
+                          </span>
+                        </div>
+                        <button onClick={() => handleRename(resume.id)} className="p-1 text-green-600 hover:text-green-700">
+                          <Check className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => setEditingId(null)} className="p-1 text-gray-400 hover:text-red-500">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="group/title flex items-center gap-1 mb-1 relative w-fit">
+                        <h3 className="text-lg font-semibold text-gray-900 truncate">
+                          {getResumeTitle(resume)}
+                        </h3>
+                        <button
+                          onClick={() => {
+                            setEditingId(resume.id);
+                            setEditValue(getResumeTitle(resume));
+                          }}
+                          className="p-1 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded transition-colors opacity-0 group-hover/title:opacity-100"
+                          title="Rename"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
                     <p className="text-sm text-gray-500 mb-3 truncate">
                       {getResumeSubtitle(resume) || "Resume"}
                     </p>

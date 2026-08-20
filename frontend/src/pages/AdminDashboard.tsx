@@ -19,8 +19,8 @@ import {
   LifeBuoy,
 } from "lucide-react";
 import api from "../api/api";
-import UserManagement from "../components/admin/UserManagement";
-import SupportTickets from "../components/admin/SupportTickets";
+import UserManagement from "../components/admin-dashboard/UserManagement";
+import SupportTickets from "../components/admin-dashboard/SupportTickets";
 import Wrapper from "@/components/Wrapper";
 import SidebarButton from "../components/ui/SidebarButton";
 

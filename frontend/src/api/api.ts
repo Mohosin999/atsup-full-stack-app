@@ -106,6 +106,8 @@ export const atsScoreApi = {
     api.get(`/ats-score/history?page=${page}&limit=${limit}`),
   getById: (id: string) => api.get(`/ats-score/history/${id}`),
   delete: (id: string) => api.delete(`/ats-score/history/${id}`),
+  rename: (id: string, resumeName: string) =>
+    api.put(`/ats-score/history/${id}/rename`, { resumeName }),
   deleteAll: () => api.delete("/ats-score/history"),
 };
 

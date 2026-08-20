@@ -47,7 +47,7 @@ export default function ProfileMenu({
         onClick={() => setProfileMenuOpen(!profileMenuOpen)}
         className="flex items-center gap-2"
       >
-        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 hover:from-emerald-700 hover:to-emerald-500 flex items-center justify-center text-white font-medium">
+        <div className="w-9 h-9 rounded-full bg-cyan-600 flex items-center justify-center text-white font-medium">
           {user.name?.charAt(0).toUpperCase() || "U"}
         </div>
       </button>
@@ -60,7 +60,7 @@ export default function ProfileMenu({
             className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50"
           >
             <div className="px-4 py-3 border-b border-gray-200">
-              <p className="text-sm font-semibold text-gray-900 truncate">
+              <p className="text-sm font-semibold text-gray-800 truncate">
                 {user.name}
               </p>
               <p
@@ -72,7 +72,7 @@ export default function ProfileMenu({
             </div>
             <Link
               to="/settings"
-              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
               onClick={() => setProfileMenuOpen(false)}
             >
               <Settings className="w-4 h-4" /> <span>Settings</span>
@@ -82,7 +82,7 @@ export default function ProfileMenu({
                 setProfileMenuOpen(false);
                 onLogout();
               }}
-              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
             >
               <LogOut className="w-4 h-4" /> <span>Logout</span>
             </button>

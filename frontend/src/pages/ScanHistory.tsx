@@ -1,0 +1,310 @@
+/* ===================================
+Scan History Page
+View and manage ATS scan history
+=================================== */
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  Calendar,
+  FileText,
+  Trash2,
+  Search,
+  Pencil,
+  Check,
+  X,
+  Eye,
+} from "lucide-react";
+import { toast } from "react-toastify";
+import { atsScoreApi } from "../api/api";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import Pagination from "../components/ui/Pagination";
+import ConfirmModal from "../components/ui/ConfirmModal";
+import Wrapper from "../components/Wrapper";
+import { AtsScoreHistory } from "../types";
+import { useAppSelector } from "@/hooks";
+
+export default function ScanHistory() {
+  const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
+  const [history, setHistory] = useState<AtsScoreHistory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [clearAllOpen, setClearAllOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
+
+  const fetchHistory = async (pageNum: number = 1) => {
+    try {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      if (history.length === 0) {
+        setLoading(true);
+      }
+      const response = await atsScoreApi.getHistory(pageNum, 6);
+      setHistory(response.data.data || []);
+      setTotalPages(response.data.pagination?.totalPages || 1);
+      setPage(pageNum);
+    } catch {
+      // silent
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (editingId && inputRef.current && measureRef.current) {
+      const textWidth = measureRef.current.offsetWidth;
+      inputRef.current.style.width = `${Math.min(textWidth + 20, 480)}px`;
+    }
+  }, [editValue, editingId]);
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await atsScoreApi.delete(id);
+      toast.success("Deleted successfully");
+      fetchHistory(history.length === 1 && page > 1 ? page - 1 : page);
+    } catch {
+      toast.error("Failed to delete");
+    }
+    setDeleteId(null);
+  };
+
+  const handleRename = async (id: string) => {
+    if (!editValue.trim()) return;
+    try {
+      await atsScoreApi.rename(id, editValue.trim());
+      setHistory((prev) =>
+        prev.map((item) =>
+          (item.id || (item as any)._id) === id
+            ? { ...item, resumeName: editValue.trim() }
+            : item,
+        ),
+      );
+      setEditingId(null);
+    } catch {
+      toast.error("Failed to rename");
+    }
+  };
+
+  const handleClearAll = async () => {
+    try {
+      await atsScoreApi.deleteAll();
+      toast.success("All history cleared");
+      setHistory([]);
+      setPage(1);
+      setTotalPages(1);
+    } catch {
+      toast.error("Failed to clear history");
+    }
+    setClearAllOpen(false);
+  };
+
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-500";
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
+      <Wrapper>
+        {/* Header with Clear All */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 my-8">
+          <div>
+            <h2 className="text-lg font-bold text-gray-800 mb-1">All Scans</h2>
+            <p className="text-sm text-gray-600">
+              View and manage all your ATS scan results
+            </p>
+          </div>
+          <div className="flex items-center justify-between w-full sm:w-auto gap-3">
+            {history.length > 0 && (
+              <>
+                <span className="text-sm text-gray-500">
+                  {history.length} scan{history.length === 1 ? "" : "s"}
+                </span>
+                <button
+                  onClick={() => setClearAllOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Clear All
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <LoadingSpinner />
+          </div>
+        ) : history.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center text-center py-12 border border-dashed border-gray-200 rounded-2xl"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-4">
+              <FileText className="w-8 h-8 text-cyan-500" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">
+              No Scan History
+            </h3>
+            <p className="text-gray-600 mb-6 max-w-md">
+              Your ATS scan results will appear here. Run your first scan to get
+              started.
+            </p>
+            <button
+              onClick={() => navigate("/ats-scan")}
+              className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
+            >
+              <Search className="w-5 h-5" />
+              Start Scanning
+            </button>
+          </motion.div>
+        ) : (
+          <div
+            className={`space-y-4 transition-opacity duration-200 ${
+              loading ? "opacity-50" : ""
+            }`}
+          >
+            {history.map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="bg-white rounded-xl border border-gray-200 p-6 box-shadow hover:border-cyan-300 hover:shadow-md transition-all"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    {editingId === item.id ? (
+                      <div className="flex items-center gap-1 mb-1">
+                        <div className="relative inline-block">
+                          <input
+                            ref={inputRef}
+                            type="text"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            onBlur={() => handleRename(item.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleRename(item.id);
+                              if (e.key === "Escape") setEditingId(null);
+                            }}
+                            autoFocus
+                            className="text-lg font-semibold text-gray-800 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                          />
+                          <span
+                            ref={measureRef}
+                            aria-hidden="true"
+                            className="invisible whitespace-pre absolute top-0 left-0 text-lg font-semibold"
+                          >
+                            {editValue || " "}
+                          </span>
+                        </div>
+                        <button onClick={() => handleRename(item.id)} className="p-1 text-cyan-600 hover:text-cyan-700">
+                          <Check className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => setEditingId(null)} className="p-1 text-gray-400 hover:text-red-500">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="group/title flex items-center gap-1 mb-1 relative w-fit">
+                        <h3 className="text-lg font-semibold text-gray-800 truncate">
+                          {item.resumeName}
+                        </h3>
+                        <button
+                          onClick={() => {
+                            setEditingId(item.id);
+                            setEditValue(item.resumeName);
+                          }}
+                          className="p-1 text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors opacity-0 group-hover/title:opacity-100"
+                          title="Rename"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+                    <p className="text-sm text-gray-600 mb-4">
+                      Overall score{" "}
+                      <span className={`font-semibold ${getScoreColor(item.overallScore)}`}>
+                        → {item.overallScore}%
+                      </span>
+                    </p>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        {new Date(item.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1 flex-shrink-0 self-end md:self-auto">
+                    <button
+                      onClick={() => navigate(`/ats-scan/${item.id}`)}
+                      className="p-1.5 md:p-2 text-gray-600 hover:text-cyan-600 hover:bg-cyan-500/10 rounded-lg transition-colors"
+                      title="View"
+                    >
+                      <Eye className="w-4 h-4 md:w-5 md:h-5" />
+                    </button>
+                    <button
+                      onClick={() => setDeleteId(item.id)}
+                      className="p-1.5 md:p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <div className="mt-6">
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={fetchHistory}
+            />
+          </div>
+        )}
+      </Wrapper>
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        title="Delete Entry"
+        message="Are you sure you want to delete this scan history entry?"
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={() => deleteId && handleDelete(deleteId)}
+        onCancel={() => setDeleteId(null)}
+        confirmClassName="bg-red-500 hover:bg-red-600"
+      />
+
+      <ConfirmModal
+        isOpen={clearAllOpen}
+        title="Clear All History"
+        message="This will permanently delete all your scan history. This action cannot be undone."
+        confirmText="Clear All"
+        cancelText="Cancel"
+        onConfirm={handleClearAll}
+        onCancel={() => setClearAllOpen(false)}
+        confirmClassName="bg-red-500 hover:bg-red-600"
+      />
+    </div>
+  );
+}

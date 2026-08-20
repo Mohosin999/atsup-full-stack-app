@@ -3,6 +3,8 @@ import userRoutes from "./users/users.routes";
 import atsScoreCheckRoutes from "./ats-score-check/atsScoreCheck.routes";
 import resumeBuilderRoutes from "./resume-builder/resumeBuilder.routes";
 import unlimitedAtsRoutes from "./unlimited-ats-check/unlimitedAts.routes";
+import adminDashboardRoutes from "./admin-dashboard/admin-dashboard.routes";
+import supportRoutes from "./support/support.routes";
 
 export const moduleRoutes = [
   { path: "/api/auth", router: authRoutes },
@@ -10,4 +12,6 @@ export const moduleRoutes = [
   { path: "/api/ats-score", router: atsScoreCheckRoutes },
   { path: "/api/resumes", router: resumeBuilderRoutes },
   { path: "/api/unlimited-ats-check", router: unlimitedAtsRoutes },
+  { path: "/api/admin-dashboard", router: adminDashboardRoutes },
+  { path: "/api/support", router: supportRoutes },
 ];

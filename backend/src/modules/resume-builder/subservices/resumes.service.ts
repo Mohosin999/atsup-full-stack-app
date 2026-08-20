@@ -139,7 +139,10 @@ export const createResumeFromContent = async (
       content,
       metadata: {
         filename: `resume_${Date.now()}.json`,
-        originalName: content.personalInfo?.fullName || 'Resume',
+        originalName:
+          content.personalInfo?.jobTitle ||
+          content.personalInfo?.fullName ||
+          '',
         size: JSON.stringify(content).length,
         type: 'application/json',
       },
@@ -202,6 +205,12 @@ export const duplicateResumeById = async (resumeId: string, userId: string) => {
     return null;
   }
 
+  const sourceTitle =
+    (existing.metadata as any)?.originalName ||
+    (existing.content as any)?.personalInfo?.jobTitle ||
+    (existing.content as any)?.personalInfo?.fullName ||
+    'Resume';
+
   const resume = await prisma.resume.create({
     data: {
       userId,
@@ -209,7 +218,7 @@ export const duplicateResumeById = async (resumeId: string, userId: string) => {
       content: existing.content as any,
       metadata: {
         filename: `resume_${Date.now()}.json`,
-        originalName: `${(existing.metadata as any)?.originalName || "Resume"} (Copy)`,
+        originalName: `${sourceTitle} (Copy)`,
         size: JSON.stringify(existing.content).length,
         type: "application/json",
       },

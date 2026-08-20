@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique @db.VarChar(255)
+  name         String   @db.VarChar(255)
+  googleId     String?  @unique @db.VarChar(255)
+  password     String?  @db.VarChar(255)
+  picture      String?
+  preferences  Json?
+  subscription Json?
+  createdAt    DateTime @default(now()) @db.Timestamp()
+  updatedAt    DateTime @updatedAt @db.Timestamp()
+
+  resumes           Resume[]
+  analyses          Analysis[]
+  atsScores         AtsScore[]
+  atsScoreHistories AtsScoreHistory[]
+  jobDescriptions   JobDescription[]
+  payments          Payment[]
+
+  @@map("users")
+}
+
+model Resume {
+  id             String   @id @default(cuid())
+  userId         String
+  sourceType     String   @default("uploaded") @db.VarChar(50)
+  originalFormat Json?
+  content        Json
+  metadata       Json
+  tags           String[]
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now()) @db.Timestamp()
+  updatedAt      DateTime @updatedAt @db.Timestamp()
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  analyses  Analysis[]
+  atsScores AtsScore[]
+
+  @@index([userId, createdAt])
+  @@map("resumes")
+}
+
+model Analysis {
+  id                String   @id @default(cuid())
+  userId            String
+  resumeId          String
+  jobDescription    String   @default("") @db.Text
+  jobTitle          String?
+  company           String?
+  score             Int      @default(0)
+  atsScore          Int      @default(0)
+  atsBreakdown      Json?
+  jobMatchingBreakdown Json?
+  atsSuggestions    String[]
+  jobMatchSuggestions String[]
+  feedback          Json
+  sectionScores     Json
+  keywords          Json
+  missingKeywords   Json
+  recommendedKeywords String[]
+  howToUseKeywords  String[]
+  resumeImprovements String[]
+  jobMatch           Json?
+  existingSections  Json
+  createdAt         DateTime @default(now()) @db.Timestamp()
+  updatedAt         DateTime @updatedAt @db.Timestamp()
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("analyses")
+}
+
+model AtsScore {
+  id           String   @id @default(cuid())
+  userId       String
+  resumeId     String
+  overallScore Int      @db.Integer
+  sectionScores Json
+  atsFriendliness Int    @db.Integer
+  suggestions  String[]
+  createdAt    DateTime @default(now()) @db.Timestamp()
+  updatedAt    DateTime @updatedAt @db.Timestamp()
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([resumeId])
+  @@map("ats_scores")
+}
+
+model AtsScoreHistory {
+  id               String   @id @default(cuid())
+  userId           String
+  title            String   @db.VarChar(255)
+  resumeName       String   @db.VarChar(255)
+  overallScore     Int      @db.Integer
+  sectionScores    Json
+  atsFriendliness  Int      @db.Integer
+  suggestions      String[]
+  resumeContent    Json
+  aiResearch       Json?
+  createdAt        DateTime @default(now()) @db.Timestamp()
+  updatedAt        DateTime @updatedAt @db.Timestamp()
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("ats_score_histories")
+}
+
+model JobDescription {
+  id          String   @id @default(cuid())
+  userId      String
+  description String   @db.Text
+  createdAt   DateTime @default(now()) @db.Timestamp()
+  updatedAt   DateTime @updatedAt @db.Timestamp()
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("job_descriptions")
+}
+
+model Payment {
+  id                String   @id @default(cuid())
+  userId            String
+  email             String   @db.VarChar(255)
+  amount            Int
+  currency          String   @default("usd") @db.VarChar(10)
+  status            String   @default("pending") @db.VarChar(50)
+  paymentMethod     String   @db.VarChar(50)
+  planId            String   @db.VarChar(50)
+  credits           Int
+  stripeSessionId   String?  @unique @db.VarChar(255)
+  bkashTransactionId String? @db.VarChar(255)
+  createdAt         DateTime @default(now()) @db.Timestamp()
+  updatedAt         DateTime @updatedAt @db.Timestamp()
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("payments")
+}

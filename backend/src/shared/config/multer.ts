@@ -19,6 +19,8 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+export const getUploadsDir = () => uploadsDir;
+
 /** ================================================
  * Configure Multer to handle file uploads
  =================================================*/

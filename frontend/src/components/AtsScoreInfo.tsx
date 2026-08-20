@@ -6,7 +6,7 @@ import { Target, BookOpen } from "lucide-react";
 const scoreBreakdown = [
   { label: "Keyword Matching (30%)", color: "bg-blue-500" },
   { label: "Skills Match (30%)", color: "bg-purple-500" },
-  { label: "Section Completeness (30%)", color: "bg-green-500" },
+  { label: "Section Completeness (30%)", color: "bg-cyan-500" },
   { label: "Experience Relevance (10%)", color: "bg-orange-500" },
 ];
 
@@ -15,7 +15,7 @@ export default function AtsScoreInfo() {
     <div className="card p-6">
       <div className="flex items-center gap-2 mb-6">
         <Target className="w-5 h-5 text-primary" />
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">ATS Score Breakdown</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">ATS Score Breakdown</h3>
       </div>
       <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
         <div className="flex items-start gap-3">

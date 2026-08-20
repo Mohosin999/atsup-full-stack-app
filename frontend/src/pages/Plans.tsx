@@ -2,12 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Check,
-  Zap,
-  Crown,
   Star,
-  Building,
 } from "lucide-react";
-import BackButton from "../components/ui/BackButton";
+import { useAppSelector } from "../hooks/redux";
 import Wrapper from "../components/Wrapper";
 
 interface Plan {
@@ -66,8 +63,13 @@ const plans: Plan[] = [
 
 export default function Plans() {
   const navigate = useNavigate();
+  const { user } = useAppSelector((state) => state.auth);
 
   const handleSelectPlan = (planId: string) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     if (planId === "free") {
       navigate("/dashboard");
     }
@@ -76,19 +78,15 @@ export default function Plans() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-50 pt-20 pb-12">
       <Wrapper>
-        <div className="mt-6 mb-1">
-          <BackButton />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="my-8 text-center"
         >
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-1">
             Choose Your Plan
           </h1>
-          <p className="text-gray-600 dark:text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm text-gray-600 dark:text-gray-600 max-w-2xl mx-auto">
             Get more credits to analyze your resumes and land your dream job.
             Upgrade anytime as your needs grow.
           </p>
@@ -112,23 +110,14 @@ export default function Plans() {
               )}
 
               <div className={`p-8 ${plan.popular ? "pt-10" : ""}`}>
-                <div className="flex items-center gap-3 mb-4">
-                  {plan.id === "free" && (
-                    <Zap className="w-6 h-6 text-yellow-500" />
-                  )}
-                  {plan.id === "pro" && (
-                    <Crown className="w-6 h-6 text-purple-500" />
-                  )}
-                  {plan.id === "enterprise" && (
-                    <Building className="w-6 h-6 text-blue-500" />
-                  )}
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-gray-800 dark:text-white">
                     {plan.name}
                   </h3>
                 </div>
 
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                  <span className="text-4xl font-bold text-gray-800 dark:text-white">
                     ${plan.price}
                   </span>
                   {plan.price > 0 && (
@@ -141,7 +130,7 @@ export default function Plans() {
                 <div className="mb-6">
                   <div className="flex items-baseline gap-1">
                     <Star className="w-5 h-5 text-yellow-500" />
-                    <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <span className="text-2xl font-bold text-gray-800 dark:text-white">
                       {plan.credits}
                     </span>
                     <span className="text-gray-500 dark:text-gray-600">
@@ -153,7 +142,7 @@ export default function Plans() {
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <Check className="w-5 h-5 text-cyan-500 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-600 dark:text-gray-700 text-sm">
                         {feature}
                       </span>
@@ -168,12 +157,14 @@ export default function Plans() {
                     className={`w-full py-3 rounded-xl font-medium transition-colors ${
                       plan.popular
                         ? "gradient-btn"
-                        : "bg-gray-100 dark:bg-gray-100 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-200"
+                        : "bg-gray-100 dark:bg-gray-100 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-200"
                     } disabled:opacity-60 disabled:cursor-not-allowed`}
                   >
-                    {plan.price === 0
-                      ? "Current Plan"
-                      : `Upgrade to ${plan.name}`}
+                    {!user && plan.price === 0
+                      ? "Select"
+                      : plan.price === 0
+                        ? "Current Plan"
+                        : `Upgrade to ${plan.name}`}
                   </button>
                   {plan.price > 0 && (
                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-gray-900 text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">

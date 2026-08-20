@@ -76,3 +76,8 @@ export type JobDescription = Prisma.JobDescriptionModel
  * 
  */
 export type Payment = Prisma.PaymentModel
+/**
+ * Model SupportTicket
+ * 
+ */
+export type SupportTicket = Prisma.SupportTicketModel

@@ -22,7 +22,7 @@ const setAuthCookies = (
     secure: env.nodeEnv === "production",
     sameSite: env.nodeEnv === "production" ? "none" : "lax",
     path: "/",
-    maxAge: 10 * 60 * 1000,
+    maxAge: 24 * 60 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
@@ -30,7 +30,7 @@ const setAuthCookies = (
     secure: env.nodeEnv === "production",
     sameSite: env.nodeEnv === "production" ? "none" : "lax",
     path: "/",
-    maxAge: 20 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
 
@@ -116,6 +116,13 @@ export const login = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    if (user.isBanned) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been banned. Contact support.",
+      });
+    }
+
     const subscription = await applyDailyCreditReset(
       user.id,
       user.subscription,
@@ -193,7 +200,7 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
       secure: env.nodeEnv === "production",
       sameSite: env.nodeEnv === "production" ? "none" : "lax",
       path: "/",
-      maxAge: 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.json({

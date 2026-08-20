@@ -1,6 +1,9 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import { consumeRedirect } from "./utils/authGuard";
+import { connectPresenceSocket, disconnectPresenceSocket } from "./socket/presenceSocket";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -8,12 +11,16 @@ import Settings from "./pages/Settings";
 import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScore";
 import AtsScoreDetail from "./pages/AtsScoreDetail";
+import ScanHistory from "./pages/ScanHistory";
+import ResumeHistory from "./pages/ResumeHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ResumeDashboard from "./pages/ResumeDashboard";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
-import GoToTop from "./components/ui/GoToTop";
 import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
+import AdminDashboard from "./pages/AdminDashboard";
+import MyReports from "./pages/MyReports";
+import ReportButton from "./components/support/ReportButton";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -34,10 +41,32 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     return <LoadingSpinner fullScreen />;
   }
 
-  return user ? <Navigate to="/dashboard" /> : <>{children}</>;
+  return user ? <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/dashboard"} /> : <>{children}</>;
 }
 
 function App() {
+  const user = useSelector((state: RootState) => state.auth.user);
+  const navigate = useNavigate();
+
+  // Live presence: connect the user's socket while logged in, disconnect on logout.
+  useEffect(() => {
+    if (user) {
+      connectPresenceSocket();
+    } else {
+      disconnectPresenceSocket();
+    }
+  }, [user]);
+
+  // After a successful login (incl. Google OAuth round-trip), return to the
+  // page the user came from.
+  useEffect(() => {
+    if (!user) return;
+    const redirect = consumeRedirect();
+    if (redirect) {
+      navigate(redirect, { replace: true });
+    }
+  }, [user, navigate]);
+
   return (
     <ThemeWrapper>
       <ScrollToTop />
@@ -69,26 +98,18 @@ function App() {
         />
         <Route
           path="/plans"
-          element={
-            <PrivateRoute>
-              <Plans />
-            </PrivateRoute>
-          }
+          element={<Plans />}
         />
         <Route
-          path="/ats-score"
-          element={
-            <PrivateRoute>
-              <AtsScore />
-            </PrivateRoute>
-          }
+          path="/ats-scan"
+          element={<AtsScore />}
         />
         <Route
           path="/ats-score-history"
-          element={<Navigate to="/ats-score" replace />}
+          element={<Navigate to="/ats-scan" replace />}
         />
         <Route
-          path="/ats-score/:id"
+          path="/ats-scan/:id"
           element={
             <PrivateRoute>
               <AtsScoreDetail />
@@ -96,36 +117,39 @@ function App() {
           }
         />
         <Route
-          path="/resumes"
+          path="/scan-history"
           element={
             <PrivateRoute>
-              <ResumeDashboard />
+              <ScanHistory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/resume-history"
+          element={
+            <PrivateRoute>
+              <ResumeHistory />
             </PrivateRoute>
           }
         />
         <Route
           path="/resume-builder"
-          element={<Navigate to="/resumes" replace />}
+          element={<ResumeDashboard />}
         />
+
         <Route
           path="/resume-builder/new"
-          element={
-            <PrivateRoute>
-              <ResumeBuilder />
-            </PrivateRoute>
-          }
+          element={<ResumeBuilder />}
         />
         <Route
           path="/resume-builder/:id"
-          element={
-            <PrivateRoute>
-              <ResumeBuilder />
-            </PrivateRoute>
-          }
+          element={<ResumeBuilder />}
         />
+        <Route path="/my-reports" element={<PrivateRoute><MyReports /></PrivateRoute>} />
+        <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      <GoToTop />
+      {user && <ReportButton />}
     </ThemeWrapper>
   );
 }

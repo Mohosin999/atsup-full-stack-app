@@ -43,12 +43,12 @@ api.interceptors.response.use(
         await api.post("/auth/refresh");
         return api(originalRequest);
       } catch (refreshError) {
-        // Clear local storage on refresh failure
+        // Clear the auth state; PrivateRoute redirects to login only on
+        // protected pages, so public pages (e.g. home) stay visible.
         localStorage.removeItem("user");
-        // Redirect to login page (not /auth/login which doesn't exist)
-        if (window.location.pathname !== "/login") {
-          window.location.href = "/login";
-        }
+        const { store } = await import("../store");
+        const { clearUser } = await import("../store/slices/authSlice");
+        store.dispatch(clearUser());
         return Promise.reject(refreshError);
       }
     }
@@ -106,6 +106,8 @@ export const atsScoreApi = {
     api.get(`/ats-score/history?page=${page}&limit=${limit}`),
   getById: (id: string) => api.get(`/ats-score/history/${id}`),
   delete: (id: string) => api.delete(`/ats-score/history/${id}`),
+  rename: (id: string, resumeName: string) =>
+    api.put(`/ats-score/history/${id}/rename`, { resumeName }),
   deleteAll: () => api.delete("/ats-score/history"),
 };
 
@@ -115,6 +117,15 @@ export const unlimitedAtsApi = {
     api.post("/unlimited-ats-check/analyze", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+};
+
+// Support / problem reporting
+export const supportApi = {
+  create: (formData: FormData) =>
+    api.post("/support", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  getMine: () => api.get("/support/mine"),
 };
 
 export default api;

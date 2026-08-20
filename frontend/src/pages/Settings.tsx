@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import { logoutUser, fetchUser } from "../store/slices/authSlice";
 import { userApi } from "../api/api";
-import BackButton from "../components/ui/BackButton";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import Wrapper from "../components/Wrapper";
 
@@ -46,16 +45,13 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
-      <Wrapper maxWidth="max-w-3xl">
-        <div className="mt-6 mb-1">
-          <BackButton />
-        </div>
+      <Wrapper>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="my-8"
         >
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
           <p className="text-gray-600 mt-1">Manage your account preferences</p>
         </motion.div>
         <div className="space-y-6">
@@ -107,7 +103,7 @@ const ProfileSection = ({
       <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
         <User className="w-5 h-5 text-primary" />
       </div>
-      <h2 className="text-lg font-semibold text-gray-900">Profile Information</h2>
+      <h2 className="text-lg font-semibold text-gray-800">Profile Information</h2>
     </div>
     <div className="flex items-center gap-4 mb-6">
       {user?.picture ? (
@@ -122,7 +118,7 @@ const ProfileSection = ({
         </div>
       )}
       <div>
-        <p className="font-medium text-gray-900">{user?.name}</p>
+        <p className="font-medium text-gray-800">{user?.name}</p>
         <p className="text-sm text-gray-600">{user?.email}</p>
       </div>
     </div>
@@ -135,7 +131,7 @@ const ProfileSection = ({
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:border-transparent transition-all duration-200"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-transparent transition-all duration-200"
         />
       </div>
     </div>
@@ -151,7 +147,7 @@ const SubscriptionSection = ({ user }: { user: any }) => (
   >
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Subscription</h2>
+        <h2 className="text-lg font-semibold text-gray-800">Subscription</h2>
         <p className="text-sm text-gray-600 mt-1">
           Current plan:{" "}
           <span className="font-medium capitalize">
@@ -183,7 +179,7 @@ const DangerZone = ({ onDelete }: { onDelete: () => void }) => (
       <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center">
         <Trash2 className="w-5 h-5 text-red-500" />
       </div>
-      <h2 className="text-lg font-semibold text-gray-900">Danger Zone</h2>
+      <h2 className="text-lg font-semibold text-gray-800">Danger Zone</h2>
     </div>
     <p className="text-sm text-gray-600 mb-4">
       Once you delete your account, there is no going back. Please be certain.

@@ -33,7 +33,7 @@ export default function SectionCard({ id, title, icon: Icon, expanded, onToggle,
             <Icon className="w-5 h-5" />
           </div>
           <div className="text-left">
-            <span className="font-semibold text-gray-900 block">{title}</span>
+            <span className="font-semibold text-gray-800 block">{title}</span>
           </div>
         </div>
         {expanded ? 

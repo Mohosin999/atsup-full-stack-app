@@ -10,12 +10,12 @@ export default function SkillsAnalysis({ analysis }: { analysis: Analysis }) {
     <div className="card p-6">
       <div className="flex items-center gap-2 mb-6">
         <Zap className="w-5 h-5 text-primary" />
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Skills Analysis</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Skills Analysis</h3>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <CheckCircle className="w-4 h-4 text-green-500" />
+            <CheckCircle className="w-4 h-4 text-cyan-500" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-700">Matched Skills ({analysis.sectionScores?.skills?.matched?.length || 0})</span>
           </div>
           <SkillList skills={analysis.sectionScores?.skills?.matched || []} type="matched" maxDisplay={12} />

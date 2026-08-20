@@ -88,7 +88,7 @@ export default function ResumeBuilderSection({
                     autoFocus
                     maxLength={60}
                     placeholder={title}
-                    className="text-sm font-semibold text-gray-900 h-5 px-1.5 py-0 rounded-sm border border-green-300 bg-white focus:outline-none focus:border-green-500"
+                    className="text-sm font-semibold text-gray-800 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:border-cyan-500"
                   />
                   <span
                     ref={measureRef}
@@ -131,7 +131,7 @@ export default function ResumeBuilderSection({
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 group/title">
-                    <h3 className="text-sm font-semibold text-gray-900">
+                    <h3 className="text-sm font-semibold text-gray-800">
                       {title}
                     </h3>
                     {onTitleChange && (
@@ -149,7 +149,7 @@ export default function ResumeBuilderSection({
                           }
                         }}
                         title="Edit section title"
-                        className="text-gray-400 hover:text-emerald-600 transition-colors cursor-pointer flex-shrink-0 opacity-0 group-hover/title:opacity-100 focus-visible:opacity-100"
+                        className="text-gray-400 hover:text-cyan-600 transition-colors cursor-pointer flex-shrink-0 opacity-0 group-hover/title:opacity-100 focus-visible:opacity-100"
                       >
                         <Pencil className="w-3.5 h-3.5" />
                       </span>

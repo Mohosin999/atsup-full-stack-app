@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 import { atsScoreApi } from "../api/api";
 import { AtsScoreHistory, ResumeContent } from "../types";
@@ -73,20 +72,13 @@ export default function AtsScoreDetail() {
       <Wrapper>
         <div className="my-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-lg font-bold text-gray-900 mb-1">
+            <h1 className="text-lg font-bold text-gray-800 mb-1">
               ATS Score Report
             </h1>
             <p className="text-sm text-gray-600">
               Saved analysis details
             </p>
           </div>
-          <button
-            onClick={() => navigate("/ats-score")}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:border-gray-400 rounded-lg transition-colors w-fit"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to ATS Score
-          </button>
         </div>
 
         {loading ? (
@@ -97,8 +89,8 @@ export default function AtsScoreDetail() {
           <div className="bg-white rounded-lg p-8 text-center">
             <p className="text-red-600 font-medium mb-4">{error}</p>
             <button
-              onClick={() => navigate("/ats-score")}
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg transition-colors"
+              onClick={() => navigate("/ats-scan")}
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors"
             >
               Go to ATS Score
             </button>

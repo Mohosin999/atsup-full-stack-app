@@ -114,7 +114,7 @@ export default function FileUpload({
           </div>
           
           <div className="flex-1 min-w-0">
-            <p className="font-medium text-gray-900 dark:text-white truncate">
+            <p className="font-medium text-gray-800 dark:text-white truncate">
               {uploadState.file.name}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-600">
@@ -172,7 +172,7 @@ export default function FileUpload({
         </div>
         
         <div>
-          <p className="font-medium text-gray-900 dark:text-white">
+          <p className="font-medium text-gray-800 dark:text-white">
             {isDragActive ? 'Drop your resume here' : 'Drag & drop your resume'}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-600 mt-1">

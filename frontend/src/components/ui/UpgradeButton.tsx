@@ -3,8 +3,11 @@ import { Crown } from "lucide-react";
 
 export default function UpgradeButton() {
   return (
-    <Link to="/plans" className="hidden md:flex gradient-btn">
-      <Crown className="w-4 h-4 mr-2" /> Upgrade
+    <Link
+      to="/plans"
+      className="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-cyan-600 transition-colors"
+    >
+      <Crown className="w-4 h-4" /> Pricing
     </Link>
   );
 }

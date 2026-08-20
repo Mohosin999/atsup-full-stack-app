@@ -2,12 +2,19 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux";
 import { login, fetchUser } from "../store/slices/authSlice";
+import {
+  getLoginRedirect,
+  saveRedirectForOAuth,
+  consumeRedirect,
+} from "../utils/authGuard";
 import api from "../api/api";
 
 export default function Login() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,8 +41,14 @@ export default function Login() {
       const response = await api.post(endpoint, formData);
 
       if (response.data.success) {
-        await dispatch(fetchUser());
-        window.location.href = "/dashboard";
+        const result = await dispatch(fetchUser());
+        const user = result.payload as { role?: string } | null;
+        const redirect = getLoginRedirect() || consumeRedirect();
+        if (redirect) {
+          navigate(redirect, { replace: true });
+        } else {
+          navigate(user?.role === "admin" ? "/admin-dashboard" : "/dashboard", { replace: true });
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.message || "An error occurred");
@@ -52,7 +65,7 @@ export default function Login() {
         className="max-w-md w-full"
       >
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
             Welcome to CV<span className="text-primary">Coach</span>
           </h1>
           <p className="mt-2 text-gray-600 dark:text-gray-600">
@@ -64,8 +77,11 @@ export default function Login() {
 
         <div className="card">
           <button
-            onClick={() => dispatch(login())}
-            className="w-full inline-flex items-center justify-center px-4 py-3 font-medium rounded-lg transition-all duration-200 text-lg border border-gray-300 hover:border-green-600"
+            onClick={() => {
+              saveRedirectForOAuth();
+              dispatch(login());
+            }}
+            className="w-full inline-flex items-center justify-center px-4 py-3 font-medium rounded-lg transition-all duration-200 text-lg border border-gray-300 hover:border-cyan-600"
           >
             <FcGoogle className="w-6 h-6 mr-2" />
             Continue with Google
@@ -90,7 +106,7 @@ export default function Login() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -109,7 +125,7 @@ export default function Login() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -128,7 +144,7 @@ export default function Login() {
                     onChange={handleChange}
                     required
                     minLength={6}
-                    className="w-full pl-10 pr-12 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full pl-10 pr-12 py-2 border border-gray-300 dark:border-gray-300 rounded-lg bg-white dark:bg-white text-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="Enter your password"
                   />
                   <button

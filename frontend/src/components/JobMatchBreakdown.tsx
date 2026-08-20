@@ -41,13 +41,13 @@ const SkillsTable: React.FC<{
               key={item.item}
               className="border-b border-gray-100 last:border-b-0"
             >
-              <td className="py-2.5 pr-3 text-gray-900 font-medium break-words">
+              <td className="py-2.5 pr-3 text-gray-800 font-medium break-words">
                 {item.item}
               </td>
               <td className="py-2.5 px-3 text-center">
                 {item.status === "matched" ? (
                   <span
-                    className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                    className="inline-flex w-6 h-6 rounded-full bg-cyan-500/15 text-cyan-600 items-center justify-center"
                     title={`${item.item} found in resume`}
                   >
                     <CheckCircle className="w-4 h-4" />
@@ -63,7 +63,7 @@ const SkillsTable: React.FC<{
               </td>
               <td className="py-2.5 pl-3 text-center">
                 <span
-                  className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                  className="inline-flex w-6 h-6 rounded-full bg-cyan-500/15 text-cyan-600 items-center justify-center"
                   title="Required by the job description"
                 >
                   <CheckCircle className="w-4 h-4" />
@@ -89,11 +89,11 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   return (
     <div className="bg-white rounded-lg p-5">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+        <h3 className="font-semibold text-gray-800 flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full ${color}`} />
           {title}
         </h3>
-        <span className="text-xl font-bold text-gray-900">{category.score}%</span>
+        <span className="text-xl font-bold text-gray-800">{category.score}%</span>
       </div>
       <p className="text-xs text-gray-600 mb-3">{hint}</p>
 
@@ -118,7 +118,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
           {category.matched.map((item) => (
             <span
               key={item}
-              className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-green-500/10 text-green-600 border-green-500/30"
+              className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border bg-cyan-500/10 text-cyan-600 border-cyan-500/30"
             >
               <CheckCircle className="w-3 h-3" />
               {item}
@@ -149,7 +149,7 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
   const categoryConfigs = [
     {
       label: "Hard Skills",
-      color: "bg-green-500",
+      color: "bg-cyan-500",
       hint: "Technical skills and keywords the job asks for",
       category: hardSkills,
     },
@@ -185,9 +185,9 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
   const verdict =
     avgScore >= 80
       ? {
-          icon: <Sparkles className="w-5 h-5 text-green-600" />,
+          icon: <Sparkles className="w-5 h-5 text-cyan-600" />,
           text: "Excellent match! Your resume aligns strongly with this job description.",
-          color: "text-green-600",
+          color: "text-cyan-600",
         }
       : avgScore >= 60
         ? {
@@ -208,12 +208,12 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
       className="space-y-4"
     >
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-          <Target className="w-5 h-5 text-green-500" />
+        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+          <Target className="w-5 h-5 text-cyan-500" />
           Job Description Match
         </h2>
         <div className="flex items-center gap-2">
-          <span className="text-3xl font-bold text-gray-900">{avgScore}%</span>
+          <span className="text-3xl font-bold text-gray-800">{avgScore}%</span>
           <span className="text-sm text-gray-600">overall match</span>
         </div>
       </div>
@@ -224,8 +224,8 @@ const JobMatchBreakdown: React.FC<JobMatchBreakdownProps> = ({
       </div>
 
       {matchedTotal > 0 && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-green-600 mb-2">
+        <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-4">
+          <div className="flex items-center gap-2 text-cyan-600 mb-2">
             <CheckCircle className="w-4 h-4" />
             <span className="font-medium">What you did well</span>
           </div>

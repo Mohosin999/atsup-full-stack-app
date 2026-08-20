@@ -13,21 +13,21 @@ interface ATSBreakdownItem {
 }
 
 const getScoreColor = (score: number) => {
-  if (score >= 80) return "text-green-500";
+  if (score >= 80) return "text-cyan-500";
   if (score >= 60) return "text-blue-500";
   if (score >= 40) return "text-yellow-500";
   return "text-red-500";
 };
 
 const getScoreBg = (score: number) => {
-  if (score >= 80) return "bg-gradient-to-br from-green-500 to-emerald-600";
+  if (score >= 80) return "bg-gradient-to-br from-cyan-500 to-cyan-600";
   if (score >= 60) return "bg-gradient-to-br from-blue-500 to-indigo-600";
   if (score >= 40) return "bg-gradient-to-br from-yellow-500 to-orange-600";
   return "bg-gradient-to-br from-red-500 to-rose-600";
 };
 
 const getScoreBadge = (score: number) => {
-  if (score >= 80) return { label: "Excellent", class: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-600" };
+  if (score >= 80) return { label: "Excellent", class: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-600" };
   if (score >= 60) return { label: "Good", class: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" };
   if (score >= 40) return { label: "Fair", class: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-600" };
   return { label: "Needs Work", class: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-600" };
@@ -51,7 +51,7 @@ const ATSItem = ({ item, index }: ATSItemProps) => {
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           {item.score >= 70 ? (
-            <CheckCircle2 className="w-4 h-4 text-green-500" />
+            <CheckCircle2 className="w-4 h-4 text-cyan-500" />
           ) : (
             <AlertCircle className="w-4 h-4 text-yellow-500" />
           )}
@@ -106,7 +106,7 @@ export default function ATSScoreBreakdown({ atsScore, breakdown, suggestions }: 
             <FileText className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">ATS Compatibility Score</h3>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">ATS Compatibility Score</h3>
             <p className="text-sm text-gray-500 dark:text-gray-600">How well your resume passes Applicant Tracking Systems</p>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function ATSScoreBreakdown({ atsScore, breakdown, suggestions }: 
         >
           <div className="flex items-center gap-2 mb-4">
             <FileText className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">ATS Optimization Tips</h3>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">ATS Optimization Tips</h3>
           </div>
           <ul className="space-y-2">
             {suggestions.map((suggestion, index) => (

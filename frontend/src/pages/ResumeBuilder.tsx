@@ -29,7 +29,8 @@ import {
 } from "../types";
 import { downloadAtsPdf, getSectionTitle } from "../utils/atsResume";
 import { resumeApi } from "../api/api";
-import BackButton from "../components/ui/BackButton";
+import { goToLogin } from "../utils/authGuard";
+import { useAppSelector } from "@/hooks";
 import ResumeBuilderSection from "../components/resume-builder/ResumeBuilderSection";
 import PersonalInfoForm from "../components/resume-builder/PersonalInfoForm";
 import SummaryForm from "../components/resume-builder/SummaryForm";
@@ -71,6 +72,7 @@ export default function ResumeBuilder() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
   const isNew = location.pathname === "/resume-builder/new";
   const [content, setContent] = useState<ResumeContent>(defaultContent);
   const [resumeId, setResumeId] = useState<string | null>(null);
@@ -106,6 +108,12 @@ export default function ResumeBuilder() {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
+    if (!user) {
+      setLoading(false);
+      goToLogin(navigate, isNew ? "/resume-builder/new" : `/resume-builder/${id}`);
+      return;
+    }
+
     if (isNew) {
       resumeApi
         .createFromContent(defaultContent())
@@ -128,11 +136,11 @@ export default function ResumeBuilder() {
         })
         .catch(() => {
           toast.error("Failed to load resume.");
-          navigate("/resumes", { replace: true });
+          navigate("/resume-builder", { replace: true });
         })
         .finally(() => setLoading(false));
     } else {
-      navigate("/resumes", { replace: true });
+      navigate("/resume-builder", { replace: true });
     }
   }, [id, isNew, navigate]);
 
@@ -424,7 +432,7 @@ export default function ResumeBuilder() {
           className="my-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div>
-            <h1 className="text-lg font-bold text-gray-900 mb-1">
+            <h1 className="text-lg font-bold text-gray-800 mb-1">
               ATS Resume Builder
             </h1>
             <p className="text-sm text-gray-600">
@@ -435,7 +443,7 @@ export default function ResumeBuilder() {
             <span className="text-xs text-gray-500 flex items-center gap-1.5">
               <span
                 className={`w-2 h-2 rounded-full ${
-                  saving ? "bg-amber-400 animate-pulse" : "bg-green-500"
+                  saving ? "bg-amber-400 animate-pulse" : "bg-cyan-500"
                 }`}
               />
               {saving
@@ -455,7 +463,7 @@ export default function ResumeBuilder() {
             <button
               onClick={handleDownload}
               disabled={downloading}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg shadow-green-500/25 transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg shadow-cyan-500/25 transition-all disabled:opacity-50"
             >
               <Download className="w-4 h-4" />
               {downloading ? "Preparing..." : "Download PDF"}

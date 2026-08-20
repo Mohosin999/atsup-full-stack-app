@@ -14,6 +14,7 @@ interface UserRecord {
   subscription?: any;
   createdAt?: Date;
   updatedAt?: Date;
+  role?: string;
 }
 
 export const authenticate = async (
@@ -50,6 +51,13 @@ export const authenticate = async (
       });
     }
 
+    if (user.isBanned) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been banned",
+      });
+    }
+
     const subscription = await applyDailyCreditReset(user.id, user.subscription);
 
     const userRecord: UserRecord = {
@@ -62,6 +70,7 @@ export const authenticate = async (
       subscription: user.subscription,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      role: user.role,
     };
 
     req.user = userRecord as any;

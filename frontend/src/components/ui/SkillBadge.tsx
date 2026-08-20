@@ -9,7 +9,7 @@ interface SkillBadgeProps {
 const getTypeClasses = (type: 'matched' | 'missing' | 'neutral') => {
   switch (type) {
     case 'matched':
-      return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-600 border-green-200 dark:border-green-800';
+      return 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-600 border-cyan-200 dark:border-cyan-800';
     case 'missing':
       return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-600 border-red-200 dark:border-red-800';
     default:

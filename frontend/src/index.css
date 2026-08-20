@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #22c55e;
-  --color-secondary: #10b981;
+  --color-primary: #06b6d4;
+  --color-secondary: #0891b2;
   --color-accent: #14b8a6;
 }
 
@@ -36,23 +36,23 @@ body {
   }
 
   .gradient-btn {
-    @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 text-white hover:from-emerald-700 hover:to-emerald-500 shadow-lg shadow-emerald-700/30;
+    @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 focus:outline-none bg-cyan-600 text-white hover:bg-cyan-700 shadow-lg shadow-cyan-700/30;
   }
 
-  .gradient-btn-lg {
-    @apply inline-flex items-center justify-center px-6 py-3 font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 text-white hover:from-emerald-700 hover:to-emerald-500 shadow-lg shadow-emerald-700/30 text-lg;
-  }
-
+  
   .gradient-btn-sm {
-    @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none bg-gradient-to-r from-emerald-800 via-emerald-700 to-emerald-600 text-white hover:from-emerald-700 hover:to-emerald-500 shadow-lg shadow-emerald-700/30;
+    @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none bg-cyan-600 text-white hover:bg-cyan-700 shadow-lg shadow-cyan-700/30;
   }
-
+  
+  .gradient-btn-lg {
+    @apply inline-flex items-center justify-center px-6 py-2 font-semibold rounded-lg transition-all duration-200 focus:outline-none bg-cyan-600 text-white text-lg;
+  }
   .gradient-btn-outline {
-    @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200 focus:outline-none border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-600/10 hover:text-emerald-700;
+    @apply inline-flex items-center justify-center px-6 py-2 font-semibold rounded-lg transition-all duration-200 focus:outline-none border-2 border-cyan-600 text-cyan-600 hover:bg-cyan-600/10 hover:text-cyan-700;
   }
 
   .input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:border-transparent transition-all duration-200;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-transparent transition-all duration-200;
   }
 
   .label {
@@ -82,7 +82,7 @@ body {
     display: none;
   }
 
-  /* Custom Scrollbar - Emerald Green */
+  /* Custom Scrollbar - Cyan */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -94,12 +94,12 @@ body {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #10b981;
+    background: #06b6d4;
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #059669;
+    background: #0891b2;
   }
 }
 
@@ -156,7 +156,7 @@ body {
 }
 .pdf-exporting a {
   font-size: 14px;
-  color: #059669;
+  color: #0891b2;
   text-decoration: underline;
 }
 .pdf-exporting span {
@@ -191,8 +191,8 @@ body {
   color: #6b7280;
 }
 
-.pdf-exporting .text-emerald-600 {
-  color: #059669;
+.pdf-exporting .text-cyan-600 {
+  color: #0891b2;
 }
 
 .pdf-exporting .border-gray-700 {
@@ -344,7 +344,7 @@ body.printing #resume-for-print {
   /* Ensure links are clickable and visible */
   a {
     text-decoration: underline;
-    color: #059669 !important;
+    color: #0891b2 !important;
   }
 
   a[href^="http"]::after {

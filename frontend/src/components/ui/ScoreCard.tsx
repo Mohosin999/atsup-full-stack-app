@@ -15,13 +15,13 @@ interface ScoreCardProps {
 }
 
 const getScoreColor = (score: number): string => {
-  if (score >= 70) return "text-green-500";
+  if (score >= 70) return "text-cyan-500";
   if (score >= 50) return "text-yellow-500";
   return "text-red-500";
 };
 
 const getScoreBg = (score: number): string => {
-  if (score >= 70) return "bg-green-500";
+  if (score >= 70) return "bg-cyan-500";
   if (score >= 50) return "bg-yellow-500";
   return "bg-red-500";
 };
@@ -84,7 +84,7 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({
               <span className="text-gray-600 dark:text-gray-600">
                 {item.label}
               </span>
-              <span className="font-medium text-gray-900 dark:text-white">
+              <span className="font-medium text-gray-800 dark:text-white">
                 {item.score}% ({item.weight}%)
               </span>
             </div>

@@ -21,9 +21,9 @@ const AIGenerateButton: React.FC<AIGenerateButtonProps> = ({
 
   const variantClasses = {
     primary:
-      'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white focus:ring-purple-500',
+      'bg-cyan-600 hover:bg-cyan-700 text-white focus:ring-cyan-500',
     secondary:
-      'bg-gray-100 dark:bg-gray-100 hover:bg-gray-200 dark:hover:bg-gray-200 text-gray-900 dark:text-white focus:ring-gray-500',
+      'bg-gray-100 dark:bg-gray-100 hover:bg-gray-200 dark:hover:bg-gray-200 text-gray-800 dark:text-white focus:ring-gray-500',
   };
 
   const sizeClasses = {

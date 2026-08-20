@@ -65,7 +65,7 @@ export default function ConfirmModal({
               <AlertTriangle className={`w-7 h-7 ${styles.icon}`} />
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center mb-2">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white text-center mb-2">
               {title}
             </h3>
             

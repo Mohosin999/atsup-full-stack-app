@@ -12,6 +12,7 @@ import {
   getAtsScoreHistoryById,
   deleteAtsScoreHistory,
   deleteAllAtsScoreHistory,
+  renameAtsScoreHistory,
 } from "./services/history.service";
 
 const parseAddress = (
@@ -324,6 +325,36 @@ export const deleteAllAtsScoresController = async (
     res.status(500).json({
       success: false,
       message: error.message || "Failed to delete ATS Scores",
+    });
+  }
+};
+
+export const renameAtsScoreController = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+    const { resumeName } = req.body;
+
+    if (!resumeName || !resumeName.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Resume name is required",
+      });
+    }
+
+    await renameAtsScoreHistory(req.user.id, id, resumeName.trim());
+
+    res.json({
+      success: true,
+      message: "Renamed successfully",
+    });
+  } catch (error: any) {
+    console.error("Rename ATS score error:", error);
+    res.status(404).json({
+      success: false,
+      message: error.message || "Failed to rename",
     });
   }
 };

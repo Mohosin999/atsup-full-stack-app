@@ -481,10 +481,6 @@ export type ResumeUpdatetagsInput = {
   push?: string | string[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type ResumeCreateNestedOneWithoutAnalysesInput = {
   create?: Prisma.XOR<Prisma.ResumeCreateWithoutAnalysesInput, Prisma.ResumeUncheckedCreateWithoutAnalysesInput>
   connectOrCreate?: Prisma.ResumeCreateOrConnectWithoutAnalysesInput

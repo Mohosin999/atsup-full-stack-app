@@ -250,7 +250,7 @@ export default function HighlightsEditor({
             type="button"
             onClick={handleSave}
             disabled={!text.trim()}
-            className="text-xs font-medium text-emerald-600 hover:text-emerald-700 disabled:text-gray-300 flex-shrink-0 mt-0.5"
+            className="text-xs font-medium text-cyan-600 hover:text-cyan-700 disabled:text-gray-300 flex-shrink-0 mt-0.5"
           >
             Add
           </button>

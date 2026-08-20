@@ -56,12 +56,12 @@ export default function AnalysisProgressModal({
           >
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-green-600" />
-                <h3 className="text-lg font-semibold text-gray-900">
+                <Sparkles className="w-5 h-5 text-cyan-600" />
+                <h3 className="text-lg font-semibold text-gray-800">
                   Analyzing your resume
                 </h3>
               </div>
-              {/* <Loader2 className="w-5 h-5 text-green-600 animate-spin" /> */}
+              {/* <Loader2 className="w-5 h-5 text-cyan-600 animate-spin" /> */}
             </div>
 
             <div className="space-y-3 mb-6">
@@ -71,9 +71,9 @@ export default function AnalysisProgressModal({
                 return (
                   <div key={step.id} className="flex items-center gap-3">
                     {isDone ? (
-                      <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-cyan-500 shrink-0" />
                     ) : isActive ? (
-                      <Loader2 className="w-5 h-5 text-green-600 animate-spin shrink-0" />
+                      <Loader2 className="w-5 h-5 text-cyan-600 animate-spin shrink-0" />
                     ) : (
                       <Circle className="w-5 h-5 text-gray-600 shrink-0" />
                     )}
@@ -81,9 +81,9 @@ export default function AnalysisProgressModal({
                       className={clsx(
                         "text-sm font-medium transition-colors",
                         isDone
-                          ? "text-green-600"
+                          ? "text-cyan-600"
                           : isActive
-                            ? "text-gray-900"
+                            ? "text-gray-800"
                             : "text-gray-500",
                       )}
                     >
@@ -96,7 +96,7 @@ export default function AnalysisProgressModal({
 
             <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden mb-6">
               <motion.div
-                className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
+                className="h-full bg-gradient-to-r from-cyan-500 to-cyan-500"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.5 }}
@@ -111,7 +111,7 @@ export default function AnalysisProgressModal({
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -64, opacity: 0 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="text-sm text-green-700 px-4 text-center"
+                  className="text-sm text-cyan-700 px-4 text-center"
                 >
                   {currentMessage}
                 </motion.p>

@@ -17,6 +17,7 @@ export interface User {
   };
   createdAt: string;
   updatedAt: string;
+  role: string;
 }
 
 export interface Resume {
@@ -462,4 +463,79 @@ export interface AtsScoreHistory {
   resumeContent: ResumeContent;
   createdAt: string;
   updatedAt: string;
+}
+
+export type GrowthPeriod = 'yesterday' | 'today' | '7d' | '14d' | '30d';
+
+export interface OnlineUser {
+  id: string;
+  name: string;
+  email: string;
+  picture?: string;
+}
+
+export interface PresenceData {
+  onlineCount: number;
+  users: OnlineUser[];
+}
+
+export interface AdminDashboardMetrics {
+  totalUsers: number;
+  activeUsers: number;
+  todayNewUsers: number;
+  resumeBuilderUsersToday: number;
+  atsCheckUsersToday: number;
+  bestFeatureToday: string;
+}
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string;
+  picture?: string | null;
+  role: string;
+  isBanned: boolean;
+  createdAt: string;
+  lastLoginAt?: string | null;
+  subscription?: {
+    plan?: string;
+    credits?: number;
+    expiresAt?: string | null;
+  } | null;
+}
+
+export interface GrowthData {
+  period: GrowthPeriod;
+  labels: string[];
+  series: {
+    atsUse: number[];
+    resumeBuild: number[];
+  };
+  totals: {
+    atsUse: number;
+    resumeBuild: number;
+    activity: number;
+  };
+  change: number;
+}
+
+export type SupportType = 'bug' | 'feature' | 'other';
+export type SupportStatus = 'open' | 'in-progress' | 'resolved';
+
+export interface SupportTicket {
+  id: string;
+  userId: string;
+  type: SupportType;
+  title: string;
+  message: string;
+  attachment?: string | null;
+  status: SupportStatus;
+  createdAt: string;
+  updatedAt: string;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    picture?: string | null;
+  } | null;
 }

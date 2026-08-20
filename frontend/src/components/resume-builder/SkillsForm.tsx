@@ -78,7 +78,7 @@ function SkillTagInput({
         }
       }}
       onBlur={() => addSkills(text)}
-      className="w-full px-3 py-2 text-xs rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-xs"
+      className="w-full px-3 py-2 text-xs rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
       placeholder={placeholder || "Type a skill and press Enter"}
     />
   );
@@ -109,7 +109,7 @@ return (
     <span
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`inline-flex items-center gap-1.5 rounded-full bg-green-50 border border-green-600 px-2.5 py-1 text-xs text-green-800 select-none ${
+      className={`inline-flex items-center gap-1.5 rounded-full bg-cyan-50 border border-cyan-600 px-2.5 py-1 text-xs text-cyan-800 select-none ${
         isDragging ? "opacity-60 z-10 shadow-md" : ""
       }`}
     >
@@ -118,7 +118,7 @@ return (
         {...attributes}
         {...listeners}
         title="Drag to reorder"
-        className="flex items-center text-green-400 hover:text-green-600 cursor-grab active:cursor-grabbing touch-none"
+        className="flex items-center text-cyan-400 hover:text-cyan-600 cursor-grab active:cursor-grabbing touch-none"
       >
         <GripVertical className="w-3 h-3 text-gray-400" />
       </button>
@@ -127,7 +127,7 @@ return (
         type="button"
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onRemove}
-        className="text-green-700 hover:text-red-600 transition-colors"
+        className="text-cyan-700 hover:text-red-600 transition-colors"
         aria-label={`Remove ${children}`}
       >
         <X className="w-3 h-3" />
@@ -305,7 +305,7 @@ function SortableCategory({
             list="skill-category-presets"
             value={cat.name || ""}
             onChange={(e) => onNameChange(e.target.value)}
-            className="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-xs"
+            className="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
             placeholder="e.g. Technical Skills"
           />
         </div>

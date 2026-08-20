@@ -51,6 +51,9 @@ export const testimonials = [
   },
 ];
 
+// ==================================================================
+// All features of the app
+// ==================================================================
 export const allFeatures = [
   {
     icon: FileText,
@@ -69,13 +72,7 @@ export const allFeatures = [
     title: "Smart Suggestions",
     description:
       "Receive personalized improvements for skills, experience, and formatting.",
-  },
-  {
-    icon: FileCheck,
-    title: "Job Match Scoring",
-    description:
-      "See how well your resume matches specific job requirements with detailed scoring.",
-  },
+  }
 ];
 
 // Steps for analysis

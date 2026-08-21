@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import {
   AdminDashboardMetrics,
   GrowthData,
   GrowthPeriod,
-  PresenceData,
-  OnlineUser,
 } from "../types";
 import { Navigate } from "react-router-dom";
 import {
@@ -59,22 +56,15 @@ const AdminDashboard: React.FC = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const [metrics, setMetrics] = useState<AdminDashboardMetrics | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [period, setPeriod] = useState<GrowthPeriod>("today");
   const [growth, setGrowth] = useState<GrowthData | null>(null);
   const [growthLoading, setGrowthLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [onlineCount, setOnlineCount] = useState(0);
-  const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
   const [activeView, setActiveView] = useState<
     "overview" | "users" | "support"
   >("overview");
-  const activeViewRef = useRef(activeView);
-  useEffect(() => {
-    activeViewRef.current = activeView;
-  }, [activeView]);
 
   const [supportOpenCount, setSupportOpenCount] = useState(0);
   const [supportRefreshKey, setSupportRefreshKey] = useState(0);
@@ -82,120 +72,75 @@ const AdminDashboard: React.FC = () => {
   // Load the initial open-ticket count for the sidebar badge
   useEffect(() => {
     if (!user || user.role !== "admin") return;
-    api
-      .get("/admin-dashboard/support")
-      .then((response) => {
+
+    const fetchSupportCount = async () => {
+      try {
+        const response = await api.get("/admin-dashboard/support");
         if (response.data.success) {
           const open = response.data.data.filter(
             (t: any) => t.status === "open",
           ).length;
           setSupportOpenCount(open);
         }
-      })
-      .catch((err) => console.error("Failed to fetch support count:", err));
+      } catch (err) {
+        console.error("Failed to fetch support count:", err);
+      }
+    };
+
+    fetchSupportCount();
+    const interval = setInterval(fetchSupportCount, 10000);
+
+    return () => clearInterval(interval);
   }, [user]);
 
   useEffect(() => {
-    // Only admins may connect. Cookies are httpOnly, so we never read the
-    // token from document.cookie - the browser sends it automatically.
-    if (!user || user.role !== "admin") {
-      setLoading(false);
-      return;
-    }
+    if (!user || user.role !== "admin") return;
 
-    // Determine the backend origin. In dev VITE_API_URL is "/api" (relative,
-    // proxied by Vite), so the socket origin is the frontend origin and the
-    // namespace is "/admin-dashboard". Socket.io requests go to /socket.io.
-    const apiUrl = import.meta.env.VITE_API_URL || "";
-    const baseOrigin = apiUrl.startsWith("http")
-      ? new URL(apiUrl).origin
-      : window.location.origin;
-
-    const newSocket = io(`${baseOrigin}/admin-dashboard`, {
-      withCredentials: true,
-      transports: ["websocket"],
-    });
-
-    setSocket(newSocket);
-
-    // Fetch initial metrics via REST (axios baseURL is "/api", so the
-    // httpOnly accessToken cookie is sent automatically)
-    const fetchInitialMetrics = async () => {
+    const fetchMetrics = async () => {
       try {
         const response = await api.get("/admin-dashboard/metrics");
         if (response.data.success) {
           setMetrics(response.data.data);
         }
       } catch (err) {
-        console.error("Failed to fetch initial metrics:", err);
+        console.error("Failed to fetch metrics:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchInitialMetrics();
+    fetchMetrics();
+    const interval = setInterval(fetchMetrics, 10000);
 
-    // Listen for metrics updates from socket
-    newSocket.on("metrics", (data: AdminDashboardMetrics) => {
-      setMetrics(data);
-    });
-
-    // Listen for live online-user presence (chat-app style)
-    newSocket.on("presence", (data: PresenceData) => {
-      setOnlineCount(data.onlineCount);
-      setOnlineUsers(data.users);
-    });
-
-    // Listen for live growth-chart updates (real-time, no refresh needed)
-    newSocket.on("growth", (data: GrowthData) => {
-      setGrowth(data);
-      setGrowthLoading(false);
-    });
-
-    // A user submitted a new support ticket — bump the badge live. If we're
-    // already looking at the ticket list, refresh it in place.
-    newSocket.on("support", () => {
-      if (activeViewRef.current === "support") {
-        setSupportRefreshKey((k) => k + 1);
-      } else {
-        setSupportOpenCount((c) => c + 1);
-      }
-    });
-
-    newSocket.on("connect_error", (err: Error) => {
-      console.error("Socket connection error:", err);
-      setLoading(false);
-    });
-
-    // Cleanup on unmount
-    return () => {
-      newSocket.disconnect();
-    };
+    return () => clearInterval(interval);
   }, [user, dispatch]);
 
-  // Fetch the combined growth chart for the selected period
+  // Poll growth chart every 10 seconds
   useEffect(() => {
     if (!user || user.role !== "admin") return;
     let cancelled = false;
-    setGrowthLoading(true);
-    // Tell the server which period to stream over the socket, so the chart
-    // updates in real time.
-    socket?.emit("set-period", period);
-    api
-      .get(`/admin-dashboard/growth?period=${period}`)
-      .then((response) => {
+
+    const fetchGrowth = async () => {
+      try {
+        const response = await api.get(`/admin-dashboard/growth?period=${period}`);
         if (!cancelled && response.data.success) {
           setGrowth(response.data.data);
         }
-      })
-      .catch((err) => console.error("Failed to fetch growth data:", err))
-      .finally(() => {
+      } catch (err) {
+        console.error("Failed to fetch growth data:", err);
+      } finally {
         if (!cancelled) setGrowthLoading(false);
-      });
+      }
+    };
+
+    fetchGrowth();
+    const interval = setInterval(fetchGrowth, 10000);
+
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
-  }, [period, user, socket]);
+  }, [period, user]);
 
   // Guard: only admins can access this page. Non-admins go to the regular
   // dashboard.
@@ -270,7 +215,7 @@ const AdminDashboard: React.FC = () => {
           <main className="md:flex-1 md:min-w-0 mt-8 md:mt-0">
             {activeView === "users" ? (
               <UserManagement
-                onlineUsers={onlineUsers}
+                onlineUsers={[]}
                 currentAdminId={user._id}
               />
             ) : activeView === "support" ? (
@@ -295,14 +240,14 @@ const AdminDashboard: React.FC = () => {
                   {/* Online users */}
                   <div className="p-4 xl:p-6 text-center border-b border-white/30 xl:border-r xl:border-b-0">
                     <h3 className="text-xs font-medium flex items-center justify-center">
-                      Online Users
+                      Active Users (Today)
                       <span className="relative flex h-2 w-2 ml-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
                       </span>
                     </h3>
                     <p className="text-2xl lg:text-3xl font-bold mt-2">
-                      {onlineCount}
+                      {metrics.activeUsers}
                     </p>
                   </div>
 

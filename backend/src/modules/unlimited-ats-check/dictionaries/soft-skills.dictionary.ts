@@ -21,6 +21,7 @@ export const SOFT_SKILLS_DICTIONARY: string[][] = [
   ["Team Building"],
   ["Collaboration"],
   ["Cross-functional Collaboration", "Cross-Functional Collaboration"],
+  ["Interdisciplinary Collaboration", "Cross-Disciplinary Collaboration"],
   ["Remote Collaboration"],
   ["Distributed Team Collaboration"],
   ["Pair Programming Mindset"],
@@ -57,6 +58,9 @@ export const SOFT_SKILLS_DICTIONARY: string[][] = [
   ["Decision Making"],
   ["Judgment"],
   ["Discernment"],
+  ["Thinking at Multiple Levels of Abstraction", "Abstraction Thinking"],
+  ["Research Skills", "Research-Oriented"],
+  ["Evaluation Mindset", "Rigorous Evaluation"],
 
   // Leadership & Influence
   ["Leadership"],
@@ -73,6 +77,9 @@ export const SOFT_SKILLS_DICTIONARY: string[][] = [
   ["People Management"],
   ["Team Leadership"],
   ["Thought Leadership"],
+  ["Assertiveness"],
+  ["Courage"],
+  ["Willingness to Challenge", "Willingness to Push Back"],
 
   // Adaptability & Learning
   ["Adaptability"],
@@ -98,6 +105,7 @@ export const SOFT_SKILLS_DICTIONARY: string[][] = [
   ["Attention to Detail", "Detail-Oriented", "Detail Oriented"],
   ["Multitasking"],
   ["Prioritization"],
+  ["Prioritization under Ambiguity"],
   ["Planning"],
   ["Coordination"],
   ["Self-Motivation", "Self-Motivated"],
@@ -166,6 +174,7 @@ export const SOFT_SKILLS_DICTIONARY: string[][] = [
   ["Feedback", "Constructive Feedback"],
   ["Receiving Feedback"],
   ["Giving Feedback"],
+  ["Constructive Code Review"],
   ["Transparency"],
   ["Openness"],
   ["Psychological Safety"],
@@ -180,6 +189,7 @@ export const SOFT_SKILLS_DICTIONARY: string[][] = [
   ["Responsible AI Mindset"],
   ["Bias Awareness"],
   ["Explainability Mindset"],
+  ["AI Safety Mindset", "Safety Awareness", "AI Safety Awareness"],
   ["Business Acumen"],
   ["Product Thinking"],
   ["User Empathy"],

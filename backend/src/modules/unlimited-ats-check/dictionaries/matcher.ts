@@ -1,11 +1,4 @@
-/**
- * Whole-word dictionary matching helpers used across the dictionary parsers.
- * Matching is case-insensitive and boundary-aware to avoid false positives.
- *
- * Dictionaries use grouped format: string[][] where each group is
- * [canonical, alias1, alias2, ...]. On match, the canonical (first) name is returned.
- */
-
+// Escapes a string for use in a regex
 export const escapeRegex = (str: string): string =>
   str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 

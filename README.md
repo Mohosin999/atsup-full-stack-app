@@ -296,3 +296,5 @@ app/
 4. Push branch (`git push origin feature/name`)
 5. Open Pull Request
 
+
+    // "build": "prisma generate && esbuild src/server.ts --bundle --platform=node --format=esm --target=node20 --packages=external --outfile=dist/server.js",

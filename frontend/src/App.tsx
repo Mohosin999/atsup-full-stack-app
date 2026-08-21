@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
 import { consumeRedirect } from "./utils/authGuard";
-import { connectPresenceSocket, disconnectPresenceSocket } from "./socket/presenceSocket";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -47,15 +46,6 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
-
-  // Live presence: connect the user's socket while logged in, disconnect on logout.
-  useEffect(() => {
-    if (user) {
-      connectPresenceSocket();
-    } else {
-      disconnectPresenceSocket();
-    }
-  }, [user]);
 
   // After a successful login (incl. Google OAuth round-trip), return to the
   // page the user came from.

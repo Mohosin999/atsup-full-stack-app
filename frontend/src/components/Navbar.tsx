@@ -75,25 +75,21 @@ export default function Navbar() {
             {/* Right: Auth / Profile */}
             <div className="flex items-center gap-3 shrink-0">
               {user ? (
-                <>
-                  <ProfileMenu
-                    user={user}
-                    profileMenuOpen={profileMenuOpen}
-                    setProfileMenuOpen={setProfileMenuOpen}
-                    onLogout={() => setShowLogoutConfirm(true)}
-                  />
-                  <MobileMenuButton
-                    mobileMenuOpen={mobileMenuOpen}
-                    setMobileMenuOpen={setMobileMenuOpen}
-                  />
-                </>
+                <ProfileMenu
+                  user={user}
+                  profileMenuOpen={profileMenuOpen}
+                  setProfileMenuOpen={setProfileMenuOpen}
+                  onLogout={() => setShowLogoutConfirm(true)}
+                />
               ) : (
-                <>
-                  <div className="hidden md:flex items-center">
-                    <AuthButtons />
-                  </div>
-                </>
+                <div className="hidden md:flex items-center">
+                  <AuthButtons />
+                </div>
               )}
+              <MobileMenuButton
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+              />
             </div>
           </div>
         </Wrapper>

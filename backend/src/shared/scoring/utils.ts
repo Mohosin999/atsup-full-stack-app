@@ -260,7 +260,14 @@ export const collectResumeDates = (resume: ResumeContent): string[] => {
     push(exp.startDate);
     if (exp.endDate) push(exp.endDate);
   });
-  resume.education?.forEach((edu) => push((edu as any).date));
+  resume.education?.forEach((edu) => {
+    push(edu.startDate);
+    if (edu.endDate) push(edu.endDate);
+  });
+  resume.projects?.forEach((p) => {
+    push(p.startDate);
+    if (p.endDate) push(p.endDate);
+  });
   return dates;
 };
 

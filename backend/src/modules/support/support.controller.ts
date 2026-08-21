@@ -1,7 +1,6 @@
 import { Response } from "express";
 import { AuthRequest } from "../../shared/types";
 import { createSupportTicket, getMyTickets } from "./support.service";
-import { notifyAdminSupport } from "../../socket/adminSocket";
 
 export const createTicket = async (req: AuthRequest, res: Response) => {
   try {
@@ -23,9 +22,6 @@ export const createTicket = async (req: AuthRequest, res: Response) => {
       message: message.trim(),
       attachment,
     });
-
-    // Notify the admin dashboard in real time
-    notifyAdminSupport({ type: "new", ticket });
 
     res.status(201).json({
       success: true,

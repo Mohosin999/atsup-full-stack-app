@@ -1,0 +1,14 @@
+import { Router } from "express";
+import { authenticate } from "../../shared/middlewares/auth";
+import { generalLimiter } from "../../shared/middlewares/middlewareConfig";
+import { getAllResumes, uploadResume, createResumeFromContent, deleteAllResumes, getSingleResume, updateResume, deleteResume, duplicateResume, } from "./resumeBuilder.controller";
+const router = Router();
+router.post("/content", authenticate, generalLimiter, createResumeFromContent);
+router.delete("/delete-all", authenticate, generalLimiter, deleteAllResumes);
+router.post("/:id/duplicate", authenticate, generalLimiter, duplicateResume);
+router.get("/:id", authenticate, generalLimiter, getSingleResume);
+router.put("/:id", authenticate, generalLimiter, updateResume);
+router.delete("/:id", authenticate, generalLimiter, deleteResume);
+router.get("/", authenticate, generalLimiter, getAllResumes);
+router.post("/", authenticate, generalLimiter, uploadResume);
+export default router;

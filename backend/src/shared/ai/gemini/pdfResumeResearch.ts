@@ -37,7 +37,8 @@ export interface AIResumeResearchResult {
     endDate: string;
   }>;
   yearsOfExperience: string;
-  resumeTone: string;
+  measurableResults: string[];
+  actionVerbs: string[];
   wordCount: string;
   educationSection: boolean;
   experienceSection: boolean;
@@ -76,7 +77,8 @@ export const RESUME_RESEARCH_TEMPLATE: AIResumeResearchResult = {
   },
   projects: [],
   yearsOfExperience: "",
-  resumeTone: "bad",
+  measurableResults: [],
+  actionVerbs: [],
   wordCount: "",
   educationSection: false,
   experienceSection: false,
@@ -108,9 +110,10 @@ RESEARCH THE FOLLOWING DETAILS:
    - hardSkills: ONLY technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, DevOps tools, software, technologies, APIs, etc.) - return ONLY the keyword names
    - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
 6. Projects (name, description as bullet points, startDate, endDate)
-7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
-8. resumeTone: assess the overall tone and quality of the resume writing. Use one of: "good", "bad", "professional", "weak".
-9. wordCount: total number of words in the resume.
+ 7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
+ 8. measurableResults: array of strings — every experience bullet that contains a quantified/measurable outcome (a number with a unit such as %, time, money, scale, or a metric word like revenue, conversion, latency). Return [] if none.
+ 9. actionVerbs: array of strings — the distinct strong action verbs found at the start of experience bullets (e.g. "led", "built", "optimized", "launched"). Return [] if none.
+ 10. wordCount: total number of words in the resume.
 10. educationSection: true if an education section exists.
 11. experienceSection: true if an experience/work section exists.
 12. workHistory: true if there is AT LEAST ONE work experience entry.
@@ -177,7 +180,8 @@ JSON STRUCTURE:
   ]
   ],
   "yearsOfExperience": "",
-  "resumeTone": "bad",
+  "measurableResults": [],
+  "actionVerbs": [],
   "wordCount": "",
   "educationSection": false,
   "experienceSection": false,
@@ -311,7 +315,8 @@ const normalizeResearchResult = (raw: any): AIResumeResearchResult => {
       endDate: str(proj?.endDate),
     })),
     yearsOfExperience: str(raw?.yearsOfExperience),
-    resumeTone: str(raw?.resumeTone, "bad"),
+    measurableResults: arr(raw?.measurableResults).map((v: any) => str(v)),
+    actionVerbs: arr(raw?.actionVerbs).map((v: any) => str(v)),
     wordCount: str(raw?.wordCount),
     educationSection: bool(raw?.educationSection),
     experienceSection: bool(raw?.experienceSection),

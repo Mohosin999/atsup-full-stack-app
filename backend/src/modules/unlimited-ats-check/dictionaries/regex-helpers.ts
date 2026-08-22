@@ -14,13 +14,6 @@ export const extractPhone = (text: string): string => {
   return match ? match[0].trim() : "";
 };
 
-export const extractLinkedIn = (text: string): string => {
-  const match = text.match(
-    /(?:https?:\/\/)?(?:www\.)?(?:linkedin\.com\/in\/|linkedin\.com\/)[\w\-./]+/i,
-  );
-  return match ? match[0] : "";
-};
-
 export const extractGithub = (text: string): string => {
   const match = text.match(
     /(?:https?:\/\/)?(?:www\.)?(?:github\.com\/|github\.io\/)[\w\-./]+/i,
@@ -122,6 +115,28 @@ export const extractMeasurableResults = (text: string): string[] => {
   }
   // De-duplicate while preserving order
   return Array.from(new Set(results));
+};
+
+// ---- Action verbs ----
+import { ACTION_VERBS } from "../../../shared/scoring/constants";
+
+const ACTION_VERBS_RE = new RegExp(
+  `\\b(?:${ACTION_VERBS.map((v) =>
+    v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  ).join("|")})\\b`,
+  "gi",
+);
+
+export const extractActionVerbs = (responsibilities: string[]): string[] => {
+  const matched = new Set<string>();
+  for (const line of responsibilities) {
+    ACTION_VERBS_RE.lastIndex = 0;
+    let m: RegExpExecArray | null;
+    while ((m = ACTION_VERBS_RE.exec(line))) {
+      matched.add(m[0].toLowerCase());
+    }
+  }
+  return [...matched];
 };
 
 // ---- Dates ----

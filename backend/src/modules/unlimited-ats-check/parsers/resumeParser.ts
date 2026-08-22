@@ -19,9 +19,9 @@ import {
 import {
   countWords,
   DATE_RANGE_RE,
+  extractActionVerbs,
   extractEmail,
   extractGithub,
-  extractLinkedIn,
   extractMeasurableResults,
   extractPhone,
   extractPortfolio,
@@ -542,7 +542,6 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
   const fullName = sanitizeName(segmented.header[0] ?? "");
   const email = extractEmail(headerText);
   const phone = extractPhone(headerText);
-  const linkedin = extractLinkedIn(headerText);
   const github = extractGithub(headerText);
   const portfolio = extractPortfolio(headerText);
 
@@ -600,6 +599,10 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
   // ---- Derived metrics ----
   const wordCount = countWords(allText);
   const measurableResults = extractMeasurableResults(allText);
+  const experienceBullets = experience.flatMap(
+    (exp) => exp.responsibilities || [],
+  );
+  const actionVerbs = extractActionVerbs(experienceBullets);
 
   // Calculate years of experience from experience section dates
   const yearsOfExperience = calculateExperienceYears(experience);
@@ -614,8 +617,6 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
     ...segmented.education,
     ...segmented.projects,
   ]);
-
-  const resumeTone = inferTone(allText, measurableResults.length);
 
   const json: DictionaryResumeJson = {
     personal_info: {
@@ -633,7 +634,8 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
     skills: { hardSkills, softSkills },
     projects,
     yearsOfExperience: yearsOfExperience ? `${yearsOfExperience} years` : "",
-    resumeTone,
+    measurableResults,
+    actionVerbs,
     wordCount: Number(wordCount),
     educationSection,
     experienceSection,
@@ -1240,8 +1242,8 @@ const parseEducation = (lines: string[]): DictionaryResumeJson["education"] => {
 // ============================================================================
 // Derived Metrics & Formatting Helpers
 // ============================================================================
-// Detects date formatting consistency, infers resume tone from measurable
-// results count, and maps parsed JSON to the shared ResumeContent type.
+// Detects date formatting consistency and maps parsed JSON to the shared
+// ResumeContent type.
 // ============================================================================
 
 const detectDateFormatting = (lines: string[]): boolean => {
@@ -1258,14 +1260,6 @@ const detectDateFormatting = (lines: string[]): boolean => {
         d,
       ),
   );
-};
-
-const inferTone = (text: string, measurableCount: number): string => {
-  const wordCount = countWords(text);
-  if (measurableCount >= 3) return "good";
-  if (measurableCount >= 1) return "professional";
-  if (wordCount < 100) return "weak";
-  return "bad";
 };
 
 // ============================================================================
@@ -1333,7 +1327,8 @@ const mapToResumeContent = (json: DictionaryResumeJson): ResumeContent => {
       endDate: p.endDate || "",
     })),
     yearsOfExperience: json.yearsOfExperience || "",
-    resumeTone: json.resumeTone || "bad",
+    measurableResults: json.measurableResults || [],
+    actionVerbs: json.actionVerbs || [],
     wordCount: json.wordCount || 0,
     educationSection: json.educationSection || false,
     experienceSection: json.experienceSection || false,

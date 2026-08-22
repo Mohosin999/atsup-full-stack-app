@@ -41,12 +41,6 @@ export interface ResumeContent {
       email?: string;
       phone?: string;
       address?: string | { city?: string; state?: string };
-      linkedIn?: string;
-      socialLinks?: {
-        github?: string;
-        portfolio?: string;
-        website?: string;
-      };
     };
   };
   summary?: string;
@@ -75,7 +69,8 @@ export interface ResumeContent {
     endDate?: string;
   }>;
   yearsOfExperience?: string;
-  resumeTone?: string;
+  measurableResults?: string[];
+  actionVerbs?: string[];
   wordCount?: number;
   educationSection?: boolean;
   experienceSection?: boolean;

@@ -51,7 +51,8 @@ export interface DictionaryResumeJson {
     endDate: string;
   }>;
   yearsOfExperience: string;
-  resumeTone: string;
+  measurableResults: string[];
+  actionVerbs: string[];
   wordCount?: number;
   educationSection: boolean;
   experienceSection: boolean;

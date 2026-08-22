@@ -196,9 +196,13 @@ export const parseYearsOfExperience = (raw?: string | number): number => {
 };
 
 export const countMeasurableResults = (resume: ResumeContent) => {
-  const highlights = (resume.experience || [])
-    .flatMap((exp) => exp.responsibilities || [])
-    .filter((h) => MEASURABLE_RESULT_RE.test(h));
+  const stored = resume.measurableResults;
+  const highlights =
+    Array.isArray(stored) && stored.length
+      ? stored
+      : (resume.experience || [])
+          .flatMap((exp) => exp.responsibilities || [])
+          .filter((h) => MEASURABLE_RESULT_RE.test(h));
   return { count: highlights.length, found: highlights.slice(0, 5) };
 };
 
@@ -213,6 +217,11 @@ const ACTION_VERBS_RE = new RegExp(
 );
 
 const countActionVerbs = (resume: ResumeContent) => {
+  const stored = resume.actionVerbs;
+  if (Array.isArray(stored) && stored.length) {
+    return { count: stored.length, found: stored.slice(0, 5) };
+  }
+
   const highlights = (resume.experience || []).flatMap(
     (exp) => exp.responsibilities || [],
   );

@@ -56,6 +56,7 @@ const AdminDashboard: React.FC = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const [metrics, setMetrics] = useState<AdminDashboardMetrics | null>(null);
+  const [totalVisitors, setTotalVisitors] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   const [period, setPeriod] = useState<GrowthPeriod>("today");
@@ -114,6 +115,24 @@ const AdminDashboard: React.FC = () => {
 
     return () => clearInterval(interval);
   }, [user, dispatch]);
+
+  useEffect(() => {
+    const fetchVisitorCount = async () => {
+      try {
+        const response = await api.get("/visitor/count");
+        if (response.data.success) {
+          setTotalVisitors(response.data.data.totalVisitors);
+        }
+      } catch (err) {
+        console.error("Failed to fetch visitor count:", err);
+      }
+    };
+
+    fetchVisitorCount();
+    const interval = setInterval(fetchVisitorCount, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Poll growth chart every 10 seconds
   useEffect(() => {
@@ -237,17 +256,17 @@ const AdminDashboard: React.FC = () => {
                     </p>
                   </div>
 
-                  {/* Online users */}
+                  {/* Visitors */}
                   <div className="p-4 xl:p-6 text-center border-b border-white/30 xl:border-r xl:border-b-0">
                     <h3 className="text-xs font-medium flex items-center justify-center">
-                      Active Users (Today)
+                      Total Visitors
                       <span className="relative flex h-2 w-2 ml-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
                       </span>
                     </h3>
                     <p className="text-2xl lg:text-3xl font-bold mt-2">
-                      {metrics.activeUsers}
+                      {totalVisitors.toLocaleString()}
                     </p>
                   </div>
 

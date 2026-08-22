@@ -58,7 +58,9 @@ export const ModelName = {
   AtsScoreHistory: 'AtsScoreHistory',
   JobDescription: 'JobDescription',
   Payment: 'Payment',
-  SupportTicket: 'SupportTicket'
+  SupportTicket: 'SupportTicket',
+  Visitor: 'Visitor',
+  SiteStats: 'SiteStats'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -90,7 +92,9 @@ export const UserScalarFieldEnum = {
   updatedAt: 'updatedAt',
   lastLoginAt: 'lastLoginAt',
   role: 'role',
-  isBanned: 'isBanned'
+  isBanned: 'isBanned',
+  isActive: 'isActive',
+  lastActiveAt: 'lastActiveAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -217,6 +221,27 @@ export const SupportTicketScalarFieldEnum = {
 } as const
 
 export type SupportTicketScalarFieldEnum = (typeof SupportTicketScalarFieldEnum)[keyof typeof SupportTicketScalarFieldEnum]
+
+
+export const VisitorScalarFieldEnum = {
+  id: 'id',
+  fingerprint: 'fingerprint',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  lastVisitAt: 'lastVisitAt',
+  createdAt: 'createdAt'
+} as const
+
+export type VisitorScalarFieldEnum = (typeof VisitorScalarFieldEnum)[keyof typeof VisitorScalarFieldEnum]
+
+
+export const SiteStatsScalarFieldEnum = {
+  id: 'id',
+  totalUniqueVisitors: 'totalUniqueVisitors',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SiteStatsScalarFieldEnum = (typeof SiteStatsScalarFieldEnum)[keyof typeof SiteStatsScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -57,3 +57,13 @@ export type Payment = Prisma.PaymentModel
  * 
  */
 export type SupportTicket = Prisma.SupportTicketModel
+/**
+ * Model Visitor
+ * 
+ */
+export type Visitor = Prisma.VisitorModel
+/**
+ * Model SiteStats
+ * 
+ */
+export type SiteStats = Prisma.SiteStatsModel

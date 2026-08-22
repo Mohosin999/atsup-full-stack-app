@@ -404,7 +404,9 @@ export const ModelName = {
   AtsScoreHistory: 'AtsScoreHistory',
   JobDescription: 'JobDescription',
   Payment: 'Payment',
-  SupportTicket: 'SupportTicket'
+  SupportTicket: 'SupportTicket',
+  Visitor: 'Visitor',
+  SiteStats: 'SiteStats'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -420,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "resume" | "analysis" | "atsScore" | "atsScoreHistory" | "jobDescription" | "payment" | "supportTicket"
+    modelProps: "user" | "resume" | "analysis" | "atsScore" | "atsScoreHistory" | "jobDescription" | "payment" | "supportTicket" | "visitor" | "siteStats"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1016,6 +1018,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Visitor: {
+      payload: Prisma.$VisitorPayload<ExtArgs>
+      fields: Prisma.VisitorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VisitorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VisitorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload>
+        }
+        findFirst: {
+          args: Prisma.VisitorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VisitorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload>
+        }
+        findMany: {
+          args: Prisma.VisitorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload>[]
+        }
+        create: {
+          args: Prisma.VisitorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload>
+        }
+        createMany: {
+          args: Prisma.VisitorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VisitorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload>[]
+        }
+        delete: {
+          args: Prisma.VisitorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload>
+        }
+        update: {
+          args: Prisma.VisitorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload>
+        }
+        deleteMany: {
+          args: Prisma.VisitorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VisitorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VisitorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload>[]
+        }
+        upsert: {
+          args: Prisma.VisitorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VisitorPayload>
+        }
+        aggregate: {
+          args: Prisma.VisitorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVisitor>
+        }
+        groupBy: {
+          args: Prisma.VisitorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VisitorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VisitorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VisitorCountAggregateOutputType> | number
+        }
+      }
+    }
+    SiteStats: {
+      payload: Prisma.$SiteStatsPayload<ExtArgs>
+      fields: Prisma.SiteStatsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SiteStatsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SiteStatsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload>
+        }
+        findFirst: {
+          args: Prisma.SiteStatsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SiteStatsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload>
+        }
+        findMany: {
+          args: Prisma.SiteStatsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload>[]
+        }
+        create: {
+          args: Prisma.SiteStatsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload>
+        }
+        createMany: {
+          args: Prisma.SiteStatsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SiteStatsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload>[]
+        }
+        delete: {
+          args: Prisma.SiteStatsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload>
+        }
+        update: {
+          args: Prisma.SiteStatsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload>
+        }
+        deleteMany: {
+          args: Prisma.SiteStatsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SiteStatsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SiteStatsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload>[]
+        }
+        upsert: {
+          args: Prisma.SiteStatsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SiteStatsPayload>
+        }
+        aggregate: {
+          args: Prisma.SiteStatsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSiteStats>
+        }
+        groupBy: {
+          args: Prisma.SiteStatsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SiteStatsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SiteStatsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SiteStatsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1068,7 +1218,9 @@ export const UserScalarFieldEnum = {
   updatedAt: 'updatedAt',
   lastLoginAt: 'lastLoginAt',
   role: 'role',
-  isBanned: 'isBanned'
+  isBanned: 'isBanned',
+  isActive: 'isActive',
+  lastActiveAt: 'lastActiveAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -1195,6 +1347,27 @@ export const SupportTicketScalarFieldEnum = {
 } as const
 
 export type SupportTicketScalarFieldEnum = (typeof SupportTicketScalarFieldEnum)[keyof typeof SupportTicketScalarFieldEnum]
+
+
+export const VisitorScalarFieldEnum = {
+  id: 'id',
+  fingerprint: 'fingerprint',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  lastVisitAt: 'lastVisitAt',
+  createdAt: 'createdAt'
+} as const
+
+export type VisitorScalarFieldEnum = (typeof VisitorScalarFieldEnum)[keyof typeof VisitorScalarFieldEnum]
+
+
+export const SiteStatsScalarFieldEnum = {
+  id: 'id',
+  totalUniqueVisitors: 'totalUniqueVisitors',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SiteStatsScalarFieldEnum = (typeof SiteStatsScalarFieldEnum)[keyof typeof SiteStatsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1486,6 +1659,8 @@ export type GlobalOmitConfig = {
   jobDescription?: Prisma.JobDescriptionOmit
   payment?: Prisma.PaymentOmit
   supportTicket?: Prisma.SupportTicketOmit
+  visitor?: Prisma.VisitorOmit
+  siteStats?: Prisma.SiteStatsOmit
 }
 
 /* Types for Logging */

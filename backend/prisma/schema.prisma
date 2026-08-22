@@ -21,6 +21,10 @@ model User {
   lastLoginAt   DateTime?   @db.Timestamp()
   role              String              @default("user")
   isBanned          Boolean             @default(false)
+  isActive          Boolean             @default(true)
+  lastActiveAt      DateTime?           @db.Timestamp()
+
+  @@index([role, isActive])
 
   resumes           Resume[]
   analyses          Analysis[]
@@ -174,4 +178,25 @@ model SupportTicket {
   @@index([userId, createdAt])
   @@index([status])
   @@map("support_tickets")
+}
+
+model Visitor {
+  id            String   @id @default(cuid())
+  fingerprint   String
+  ipAddress     String?
+  userAgent     String?
+  lastVisitAt   DateTime @default(now())
+  createdAt     DateTime @default(now())
+
+  @@unique([fingerprint])
+  @@index([lastVisitAt])
+  @@map("visitors")
+}
+
+model SiteStats {
+  id                   String   @id @default("singleton")
+  totalUniqueVisitors  Int      @default(0)
+  updatedAt            DateTime @updatedAt
+
+  @@map("site_stats")
 }

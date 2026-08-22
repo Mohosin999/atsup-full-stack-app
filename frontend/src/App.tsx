@@ -20,6 +20,7 @@ import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
 import MyReports from "./pages/MyReports";
 import ReportButton from "./components/support/ReportButton";
+import { useVisitorTracking } from "./hooks/useVisitorTracking";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -46,6 +47,8 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
+
+  useVisitorTracking();
 
   // After a successful login (incl. Google OAuth round-trip), return to the
   // page the user came from.

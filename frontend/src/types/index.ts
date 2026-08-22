@@ -481,7 +481,6 @@ export interface PresenceData {
 
 export interface AdminDashboardMetrics {
   totalUsers: number;
-  activeUsers: number;
   todayNewUsers: number;
   resumeBuilderUsersToday: number;
   atsCheckUsersToday: number;

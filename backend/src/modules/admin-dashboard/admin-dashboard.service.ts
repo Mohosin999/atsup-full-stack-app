@@ -4,33 +4,6 @@ export const getTotalUsers = async () => {
   return prisma.user.count();
 };
 
-export const getActiveUsers = async () => {
-  const startOfToday = new Date();
-  startOfToday.setHours(0, 0, 0, 0);
-  const [resumeUsers, atsUsers] = await Promise.all([
-    prisma.resume.groupBy({
-      by: ['userId'],
-      where: {
-        createdAt: {
-          gte: startOfToday,
-        },
-      },
-    }),
-    prisma.atsScoreHistory.groupBy({
-      by: ['userId'],
-      where: {
-        createdAt: {
-          gte: startOfToday,
-        },
-      },
-    }),
-  ]);
-  const userIds = new Set<string>();
-  resumeUsers.forEach((u) => userIds.add(u.userId));
-  atsUsers.forEach((u) => userIds.add(u.userId));
-  return userIds.size;
-};
-
 export const getTodayNewUsers = async () => {
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
@@ -232,14 +205,12 @@ export const getBestFeatureToday = async () => {
 export const getAdminDashboardMetrics = async () => {
   const [
     totalUsers,
-    activeUsers,
     todayNewUsers,
     resumeBuilderUsersToday,
     atsCheckUsersToday,
     bestFeatureToday,
   ] = await Promise.all([
     getTotalUsers(),
-    getActiveUsers(),
     getTodayNewUsers(),
     getResumeBuilderUsersToday(),
     getATSCheckUsersToday(),
@@ -248,7 +219,6 @@ export const getAdminDashboardMetrics = async () => {
 
   return {
     totalUsers,
-    activeUsers,
     todayNewUsers,
     resumeBuilderUsersToday,
     atsCheckUsersToday,

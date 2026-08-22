@@ -36,6 +36,8 @@ export type UserMinAggregateOutputType = {
   lastLoginAt: Date | null
   role: string | null
   isBanned: boolean | null
+  isActive: boolean | null
+  lastActiveAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -50,6 +52,8 @@ export type UserMaxAggregateOutputType = {
   lastLoginAt: Date | null
   role: string | null
   isBanned: boolean | null
+  isActive: boolean | null
+  lastActiveAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -66,6 +70,8 @@ export type UserCountAggregateOutputType = {
   lastLoginAt: number
   role: number
   isBanned: number
+  isActive: number
+  lastActiveAt: number
   _all: number
 }
 
@@ -82,6 +88,8 @@ export type UserMinAggregateInputType = {
   lastLoginAt?: true
   role?: true
   isBanned?: true
+  isActive?: true
+  lastActiveAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -96,6 +104,8 @@ export type UserMaxAggregateInputType = {
   lastLoginAt?: true
   role?: true
   isBanned?: true
+  isActive?: true
+  lastActiveAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -112,6 +122,8 @@ export type UserCountAggregateInputType = {
   lastLoginAt?: true
   role?: true
   isBanned?: true
+  isActive?: true
+  lastActiveAt?: true
   _all?: true
 }
 
@@ -201,6 +213,8 @@ export type UserGroupByOutputType = {
   lastLoginAt: Date | null
   role: string
   isBanned: boolean
+  isActive: boolean
+  lastActiveAt: Date | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -238,6 +252,8 @@ export type UserWhereInput = {
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   role?: Prisma.StringFilter<"User"> | string
   isBanned?: Prisma.BoolFilter<"User"> | boolean
+  isActive?: Prisma.BoolFilter<"User"> | boolean
+  lastActiveAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   resumes?: Prisma.ResumeListRelationFilter
   analyses?: Prisma.AnalysisListRelationFilter
   atsScores?: Prisma.AtsScoreListRelationFilter
@@ -261,6 +277,8 @@ export type UserOrderByWithRelationInput = {
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
   resumes?: Prisma.ResumeOrderByRelationAggregateInput
   analyses?: Prisma.AnalysisOrderByRelationAggregateInput
   atsScores?: Prisma.AtsScoreOrderByRelationAggregateInput
@@ -287,6 +305,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   role?: Prisma.StringFilter<"User"> | string
   isBanned?: Prisma.BoolFilter<"User"> | boolean
+  isActive?: Prisma.BoolFilter<"User"> | boolean
+  lastActiveAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   resumes?: Prisma.ResumeListRelationFilter
   analyses?: Prisma.AnalysisListRelationFilter
   atsScores?: Prisma.AtsScoreListRelationFilter
@@ -310,6 +330,8 @@ export type UserOrderByWithAggregationInput = {
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -332,6 +354,8 @@ export type UserScalarWhereWithAggregatesInput = {
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   role?: Prisma.StringWithAggregatesFilter<"User"> | string
   isBanned?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  lastActiveAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -348,6 +372,8 @@ export type UserCreateInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -371,6 +397,8 @@ export type UserUncheckedCreateInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -394,6 +422,8 @@ export type UserUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -417,6 +447,8 @@ export type UserUncheckedUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -440,6 +472,8 @@ export type UserCreateManyInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -456,6 +490,8 @@ export type UserUpdateManyMutationInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -472,6 +508,8 @@ export type UserUncheckedUpdateManyInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -488,6 +526,8 @@ export type UserCountOrderByAggregateInput = {
   lastLoginAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -502,6 +542,8 @@ export type UserMaxOrderByAggregateInput = {
   lastLoginAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -516,6 +558,8 @@ export type UserMinOrderByAggregateInput = {
   lastLoginAt?: Prisma.SortOrder
   role?: Prisma.SortOrder
   isBanned?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  lastActiveAt?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -655,6 +699,8 @@ export type UserCreateWithoutResumesInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
@@ -677,6 +723,8 @@ export type UserUncheckedCreateWithoutResumesInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -715,6 +763,8 @@ export type UserUpdateWithoutResumesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
@@ -737,6 +787,8 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -759,6 +811,8 @@ export type UserCreateWithoutAnalysesInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
@@ -781,6 +835,8 @@ export type UserUncheckedCreateWithoutAnalysesInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -819,6 +875,8 @@ export type UserUpdateWithoutAnalysesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
@@ -841,6 +899,8 @@ export type UserUncheckedUpdateWithoutAnalysesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -863,6 +923,8 @@ export type UserCreateWithoutAtsScoresInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
@@ -885,6 +947,8 @@ export type UserUncheckedCreateWithoutAtsScoresInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -923,6 +987,8 @@ export type UserUpdateWithoutAtsScoresInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
@@ -945,6 +1011,8 @@ export type UserUncheckedUpdateWithoutAtsScoresInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -967,6 +1035,8 @@ export type UserCreateWithoutAtsScoreHistoriesInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -989,6 +1059,8 @@ export type UserUncheckedCreateWithoutAtsScoreHistoriesInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1027,6 +1099,8 @@ export type UserUpdateWithoutAtsScoreHistoriesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1049,6 +1123,8 @@ export type UserUncheckedUpdateWithoutAtsScoreHistoriesInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1071,6 +1147,8 @@ export type UserCreateWithoutJobDescriptionsInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1093,6 +1171,8 @@ export type UserUncheckedCreateWithoutJobDescriptionsInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1131,6 +1211,8 @@ export type UserUpdateWithoutJobDescriptionsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1153,6 +1235,8 @@ export type UserUncheckedUpdateWithoutJobDescriptionsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1175,6 +1259,8 @@ export type UserCreateWithoutPaymentsInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1197,6 +1283,8 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1235,6 +1323,8 @@ export type UserUpdateWithoutPaymentsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1257,6 +1347,8 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1279,6 +1371,8 @@ export type UserCreateWithoutSupportTicketsInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1301,6 +1395,8 @@ export type UserUncheckedCreateWithoutSupportTicketsInput = {
   lastLoginAt?: Date | string | null
   role?: string
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1339,6 +1435,8 @@ export type UserUpdateWithoutSupportTicketsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1361,6 +1459,8 @@ export type UserUncheckedUpdateWithoutSupportTicketsInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1468,6 +1568,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lastLoginAt?: boolean
   role?: boolean
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: boolean
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   analyses?: boolean | Prisma.User$analysesArgs<ExtArgs>
   atsScores?: boolean | Prisma.User$atsScoresArgs<ExtArgs>
@@ -1492,6 +1594,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastLoginAt?: boolean
   role?: boolean
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1508,6 +1612,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastLoginAt?: boolean
   role?: boolean
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1524,9 +1630,11 @@ export type UserSelectScalar = {
   lastLoginAt?: boolean
   role?: boolean
   isBanned?: boolean
+  isActive?: boolean
+  lastActiveAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "googleId" | "password" | "picture" | "preferences" | "subscription" | "createdAt" | "updatedAt" | "lastLoginAt" | "role" | "isBanned", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "googleId" | "password" | "picture" | "preferences" | "subscription" | "createdAt" | "updatedAt" | "lastLoginAt" | "role" | "isBanned" | "isActive" | "lastActiveAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   analyses?: boolean | Prisma.User$analysesArgs<ExtArgs>
@@ -1565,6 +1673,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     lastLoginAt: Date | null
     role: string
     isBanned: boolean
+    isActive: boolean
+    lastActiveAt: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2008,6 +2118,8 @@ export interface UserFieldRefs {
   readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly role: Prisma.FieldRef<"User", 'String'>
   readonly isBanned: Prisma.FieldRef<"User", 'Boolean'>
+  readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
+  readonly lastActiveAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

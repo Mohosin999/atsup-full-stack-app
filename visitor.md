@@ -7,6 +7,7 @@
 **Prisma Schema** (`backend/prisma/schema.prisma`) - No visitor related models existed.
 
 **Admin Dashboard Service** (`backend/src/modules/admin-dashboard/admin-dashboard.service.ts`):
+
 - `getActiveUsers()` function chilo - jeta today e resume ba ats check kora users count korto
 - `getAdminDashboardMetrics()` function e `activeUsers` return korto
 
@@ -17,11 +18,11 @@ export const getActiveUsers = async () => {
   startOfToday.setHours(0, 0, 0, 0);
   const [resumeUsers, atsUsers] = await Promise.all([
     prisma.resume.groupBy({
-      by: ['userId'],
+      by: ["userId"],
       where: { createdAt: { gte: startOfToday } },
     }),
     prisma.atsScoreHistory.groupBy({
-      by: ['userId'],
+      by: ["userId"],
       where: { createdAt: { gte: startOfToday } },
     }),
   ]);
@@ -35,11 +36,12 @@ export const getActiveUsers = async () => {
 ### Frontend
 
 **Types** (`frontend/src/types/index.ts`):
+
 ```typescript
 // THIS FIELD WAS REMOVED
 export interface AdminDashboardMetrics {
   totalUsers: number;
-  activeUsers: number;        // <-- removed
+  activeUsers: number; // <-- removed
   todayNewUsers: number;
   resumeBuilderUsersToday: number;
   atsCheckUsersToday: number;
@@ -48,6 +50,7 @@ export interface AdminDashboardMetrics {
 ```
 
 **AdminDashboard** (`frontend/src/pages/AdminDashboard.tsx`):
+
 - "Active Users (Today)" card chilo pulsing indicator shoho
 - `metrics.activeUsers` diye count dekhato
 
@@ -61,9 +64,7 @@ export interface AdminDashboardMetrics {
       <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
     </span>
   </h3>
-  <p className="text-2xl lg:text-3xl font-bold mt-2">
-    {metrics.activeUsers}
-  </p>
+  <p className="text-2xl lg:text-3xl font-bold mt-2">{metrics.activeUsers}</p>
 </div>
 ```
 
@@ -99,6 +100,7 @@ model SiteStats {
 ```
 
 **Ki kore:**
+
 - `Visitor` table -每一个 unique fingerprint ekhane store hoy
 - `SiteStats` table - total unique visitor count rakhe (singleton row, query fast)
 
@@ -114,7 +116,7 @@ import { prisma } from "../../lib/prisma";
 export const trackVisitor = async (
   fingerprint: string,
   ipAddress?: string,
-  userAgent?: string
+  userAgent?: string,
 ) => {
   const existing = await prisma.visitor.findUnique({
     where: { fingerprint },
@@ -150,6 +152,7 @@ export const getTotalUniqueVisitors = async () => {
 ```
 
 **Ki kore:**
+
 - `trackVisitor()` - fingerprint diye check kore, agor hole `lastVisitAt` update kore, notun hole `visitors` table e create + `site_stats.totalUniqueVisitors` increment kore
 - `getTotalUniqueVisitors()` - `site_stats` theke total count return kore
 
@@ -173,9 +176,7 @@ export const track = async (req: Request, res: Response) => {
     }
 
     const ipAddress =
-      (req.headers["x-forwarded-for"] as string)?.split(",")[0] ||
-      req.ip ||
-      "";
+      (req.headers["x-forwarded-for"] as string)?.split(",")[0] || req.ip || "";
     const userAgent = req.headers["user-agent"] || "";
 
     await trackVisitor(fingerprint, ipAddress, userAgent);
@@ -187,9 +188,7 @@ export const track = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error tracking visitor:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -202,14 +201,13 @@ export const getCount = async (_req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error fetching visitor count:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 ```
 
 **Routes:**
+
 - `POST /api/visitor/track` - visitor track kore
 - `GET /api/visitor/count` - total count return kore
 
@@ -291,6 +289,7 @@ export function useVisitorTracking() {
 ```
 
 **Ki kore:**
+
 - Browser fingerprint generate kore (userAgent + screen + timezone + language + hardwareConcurrency)
 - localStorage e store kore (same browser e refresh korle same fingerprint thakbe)
 - Hash generate kore `fp_xxxxx` format e
@@ -341,11 +340,13 @@ export interface AdminDashboardMetrics {
 **File:** `frontend/src/pages/AdminDashboard.tsx`
 
 **State add:**
+
 ```typescript
 const [totalVisitors, setTotalVisitors] = useState<number>(0);
 ```
 
 **Visitor count fetch:**
+
 ```typescript
 useEffect(() => {
   const fetchVisitorCount = async () => {
@@ -366,8 +367,11 @@ useEffect(() => {
 ```
 
 **Card replace:**
+
 ```tsx
-{/* Visitors - Active Users (Today) er jaigai */}
+{
+  /* Visitors - Active Users (Today) er jaigai */
+}
 <div className="p-4 xl:p-6 text-center border-b border-white/30 xl:border-r xl:border-b-0">
   <h3 className="text-xs font-medium flex items-center justify-center">
     Total Visitors
@@ -379,25 +383,25 @@ useEffect(() => {
   <p className="text-2xl lg:text-3xl font-bold mt-2">
     {totalVisitors.toLocaleString()}
   </p>
-</div>
+</div>;
 ```
 
 ---
 
 ## 3. Files Changed Summary
 
-| # | File | Change |
-|---|------|--------|
-| 1 | `backend/prisma/schema.prisma` | Visitor + SiteStats model add |
-| 2 | `backend/src/modules/visitor/visitor.service.ts` | Naya file - track + count logic |
-| 3 | `backend/src/modules/visitor/visitor.controller.ts` | Naya file - API handlers |
-| 4 | `backend/src/modules/visitor/visitor.routes.ts` | Naya file - routes |
-| 5 | `backend/src/modules/index.ts` | Visitor routes register |
-| 6 | `backend/src/modules/admin-dashboard/admin-dashboard.service.ts` | `getActiveUsers()` remove |
-| 7 | `frontend/src/hooks/useVisitorTracking.ts` | Naya file - fingerprint + tracking |
-| 8 | `frontend/src/App.tsx` | Hook import + use |
-| 9 | `frontend/src/types/index.ts` | `activeUsers` field remove |
-| 10 | `frontend/src/pages/AdminDashboard.tsx` | Active Users card → Visitors card |
+| #   | File                                                             | Change                             |
+| --- | ---------------------------------------------------------------- | ---------------------------------- |
+| 1   | `backend/prisma/schema.prisma`                                   | Visitor + SiteStats model add      |
+| 2   | `backend/src/modules/visitor/visitor.service.ts`                 | Naya file - track + count logic    |
+| 3   | `backend/src/modules/visitor/visitor.controller.ts`              | Naya file - API handlers           |
+| 4   | `backend/src/modules/visitor/visitor.routes.ts`                  | Naya file - routes                 |
+| 5   | `backend/src/modules/index.ts`                                   | Visitor routes register            |
+| 6   | `backend/src/modules/admin-dashboard/admin-dashboard.service.ts` | `getActiveUsers()` remove          |
+| 7   | `frontend/src/hooks/useVisitorTracking.ts`                       | Naya file - fingerprint + tracking |
+| 8   | `frontend/src/App.tsx`                                           | Hook import + use                  |
+| 9   | `frontend/src/types/index.ts`                                    | `activeUsers` field remove         |
+| 10  | `frontend/src/pages/AdminDashboard.tsx`                          | Active Users card → Visitors card  |
 
 ---
 
@@ -427,3 +431,20 @@ Admin Dashboard → GET /api/visitor/count → shows Total Visitors card
 - Same browser + same machine = same fingerprint = 1 visitor
 - Different browser = different fingerprint = separate visitor
 - Different machine + same browser = different fingerprint = separate visitor
+
+How do we track unique visitors without login?  
+ LSP  
+ Simple formula: LSPs are disabled  
+ Browser Fingerprint = hash(userAgent + screen + timezone + language + hardwareConcurrency)  
+ ▼ Todo  
+ Same browser + same machine = 1 unique visitor [•] Backend: auth.validation.ts e  
+ Different browser = separate visitor Gmail regex add  
+ Different machine + same browser = separate visitor [ ] Backend: auth.controller.ts e  
+ Zod validation apply (register +  
+ No cookies needed. No login required. Privacy-friendly tracking. login)  
+ [ ] Frontend: Login.tsx e Gmail  
+ Built this for our AI resume platform CVCoach - real-time unique visitor count on admin dashboard, auto-refreshes every 10 seconds. check add  
+ [ ] Typecheck + verify  
+ Tech: React + Express + Prisma + PostgreSQL
+
+     #WebDevelopment #VisitorTracking #JavaScript #ReactJS #NodeJS

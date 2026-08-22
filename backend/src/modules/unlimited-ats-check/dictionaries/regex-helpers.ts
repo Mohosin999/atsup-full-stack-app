@@ -36,7 +36,11 @@ export const extractPortfolio = (text: string): string => {
   const candidate = explicit ? explicit[0] : "";
 
   // Exclude social/known non-portfolio domains.
-  if (/(linkedin|github|gitlab|behance|dribbble|twitter|facebook|fb\.)/i.test(candidate)) {
+  if (
+    /(linkedin|github|gitlab|behance|dribbble|twitter|facebook|fb\.)/i.test(
+      candidate,
+    )
+  ) {
     return "";
   }
 
@@ -49,10 +53,17 @@ export const extractPortfolio = (text: string): string => {
   );
   if (!bare) return "";
   const bareCandidate = bare[0];
-  if (/(linkedin|github|gitlab|behance|dribbble|twitter|facebook|fb\.)/i.test(bareCandidate)) {
+  if (
+    /(linkedin|github|gitlab|behance|dribbble|twitter|facebook|fb\.)/i.test(
+      bareCandidate,
+    )
+  ) {
     return "";
   }
-  if (emailDomain && bareCandidate.toLowerCase().endsWith(emailDomain.toLowerCase())) {
+  if (
+    emailDomain &&
+    bareCandidate.toLowerCase().endsWith(emailDomain.toLowerCase())
+  ) {
     return "";
   }
   return bareCandidate;
@@ -65,21 +76,24 @@ export const countWords = (text: string): number => {
 };
 
 // ---- Measurable results ----
-// A metric token: a number followed by a unit (% , time, money, scale, count).
-const METRIC_TOKEN_RE =
-  /(?:\d+(?:\.\d+)?)\s*(?:%|x|×|times?|seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?|months?|years?|\+|\$|USD|Tk|BDT|k|million|billion|ms|users|customers|clients|downloads|requests|products|countries|cities|developers|members|features|pages|projects|orders|sales|leads|conversions?|signups?|subscribers|followers|impressions|clicks|queries)/i;
+// A metric token: a number followed by a unit (% , time, money, scale, count, AI/infra units).
+const NUM = String.raw`\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?`;
+const METRIC_TOKEN_RE = new RegExp(
+  `${NUM}\\s*(?:%|x|×|times?|seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?|months?|years?|\\+|\\$|USD|Tk|BDT|k|m\\b|mn\\b|million|billion|ms|GB|TB|PB|QPS|RPS|TPS|FLOPs?|tokens?|epochs?|GPUs?|nodes?|clusters?|users|customers|clients|downloads|requests|products|countries|cities|developers|members|features|pages|projects|orders|sales|leads|conversions?|signups?|subscribers|followers|impressions|clicks|queries)`,
+  "i",
+);
 
 export const MEASURABLE_RESULT_RE = METRIC_TOKEN_RE;
 
 // Achievement/impact verbs that mark a line as a quantified outcome rather
 // than a role-scope statement or a plain sentence.
 const IMPACT_VERB_RE =
-  /\b(?:increase|increased|increasing|boost|boosted|boosting|grow|grew|grown|growing|reduce|reduced|reducing|decrease|decreased|decreasing|cut|cutting|slash|slashed|lower|lowered|lowering|improve|improved|improving|improvement|optimize|optimized|optimizing|streamline|streamlined|automate|automated|accelerate|accelerated|speed|speeding|sped|enhance|enhanced|expand|expanded|double|doubled|triple|tripled|maximize|maximized|minimize|minimized|raise|raised|save|saved|saving|achieve|achieved|surpass|surpassed|exceed|exceeded|generate|generated|generating|deliver|delivered|delivering|drive|drove|driven|enable|enabled|maintain|maintained|handle|handled|manage|managed|managing|lead|led|built|build|develop|developed|developing|design|designed|create|created|launch|launched|scale|scaled|complete|completed|completion)\b/i;
+  /\b(?:increase|increased|increasing|boost|boosted|boosting|grow|grew|grown|growing|reduce|reduced|reducing|decrease|decreased|decreasing|cut|cutting|slash|slashed|lower|lowered|lowering|improve|improved|improving|improvement|optimize|optimized|optimizing|streamline|streamlined|automate|automated|accelerate|accelerated|speed|speeding|sped|enhance|enhanced|expand|expanded|double|doubled|triple|tripled|maximize|maximized|minimize|minimized|raise|raised|save|saved|saving|achieve|achieved|surpass|surpassed|exceed|exceeded|generate|generated|generating|deliver|delivered|delivering|drive|drove|driven|enable|enabled|maintain|maintained|handle|handled|manage|managed|managing|lead|led|built|build|develop|developed|developing|design|designed|create|created|launch|launched|scale|scaled|complete|completed|completion|fine-?tuned?|quantized?|distilled?|migrated?|refactored?|orchestrated?|instrumented?|benchmarked?|A\/B\s*tested?)\b/i;
 
 // Business/performance metric words that, combined with a number, signal a
 // quantified outcome even when the line lacks an explicit impact verb.
 const METRIC_WORD_RE =
-  /\b(?:sales|revenue|traffic|conversion|conversions|engagement|performance|efficiency|speed|load\s*time|response\s*time|uptime|cost|expense|profit|margin|growth|productivity|accuracy|error\s*rate|bounce\s*rate|downtime|throughput|latency|retention|satisfaction|savings|turnaround|completion|coverage|downloads)\b/i;
+  /\b(?:sales|revenue|traffic|conversion|conversions|engagement|performance|efficiency|speed|load\s*time|response\s*time|uptime|cost|expense|profit|margin|growth|productivity|accuracy|precision|recall|F1|AUC|BLEU|ROUGE|perplexity|mAP|error\s*rate|bounce\s*rate|downtime|throughput|latency|retention|satisfaction|savings|turnaround|completion|coverage|downloads|inference\s*time|training\s*time|QPS|RPS|TPS|MTTR|MTBF|SLA|availability|error\s*budget|P95|P99|cloud\s*cost|compute\s*cost|storage\s*cost|CDN\s*cost|CTR|NDCG|relevance|hallucination\s*rate|pipeline\s*runtime|data\s*freshness|job\s*success\s*rate|ETL\s*time|test\s*coverage|build\s*time|CI\s*time|PR\s*cycle\s*time|deploy\s*frequency|ARR|MRR|LTV|CAC|churn|NPS|CSAT)\b/i;
 
 // Lines like "3+ years of experience ..." describe role scope, not impact.
 const EXPERIENCE_DURATION_RE =
@@ -87,13 +101,17 @@ const EXPERIENCE_DURATION_RE =
 
 export const extractMeasurableResults = (text: string): string[] => {
   const results: string[] = [];
-  const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+  const lines = text
+    .split(/\n+/)
+    .map((l) => l.trim())
+    .filter(Boolean);
   for (const line of lines) {
     if (line.length > 300) continue;
     if (!METRIC_TOKEN_RE.test(line)) continue;
 
     // "3+ years of experience ..." is a role-scope statement, not a result.
-    if (EXPERIENCE_DURATION_RE.test(line) && !IMPACT_VERB_RE.test(line)) continue;
+    if (EXPERIENCE_DURATION_RE.test(line) && !IMPACT_VERB_RE.test(line))
+      continue;
 
     const hasImpactVerb = IMPACT_VERB_RE.test(line);
     const hasMetricWord = METRIC_WORD_RE.test(line);
@@ -124,4 +142,5 @@ export const parseExperienceYears = (raw: string): number => {
   return m ? parseInt(m[1], 10) : 0;
 };
 
-export const ISO_ISH_DATE_RE = /^(?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{4}[\/-]\d{1,2}[\/-]\d{1,2})$/;
+export const ISO_ISH_DATE_RE =
+  /^(?:\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{4}[\/-]\d{1,2}[\/-]\d{1,2})$/;

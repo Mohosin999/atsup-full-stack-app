@@ -9,7 +9,6 @@ import {
   getSkillVariants,
   countVariantsInText,
 } from "./keywords";
-import { MEASURABLE_RESULT_RE, ACTION_VERBS } from "./constants";
 import { ResumeContent } from "../types";
 
 export const toResumeText = (resume: ResumeContent): string => {
@@ -196,49 +195,22 @@ export const parseYearsOfExperience = (raw?: string | number): number => {
 };
 
 export const countMeasurableResults = (resume: ResumeContent) => {
-  const stored = resume.measurableResults;
-  const highlights =
-    Array.isArray(stored) && stored.length
-      ? stored
-      : (resume.experience || [])
-          .flatMap((exp) => exp.responsibilities || [])
-          .filter((h) => MEASURABLE_RESULT_RE.test(h));
-  return { count: highlights.length, found: highlights.slice(0, 5) };
+  const found = Array.isArray(resume.measurableResults)
+    ? resume.measurableResults
+    : [];
+  return { count: found.length, found: found.slice(0, 5) };
 };
 
 export const measurableResultsScore = (count: number): number =>
-  count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
-
-const ACTION_VERBS_RE = new RegExp(
-  `\\b(?:${ACTION_VERBS.map((v) =>
-    v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-  ).join("|")})\\b`,
-  "gi",
-);
+  count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
 
 const countActionVerbs = (resume: ResumeContent) => {
-  const stored = resume.actionVerbs;
-  if (Array.isArray(stored) && stored.length) {
-    return { count: stored.length, found: stored.slice(0, 5) };
-  }
-
-  const highlights = (resume.experience || []).flatMap(
-    (exp) => exp.responsibilities || [],
-  );
-  const text = highlights.join(" ");
-
-  const matched = new Set<string>();
-  ACTION_VERBS_RE.lastIndex = 0;
-  let m: RegExpExecArray | null;
-  while ((m = ACTION_VERBS_RE.exec(text))) {
-    matched.add(m[0].toLowerCase());
-  }
-
-  return { count: matched.size, found: [...matched].slice(0, 5) };
+  const found = Array.isArray(resume.actionVerbs) ? resume.actionVerbs : [];
+  return { count: found.length, found: found.slice(0, 5) };
 };
 
 const actionVerbsScore = (count: number): number =>
-  count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
+  count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
 
 export const summaryScore = (summaryWords: number): number =>
   summaryWords >= 30 && summaryWords <= 80

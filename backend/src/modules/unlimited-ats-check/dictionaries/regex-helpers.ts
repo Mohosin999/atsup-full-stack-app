@@ -118,7 +118,7 @@ export const extractMeasurableResults = (text: string): string[] => {
 };
 
 // ---- Action verbs ----
-import { ACTION_VERBS } from "../../../shared/scoring/constants";
+import { ACTION_VERBS } from "./action-verbs.dictionary";
 
 const ACTION_VERBS_RE = new RegExp(
   `\\b(?:${ACTION_VERBS.map((v) =>

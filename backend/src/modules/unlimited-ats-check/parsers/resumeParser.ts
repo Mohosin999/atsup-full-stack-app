@@ -598,11 +598,13 @@ export const parseResumeByDictionary = (text: string): ResumeParseOutput => {
 
   // ---- Derived metrics ----
   const wordCount = countWords(allText);
-  const measurableResults = extractMeasurableResults(allText);
+  const measurableResults = Array.from(
+    new Set(extractMeasurableResults(allText).map((l) => l.trim())),
+  ).sort();
   const experienceBullets = experience.flatMap(
     (exp) => exp.responsibilities || [],
   );
-  const actionVerbs = extractActionVerbs(experienceBullets);
+  const actionVerbs = extractActionVerbs(experienceBullets).sort();
 
   // Calculate years of experience from experience section dates
   const yearsOfExperience = calculateExperienceYears(experience);

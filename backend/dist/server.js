@@ -940,9 +940,10 @@ RESEARCH THE FOLLOWING DETAILS:
    - hardSkills: ONLY technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, DevOps tools, software, technologies, APIs, etc.) - return ONLY the keyword names
    - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
 6. Projects (name, description as bullet points, startDate, endDate)
-7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
-8. resumeTone: assess the overall tone and quality of the resume writing. Use one of: "good", "bad", "professional", "weak".
-9. wordCount: total number of words in the resume.
+ 7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
+ 8. measurableResults: array of strings \u2014 every experience bullet that contains a quantified/measurable outcome (a number with a unit such as %, time, money, scale, or a metric word like revenue, conversion, latency). Return [] if none.
+ 9. actionVerbs: array of strings \u2014 the distinct strong action verbs found at the start of experience bullets (e.g. "led", "built", "optimized", "launched"). Return [] if none.
+ 10. wordCount: total number of words in the resume.
 10. educationSection: true if an education section exists.
 11. experienceSection: true if an experience/work section exists.
 12. workHistory: true if there is AT LEAST ONE work experience entry.
@@ -1009,7 +1010,8 @@ JSON STRUCTURE:
   ]
   ],
   "yearsOfExperience": "",
-  "resumeTone": "bad",
+  "measurableResults": [],
+  "actionVerbs": [],
   "wordCount": "",
   "educationSection": false,
   "experienceSection": false,
@@ -1118,7 +1120,8 @@ var normalizeResearchResult = (raw2) => {
       endDate: str(proj?.endDate)
     })),
     yearsOfExperience: str(raw2?.yearsOfExperience),
-    resumeTone: str(raw2?.resumeTone, "bad"),
+    measurableResults: arr(raw2?.measurableResults).map((v) => str(v)),
+    actionVerbs: arr(raw2?.actionVerbs).map((v) => str(v)),
     wordCount: str(raw2?.wordCount),
     educationSection: bool(raw2?.educationSection),
     experienceSection: bool(raw2?.experienceSection),
@@ -1281,357 +1284,6 @@ var CATEGORY_WEIGHTS = {
   recruiterTips: 10
 };
 var ATS_DATE_RE = /^(present|current|now|ongoing|\d{1,2}\/\d{2}(\d{2})?|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s?\d{4})$/i;
-var MEASURABLE_RESULT_RE = /(?:\d+(?:\.\d+)?%|\d+(?:\.\d+)?x|\$\s?\d+(?:,\d{3})*(?:\.\d+)?[KMB]?|\d+(?:,\d{3})*(?:\.\d+)?[KMB]?\+?|\d+\s*(?:hours?|hrs?|days?|weeks?|months?|years?)|(?:team of|managed|led|supervised)\s+\d+|\d+\s*(?:members?|people|employees?|clients?|users?|customers?)|\d+(?:\.\d+)?\/\d+)/i;
-var ACTION_VERBS = [
-  // A
-  "accelerated",
-  "accomplished",
-  "achieved",
-  "acquired",
-  "adapted",
-  "addressed",
-  "administered",
-  "advanced",
-  "advised",
-  "advocated",
-  "analyzed",
-  "applied",
-  "appointed",
-  "appraised",
-  "approved",
-  "arbitrated",
-  "architected",
-  "arranged",
-  "articulated",
-  "assembled",
-  "assessed",
-  "assigned",
-  "assisted",
-  "attained",
-  "audited",
-  "authored",
-  "automated",
-  "awarded",
-  // B
-  "balanced",
-  "benchmarked",
-  "boosted",
-  "briefed",
-  "broadened",
-  "budgeted",
-  "built",
-  // C
-  "calculated",
-  "centralized",
-  "chaired",
-  "championed",
-  "clarified",
-  "classified",
-  "coached",
-  "collaborated",
-  "collected",
-  "combined",
-  "communicated",
-  "compared",
-  "compiled",
-  "completed",
-  "composed",
-  "computed",
-  "conceived",
-  "conceptualized",
-  "condensed",
-  "conducted",
-  "conferred",
-  "configured",
-  "consolidated",
-  "constructed",
-  "consulted",
-  "contacted",
-  "contributed",
-  "controlled",
-  "converted",
-  "coordinated",
-  "corrected",
-  "corresponded",
-  "counseled",
-  "created",
-  "critiqued",
-  "cultivated",
-  "customized",
-  // D
-  "debugged",
-  "decided",
-  "decreased",
-  "defined",
-  "delegated",
-  "delivered",
-  "demonstrated",
-  "deployed",
-  "designed",
-  "detected",
-  "determined",
-  "developed",
-  "devised",
-  "diagnosed",
-  "directed",
-  "discovered",
-  "dispatched",
-  "dispensed",
-  "displayed",
-  "distributed",
-  "documented",
-  "doubled",
-  "drafted",
-  "drove",
-  // E
-  "earned",
-  "edited",
-  "educated",
-  "eliminated",
-  "enabled",
-  "encouraged",
-  "engineered",
-  "enhanced",
-  "enlisted",
-  "ensured",
-  "established",
-  "estimated",
-  "evaluated",
-  "examined",
-  "exceeded",
-  "executed",
-  "expanded",
-  "expedited",
-  "experimented",
-  "explained",
-  "explored",
-  "expressed",
-  "extended",
-  // F
-  "facilitated",
-  "finalized",
-  "financed",
-  "fixed",
-  "focused",
-  "forecasted",
-  "formed",
-  "formulated",
-  "fostered",
-  "founded",
-  "fulfilled",
-  "funded",
-  // G
-  "gained",
-  "gathered",
-  "generated",
-  "governed",
-  "guided",
-  // H
-  "handled",
-  "headed",
-  "helped",
-  "hired",
-  "hosted",
-  // I
-  "identified",
-  "illustrated",
-  "implemented",
-  "improved",
-  "improvised",
-  "incorporated",
-  "increased",
-  "influenced",
-  "informed",
-  "initiated",
-  "innovated",
-  "inspected",
-  "inspired",
-  "installed",
-  "instituted",
-  "instructed",
-  "integrated",
-  "interpreted",
-  "interviewed",
-  "introduced",
-  "invented",
-  "investigated",
-  "involved",
-  // J
-  "joined",
-  "judged",
-  // L
-  "launched",
-  "led",
-  "leveraged",
-  "liaised",
-  "listed",
-  "listened",
-  "located",
-  // M
-  "maintained",
-  "managed",
-  "mapped",
-  "marketed",
-  "maximized",
-  "measured",
-  "mediated",
-  "mentored",
-  "merged",
-  "met",
-  "minimized",
-  "mobilized",
-  "modeled",
-  "moderated",
-  "modernized",
-  "modified",
-  "monitored",
-  "motivated",
-  // N
-  "navigated",
-  "negotiated",
-  "networked",
-  "nominated",
-  // O
-  "observed",
-  "obtained",
-  "operated",
-  "optimized",
-  "orchestrated",
-  "ordered",
-  "organized",
-  "originated",
-  "overhauled",
-  "oversaw",
-  // P
-  "participated",
-  "partnered",
-  "performed",
-  "persuaded",
-  "pioneered",
-  "planned",
-  "prepared",
-  "presented",
-  "presided",
-  "prioritized",
-  "processed",
-  "procured",
-  "produced",
-  "programmed",
-  "projected",
-  "promoted",
-  "proposed",
-  "protected",
-  "proved",
-  "provided",
-  "publicized",
-  "published",
-  "purchased",
-  // Q
-  "qualified",
-  "quantified",
-  // R
-  "raised",
-  "ranked",
-  "rated",
-  "rebuilt",
-  "recognized",
-  "recommended",
-  "reconciled",
-  "recorded",
-  "recruited",
-  "reduced",
-  "reengineered",
-  "refactored",
-  "referred",
-  "refined",
-  "regulated",
-  "rehabilitated",
-  "reinforced",
-  "related",
-  "remodeled",
-  "reorganized",
-  "repaired",
-  "replaced",
-  "reported",
-  "represented",
-  "researched",
-  "resolved",
-  "responded",
-  "restored",
-  "restructured",
-  "retrieved",
-  "revamped",
-  "reviewed",
-  "revised",
-  "revitalized",
-  "revolutionized",
-  // S
-  "saved",
-  "scaled",
-  "scheduled",
-  "screened",
-  "secured",
-  "selected",
-  "served",
-  "shaped",
-  "shared",
-  "shipped",
-  "simplified",
-  "simulated",
-  "solidified",
-  "solved",
-  "sorted",
-  "spearheaded",
-  "specialized",
-  "specified",
-  "spoke",
-  "sponsored",
-  "staffed",
-  "standardized",
-  "started",
-  "stimulated",
-  "streamlined",
-  "strengthened",
-  "structured",
-  "studied",
-  "submitted",
-  "succeeded",
-  "summarized",
-  "supervised",
-  "supplied",
-  "supported",
-  "surveyed",
-  "sustained",
-  "synthesized",
-  "systematized",
-  // T
-  "targeted",
-  "taught",
-  "tested",
-  "trained",
-  "transferred",
-  "transformed",
-  "translated",
-  "transmitted",
-  "traveled",
-  "treated",
-  "tutored",
-  // U
-  "uncovered",
-  "unified",
-  "updated",
-  "upgraded",
-  "utilized",
-  // V
-  "validated",
-  "verified",
-  "visualized",
-  "volunteered",
-  // W
-  "won",
-  "worked",
-  "wrote"
-];
 
 // src/shared/scoring/keywords.ts
 function escapeRegex(string) {
@@ -1806,30 +1458,15 @@ var parseYearsOfExperience = (raw2) => {
   return Math.max(...matches.map(Number));
 };
 var countMeasurableResults = (resume) => {
-  const highlights = (resume.experience || []).flatMap((exp) => exp.responsibilities || []).filter((h) => MEASURABLE_RESULT_RE.test(h));
-  return { count: highlights.length, found: highlights.slice(0, 5) };
+  const found = Array.isArray(resume.measurableResults) ? resume.measurableResults : [];
+  return { count: found.length, found: found.slice(0, 5) };
 };
-var measurableResultsScore = (count) => count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
-var ACTION_VERBS_RE = new RegExp(
-  `\\b(?:${ACTION_VERBS.map(
-    (v) => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  ).join("|")})\\b`,
-  "gi"
-);
+var measurableResultsScore = (count) => count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
 var countActionVerbs = (resume) => {
-  const highlights = (resume.experience || []).flatMap(
-    (exp) => exp.responsibilities || []
-  );
-  const text = highlights.join(" ");
-  const matched = /* @__PURE__ */ new Set();
-  ACTION_VERBS_RE.lastIndex = 0;
-  let m;
-  while (m = ACTION_VERBS_RE.exec(text)) {
-    matched.add(m[0].toLowerCase());
-  }
-  return { count: matched.size, found: [...matched].slice(0, 5) };
+  const found = Array.isArray(resume.actionVerbs) ? resume.actionVerbs : [];
+  return { count: found.length, found: found.slice(0, 5) };
 };
-var actionVerbsScore = (count) => count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
+var actionVerbsScore = (count) => count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
 var summaryScore = (summaryWords) => summaryWords >= 30 && summaryWords <= 80 ? 100 : summaryWords >= 80 ? 60 : summaryWords >= 10 ? 40 : summaryWords > 0 ? 20 : 0;
 var collectResumeDates = (resume) => {
   const dates = [];
@@ -2187,9 +1824,9 @@ var buildJobLevelSubgroup = (jd, resumeYears) => {
 var buildMeasurableSubgroup = (measurable) => {
   const score = measurableResultsScore(measurable.count);
   const status = score >= 60 ? "passed" : "failed";
-  const detail = measurable.count >= 3 ? `We found ${measurable.count} measurable results in experience section, which is great!` : measurable.count > 0 ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 3 measurable results to stand out.` : "We couldn't find any measurable results in experience section. Use at least 3 measurable results in your resume's experience section to stand out.";
+  const detail = measurable.count >= 5 ? `We found ${measurable.count} measurable results (e.g., generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!` : measurable.count > 0 ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 5 measurable results (e.g., generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.` : "We couldn't find any measurable results in experience section. Use at least 5 measurable results (e.g., generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
   const checks = [
-    { label: "Measurable results (3+)", status, detail, weight: 20 }
+    { label: "Measurable results (5+)", status, detail, weight: 20 }
   ];
   return {
     key: "measurableResults",
@@ -2203,8 +1840,8 @@ var buildMeasurableSubgroup = (measurable) => {
 var buildActionVerbsSubgroup = (actionVerbs) => {
   const score = actionVerbsScore(actionVerbs.count);
   const status = score >= 60 ? "passed" : "failed";
-  const detail = actionVerbs.count >= 3 ? `We found ${actionVerbs.count} action verbs in experience section, which is great!` : actionVerbs.count > 0 ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 3 action verbs to stand out.` : "We couldn't find any action verbs in experience section. Use at least 3 action verbs in your resume's experience section to stand out.";
-  const checks = [{ label: "Action verbs (3+)", status, detail, weight: 20 }];
+  const detail = actionVerbs.count >= 5 ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in experience section, which is great!` : actionVerbs.count > 0 ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) to stand out.` : "We couldn't find any action verbs in experience section. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) in your resume's experience section to stand out.";
+  const checks = [{ label: "Action verbs (5+)", status, detail, weight: 20 }];
   return {
     key: "actionVerbs",
     title: "Action Verbs",
@@ -2418,7 +2055,6 @@ var buildFormatting = (resume, atsFriendliness) => {
 
 // src/shared/scoring/index.ts
 var calculateLocalMatchScore = (resume, structuredJD) => {
-  console.log("job description", structuredJD);
   console.log("resume", resume);
   const jd = structuredJD || null;
   const resumeText = toResumeText(resume);
@@ -2475,11 +2111,11 @@ var calculateLocalMatchScore = (resume, structuredJD) => {
     suggestions.push(
       "Add a dedicated skills section with at least 5 technical skills."
     );
-  if (measurable.count < 3)
+  if (measurable.count < 5)
     suggestions.push(
-      `Add at least ${3 - measurable.count} more measurable results.`
+      `Add at least ${5 - measurable.count} more measurable results.`
     );
-  if (actionVerbs.count < 3)
+  if (actionVerbs.count < 5)
     suggestions.push(
       "Use strong action verbs in your experience bullet points (e.g. built, launched, optimized)."
     );
@@ -2730,7 +2366,8 @@ var mapAIResearchToResumeContent = (ai) => {
       endDate: proj.endDate || ""
     })),
     yearsOfExperience: ai.yearsOfExperience || "",
-    resumeTone: ai.resumeTone || "bad",
+    measurableResults: ai.measurableResults || [],
+    actionVerbs: ai.actionVerbs || [],
     wordCount: ai.wordCount || 0,
     educationSection: ai.educationSection || false,
     experienceSection: ai.experienceSection || false,
@@ -4477,6 +4114,358 @@ var EDUCATION_LEVELS = [
   ]
 ];
 
+// src/modules/unlimited-ats-check/dictionaries/action-verbs.dictionary.ts
+var ACTION_VERBS = [
+  // A
+  "accelerated",
+  "accomplished",
+  "achieved",
+  "acquired",
+  "adapted",
+  "addressed",
+  "administered",
+  "advanced",
+  "advised",
+  "advocated",
+  "analyzed",
+  "applied",
+  "appointed",
+  "appraised",
+  "approved",
+  "arbitrated",
+  "architected",
+  "arranged",
+  "articulated",
+  "assembled",
+  "assessed",
+  "assigned",
+  "assisted",
+  "attained",
+  "audited",
+  "authored",
+  "automated",
+  "awarded",
+  // B
+  "balanced",
+  "benchmarked",
+  "boosted",
+  "briefed",
+  "broadened",
+  "budgeted",
+  "built",
+  // C
+  "calculated",
+  "centralized",
+  "chaired",
+  "championed",
+  "clarified",
+  "classified",
+  "coached",
+  "collaborated",
+  "collected",
+  "combined",
+  "communicated",
+  "compared",
+  "compiled",
+  "completed",
+  "composed",
+  "computed",
+  "conceived",
+  "conceptualized",
+  "condensed",
+  "conducted",
+  "conferred",
+  "configured",
+  "consolidated",
+  "constructed",
+  "consulted",
+  "contacted",
+  "contributed",
+  "controlled",
+  "converted",
+  "coordinated",
+  "corrected",
+  "corresponded",
+  "counseled",
+  "created",
+  "critiqued",
+  "cultivated",
+  "customized",
+  // D
+  "debugged",
+  "decided",
+  "decreased",
+  "defined",
+  "delegated",
+  "delivered",
+  "demonstrated",
+  "deployed",
+  "designed",
+  "detected",
+  "determined",
+  "developed",
+  "devised",
+  "diagnosed",
+  "directed",
+  "discovered",
+  "dispatched",
+  "dispensed",
+  "displayed",
+  "distributed",
+  "documented",
+  "doubled",
+  "drafted",
+  "drove",
+  // E
+  "earned",
+  "edited",
+  "educated",
+  "eliminated",
+  "enabled",
+  "encouraged",
+  "engineered",
+  "enhanced",
+  "enlisted",
+  "ensured",
+  "established",
+  "estimated",
+  "evaluated",
+  "examined",
+  "exceeded",
+  "executed",
+  "expanded",
+  "expedited",
+  "experimented",
+  "explained",
+  "explored",
+  "expressed",
+  "extended",
+  // F
+  "facilitated",
+  "finalized",
+  "financed",
+  "fixed",
+  "focused",
+  "forecasted",
+  "formed",
+  "formulated",
+  "fostered",
+  "founded",
+  "fulfilled",
+  "funded",
+  // G
+  "gained",
+  "gathered",
+  "generated",
+  "governed",
+  "guided",
+  // H
+  "handled",
+  "headed",
+  "helped",
+  "hired",
+  "hosted",
+  // I
+  "identified",
+  "illustrated",
+  "implemented",
+  "improved",
+  "improvised",
+  "incorporated",
+  "increased",
+  "influenced",
+  "informed",
+  "initiated",
+  "innovated",
+  "inspected",
+  "inspired",
+  "installed",
+  "instituted",
+  "instructed",
+  "integrated",
+  "interpreted",
+  "interviewed",
+  "introduced",
+  "invented",
+  "investigated",
+  "involved",
+  // J
+  "joined",
+  "judged",
+  // L
+  "launched",
+  "led",
+  "leveraged",
+  "liaised",
+  "listed",
+  "listened",
+  "located",
+  // M
+  "maintained",
+  "managed",
+  "mapped",
+  "marketed",
+  "maximized",
+  "measured",
+  "mediated",
+  "mentored",
+  "merged",
+  "met",
+  "minimized",
+  "mobilized",
+  "modeled",
+  "moderated",
+  "modernized",
+  "modified",
+  "monitored",
+  "motivated",
+  // N
+  "navigated",
+  "negotiated",
+  "networked",
+  "nominated",
+  // O
+  "observed",
+  "obtained",
+  "operated",
+  "optimized",
+  "orchestrated",
+  "ordered",
+  "organized",
+  "originated",
+  "overhauled",
+  "oversaw",
+  // P
+  "participated",
+  "partnered",
+  "performed",
+  "persuaded",
+  "pioneered",
+  "planned",
+  "prepared",
+  "presented",
+  "presided",
+  "prioritized",
+  "processed",
+  "procured",
+  "produced",
+  "programmed",
+  "projected",
+  "promoted",
+  "proposed",
+  "protected",
+  "proved",
+  "provided",
+  "publicized",
+  "published",
+  "purchased",
+  // Q
+  "qualified",
+  "quantified",
+  // R
+  "raised",
+  "ranked",
+  "rated",
+  "rebuilt",
+  "recognized",
+  "recommended",
+  "reconciled",
+  "recorded",
+  "recruited",
+  "reduced",
+  "reengineered",
+  "refactored",
+  "referred",
+  "refined",
+  "regulated",
+  "rehabilitated",
+  "reinforced",
+  "related",
+  "remodeled",
+  "reorganized",
+  "repaired",
+  "replaced",
+  "reported",
+  "represented",
+  "researched",
+  "resolved",
+  "responded",
+  "restored",
+  "restructured",
+  "retrieved",
+  "revamped",
+  "reviewed",
+  "revised",
+  "revitalized",
+  "revolutionized",
+  // S
+  "saved",
+  "scaled",
+  "scheduled",
+  "screened",
+  "secured",
+  "selected",
+  "served",
+  "shaped",
+  "shared",
+  "shipped",
+  "simplified",
+  "simulated",
+  "solidified",
+  "solved",
+  "sorted",
+  "spearheaded",
+  "specialized",
+  "specified",
+  "spoke",
+  "sponsored",
+  "staffed",
+  "standardized",
+  "started",
+  "stimulated",
+  "streamlined",
+  "strengthened",
+  "structured",
+  "studied",
+  "submitted",
+  "succeeded",
+  "summarized",
+  "supervised",
+  "supplied",
+  "supported",
+  "surveyed",
+  "sustained",
+  "synthesized",
+  "systematized",
+  // T
+  "targeted",
+  "taught",
+  "tested",
+  "trained",
+  "transferred",
+  "transformed",
+  "translated",
+  "transmitted",
+  "traveled",
+  "treated",
+  "tutored",
+  // U
+  "uncovered",
+  "unified",
+  "updated",
+  "upgraded",
+  "utilized",
+  // V
+  "validated",
+  "verified",
+  "visualized",
+  "volunteered",
+  // W
+  "won",
+  "worked",
+  "wrote"
+];
+
 // src/modules/unlimited-ats-check/dictionaries/regex-helpers.ts
 var extractEmail = (text) => {
   const match = text.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
@@ -4485,12 +4474,6 @@ var extractEmail = (text) => {
 var extractPhone = (text) => {
   const match = text.match(/(?:\+?\d[\d\s\-().]{7,}\d)/);
   return match ? match[0].trim() : "";
-};
-var extractLinkedIn = (text) => {
-  const match = text.match(
-    /(?:https?:\/\/)?(?:www\.)?(?:linkedin\.com\/in\/|linkedin\.com\/)[\w\-./]+/i
-  );
-  return match ? match[0] : "";
 };
 var extractGithub = (text) => {
   const match = text.match(
@@ -4503,7 +4486,9 @@ var extractPortfolio = (text) => {
     /(?:\bhttps?:\/\/)?(?:www\.)[\w-]+\.(?:com|net|org|dev|io|me|link|site|app|xyz|info)\b[\w\-./]*/i
   );
   const candidate = explicit ? explicit[0] : "";
-  if (/(linkedin|github|gitlab|behance|dribbble|twitter|facebook|fb\.)/i.test(candidate)) {
+  if (/(linkedin|github|gitlab|behance|dribbble|twitter|facebook|fb\.)/i.test(
+    candidate
+  )) {
     return "";
   }
   if (candidate) return candidate;
@@ -4513,7 +4498,9 @@ var extractPortfolio = (text) => {
   );
   if (!bare) return "";
   const bareCandidate = bare[0];
-  if (/(linkedin|github|gitlab|behance|dribbble|twitter|facebook|fb\.)/i.test(bareCandidate)) {
+  if (/(linkedin|github|gitlab|behance|dribbble|twitter|facebook|fb\.)/i.test(
+    bareCandidate
+  )) {
     return "";
   }
   if (emailDomain && bareCandidate.toLowerCase().endsWith(emailDomain.toLowerCase())) {
@@ -4525,9 +4512,13 @@ var countWords = (text) => {
   const words = text.trim().split(/\s+/).filter(Boolean);
   return words.length;
 };
-var METRIC_TOKEN_RE = /(?:\d+(?:\.\d+)?)\s*(?:%|x|×|times?|seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?|months?|years?|\+|\$|USD|Tk|BDT|k|million|billion|ms|users|customers|clients|downloads|requests|products|countries|cities|developers|members|features|pages|projects|orders|sales|leads|conversions?|signups?|subscribers|followers|impressions|clicks|queries)/i;
-var IMPACT_VERB_RE = /\b(?:increase|increased|increasing|boost|boosted|boosting|grow|grew|grown|growing|reduce|reduced|reducing|decrease|decreased|decreasing|cut|cutting|slash|slashed|lower|lowered|lowering|improve|improved|improving|improvement|optimize|optimized|optimizing|streamline|streamlined|automate|automated|accelerate|accelerated|speed|speeding|sped|enhance|enhanced|expand|expanded|double|doubled|triple|tripled|maximize|maximized|minimize|minimized|raise|raised|save|saved|saving|achieve|achieved|surpass|surpassed|exceed|exceeded|generate|generated|generating|deliver|delivered|delivering|drive|drove|driven|enable|enabled|maintain|maintained|handle|handled|manage|managed|managing|lead|led|built|build|develop|developed|developing|design|designed|create|created|launch|launched|scale|scaled|complete|completed|completion)\b/i;
-var METRIC_WORD_RE = /\b(?:sales|revenue|traffic|conversion|conversions|engagement|performance|efficiency|speed|load\s*time|response\s*time|uptime|cost|expense|profit|margin|growth|productivity|accuracy|error\s*rate|bounce\s*rate|downtime|throughput|latency|retention|satisfaction|savings|turnaround|completion|coverage|downloads)\b/i;
+var NUM = String.raw`\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?`;
+var METRIC_TOKEN_RE = new RegExp(
+  `${NUM}\\s*(?:%|x|\xD7|times?|seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?|months?|years?|\\+|\\$|USD|Tk|BDT|k|m\\b|mn\\b|million|billion|ms|GB|TB|PB|QPS|RPS|TPS|FLOPs?|tokens?|epochs?|GPUs?|nodes?|clusters?|users|customers|clients|downloads|requests|products|countries|cities|developers|members|features|pages|projects|orders|sales|leads|conversions?|signups?|subscribers|followers|impressions|clicks|queries)`,
+  "i"
+);
+var IMPACT_VERB_RE = /\b(?:increase|increased|increasing|boost|boosted|boosting|grow|grew|grown|growing|reduce|reduced|reducing|decrease|decreased|decreasing|cut|cutting|slash|slashed|lower|lowered|lowering|improve|improved|improving|improvement|optimize|optimized|optimizing|streamline|streamlined|automate|automated|accelerate|accelerated|speed|speeding|sped|enhance|enhanced|expand|expanded|double|doubled|triple|tripled|maximize|maximized|minimize|minimized|raise|raised|save|saved|saving|achieve|achieved|surpass|surpassed|exceed|exceeded|generate|generated|generating|deliver|delivered|delivering|drive|drove|driven|enable|enabled|maintain|maintained|handle|handled|manage|managed|managing|lead|led|built|build|develop|developed|developing|design|designed|create|created|launch|launched|scale|scaled|complete|completed|completion|fine-?tuned?|quantized?|distilled?|migrated?|refactored?|orchestrated?|instrumented?|benchmarked?|A\/B\s*tested?)\b/i;
+var METRIC_WORD_RE = /\b(?:sales|revenue|traffic|conversion|conversions|engagement|performance|efficiency|speed|load\s*time|response\s*time|uptime|cost|expense|profit|margin|growth|productivity|accuracy|precision|recall|F1|AUC|BLEU|ROUGE|perplexity|mAP|error\s*rate|bounce\s*rate|downtime|throughput|latency|retention|satisfaction|savings|turnaround|completion|coverage|downloads|inference\s*time|training\s*time|QPS|RPS|TPS|MTTR|MTBF|SLA|availability|error\s*budget|P95|P99|cloud\s*cost|compute\s*cost|storage\s*cost|CDN\s*cost|CTR|NDCG|relevance|hallucination\s*rate|pipeline\s*runtime|data\s*freshness|job\s*success\s*rate|ETL\s*time|test\s*coverage|build\s*time|CI\s*time|PR\s*cycle\s*time|deploy\s*frequency|ARR|MRR|LTV|CAC|churn|NPS|CSAT)\b/i;
 var EXPERIENCE_DURATION_RE = /\b\d+(?:\.\d+)?\s*\+?\s*(?:years?|yrs?)\s+of\s+experience\b/i;
 var extractMeasurableResults = (text) => {
   const results = [];
@@ -4535,7 +4526,8 @@ var extractMeasurableResults = (text) => {
   for (const line of lines) {
     if (line.length > 300) continue;
     if (!METRIC_TOKEN_RE.test(line)) continue;
-    if (EXPERIENCE_DURATION_RE.test(line) && !IMPACT_VERB_RE.test(line)) continue;
+    if (EXPERIENCE_DURATION_RE.test(line) && !IMPACT_VERB_RE.test(line))
+      continue;
     const hasImpactVerb = IMPACT_VERB_RE.test(line);
     const hasMetricWord = METRIC_WORD_RE.test(line);
     if (hasImpactVerb || hasMetricWord) {
@@ -4543,6 +4535,23 @@ var extractMeasurableResults = (text) => {
     }
   }
   return Array.from(new Set(results));
+};
+var ACTION_VERBS_RE = new RegExp(
+  `\\b(?:${ACTION_VERBS.map(
+    (v) => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  ).join("|")})\\b`,
+  "gi"
+);
+var extractActionVerbs = (responsibilities) => {
+  const matched = /* @__PURE__ */ new Set();
+  for (const line of responsibilities) {
+    ACTION_VERBS_RE.lastIndex = 0;
+    let m;
+    while (m = ACTION_VERBS_RE.exec(line)) {
+      matched.add(m[0].toLowerCase());
+    }
+  }
+  return [...matched];
 };
 var NORMAL_DATE_RE = /^(?:present|current|now|ongoing|to date|till date|till now|until now|\d{1,2}[\/-]\d{1,2}(?:\/\d{4}|\d{2})?|\d{1,2}[\/-]\d{2,4}|\d{4}|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*\d{0,4})$/i;
 var SINGLE_DATE_TOKEN = /\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}|\d{1,2}[\/-]\d{2,4}|\d{4}|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*\d{0,4}|present|current|now|ongoing/i;
@@ -4869,7 +4878,6 @@ var parseResumeByDictionary = (text) => {
   const fullName = sanitizeName(segmented.header[0] ?? "");
   const email = extractEmail(headerText);
   const phone = extractPhone(headerText);
-  const linkedin = extractLinkedIn(headerText);
   const github = extractGithub(headerText);
   const portfolio = extractPortfolio(headerText);
   const address = segmented.header.filter(
@@ -4898,7 +4906,13 @@ var parseResumeByDictionary = (text) => {
   }
   const softSkills = matchDictionary(skillsAllText, SOFT_SKILLS_DICTIONARY);
   const wordCount = countWords(allText);
-  const measurableResults = extractMeasurableResults(allText);
+  const measurableResults = Array.from(
+    new Set(extractMeasurableResults(allText).map((l) => l.trim()))
+  ).sort();
+  const experienceBullets = experience.flatMap(
+    (exp) => exp.responsibilities || []
+  );
+  const actionVerbs = extractActionVerbs(experienceBullets).sort();
   const yearsOfExperience = calculateExperienceYears(experience);
   const educationSection = segmented.education.length > 0;
   const experienceSection = segmented.experience.length > 0;
@@ -4908,7 +4922,6 @@ var parseResumeByDictionary = (text) => {
     ...segmented.education,
     ...segmented.projects
   ]);
-  const resumeTone = inferTone(allText, measurableResults.length);
   const json = {
     personal_info: {
       fullName,
@@ -4925,7 +4938,8 @@ var parseResumeByDictionary = (text) => {
     skills: { hardSkills, softSkills },
     projects,
     yearsOfExperience: yearsOfExperience ? `${yearsOfExperience} years` : "",
-    resumeTone,
+    measurableResults,
+    actionVerbs,
     wordCount: Number(wordCount),
     educationSection,
     experienceSection,
@@ -5253,13 +5267,6 @@ var detectDateFormatting = (lines) => {
     )
   );
 };
-var inferTone = (text, measurableCount) => {
-  const wordCount = countWords(text);
-  if (measurableCount >= 3) return "good";
-  if (measurableCount >= 1) return "professional";
-  if (wordCount < 100) return "weak";
-  return "bad";
-};
 var mapToResumeContent = (json) => {
   const parseAddress2 = (address) => {
     const addressParts = (address || "").split(/[,|-]/).map((p) => p.trim()).filter(Boolean);
@@ -5307,7 +5314,8 @@ var mapToResumeContent = (json) => {
       endDate: p.endDate || ""
     })),
     yearsOfExperience: json.yearsOfExperience || "",
-    resumeTone: json.resumeTone || "bad",
+    measurableResults: json.measurableResults || [],
+    actionVerbs: json.actionVerbs || [],
     wordCount: json.wordCount || 0,
     educationSection: json.educationSection || false,
     experienceSection: json.experienceSection || false,

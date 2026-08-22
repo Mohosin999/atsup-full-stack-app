@@ -24,7 +24,7 @@ export const calculateLocalMatchScore = (
   resume: ResumeContent,
   structuredJD?: StructuredJD | null,
 ): LocalAtsResult => {
-  console.log("job description", structuredJD);
+  // console.log("job description", structuredJD);
   console.log("resume", resume);
   const jd = structuredJD || null;
   const resumeText = toResumeText(resume);
@@ -108,11 +108,11 @@ export const calculateLocalMatchScore = (
     suggestions.push(
       "Add a dedicated skills section with at least 5 technical skills.",
     );
-  if (measurable.count < 3)
+  if (measurable.count < 5)
     suggestions.push(
-      `Add at least ${3 - measurable.count} more measurable results.`,
+      `Add at least ${5 - measurable.count} more measurable results.`,
     );
-  if (actionVerbs.count < 3)
+  if (actionVerbs.count < 5)
     suggestions.push(
       "Use strong action verbs in your experience bullet points (e.g. built, launched, optimized).",
     );

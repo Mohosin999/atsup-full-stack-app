@@ -431,7 +431,7 @@ export default function ResumeBuilder() {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20 pb-12">
-      <Wrapper>
+      <Wrapper className="!px-4 lg:!px-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -69,7 +69,7 @@ export default function AtsScoreDetail() {
 
   return (
     <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
-      <Wrapper>
+      <Wrapper className="!px-4 lg:!px-16">
         <div className="my-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-lg font-bold text-gray-800 mb-1">

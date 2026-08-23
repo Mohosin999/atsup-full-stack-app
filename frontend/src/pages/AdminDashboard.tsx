@@ -195,7 +195,7 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="bg-[#F6F9FC] pt-24 pb-12">
-      <Wrapper>
+      <Wrapper className="!px-4 lg:!px-16">
         <div className="md:flex md:flex-row items-start gap-6">
           {/* ==============================================================
            * Sidebar

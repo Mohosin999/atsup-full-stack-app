@@ -1,6 +1,7 @@
 export const SOFT_SKILLS_DICTIONARY: string[][] = [
   // Communication
   ["Communication"],
+  ["Communication Skills"],
   ["Verbal Communication"],
   ["Written Communication"],
   ["Interpersonal Skills"],

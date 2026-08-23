@@ -482,15 +482,15 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
           return (
             <li key={check.label} className="flex items-start gap-2.5">
               <span
-                className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center border ${
+                className={`mt-0.5 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center border ${
                   check.status === "passed"
-                    ? "border-green-500/40 bg-green-500/15 text-green-600"
+                    ? "bg-green-400/30 text-green-600"
                     : check.status === "failed"
-                      ? "border-red-500/40 bg-red-500/15 text-red-600"
-                      : "border-gray-300/40 bg-gray-50 text-gray-500"
+                      ? "bg-red-400/15 text-red-600"
+                      : "bg-gray-50 text-gray-500"
                 }`}
               >
-                <span className="text-[16px] leading-none">{st.mark}</span>
+                <span className="text-[20px] leading-none">{st.mark}</span>
               </span>
               <div className="min-w-0">
                 <p className="text-[13px] font-medium text-gray-700 leading-snug">

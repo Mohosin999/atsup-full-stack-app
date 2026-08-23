@@ -117,6 +117,10 @@ export const unlimitedAtsApi = {
     api.post("/unlimited-ats-check/analyze", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  rescan: (historyId: string, formData: FormData) =>
+    api.post(`/unlimited-ats-check/rescan/${historyId}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 };
 
 // Support / problem reporting

@@ -150,3 +150,40 @@ export const renameAtsScoreHistory = async (
     data: { resumeName, title: resumeName },
   });
 };
+
+export const rescanAtsScoreHistory = async (
+  userId: string,
+  historyId: string,
+  resumeName: string,
+  resumeContent: ResumeContent,
+  sectionScores: any,
+  overallScore: number,
+  atsFriendliness: number,
+  suggestions: string[],
+  matchBreakdown?: any,
+) => {
+  const existing = await prisma.atsScoreHistory.findFirst({
+    where: { id: historyId, userId },
+  });
+
+  if (!existing) {
+    throw new Error("ATS Score history not found");
+  }
+
+  return prisma.atsScoreHistory.update({
+    where: { id: historyId },
+    data: {
+      resumeName,
+      title: resumeName,
+      overallScore,
+      sectionScores: {
+        ...sectionScores,
+        ...(matchBreakdown ? { matchBreakdown } : {}),
+        categories: sectionScores.categories,
+      } as any,
+      atsFriendliness,
+      suggestions,
+      resumeContent: resumeContent as any,
+    },
+  });
+};

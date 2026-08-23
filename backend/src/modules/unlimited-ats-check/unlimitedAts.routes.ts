@@ -2,7 +2,10 @@ import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth";
 import { aiLimiter } from "../../shared/middlewares/middlewareConfig";
 import { upload } from "../../shared/config/multer";
-import { analyzeUnlimitedAts } from "./unlimitedAts.controller";
+import {
+  analyzeUnlimitedAts,
+  rescanUnlimitedAts,
+} from "./unlimitedAts.controller";
 
 const router = Router();
 
@@ -13,6 +16,13 @@ router.post(
   aiLimiter,
   upload.single("resume"),
   analyzeUnlimitedAts,
+);
+
+router.post(
+  "/rescan/:id",
+  aiLimiter,
+  upload.single("resume"),
+  rescanUnlimitedAts,
 );
 
 export default router;

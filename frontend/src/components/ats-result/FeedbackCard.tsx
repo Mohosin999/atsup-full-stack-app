@@ -541,7 +541,7 @@ const SkillsTable: React.FC<{
                 key={s.item}
                 className="border-b border-gray-200 dark:border-gray-700 last:border-b-0"
               >
-                <td className="py-2.5 pl-5 pr-2 text-xs text-gray-800 dark:text-gray-200 break-words">
+                <td className="py-4 pl-5 pr-2 text-xs text-gray-800 dark:text-gray-200 break-words">
                   {s.item}
                 </td>
                 <td className="py-2.5 px-2 text-center">

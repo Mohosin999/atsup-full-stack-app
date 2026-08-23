@@ -67,7 +67,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#F6F9FC] flex items-center justify-center px-4 py-10 lg:pb-0 xl:py-10">
+    <div className="min-h-screen w-full bg-white flex items-center justify-center px-4 pt-28 pb-12">
       {/* Decorative background */}
       {/* <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-400/20 blur-3xl animate-[pulseSoft_4s_ease-in-out_infinite]" />
@@ -82,7 +82,7 @@ export default function Login() {
       >
 
         {/* Professional card with only the inputs */}
-        <div className="bg-white box-shadow rounded-2xl p-6 md:p-7">
+        <div className="bg-white border border-gray-300 rounded-2xl p-6 md:p-8 shadow-md">
           <div className="text-center mb-6">
             <h1 className="text-lg font-bold text-slate-800 dark:text-white">
               {isRegister ? "Create your account" : "Welcome back"}
@@ -227,7 +227,7 @@ export default function Login() {
           </form>
         </div>
 
-        <div className="mt-5 text-center">
+        <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
             <button

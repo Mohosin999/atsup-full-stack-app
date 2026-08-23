@@ -1,5 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
@@ -135,9 +136,10 @@ export default function Navbar() {
               <Link
                 to="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-2 font-medium rounded-md transition-all duration-200 focus:outline-none bg-cyan-600 text-white"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 font-medium rounded-md transition-all duration-200 focus:outline-none bg-cyan-600 text-white hover:bg-cyan-700"
               >
                 Login
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </motion.div>
           )}

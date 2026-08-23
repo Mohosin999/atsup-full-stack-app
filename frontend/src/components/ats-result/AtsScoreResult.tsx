@@ -27,6 +27,7 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
             <CategoryChecklist
               overallScore={result.overallScore}
               categories={result.sectionScores.categories}
+              hasFormattingData={hasFormattingData}
             />
           </div>
 

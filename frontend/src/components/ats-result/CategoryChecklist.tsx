@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import ScoreCircle from "./ScoreCircle";
+import FormattingTipsModal from "./FormattingTipsModal";
 import { CategoriesResult } from "../../types";
 
 interface CategoryChecklistProps {
   overallScore: number;
   categories: CategoriesResult;
+  hasFormattingData?: boolean;
 }
 
 const CATEGORY_META: Record<string, { bar: string; glow: string }> = {
@@ -33,7 +35,10 @@ const CATEGORY_META: Record<string, { bar: string; glow: string }> = {
 
 const CategoryRow: React.FC<{
   category: CategoriesResult[keyof CategoriesResult];
-}> = ({ category }) => {
+  isFormatting?: boolean;
+  hasFormattingData?: boolean;
+  onShowTips?: () => void;
+}> = ({ category, isFormatting, hasFormattingData, onShowTips }) => {
   const activeChecks = category.checks.filter(
     (c) => c.status !== "not-applicable",
   );
@@ -45,6 +50,35 @@ const CategoryRow: React.FC<{
   const totalItems = hasMatchData
     ? (category.matched?.length ?? 0) + (category.missing?.length ?? 0)
     : activeChecks.length;
+
+  if (isFormatting && !hasFormattingData) {
+    return (
+      <div className="rounded-xl overflow-hidden relative">
+        <div className="w-full flex items-center gap-3 px-3.5 py-1 text-left">
+          <div className="flex-1 min-w-0 blur-[0.1px] select-none pointer-events-none opacity-40">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-gray-800 truncate">
+                {category.title}
+              </span>
+              <span className="text-xs text-gray-800 truncate">
+                {totalItems - matchedCount} issues to fix
+              </span>
+            </div>
+            <div className="mt-1.5 flex items-center gap-2">
+              <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-sky-500"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${category.score}%` }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-xl overflow-hidden">
@@ -77,7 +111,9 @@ const CategoryRow: React.FC<{
 const CategoryChecklist: React.FC<CategoryChecklistProps> = ({
   overallScore,
   categories,
+  hasFormattingData = false,
 }) => {
+  const [tipsOpen, setTipsOpen] = useState(false);
   const order: (keyof CategoriesResult)[] = [
     "searchability",
     "hardSkills",
@@ -94,9 +130,20 @@ const CategoryChecklist: React.FC<CategoryChecklistProps> = ({
 
       <div className="space-y-2">
         {order.map((key) => (
-          <CategoryRow key={key} category={categories[key]} />
+          <CategoryRow
+            key={key}
+            category={categories[key]}
+            isFormatting={key === "formatting"}
+            hasFormattingData={hasFormattingData}
+            onShowTips={() => setTipsOpen(true)}
+          />
         ))}
       </div>
+
+      <FormattingTipsModal
+        isOpen={tipsOpen}
+        onClose={() => setTipsOpen(false)}
+      />
     </div>
   );
 };

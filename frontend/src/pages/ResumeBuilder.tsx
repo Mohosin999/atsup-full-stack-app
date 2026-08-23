@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { Download, RotateCcw, Sparkles } from "lucide-react";
+import { Download, RotateCcw, Sparkles, ChevronDown } from "lucide-react";
 import { toast } from "react-toastify";
 import {
   DndContext,
@@ -80,6 +80,7 @@ export default function ResumeBuilder() {
   const [downloading, setDownloading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [showMore, setShowMore] = useState(false);
   const initializedRef = useRef(false);
   const skipAutosaveRef = useRef(false);
 
@@ -91,6 +92,11 @@ export default function ResumeBuilder() {
     content.sectionOrder && content.sectionOrder.length
       ? content.sectionOrder
       : [...SECTION_KEYS];
+
+  const EXTRA_SECTIONS: SectionKey[] = ["achievements", "certifications"];
+  const visibleSections = sectionOrder.filter(
+    (key) => !EXTRA_SECTIONS.includes(key),
+  );
 
   const handleSectionDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -493,7 +499,7 @@ export default function ResumeBuilder() {
                 items={sectionOrder}
                 strategy={verticalListSortingStrategy}
               >
-                {sectionOrder.map((key) => (
+                {visibleSections.map((key) => (
                   <ResumeBuilderSection
                     key={key}
                     sortableId={key}
@@ -504,8 +510,37 @@ export default function ResumeBuilder() {
                     {renderSectionForm(key)}
                   </ResumeBuilderSection>
                 ))}
+                {showMore &&
+                  EXTRA_SECTIONS.filter((key) =>
+                    sectionOrder.includes(key),
+                  ).map((key) => (
+                    <ResumeBuilderSection
+                      key={key}
+                      sortableId={key}
+                      title={getSectionTitle(content, key)}
+                      onTitleChange={(v) => setSectionTitle(key, v)}
+                      subtitle={SECTION_SUBTITLES[key]}
+                    >
+                      {renderSectionForm(key)}
+                    </ResumeBuilderSection>
+                  ))}
               </SortableContext>
             </DndContext>
+
+            {EXTRA_SECTIONS.some((key) => sectionOrder.includes(key)) && (
+              <button
+                type="button"
+                onClick={() => setShowMore(!showMore)}
+                className="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-cyan-600 hover:text-cyan-700 border border-dashed border-cyan-300 rounded-xl hover:bg-cyan-50 transition-all"
+              >
+                {showMore ? "Show Less" : "Add More"}
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    showMore ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+            )}
           </div>
 
           {/* RIGHT: preview (2/3) */}

@@ -87,7 +87,7 @@ export const HARD_SKILLS_DICTIONARY: string[][] = [
   ["Apollo"],
   ["tRPC", "trpc"],
   ["gRPC", "grpc"],
-  ["REST API", "RESTful API", "REST"],
+  ["REST APIs", "RESTful APIs", "RESTful API", "REST API"],
   ["SOAP"],
   ["WebSockets", "WebSocket"],
   ["Socket.io", "socketio", "socket io"],
@@ -408,10 +408,13 @@ export const HARD_SKILLS_DICTIONARY: string[][] = [
   // ============================================
   // HIGH-VALUE ATS / RECRUITER KEYWORDS
   // ============================================
-  ["Full Stack Development", "Full Stack", "Full-Stack"],
-  ["Backend Development", "Backend"],
-  ["Frontend Development", "Frontend"],
-  ["API Development", "API Integration"],
+  // ["Full Stack Developer", "Full Stack", "Full-Stack"],
+  // ["Backend Developer", "Backend"],
+  // ["Frontend Developer", "Frontend"],
+  ["Full Stack", "Full-Stack"],
+  ["Backend"],
+  ["Frontend"],
+  ["API Integration"],
   ["Third-Party Integration"],
   ["Scalability", "Scalable"],
   ["High Availability"],

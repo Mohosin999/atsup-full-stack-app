@@ -4,7 +4,7 @@ Each added item appears as a bullet
 point in the resume preview.
 =================================== */
 import { useEffect, useRef, useState } from "react";
-import { Plus, X, Trash2, GripVertical } from "lucide-react";
+import { Plus, X, Trash2, GripVertical, Check } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -68,6 +68,8 @@ function SortableHighlight({
       const el = textareaRef.current;
       el.style.height = "auto";
       el.style.height = `${el.scrollHeight}px`;
+      const len = el.value.length;
+      el.setSelectionRange(len, len);
     }
   }, [editing, editValue]);
 
@@ -99,6 +101,10 @@ function SortableHighlight({
           onChange={(e) => onEditChange(e.target.value)}
           onBlur={onEditSave}
           onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              onEditSave();
+            }
             if (e.key === "Escape") {
               e.preventDefault();
               onEditCancel();
@@ -116,6 +122,16 @@ function SortableHighlight({
         >
           {children}
         </span>
+      )}
+      {editing && (
+        <button
+          type="button"
+          onClick={onEditSave}
+          className="text-cyan-600 hover:bg-gray-100 mt-0.5 flex-shrink-0 rounded-full p-0.5"
+          title="Save"
+        >
+          <Check className="w-4 h-4" />
+        </button>
       )}
       <button
         type="button"

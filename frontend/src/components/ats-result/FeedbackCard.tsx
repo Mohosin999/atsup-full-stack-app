@@ -482,15 +482,17 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
           return (
             <li key={check.label} className="flex items-start gap-2.5">
               <span
-                className={`mt-0.5 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center border ${
+                className={`mt-0.5 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
                   check.status === "passed"
-                    ? "bg-green-400/30 text-green-600"
+                    ? "bg-green-500/15 text-green-600"
                     : check.status === "failed"
-                      ? "bg-red-400/15 text-red-600"
+                      ? "bg-red-500/15 text-red-600"
                       : "bg-gray-50 text-gray-500"
                 }`}
               >
-                <span className="text-[20px] leading-none">{st.mark}</span>
+                <span className="text-[18px] xl:text-[20px] leading-none">
+                  {st.mark}
+                </span>
               </span>
               <div className="min-w-0">
                 <p className="text-[13px] font-medium text-gray-700 leading-snug">
@@ -537,7 +539,7 @@ const SkillsTable: React.FC<{
             {visible.map((s) => (
               <tr
                 key={s.item}
-                className="border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+                className="border-b border-gray-200 dark:border-gray-700 last:border-b-0"
               >
                 <td className="py-2.5 pl-5 pr-2 text-xs text-gray-800 dark:text-gray-200 break-words">
                   {s.item}
@@ -545,26 +547,26 @@ const SkillsTable: React.FC<{
                 <td className="py-2.5 px-2 text-center">
                   {s.status === "matched" ? (
                     <span
-                      className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                      className="inline-flex text-[16px] xl:text-[18px] items-center justify-center text-green-600"
                       title={`${s.item} found in resume`}
                     >
-                      <CheckCircle2 className="w-4 h-4" />
+                      ✓
                     </span>
                   ) : (
                     <span
-                      className="inline-flex w-6 h-6 rounded-full bg-red-500/15 text-red-600 items-center justify-center"
+                      className="inline-flex text-[16px] xl:text-[18px] items-center justify-center text-red-600"
                       title={`${s.item} missing from resume`}
                     >
-                      <XCircle className="w-4 h-4" />
+                      ✗
                     </span>
                   )}
                 </td>
                 <td className="py-2.5 pr-5 pl-2 text-center">
                   <span
-                    className="inline-flex w-6 h-6 rounded-full bg-green-500/15 text-green-600 items-center justify-center"
+                    className="inline-flextext-[16px] xl:text-[18px] items-center justify-center text-green-600"
                     title="Required by the job description"
                   >
-                    <CheckCircle2 className="w-4 h-4" />
+                    ✓
                   </span>
                 </td>
               </tr>

@@ -70,14 +70,11 @@ export default function AtsScoreDetail() {
   return (
     <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
       <Wrapper className="!px-4 lg:!px-16">
-        <div className="my-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="mt-8 mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-lg font-bold text-gray-800 mb-1">
-              ATS Score Report
+              ATS Score Report <span className="text-sm font-normal text-gray-600">- {result?.title}</span>
             </h1>
-            <p className="text-sm text-gray-600">
-              Saved analysis details
-            </p>
           </div>
         </div>
 

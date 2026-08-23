@@ -78,16 +78,16 @@ export default function Login() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-sm"
+        className="relative z-10 w-full max-w-sm xl:max-w-md"
       >
 
         {/* Professional card with only the inputs */}
-        <div className="bg-white border border-gray-300 rounded-2xl p-6 md:p-8 shadow-md">
+        <div className="bg-white border border-gray-300 rounded-2xl p-6 md:p-8 xl:p-10 shadow-md">
           <div className="text-center mb-6">
-            <h1 className="text-lg font-bold text-slate-800 dark:text-white">
+            <h1 className="text-lg xl:text-xl font-bold text-slate-800 dark:text-white">
               {isRegister ? "Create your account" : "Welcome back"}
             </h1>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-[13px] xl:text-sm text-slate-500 dark:text-slate-400">
               {isRegister
                 ? "Start optimizing your resume in seconds"
                 : "Sign in to analyze and improve your resume"}
@@ -101,13 +101,13 @@ export default function Login() {
               saveRedirectForOAuth();
               dispatch(login());
             }}
-            className="w-full inline-flex items-center justify-center px-4 py-2 text-[13px] font-medium rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:border-cyan-500 transition-all duration-200"
+            className="w-full inline-flex items-center justify-center px-4 py-2 xl:py-2.5 text-[13px] xl:text-sm font-medium rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:border-cyan-500 transition-all duration-200"
           >
             <FcGoogle className="w-5 h-5 mr-2" />
             Continue with Google
           </motion.button>
 
-          <div className="my-4 flex items-center gap-3">
+          <div className="my-4 xl:my-5 flex items-center gap-3">
             <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
             <span className="text-[10px] uppercase tracking-wider text-slate-400">
               or
@@ -115,7 +115,7 @@ export default function Login() {
             <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3 xl:space-y-4">
             <AnimatePresence initial={false}>
               {isRegister && (
                 <motion.div
@@ -124,7 +124,7 @@ export default function Login() {
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-0.5">
+                  <label className="block text-[11px] xl:text-xs font-medium text-slate-600 dark:text-slate-400 mb-0.5 xl:mb-1">
                     Name
                   </label>
                   <div className="relative">
@@ -135,7 +135,7 @@ export default function Login() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full pl-9 pr-3 py-1.5 text-[13px] border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent outline-none transition-all"
+                      className="w-full pl-9 pr-3 py-1.5 xl:py-2.5 text-[13px] xl:text-sm border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent outline-none transition-all"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -144,7 +144,7 @@ export default function Login() {
             </AnimatePresence>
 
             <div>
-              <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-0.5">
+              <label className="block text-[11px] xl:text-xs font-medium text-slate-600 dark:text-slate-400 mb-0.5 xl:mb-1">
                 Email
               </label>
               <div className="relative">
@@ -155,14 +155,14 @@ export default function Login() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full pl-9 pr-3 py-1.5 text-[13px] border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent outline-none transition-all"
+                  className="w-full pl-9 pr-3 py-1.5 xl:py-2.5 text-[13px] xl:text-sm border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent outline-none transition-all"
                   placeholder="Enter your email"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] font-medium text-slate-600 dark:text-slate-400 mb-0.5">
+              <label className="block text-[11px] xl:text-xs font-medium text-slate-600 dark:text-slate-400 mb-0.5 xl:mb-1">
                 Password
               </label>
               <div className="relative">
@@ -174,7 +174,7 @@ export default function Login() {
                   onChange={handleChange}
                   required
                   minLength={6}
-                  className="w-full pl-9 pr-10 py-1.5 text-[13px] border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent outline-none transition-all"
+                  className="w-full pl-9 pr-10 py-1.5 xl:py-2.5 text-[13px] xl:text-sm border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent outline-none transition-all"
                   placeholder="Enter your password"
                 />
                 <button
@@ -210,7 +210,7 @@ export default function Login() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading}
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-2 text-[13px] font-semibold rounded-lg bg-cyan-600 text-white focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-2 xl:py-2.5 text-[13px] xl:text-sm font-semibold rounded-lg bg-cyan-600 text-white focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -228,7 +228,7 @@ export default function Login() {
         </div>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm xl:text-base text-gray-600">
             {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
             <button
               onClick={toggleMode}
@@ -240,7 +240,7 @@ export default function Login() {
         </div>
 
         <div className="mt-4 text-center">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs xl:text-sm text-gray-500">
             By signing in, you agree to our{" "}
             <a href="#" className="text-cyan-600 hover:underline">
               Terms of Service

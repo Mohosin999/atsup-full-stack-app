@@ -87,10 +87,10 @@ const buildMeasurableSubgroup = (measurable: {
 
   const detail =
     measurable.count >= 5
-      ? `We found ${measurable.count} measurable results (e.g., generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!`
+      ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!`
       : measurable.count > 0
-        ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 5 measurable results (e.g., generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.`
-        : "We couldn't find any measurable results in experience section. Use at least 5 measurable results (e.g., generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
+        ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.`
+        : "We couldn't find any measurable results in experience section. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
 
   const checks = [
     { label: "Measurable results (5+)", status, detail, weight: 20 },

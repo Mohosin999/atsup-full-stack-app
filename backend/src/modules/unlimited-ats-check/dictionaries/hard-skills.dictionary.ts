@@ -408,12 +408,17 @@ export const HARD_SKILLS_DICTIONARY: string[][] = [
   // ============================================
   // HIGH-VALUE ATS / RECRUITER KEYWORDS
   // ============================================
-  // ["Full Stack Developer", "Full Stack", "Full-Stack"],
-  // ["Backend Developer", "Backend"],
-  // ["Frontend Developer", "Frontend"],
-  ["Full Stack", "Full-Stack"],
-  ["Backend"],
-  ["Frontend"],
+  [
+    "Full Stack Development",
+    "Full-Stack Development",
+    "Full-stack Development",
+    "Fullstak Development",
+  ],
+  ["Backend Development", "Back-end Development", "Back-End Development"],
+  ["Frontend Development", "Front-end Development", "Front-End Development"],
+  ["Software Development"],
+  ["Web applications"],
+  ["User interfaces", "UI", "ui"],
   ["API Integration"],
   ["Third-Party Integration"],
   ["Scalability", "Scalable"],

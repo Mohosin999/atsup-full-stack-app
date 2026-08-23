@@ -41,7 +41,7 @@ export default function FormattingTipsModal({
             className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-gray-100 bg-cyan-100">
+            <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-gray-100 bg-green-100">
               <div className="flex items-center gap-3">
                 <div>
                   <h3 className="text-lg md:text-xl font-bold text-gray-800 leading-tight">

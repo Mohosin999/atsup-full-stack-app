@@ -62,16 +62,22 @@ function SortableHighlight({
     isDragging,
   } = useSortable({ id });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const wasEditingRef = useRef(false);
 
   useEffect(() => {
     if (editing && textareaRef.current) {
       const el = textareaRef.current;
       el.style.height = "auto";
       el.style.height = `${el.scrollHeight}px`;
-      const len = el.value.length;
-      el.setSelectionRange(len, len);
+      if (!wasEditingRef.current) {
+        const len = el.value.length;
+        el.setSelectionRange(len, len);
+      }
+      wasEditingRef.current = true;
+    } else {
+      wasEditingRef.current = false;
     }
-  }, [editing, editValue]);
+  }, [editing]);
 
   return (
     <div

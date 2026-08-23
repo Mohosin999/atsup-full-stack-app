@@ -242,7 +242,9 @@ export default function ResumeScanForm({
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-        {/* LEFT: Upload Resume */}
+        {/* ===============================================================
+          * Left: upload resume
+         ================================================================*/}
         <div className="flex flex-col">
           <div className="flex items-center gap-3 mb-4">
             <div
@@ -256,7 +258,7 @@ export default function ResumeScanForm({
           </div>
 
           {resumeFile ? (
-            <div className="relative flex-1 min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-cyan-400 bg-cyan-50 rounded-lg">
+            <div className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-cyan-400 bg-cyan-50 rounded-lg">
               <div className="flex flex-col items-center gap-2">
                 <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-cyan-500" />
@@ -277,15 +279,13 @@ export default function ResumeScanForm({
               </button>
             </div>
           ) : (
-            <label className="relative flex-1 min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-white hover:bg-gray-100 cursor-pointer rounded-lg transition-colors">
+            <label className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-white hover:bg-gray-100 cursor-pointer rounded-lg transition-colors">
               <Upload className="w-8 h-8 text-gray-600 mb-2" />
               <p className="text-sm text-gray-600">
                 <span className="font-semibold">Click to upload</span> or drag
                 and drop
               </p>
-              <p className="text-xs text-gray-500 mt-1">
-                PDF only (MAX. 10MB)
-              </p>
+              <p className="text-xs text-gray-500 mt-1">PDF only (MAX. 10MB)</p>
               <input
                 type="file"
                 className="hidden"
@@ -302,7 +302,9 @@ export default function ResumeScanForm({
           )}
         </div>
 
-        {/* RIGHT: Job Description */}
+        {/* ===============================================================
+          * Right: job description
+         ================================================================*/}
         <div className="flex flex-col">
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
@@ -326,13 +328,16 @@ export default function ResumeScanForm({
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="Paste the job description here..."
-              className="flex-1 min-h-[280px] w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
+              className="flex-1 min-h-[280px] w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-500 resize-none"
             />
           </div>
         </div>
       </div>
 
-      <div className="mt-6 flex justify-end">
+      {/* ===============================================================
+          * Button & Progress bar
+         ================================================================*/}
+      <div className="mt-3 flex justify-end">
         <ScanActions
           aiScanAvailable={aiScan.available}
           aiScanDisabled={!bothFieldsReady || analyzing}

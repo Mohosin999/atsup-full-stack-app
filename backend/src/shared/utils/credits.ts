@@ -1,5 +1,7 @@
 import { prisma } from "../../lib/prisma";
 
+// FIXME: not yet used in this app
+
 const getGmtDateKey = (): string => new Date().toISOString().slice(0, 10);
 
 export const applyDailyCreditReset = async (userId: string, subscription: any) => {

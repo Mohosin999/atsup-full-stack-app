@@ -123,6 +123,7 @@ export const login = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    // FIXME: not yet used in this app
     const subscription = await applyDailyCreditReset(
       user.id,
       user.subscription,

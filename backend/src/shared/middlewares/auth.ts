@@ -58,6 +58,7 @@ export const authenticate = async (
       });
     }
 
+    // FIXME: not yet used in this app
     const subscription = await applyDailyCreditReset(user.id, user.subscription);
 
     const userRecord: UserRecord = {

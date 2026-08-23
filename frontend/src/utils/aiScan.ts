@@ -2,6 +2,8 @@ export interface AiScanStatus {
   available: boolean;
 }
 
+// FIXME: not yet used in this app
+
 export interface AiScanSubscription {
   credits?: number;
   lastAiScanResetDate?: string | null;

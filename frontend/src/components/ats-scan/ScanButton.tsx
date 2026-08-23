@@ -13,12 +13,12 @@ export default function ScanButton({
 }: ScanButtonProps) {
   return (
     <Button
-      variant="outline"
+      variant="primary"
       onClick={onClick}
       disabled={disabled}
       loading={loading}
     >
-      {loading ? "Scanning..." : "Scan"}
+      {loading ? "Scanning..." : "Scan Now"}
     </Button>
   );
 }

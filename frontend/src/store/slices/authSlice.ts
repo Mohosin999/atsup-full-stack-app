@@ -94,6 +94,7 @@ const authSlice = createSlice({
         localStorage.setItem('user', JSON.stringify(state.user));
       }
     },
+    // FIXME: not yet used in this app
     setUserAiScanState: (
       state,
       action: PayloadAction<{ credits: number; lastAiScanResetDate: string }>,

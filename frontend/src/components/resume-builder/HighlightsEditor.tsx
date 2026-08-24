@@ -83,7 +83,7 @@ function SortableHighlight({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex items-start gap-2 border rounded-lg px-3 py-3 bg-white ${
+      className={`flex items-start gap-2 border px-3 py-3 bg-white ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
       } ${
         editing
@@ -122,7 +122,7 @@ function SortableHighlight({
         />
       ) : (
         <span
-          className="flex-1 text-xs text-gray-700 break-words cursor-text hover:bg-gray-50 rounded px-1 py-0.5 -mx-1"
+          className="flex-1 text-xs text-gray-700 break-words cursor-text hover:bg-gray-50 px-1 py-0.5 -mx-1"
           onClick={onStartEdit}
           title="Click to edit"
         >
@@ -133,7 +133,7 @@ function SortableHighlight({
         <button
           type="button"
           onClick={onEditSave}
-          className="text-cyan-600 hover:bg-gray-100 mt-0.5 flex-shrink-0 rounded-full p-0.5"
+          className="text-cyan-600 hover:bg-gray-100 mt-0.5 flex-shrink-0 p-0.5"
           title="Save"
         >
           <Check className="w-4 h-4" />
@@ -247,7 +247,7 @@ export default function HighlightsEditor({
       </DndContext>
 
       {adding && (
-        <div className="flex items-start gap-2 border border-gray-200 rounded-lg px-3 py-3 bg-white mt-2">
+        <div className="flex items-start gap-2 border border-gray-200 px-3 py-3 bg-white mt-2">
           {/* <Plus className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" /> */}
           <input
             type="text"

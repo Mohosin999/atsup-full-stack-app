@@ -247,7 +247,7 @@ const AdminDashboard: React.FC = () => {
                 {/* =====================================================
                   * Summary cards
                  ======================================================*/}
-                <div className="grid grid-cols-2 xl:grid-cols-4 gap-0 mb-6 bg-cyan-600 text-white box-shadow rounded-xl">
+                <div className="grid grid-cols-2 xl:grid-cols-4 gap-0 mb-6 bg-cyan-600 text-white box-shadow">
                   {/* New users (today) */}
                   <div className="p-4 xl:p-6 text-center border-r border-b border-white/30 xl:border-b-0">
                     <h3 className="text-xs font-medium">New Users (Today)</h3>
@@ -261,8 +261,8 @@ const AdminDashboard: React.FC = () => {
                     <h3 className="text-xs font-medium flex items-center justify-center">
                       Total Visitors
                       <span className="relative flex h-2 w-2 ml-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
+                        <span className="animate-ping absolute inline-flex h-full w-full bg-cyan-400 opacity-75" />
+                        <span className="relative inline-flex h-2 w-2 bg-cyan-500" />
                       </span>
                     </h3>
                     <p className="text-2xl lg:text-3xl font-bold mt-2">
@@ -283,7 +283,7 @@ const AdminDashboard: React.FC = () => {
                     <h3 className="text-xs font-medium">
                       Best Performing Feature
                     </h3>
-                    <p className="text-2xl font-bold w-full py-2 rounded">
+                    <p className="text-2xl font-bold w-full py-2">
                       {bestFeatureToday === "resume-builder"
                         ? "Resume Builder"
                         : "ATS Check"}
@@ -294,11 +294,11 @@ const AdminDashboard: React.FC = () => {
                 {/* =====================================================
                   * User activity chart
                  ======================================================*/}
-                <div className="w-full bg-white border border-gray-200 rounded-xl box-shadow p-4 md:p-6 mb-6 text-">
+                <div className="w-full bg-white border border-gray-200 box-shadow p-4 md:p-6 mb-6 text-">
                   {/* Header */}
                   <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gray-100 border border-gray-200 flex items-center justify-center rounded-full me-3">
+                      <div className="w-8 h-8 bg-gray-100 border border-gray-200 flex items-center justify-center me-3">
                         <Users className="w-4 h-4 text-gray-600" />
                       </div>
                       <div className="flex items-center gap-1">
@@ -312,7 +312,7 @@ const AdminDashboard: React.FC = () => {
                     </div>
                     <div>
                       <span
-                        className={`inline-flex items-center text-xs font-medium px-2 py-1.5 rounded border ${
+                        className={`inline-flex items-center text-xs font-medium px-2 py-1.5 border ${
                           changeIsUp
                             ? "bg-cyan-100 border-cyan-100 text-cyan-700"
                             : "bg-red-50 border-red-200 text-red-700"
@@ -352,7 +352,7 @@ const AdminDashboard: React.FC = () => {
                   <div id="column-chart">
                     {growthLoading && !growth ? (
                       <div className="flex items-center justify-center h-40 md:h-48">
-                        <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent animate-spin" />
                       </div>
                     ) : (
                       <div className="overflow-x-auto scrollbar-hide">
@@ -414,10 +414,10 @@ const AdminDashboard: React.FC = () => {
                                           className="flex-1 max-w-[22px] h-full flex items-end"
                                         >
                                           <div
-                                            className={`group relative w-full rounded-t-md bg-gradient-to-t ${m.bar} ${m.barHover} transition-all duration-300`}
+                                            className={`group relative w-full bg-gradient-to-t ${m.bar} ${m.barHover} transition-all duration-300`}
                                             style={{ height: `${pct}%` }}
                                           >
-                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-10 whitespace-nowrap bg-gray-900 text-white text-xs rounded-md px-2 py-1">
+                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-10 whitespace-nowrap bg-gray-900 text-white text-xs px-2 py-1">
                                               {val} {m.label}
                                             </div>
                                           </div>
@@ -467,7 +467,7 @@ const AdminDashboard: React.FC = () => {
                               className="fixed inset-0 z-10"
                               onClick={() => setDropdownOpen(false)}
                             />
-                            <div className="absolute z-20 bottom-full mb-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg">
+                            <div className="absolute z-20 bottom-full mb-2 w-44 bg-white border border-gray-200 shadow-lg">
                               <ul className="p-2 text-sm text-gray-700 font-medium">
                                 {PERIOD_OPTIONS.map((opt) => (
                                   <li key={opt.value}>
@@ -477,7 +477,7 @@ const AdminDashboard: React.FC = () => {
                                         setPeriod(opt.value);
                                         setDropdownOpen(false);
                                       }}
-                                      className={`inline-flex items-center w-full p-2 rounded hover:bg-gray-100 ${
+                                      className={`inline-flex items-center w-full p-2 hover:bg-gray-100 ${
                                         period === opt.value
                                           ? "text-cyan-600"
                                           : "text-gray-700"

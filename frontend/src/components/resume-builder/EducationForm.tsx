@@ -76,7 +76,7 @@ export default function EducationForm({
                       onUpdate(index, { startDate: e.target.value })
                     }
                     placeholder="e.g. Jan 2020"
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full px-3 py-2 text-xs border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
@@ -90,7 +90,7 @@ export default function EducationForm({
                       onUpdate(index, { endDate: e.target.value })
                     }
                     placeholder="e.g. July 2025 / Present"
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full px-3 py-2 text-xs border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
                 <div className="sm:col-span-2">

@@ -43,7 +43,7 @@ export default function AtsScorePage() {
   }, [locationState, navigate, location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
+    <div className="min-h-screen bg-[#F6F9FC] pb-12">
       <Wrapper>
         <div className="my-8">
           <h1 className="text-lg font-bold text-gray-800 mb-1">
@@ -59,7 +59,7 @@ export default function AtsScorePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-lg p-6 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
+          className="bg-white p-6 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
         >
           <ResumeScanForm
             initialResumeFile={initialResumeFile}

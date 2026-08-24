@@ -31,13 +31,13 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+      <div className="relative bg-white shadow-xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800">Edit User</h3>
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100"
           >
             <X className="w-5 h-5" />
           </button>
@@ -50,7 +50,7 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
@@ -60,7 +60,7 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
               value={role}
               onChange={(e) => setRole(e.target.value)}
               disabled={isSelf}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-400"
+              className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-400"
             >
               <option value="user">User</option>
               <option value="admin">Admin</option>
@@ -75,7 +75,7 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
               min={0}
               value={credits}
               onChange={(e) => setCredits(Number(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
@@ -83,14 +83,14 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className="px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={busy}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
             >
               {busy ? 'Saving...' : 'Save'}
             </button>

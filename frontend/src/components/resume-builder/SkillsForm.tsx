@@ -78,7 +78,7 @@ function SkillTagInput({
         }
       }}
       onBlur={() => addSkills(text)}
-      className="w-full px-3 py-2 text-xs rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
+      className="w-full px-3 py-2 text-xs border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
       placeholder={placeholder || "Type a skill and press Enter"}
     />
   );
@@ -109,7 +109,7 @@ return (
     <span
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`inline-flex items-center gap-1.5 rounded-full bg-cyan-50 border border-cyan-600 px-2.5 py-1 text-xs text-cyan-800 select-none ${
+      className={`inline-flex items-center gap-1.5 bg-cyan-50 border border-cyan-600 px-2.5 py-1 text-xs text-cyan-800 select-none ${
         isDragging ? "opacity-60 z-10 shadow-md" : ""
       }`}
     >
@@ -271,7 +271,7 @@ function SortableCategory({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`rounded-lg border border-gray-200 p-3 space-y-3 ${
+      className={`border border-gray-200 p-3 space-y-3 ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
       }`}
     >
@@ -305,7 +305,7 @@ function SortableCategory({
             list="skill-category-presets"
             value={cat.name || ""}
             onChange={(e) => onNameChange(e.target.value)}
-            className="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
+            className="w-full text-xs px-3 py-2 border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
             placeholder="e.g. Technical Skills"
           />
         </div>

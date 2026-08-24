@@ -55,7 +55,7 @@ const CategoryRow: React.FC<{
 
   if (isFormatting && !hasFormattingData) {
     return (
-      <div className="rounded-xl overflow-hidden relative">
+      <div className="overflow-hidden relative">
         <div className="w-full flex items-center gap-3 px-3.5 py-1 text-left">
           <div className="flex-1 min-w-0 blur-[0.1px] select-none pointer-events-none opacity-40">
             <div className="flex items-center justify-between gap-2">
@@ -67,7 +67,7 @@ const CategoryRow: React.FC<{
               </span>
             </div>
             <div className="mt-1.5 flex items-center gap-2">
-              <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
+              <div className="flex-1 h-4 bg-gray-200 overflow-hidden">
                 <motion.div
                   className="h-full bg-sky-500"
                   initial={{ width: 0 }}
@@ -83,7 +83,7 @@ const CategoryRow: React.FC<{
   }
 
   return (
-    <div className="rounded-xl overflow-hidden">
+    <div className="overflow-hidden">
       <div className="w-full flex items-center gap-3 px-3.5 py-1 text-left hover:bg-white/90 transition-colors">
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
@@ -95,7 +95,7 @@ const CategoryRow: React.FC<{
             </span>
           </div>
           <div className="mt-1.5 flex items-center gap-2">
-            <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
+            <div className="flex-1 h-4 bg-gray-200 overflow-hidden">
               <motion.div
                 className={`h-full ${category.score < 50 ? "bg-red-500" : "bg-sky-500"}`}
                 initial={{ width: 0 }}
@@ -126,7 +126,7 @@ const CategoryChecklist: React.FC<CategoryChecklistProps> = ({
   ];
 
   return (
-    <div className="bg-white/80 px-5 py-7 rounded-xl box-shadow">
+    <div className="bg-white/80 px-5 py-7 box-shadow">
       <div className="flex justify-center">
         <ScoreCircle score={overallScore} size="md" />
       </div>
@@ -135,7 +135,7 @@ const CategoryChecklist: React.FC<CategoryChecklistProps> = ({
         <div className="flex pt-6 pb-8 w-full px-3.5">
           <button
             onClick={onRescan}
-            className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-600/90 rounded-lg transition-colors"
+            className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-600/90 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             Upload & Rescan

@@ -124,30 +124,30 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
 
   const renderRole = (u: AdminUser) =>
     u.role === 'admin' ? (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-medium">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-medium">
         <ShieldCheck className="w-3 h-3" /> Admin
       </span>
     ) : (
-      <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-medium">
+      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-medium">
         User
       </span>
     );
 
   const renderStatus = (u: AdminUser, online: boolean) =>
     u.isBanned ? (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-medium">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium">
         <Ban className="w-3 h-3" /> Banned
       </span>
     ) : online ? (
-      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-700 text-xs font-medium">
+      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-cyan-100 text-cyan-700 text-xs font-medium">
         <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
+          <span className="animate-ping absolute inline-flex h-full w-full bg-cyan-400 opacity-75" />
+          <span className="relative inline-flex h-2 w-2 bg-cyan-500" />
         </span>
         Online
       </span>
     ) : (
-      <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-medium">
+      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-medium">
         Active
       </span>
     );
@@ -159,7 +159,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
         onClick={() => setEditingUser(u)}
         disabled={isOtherAdmin(u) || busyId === u.id}
         title={isOtherAdmin(u) ? "Can't edit another admin" : 'Edit'}
-        className="p-1.5 rounded-md text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <Pencil className="w-4 h-4" />
       </button>
@@ -176,7 +176,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                 ? 'Unban'
                 : 'Ban'
         }
-        className="p-1.5 rounded-md text-gray-500 hover:text-amber-600 hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {u.isBanned ? <RotateCcw className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
       </button>
@@ -187,7 +187,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
         title={
           isSelf(u) ? "Can't delete yourself" : isOtherAdmin(u) ? "Can't delete another admin" : 'Delete'
         }
-        className="p-1.5 rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <Trash2 className="w-4 h-4" />
       </button>
@@ -195,7 +195,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
   );
 
   return (
-    <div className="bg-white rounded-xl box-shadow p-6">
+    <div className="bg-white box-shadow p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-medium text-gray-800">All Users</h2>
         <span className="text-sm text-gray-500">{users.length} total</span>
@@ -203,7 +203,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent animate-spin" />
         </div>
       ) : sortedUsers.length === 0 ? (
         <div className="py-8 text-center text-gray-500">No users found</div>
@@ -227,7 +227,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                   <tr key={u.id} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-3 pr-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold shrink-0">
+                        <div className="w-8 h-8 bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold shrink-0">
                           {u.name?.charAt(0)?.toUpperCase() || '?'}
                         </div>
                         <div className="min-w-0">
@@ -257,9 +257,9 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
             {sortedUsers.map((u) => {
               const online = onlineIds.has(u.id);
               return (
-                <div key={u.id} className="border border-gray-200 rounded-lg p-4">
+                <div key={u.id} className="border border-gray-200 p-4">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-semibold shrink-0">
+                    <div className="w-10 h-10 bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-semibold shrink-0">
                       {u.name?.charAt(0)?.toUpperCase() || '?'}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -277,13 +277,13 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 mb-3">
-                    <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                    <div className="flex items-center justify-between bg-gray-50 px-3 py-2">
                       <span className="text-xs text-gray-500">Credits</span>
                       <span className="text-[10px] lg:text-sm font-semibold text-gray-800">
                         {u.subscription?.credits ?? 0}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                    <div className="flex items-center justify-between bg-gray-50 px-3 py-2">
                       <span className="text-xs text-gray-500">Joined</span>
                       <span className="text-[10px] lg:text-sm font-medium text-gray-800">
                         {formatDate(u.createdAt)}

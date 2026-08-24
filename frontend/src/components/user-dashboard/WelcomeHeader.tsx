@@ -16,7 +16,7 @@ export default function WelcomeHeader({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="relative overflow-hidden rounded-2xl bg-cyan-600 p-8 text-white shadow-lg shadow-cyan-100"
+      className="relative overflow-hidden bg-cyan-600 p-8 text-white shadow-lg shadow-cyan-100"
     >
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-1/4 w-32 h-32 bg-white/5 rounded-full" />
@@ -33,7 +33,7 @@ export default function WelcomeHeader({
           </div>
 
           <div className="hidden md:block w-72 xl:w-60">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 ml-20">
+            <div className="bg-white/20 backdrop-blur-sm px-4 py-3 ml-20">
               <p className="text-xs font-medium text-cyan-50 uppercase tracking-wider">
                 Current Plan
               </p>
@@ -43,13 +43,13 @@ export default function WelcomeHeader({
         </div>
 
         <div className="mt-6 flex flex-col md:flex-row items-center gap-3">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2">
             <Zap className="w-4 h-4 text-yellow-300" fill="currentColor" />
             <span className="font-semibold">{credits} Credits Available</span>
           </div>
           <Link
             to="/ats-scan"
-            className="inline-flex items-center gap-2 bg-white text-cyan-700 rounded-full px-4 py-2 font-semibold hover:bg-cyan-50 transition-colors"
+            className="inline-flex items-center gap-2 bg-white text-cyan-700 px-4 py-2 font-semibold hover:bg-cyan-50 transition-colors"
           >
             <FileCheck className="w-4 h-4" />
             Start Scan

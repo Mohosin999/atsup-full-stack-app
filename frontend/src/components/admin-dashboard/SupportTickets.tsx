@@ -120,7 +120,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl box-shadow p-4 md:p-6">
+    <div className="bg-white box-shadow p-4 md:p-6">
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <h2 className="text-lg font-medium text-gray-800">Support Tickets</h2>
         <div className="flex flex-wrap gap-1">
@@ -129,7 +129,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
               key={f.value}
               type="button"
               onClick={() => setFilter(f.value)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                 filter === f.value ? 'bg-cyan-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -141,7 +141,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-gray-500">
@@ -153,13 +153,13 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
           {filtered.map((t) => {
             const expanded = expandedId === t.id;
             return (
-              <div key={t.id} className="border border-gray-200 rounded-lg">
+              <div key={t.id} className="border border-gray-200">
                 <button
                   type="button"
                   onClick={() => setExpandedId(expanded ? null : t.id)}
-                  className="w-full flex items-center gap-3 p-4 text-left hover:bg-gray-50 rounded-lg"
+                  className="w-full flex items-center gap-3 p-4 text-left hover:bg-gray-50"
                 >
-                  <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-semibold shrink-0">
+                  <div className="w-9 h-9 bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-semibold shrink-0">
                     {t.user?.name?.charAt(0)?.toUpperCase() || '?'}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -177,19 +177,19 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                       {t.user?.name || 'Unknown'} · {t.user?.email || ''} · {formatDate(t.createdAt)}
                     </p>
                     <div className="flex flex-wrap items-center gap-2 mt-2 sm:hidden">
-                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                      <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 text-gray-600">
                         {TYPE_LABELS[t.type] || t.type}
                       </span>
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[t.status]}`}>
+                      <span className={`text-xs font-medium px-2 py-0.5 ${STATUS_STYLES[t.status]}`}>
                         {STATUS_LABELS[t.status]}
                       </span>
                     </div>
                   </div>
                   <div className="hidden sm:flex items-center gap-2 shrink-0">
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                    <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 text-gray-600">
                       {TYPE_LABELS[t.type] || t.type}
                     </span>
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[t.status]}`}>
+                    <span className={`text-xs font-medium px-2 py-0.5 ${STATUS_STYLES[t.status]}`}>
                       {STATUS_LABELS[t.status]}
                     </span>
                     {expanded ? (
@@ -223,7 +223,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                             type="button"
                             disabled={busyId === t.id}
                             onClick={() => setStatus(t.id, 'in-progress')}
-                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                            className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
                           >
                             Mark in progress
                           </button>
@@ -233,7 +233,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                             type="button"
                             disabled={busyId === t.id}
                             onClick={() => setStatus(t.id, 'resolved')}
-                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
+                            className="px-3 py-1.5 text-xs font-medium bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
                           >
                             Resolve
                           </button>
@@ -243,7 +243,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                             type="button"
                             disabled={busyId === t.id}
                             onClick={() => setStatus(t.id, 'open')}
-                            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50"
+                            className="px-3 py-1.5 text-xs font-medium bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50"
                           >
                             Reopen
                           </button>
@@ -255,7 +255,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                           type="button"
                           onClick={() => setConfirmDelete(t)}
                           disabled={busyId === t.id}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg text-red-600 hover:bg-red-50"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           Delete

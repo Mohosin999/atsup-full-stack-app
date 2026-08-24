@@ -45,7 +45,7 @@ export default function RecentAtsScans({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-white rounded-2xl box-shadow border border-gray-100 p-6"
+        className="bg-white box-shadow border border-gray-100 p-6"
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-gray-800">Recent ATS Scans</h2>
@@ -62,7 +62,7 @@ export default function RecentAtsScans({
         {loading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-14 bg-gray-100 rounded-lg animate-pulse" />
+              <div key={i} className="h-14 bg-gray-100 animate-pulse" />
             ))}
           </div>
         ) : scans.length === 0 ? (
@@ -72,10 +72,10 @@ export default function RecentAtsScans({
             {scans.map((scan) => (
               <div
                 key={scan.id || scan._id}
-                className="flex items-center justify-between p-3 rounded-lg border-b border-gray-200 last:border-b-0"
+                className="flex items-center justify-between p-3 border-b border-gray-200 last:border-b-0"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-cyan-50 flex items-center justify-center">
+                  <div className="w-9 h-9 bg-cyan-50 flex items-center justify-center">
                     <FileCheck className="w-4 h-4 text-cyan-600" />
                   </div>
                   <div>
@@ -90,14 +90,14 @@ export default function RecentAtsScans({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => navigate(`/ats-scan/${scan.id || scan._id}`)}
-                    className="p-1.5 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors"
+                    className="p-1.5 hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors"
                     title="View"
                   >
                     <Eye className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setDeleteId(scan.id || scan._id)}
-                    className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
+                    className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />

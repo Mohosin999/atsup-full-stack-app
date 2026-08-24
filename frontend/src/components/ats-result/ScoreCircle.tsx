@@ -37,7 +37,7 @@ const ScoreCircle: React.FC<ScoreCircleProps> = ({
   const color = getScoreColor(score);
 
   const textSize =
-    size === "lg" ? "text-6xl" : size === "sm" ? "text-3xl" : "text-3xl";
+    size === "lg" ? "text-6xl" : size === "sm" ? "text-3xl" : "text-4xl";
 
   return (
     <div className="relative inline-flex flex-col items-center justify-center">
@@ -91,7 +91,7 @@ const ScoreCircle: React.FC<ScoreCircleProps> = ({
             transition={{ delay: 0.5, duration: 0.5, ease: "backOut" }}
             className="text-center"
           >
-            <span className={`${textSize} font-bold text-gray-800`}>
+            <span className={`${textSize} font-bold text-gray-700`}>
               {score}
               <span className="text-xl font-semibold text-gray-500">%</span>
             </span>

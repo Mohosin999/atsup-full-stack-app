@@ -430,25 +430,25 @@ export default function ResumeBuilder() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
+    <div className="min-h-screen bg-gray-50 pb-12">
       <Wrapper className="!px-4 lg:!px-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="my-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          className="my-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div>
-            <h1 className="text-lg font-bold text-gray-800 mb-1">
+            <h1 className="text-base font-semibold text-gray-800">
               ATS Resume Builder
             </h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-xs text-gray-600">
               ATS-friendly layout — no images, emojis, tables or underlines.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-gray-500 flex items-center gap-1.5">
               <span
-                className={`w-2 h-2 rounded-full ${
+                className={`w-2 h-2 ${
                   saving ? "bg-amber-400 animate-pulse" : "bg-cyan-500"
                 }`}
               />
@@ -462,14 +462,14 @@ export default function ResumeBuilder() {
             </span>
             <button
               onClick={handleReset}
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 transition-colors"
             >
               <RotateCcw className="w-4 h-4" /> Reset
             </button>
             <button
               onClick={handleDownload}
               disabled={downloading}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg shadow-cyan-500/25 transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold bg-cyan-600 hover:bg-cyan-700 text-white  transition-all disabled:opacity-50"
             >
               <Download className="w-4 h-4" />
               {downloading ? "Preparing..." : "Download PDF"}
@@ -531,7 +531,7 @@ export default function ResumeBuilder() {
               <button
                 type="button"
                 onClick={() => setShowMore(!showMore)}
-                className="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-cyan-600 hover:text-cyan-700 border border-dashed border-cyan-300 rounded-xl hover:bg-cyan-50 transition-all"
+                className="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-cyan-600 hover:text-cyan-700 border border-dashed border-cyan-300 hover:bg-cyan-50 transition-all"
               >
                 {showMore ? "Show Less" : "Add More"}
                 <ChevronDown

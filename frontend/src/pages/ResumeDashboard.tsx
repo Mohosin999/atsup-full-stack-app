@@ -10,7 +10,7 @@ export default function ResumeDashboard() {
   const user = useAppSelector((state) => state.auth.user);
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
+    <div className="min-h-screen bg-gray-50 pb-12">
       <Wrapper>
         <div className="my-8 mb-14 flex flex-col items-center justify-center">
           <h1 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -39,9 +39,9 @@ export default function ResumeDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="bg-cyan-50 border border-cyan-200 rounded-2xl p-4 md:p-6 xl:p-8 flex flex-col items-start box-shadow"
+            className="bg-cyan-50 p-4 md:p-6 xl:p-8 flex flex-col items-start box-shadow"
           >
-            <div className="w-12 h-12 rounded-2xl bg-cyan-600 text-white flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-cyan-600 text-white flex items-center justify-center mb-4">
               <FilePlus2 className="w-6 h-6 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-800 mb-2">
@@ -59,7 +59,7 @@ export default function ResumeDashboard() {
                   ? navigate("/resume-builder/new")
                   : goToLogin(navigate, "/resume-builder")
               }
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-600/90 text-white font-semibold shadow-lg shadow-cyan-500/25 transition-all"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-cyan-600 hover:bg-cyan-600/90 text-white font-semibold shadow-lg shadow-cyan-500/25 transition-all"
             >
               <FilePlus2 className="w-5 h-5" />
               Create Resume
@@ -71,9 +71,9 @@ export default function ResumeDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white border-2 border-dashed border-gray-300 rounded-2xl p-4 md:p-6 xl:p-8 flex flex-col items-start group relative"
+            className="bg-white border-2 border-dashed border-gray-300 p-4 md:p-6 xl:p-8 flex flex-col items-start group relative"
           >
-            <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-violet-500/10 border border-violet-500/30 flex items-center justify-center mb-4">
               <UploadCloud className="w-6 h-6 text-violet-500" />
             </div>
             <h3 className="text-xl font-bold text-gray-800 mb-2">
@@ -89,12 +89,12 @@ export default function ResumeDashboard() {
               <button
                 disabled
                 title="Coming soon"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gray-100 text-gray-400 cursor-not-allowed font-semibold"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-gray-100 text-gray-400 cursor-not-allowed font-semibold"
               >
                 <UploadCloud className="w-5 h-5" />
                 Upload Resume
               </button>
-              <span className="pointer-events-none absolute -top-3 right-4 opacity-0 group-hover/upload:opacity-100 transition-opacity bg-gray-900 text-white text-xs font-medium px-2.5 py-1 rounded-full">
+              <span className="pointer-events-none absolute -top-3 right-4 opacity-0 group-hover/upload:opacity-100 transition-opacity bg-gray-900 text-white text-xs font-medium px-2.5 py-1">
                 Upcoming
               </span>
             </div>

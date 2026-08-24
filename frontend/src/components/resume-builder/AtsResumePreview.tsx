@@ -7,7 +7,7 @@ interface AtsResumePreviewProps {
 
 export default function AtsResumePreview({ content }: AtsResumePreviewProps) {
   return (
-    <div className="rounded-xl bg-white shadow-lg overflow-hidden">
+    <div className="bg-white box-shadow overflow-hidden">
       <style>{ATS_STYLE}</style>
       <div
         className="ats-resume"

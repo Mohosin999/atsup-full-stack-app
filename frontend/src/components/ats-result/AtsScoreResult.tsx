@@ -89,12 +89,12 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
               />
             </div>
 
-            <div className="md:col-span-2 bg-white rounded-lg p-6">
+            <div className="md:col-span-2 bg-white p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Summary
               </h2>
               <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-gray-100 rounded-lg p-4">
+                <div className="bg-gray-100 p-4">
                   <p className="text-gray-600 text-sm mb-1">ATS Friendliness</p>
                   <p className="text-2xl font-bold text-gray-800">
                     {result.atsFriendliness}%

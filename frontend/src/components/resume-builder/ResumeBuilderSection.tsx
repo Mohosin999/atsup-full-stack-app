@@ -69,7 +69,7 @@ export default function ResumeBuilderSection({
       style={sortableStyle}
       className={sortable && sortable.isDragging ? "relative z-10 opacity-90" : ""}
     >
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white border border-gray-200 overflow-hidden">
         <div className="px-4 py-3">
           {editing ? (
             <div className="w-full flex items-center justify-between text-left min-w-0">
@@ -88,7 +88,7 @@ export default function ResumeBuilderSection({
                     autoFocus
                     maxLength={60}
                     placeholder={title}
-                    className="text-sm font-semibold text-gray-800 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:border-cyan-500"
+                    className="text-sm font-semibold text-gray-800 h-5 px-1.5 py-0 border border-cyan-300 bg-white focus:outline-none focus:border-cyan-500"
                   />
                   <span
                     ref={measureRef}

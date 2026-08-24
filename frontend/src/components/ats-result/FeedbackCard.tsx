@@ -127,7 +127,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
   subgroup,
 }) => {
   return (
-    <div className="rounded-xl border border-gray-200/60 bg-gray-0 overflow-hidden xl:flex xl:items-stretch">
+    <div className="border border-gray-200/60 bg-gray-0 overflow-hidden xl:flex xl:items-stretch">
       {/* Left side - Title with border on xl screens */}
       <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-50 border-b border-gray-200/60 xl:border-b-0 xl:border-r xl:w-64 xl:flex-shrink-0 xl:px-6 xl:py-4">
         <div className="min-w-0">
@@ -147,7 +147,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
               className="flex items-start gap-2.5 xl:gap-3 xl:items-center"
             >
               <span
-                className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center xl:mt-0 ${
+                className={`mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center xl:mt-0 ${
                   check.status === "passed"
                     ? "bg-green-500/15 text-green-600"
                     : check.status === "failed"
@@ -243,7 +243,7 @@ const SkillsTable: React.FC<{
       {skills.length > SeenMoreLimit && (
         <button
           onClick={() => setShowAll((v) => !v)}
-          className="mt-3 py-2 px-4 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+          className="mt-3 py-2 px-4 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
         >
           {showAll ? "See Less" : `See More (${remaining} more)`}
         </button>
@@ -261,25 +261,25 @@ const FormattingLock: React.FC<{ onShowTips: () => void }> = ({
   onShowTips,
 }) => {
   return (
-    <div className="relative rounded-xl border border-green-500/30 bg-green-500/5 overflow-hidden">
+    <div className="relative border border-green-500/30 bg-green-500/5 overflow-hidden">
       {/* Blurred content placeholder */}
       <div className="blur-[5px] select-none pointer-events-none p-4 opacity-60">
         <div className="space-y-3">
-          <div className="rounded-xl bg-gray-100 p-4 space-y-2.5">
-            <div className="w-24 h-4 rounded bg-gray-300" />
+          <div className="bg-gray-100 p-4 space-y-2.5">
+            <div className="w-24 h-4 bg-gray-300" />
             {[0, 1, 2].map((i) => (
               <div key={i} className="flex items-center gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-gray-300 flex-shrink-0" />
-                <div className="flex-1 h-3 rounded bg-gray-300" />
+                <div className="w-5 h-5 bg-gray-300 flex-shrink-0" />
+                <div className="flex-1 h-3 bg-gray-300" />
               </div>
             ))}
           </div>
-          <div className="rounded-xl bg-gray-100 p-4 space-y-2.5">
-            <div className="w-20 h-4 rounded bg-gray-300" />
+          <div className="bg-gray-100 p-4 space-y-2.5">
+            <div className="w-20 h-4 bg-gray-300" />
             {[0, 1].map((i) => (
               <div key={i} className="flex items-center gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-gray-300 flex-shrink-0" />
-                <div className="flex-1 h-3 rounded bg-gray-300" />
+                <div className="w-5 h-5 bg-gray-300 flex-shrink-0" />
+                <div className="flex-1 h-3 bg-gray-300" />
               </div>
             ))}
           </div>
@@ -355,13 +355,13 @@ const FeedbackCard: React.FC<{
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className={`bg-white/80 rounded-2xl ${meta.accent} p-5 box-shadow`}
+      className={`bg-white/80 ${meta.accent} p-5 box-shadow`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
           <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center ${meta.iconColor}`}
+            className={`w-10 h-10 flex items-center justify-center ${meta.iconColor}`}
           >
             {meta.icon}
           </div>

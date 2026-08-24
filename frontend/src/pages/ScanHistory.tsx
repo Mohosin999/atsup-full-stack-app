@@ -44,7 +44,7 @@ export default function ScanHistory() {
       if (history.length === 0) {
         setLoading(true);
       }
-      const response = await atsScoreApi.getHistory(pageNum, 7);
+      const response = await atsScoreApi.getHistory(pageNum, 10);
       setHistory(response.data.data || []);
       setTotalPages(response.data.pagination?.totalPages || 1);
       setTotalScans(response.data.pagination?.total || 0);
@@ -116,25 +116,25 @@ export default function ScanHistory() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-20 pb-12">
+    <div className="min-h-screen bg-[#F6F9FC] pb-12">
       <Wrapper>
         <div>
           {/* Header */}
-          <div className="flex flex-row my-8 justify-between items-start md:items-center gap-3 md:gap-4 mb-4 md:mb-6">
+          <div className="flex flex-col md:flex-row my-3 justify-between items-start md:items-center gap-3 md:gap-4">
             <div>
-              <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
-                Scan History
+              <h1 className="text-xl font-semibold text-gray-800">
+                Scan History{" "}
+                <span className="text-sm !font-normal text-gray-500">
+                  - {totalScans} scan{totalScans !== 1 ? "s" : ""}
+                </span>
               </h1>
-              <span className="text-sm text-gray-500">
-                {totalScans} scan{totalScans !== 1 ? "s" : ""}
-              </span>
             </div>
 
             <div className="flex items-center">
               {totalScans > 0 && (
                 <button
                   onClick={() => setClearAllOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/20 border border-red-500/30 text-red-600 hover:bg-red-500/30 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                   Clear All
@@ -151,20 +151,20 @@ export default function ScanHistory() {
           ) : (
             <>
               {/* Desktop Table - visible from md breakpoint */}
-              <div className="hidden md:block border border-gray-300 rounded-lg overflow-hidden">
+              <div className="bg-white hidden md:block border border-gray-300 overflow-hidden">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr className="bg-[#A5D9FC] border-b border-gray-300 text-left">
-                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[40%]">
+                    <tr className="bg-[#A5D9FC] border-b border-[#A5D9FC]  text-left">
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm w-[40%]">
                         Name
                       </th>
-                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[20%]">
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm w-[20%]">
                         Score
                       </th>
-                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[25%]">
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm w-[25%]">
                         Scan date
                       </th>
-                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[15%]"></th>
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm w-[15%]"></th>
                     </tr>
                   </thead>
 
@@ -198,7 +198,7 @@ export default function ScanHistory() {
                                     if (e.key === "Escape") setEditingId(null);
                                   }}
                                   autoFocus
-                                  className="bg-transparent border border-gray-300 rounded px-2 py-1 text-gray-700 text-sm focus:outline-none"
+                                   className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 text-sm focus:outline-none"
                                 />
                                 <span
                                   ref={measureRef}
@@ -216,7 +216,7 @@ export default function ScanHistory() {
                               </div>
                             ) : (
                               <div className="group flex items-center gap-2">
-                                <span className="font-semibold text-gray-700 text-sm">
+                                <span className="text-gray-700 text-sm">
                                   {item.resumeName}
                                 </span>
 
@@ -279,7 +279,7 @@ export default function ScanHistory() {
               </div>
 
               {/* Mobile Layout - visible below md breakpoint */}
-              <div className="md:hidden border border-gray-300 rounded-lg overflow-hidden divide-y divide-gray-200">
+              <div className="bg-white md:hidden border border-gray-300 overflow-hidden divide-y divide-gray-200">
                 {history.length === 0 ? (
                   <div className="py-12 text-center text-sm text-gray-500">
                     No Scan History
@@ -301,7 +301,7 @@ export default function ScanHistory() {
                                   if (e.key === "Escape") setEditingId(null);
                                 }}
                                 autoFocus
-                                className="bg-transparent border border-gray-300 rounded px-2 py-1 text-gray-700 text-sm w-full"
+                                className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 text-sm w-full"
                               />
                               <span
                                 ref={measureRef}
@@ -319,7 +319,7 @@ export default function ScanHistory() {
                             </div>
                           ) : (
                             <div className="group flex items-center gap-2">
-                              <h3 className="font-semibold text-sm truncate text-gray-700">
+                              <h3 className="text-sm truncate text-gray-700">
                                 {item.resumeName}
                               </h3>
 
@@ -346,7 +346,7 @@ export default function ScanHistory() {
                             </span>
                           </p>
 
-                          <p className="text-sm text-gray-500 mt-0.5">
+                          <p className="text-xs text-gray-500 mt-0.5">
                             {new Date(item.createdAt).toLocaleDateString(
                               "en-US",
                               {

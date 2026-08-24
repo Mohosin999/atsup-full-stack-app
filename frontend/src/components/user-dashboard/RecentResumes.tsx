@@ -58,7 +58,7 @@ export default function RecentResumes({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.45 }}
-        className="bg-white rounded-2xl box-shadow border border-gray-100 p-6"
+        className="bg-white box-shadow border border-gray-100 p-6"
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-gray-800">Recent Resumes</h2>
@@ -77,7 +77,7 @@ export default function RecentResumes({
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="h-14 bg-gray-100 rounded-lg animate-pulse"
+                className="h-14 bg-gray-100 animate-pulse"
               />
             ))}
           </div>
@@ -90,10 +90,10 @@ export default function RecentResumes({
             {resumes.map((resume) => (
               <div
                 key={resume.id || resume._id}
-                className="flex items-center justify-between p-3 rounded-lg border-b border-gray-200 last:border-b-0"
+                className="flex items-center justify-between p-3 border-b border-gray-200 last:border-b-0"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
+                  <div className="w-9 h-9 bg-emerald-50 flex items-center justify-center">
                     <FileText className="w-4 h-4 text-emerald-600" />
                   </div>
                   <div>
@@ -110,14 +110,14 @@ export default function RecentResumes({
                     onClick={() =>
                       navigate(`/resume-builder/${resume.id || resume._id}`)
                     }
-                    className="p-1.5 rounded-lg hover:bg-cyan-50 text-gray-400 hover:text-cyan-600 transition-colors"
+                    className="p-1.5 hover:bg-cyan-50 text-gray-400 hover:text-cyan-600 transition-colors"
                     title="Edit"
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setDeleteId(resume.id || resume._id)}
-                    className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
+                    className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />

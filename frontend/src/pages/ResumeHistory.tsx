@@ -1,13 +1,8 @@
-/* ===================================
-Resume History Page
-View and manage resume builder history
-=================================== */
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import {
-  FileText,
   Calendar,
+  FileText,
   Trash2,
   Pencil,
   Copy,
@@ -39,6 +34,7 @@ export default function ResumeHistory() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalResumes, setTotalResumes] = useState(0);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [duplicateId, setDuplicateId] = useState<string | null>(null);
   const [clearAllOpen, setClearAllOpen] = useState(false);
@@ -56,10 +52,11 @@ export default function ResumeHistory() {
       if (resumes.length === 0) {
         setLoading(true);
       }
-      const response = await resumeApi.getAll(pageNum, 6, "builder");
+      const response = await resumeApi.getAll(pageNum, 7, "builder");
       const items = response.data.data || [];
       setResumes(items);
       setTotalPages(response.data.pagination?.pages || 1);
+      setTotalResumes(response.data.pagination?.total || items.length);
       setPage(pageNum);
     } catch {
       // silent
@@ -123,6 +120,7 @@ export default function ResumeHistory() {
       setResumes([]);
       setPage(1);
       setTotalPages(1);
+      setTotalResumes(0);
     } catch {
       toast.error("Failed to delete resumes");
     }
@@ -146,224 +144,309 @@ export default function ResumeHistory() {
     resume.content?.personalInfo?.fullName?.trim() ||
     "Untitled Resume";
 
-  const getResumeSubtitle = (resume: ResumeListItem) => {
-    const info = resume.content?.personalInfo || {};
-    const parts: string[] = [];
-    if (info.jobTitle?.trim()) parts.push(info.jobTitle.trim());
-    if (info.contact?.email?.trim()) parts.push(info.contact.email.trim());
-    return parts.join(" · ");
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
+    <div className="min-h-screen bg-white pt-20 pb-12">
       <Wrapper>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 my-8">
-          <div>
-            <h2 className="text-lg font-bold text-gray-800 mb-1">All Resumes</h2>
-            <p className="text-sm text-gray-600">
-              View and manage all your built resumes
-            </p>
-          </div>
-          <div className="flex items-center justify-between w-full sm:w-auto gap-3">
-            {resumes.length > 0 && (
-              <>
-                <span className="text-sm text-gray-500">
-                  {resumes.length} resume{resumes.length === 1 ? "" : "s"}
-                </span>
+        <div>
+          {/* Header */}
+          <div className="flex flex-row my-8 justify-between items-start md:items-center gap-3 md:gap-4 mb-4 md:mb-6">
+            <div>
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
+                Resume History
+              </h1>
+              <span className="text-sm text-gray-500">
+                {totalResumes} resume{totalResumes !== 1 ? "s" : ""}
+              </span>
+            </div>
+
+            <div className="flex items-center">
+              {totalResumes > 0 && (
                 <button
                   onClick={() => setClearAllOpen(true)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
-                  Delete All
+                  Clear All
                 </button>
-              </>
-            )}
+              )}
+            </div>
           </div>
+
+          {/* Loading */}
+          {loading ? (
+            <div className="flex justify-center py-12 md:py-16 lg:py-20">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <>
+              {/* Desktop Table */}
+              <div className="hidden md:block border border-gray-300 rounded-lg overflow-hidden">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-[#A5D9FC] border-b border-gray-300 text-left">
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[45%]">
+                        Name
+                      </th>
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[25%]">
+                        Date
+                      </th>
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[30%]"></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {resumes.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={3}
+                          className="py-16 lg:py-24 text-center text-sm text-gray-500"
+                        >
+                          No Resumes Yet
+                        </td>
+                      </tr>
+                    ) : (
+                      resumes.map((resume) => (
+                        <tr
+                          key={resume.id}
+                          className="border-b border-gray-300 last:border-b-0"
+                        >
+                          <td className="px-3 lg:px-5 py-4 lg:py-5">
+                            {editingId === resume.id ? (
+                              <div className="flex items-center gap-2">
+                                <input
+                                  ref={inputRef}
+                                  value={editValue}
+                                  onChange={(e) => setEditValue(e.target.value)}
+                                  onBlur={() => handleRename(resume.id)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter")
+                                      handleRename(resume.id);
+                                    if (e.key === "Escape") setEditingId(null);
+                                  }}
+                                  autoFocus
+                                  className="bg-transparent border border-gray-300 rounded px-2 py-1 text-gray-700 text-sm focus:outline-none"
+                                />
+                                <span
+                                  ref={measureRef}
+                                  className="absolute invisible whitespace-pre text-sm"
+                                >
+                                  {editValue}
+                                </span>
+                                <button onClick={() => handleRename(resume.id)}>
+                                  <Check className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-green-600" />
+                                </button>
+
+                                <button onClick={() => setEditingId(null)}>
+                                  <X className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-red-500" />
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="group flex items-center gap-2">
+                                <span className="font-semibold text-gray-700 text-sm">
+                                  {getResumeTitle(resume)}
+                                </span>
+
+                                <button
+                                  onClick={() => {
+                                    setEditingId(resume.id);
+                                    setEditValue(getResumeTitle(resume));
+                                  }}
+                                  className="opacity-0 group-hover:opacity-100 transition"
+                                >
+                                  <Pencil className="w-3 h-3 lg:w-3.5 lg:h-3.5 text-gray-500 hover:text-cyan-500" />
+                                </button>
+                              </div>
+                            )}
+                          </td>
+
+                          <td className="px-3 lg:px-0 py-4 lg:py-5 text-gray-700 text-sm">
+                            {new Date(resume.updatedAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
+                          </td>
+
+                          <td className="px-3 lg:px-5 py-4 lg:py-5">
+                            <div className="flex justify-end gap-3 lg:gap-5 text-sm text-gray-700">
+                              <button
+                                onClick={() =>
+                                  navigate(`/resume-builder/${resume.id}`)
+                                }
+                                className="hover:text-cyan-600 transition"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+
+                              <button
+                                onClick={() => setDuplicateId(resume.id)}
+                                className="hover:text-blue-600 transition"
+                              >
+                                <Copy className="w-4 h-4" />
+                              </button>
+
+                              <button
+                                onClick={() => setDeleteId(resume.id)}
+                                className="hover:text-red-400 transition"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Layout */}
+              <div className="md:hidden border border-gray-300 rounded-lg overflow-hidden divide-y divide-gray-200">
+                {resumes.length === 0 ? (
+                  <div className="py-12 text-center text-sm text-gray-500">
+                    No Resumes Yet
+                  </div>
+                ) : (
+                  resumes.map((resume) => (
+                    <div key={resume.id} className="p-3">
+                      <div className="flex justify-between items-start gap-3">
+                        <div className="min-w-0 flex-1">
+                          {editingId === resume.id ? (
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <input
+                                ref={inputRef}
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                onBlur={() => handleRename(resume.id)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") handleRename(resume.id);
+                                  if (e.key === "Escape") setEditingId(null);
+                                }}
+                                autoFocus
+                                className="bg-transparent border border-gray-300 rounded px-2 py-1 text-gray-700 text-sm w-full"
+                              />
+                              <span
+                                ref={measureRef}
+                                className="absolute invisible whitespace-pre text-sm"
+                              >
+                                {editValue}
+                              </span>
+                              <button onClick={() => handleRename(resume.id)}>
+                                <Check className="w-4 h-4 text-green-600" />
+                              </button>
+
+                              <button onClick={() => setEditingId(null)}>
+                                <X className="w-4 h-4 text-red-500" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="group flex items-center gap-2">
+                              <h3 className="font-semibold text-sm truncate text-gray-700">
+                                {getResumeTitle(resume)}
+                              </h3>
+
+                              <button
+                                onClick={() => {
+                                  setEditingId(resume.id);
+                                  setEditValue(getResumeTitle(resume));
+                                }}
+                                className="opacity-70"
+                              >
+                                <Pencil className="w-3.5 h-3.5 text-gray-500" />
+                              </button>
+                            </div>
+                          )}
+
+                          <p className="mt-1.5 text-sm text-gray-500">
+                            {new Date(resume.updatedAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-4 mt-3 text-xs text-gray-700">
+                        <button
+                          onClick={() => navigate(`/resume-builder/${resume.id}`)}
+                          className="hover:text-cyan-600 transition"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={() => setDuplicateId(resume.id)}
+                          className="hover:text-blue-600 transition"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={() => setDeleteId(resume.id)}
+                          className="hover:text-red-400 transition"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="mt-4 md:mt-6">
+                  <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={fetchResumes}
+                  />
+                </div>
+              )}
+            </>
+          )}
         </div>
 
-        {/* Content */}
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <LoadingSpinner />
-          </div>
-        ) : resumes.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center text-center py-12 border border-dashed border-gray-200 rounded-2xl"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-4">
-              <FileText className="w-8 h-8 text-cyan-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-1">
-              No Resumes Yet
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-md">
-              Your built resumes will appear here. Create your first resume to
-              get started.
-            </p>
-            <button
-              onClick={() => navigate("/resume-builder/new")}
-              className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
-            >
-              <FileText className="w-5 h-5" />
-              Create Resume
-            </button>
-          </motion.div>
-        ) : (
-          <div
-            className={`space-y-4 transition-opacity duration-200 ${
-              loading ? "opacity-50" : ""
-            }`}
-          >
-            {resumes.map((resume, index) => (
-              <motion.div
-                key={resume.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-xl border border-gray-200 p-6 box-shadow hover:border-cyan-300 hover:shadow-md transition-all"
-              >
-                <div className="flex flex-col md:flex-row items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    {editingId === resume.id ? (
-                      <div className="flex items-center gap-1 mb-1">
-                        <div className="relative inline-block">
-                          <input
-                            ref={inputRef}
-                            type="text"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            onBlur={() => handleRename(resume.id)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") handleRename(resume.id);
-                              if (e.key === "Escape") setEditingId(null);
-                            }}
-                            autoFocus
-                            className="text-lg font-semibold text-gray-800 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                          />
-                          <span
-                            ref={measureRef}
-                            aria-hidden="true"
-                            className="invisible whitespace-pre absolute top-0 left-0 text-lg font-semibold"
-                          >
-                            {editValue || " "}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => handleRename(resume.id)}
-                          className="p-1 text-cyan-600 hover:text-cyan-700"
-                        >
-                          <Check className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => setEditingId(null)}
-                          className="p-1 text-gray-400 hover:text-red-500"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="group/title flex items-center gap-1 mb-1 relative w-fit">
-                        <h3 className="text-lg font-semibold text-gray-700 truncate">
-                          {getResumeTitle(resume)}
-                        </h3>
-                        <button
-                          onClick={() => {
-                            setEditingId(resume.id);
-                            setEditValue(getResumeTitle(resume));
-                          }}
-                          className="p-1 text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors opacity-0 group-hover/title:opacity-100"
-                          title="Rename"
-                        >
-                          <Pencil className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    )}
-                    <p className="text-sm text-gray-600 mb-3 truncate">
-                      {resume.content?.personalInfo?.fullName?.trim() ||
-                        "Resume"}
-                    </p>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(resume.updatedAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
+        <ConfirmModal
+          isOpen={!!deleteId}
+          title="Delete Resume"
+          message="Are you sure you want to delete this resume? This action cannot be undone."
+          confirmText="Delete"
+          cancelText="Cancel"
+          onConfirm={() => deleteId && handleDelete(deleteId)}
+          onCancel={() => setDeleteId(null)}
+          confirmClassName="bg-red-500 hover:bg-red-600"
+        />
 
-                  <div className="flex items-center gap-1 flex-shrink-0 self-end md:self-auto">
-                    <button
-                      onClick={() => navigate(`/resume-builder/${resume.id}`)}
-                      className="p-1.5 md:p-2 text-gray-600 hover:text-cyan-600 hover:bg-cyan-500/10 rounded-lg transition-colors"
-                      title="Edit"
-                    >
-                      <Pencil className="w-4 h-4 md:w-5 md:h-5" />
-                    </button>
-                    <button
-                      onClick={() => setDuplicateId(resume.id)}
-                      className="p-1.5 md:p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-500/10 rounded-lg transition-colors"
-                    >
-                      <Copy className="w-4 h-4 md:w-5 md:h-5" />
-                    </button>
-                    <button
-                      onClick={() => setDeleteId(resume.id)}
-                      className="p-1.5 md:p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
+        <ConfirmModal
+          isOpen={!!duplicateId}
+          title="Duplicate Resume"
+          message="Are you sure you want to duplicate this resume?"
+          confirmText="Duplicate"
+          cancelText="Cancel"
+          onConfirm={() => duplicateId && handleDuplicate(duplicateId)}
+          onCancel={() => setDuplicateId(null)}
+          type="info"
+          confirmClassName="bg-cyan-500 hover:bg-cyan-600"
+        />
 
-        {totalPages > 1 && (
-          <div className="mt-6">
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={fetchResumes}
-            />
-          </div>
-        )}
+        <ConfirmModal
+          isOpen={clearAllOpen}
+          title="Clear All History"
+          message="This will permanently delete all your resumes. This action cannot be undone."
+          confirmText="Clear All"
+          cancelText="Cancel"
+          onConfirm={handleClearAll}
+          onCancel={() => setClearAllOpen(false)}
+          confirmClassName="bg-red-500 hover:bg-red-600"
+        />
       </Wrapper>
-
-      <ConfirmModal
-        isOpen={!!deleteId}
-        title="Delete Resume"
-        message="Are you sure you want to delete this resume? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
-        onConfirm={() => deleteId && handleDelete(deleteId)}
-        onCancel={() => setDeleteId(null)}
-        confirmClassName="bg-red-500 hover:bg-red-600"
-      />
-
-      <ConfirmModal
-        isOpen={!!duplicateId}
-        title="Duplicate Resume"
-        message="Are you sure you want to duplicate this resume?"
-        confirmText="Duplicate"
-        cancelText="Cancel"
-        onConfirm={() => duplicateId && handleDuplicate(duplicateId)}
-        onCancel={() => setDuplicateId(null)}
-        type="info"
-        confirmClassName="bg-cyan-500 hover:bg-cyan-600"
-      />
-
-      <ConfirmModal
-        isOpen={clearAllOpen}
-        title="Delete All Resumes"
-        message="This will permanently delete all your resumes. This action cannot be undone."
-        confirmText="Delete All"
-        cancelText="Cancel"
-        onConfirm={handleClearAll}
-        onCancel={() => setClearAllOpen(false)}
-        confirmClassName="bg-red-500 hover:bg-red-600"
-      />
     </div>
   );
 }

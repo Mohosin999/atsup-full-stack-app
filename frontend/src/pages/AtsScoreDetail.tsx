@@ -198,7 +198,7 @@ export default function AtsScoreDetail() {
     <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
       <Wrapper className="!px-4 lg:!px-16">
         {/* Header */}
-        <div className="mt-8 mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="mt-8 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-bold text-gray-800 mb-1">
               ATS Score Report{" "}

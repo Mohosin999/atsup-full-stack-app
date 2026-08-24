@@ -1,7 +1,3 @@
-/* ===================================
-Scan History Page
-View and manage ATS scan history
-=================================== */
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -31,6 +27,7 @@ export default function ScanHistory() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalScans, setTotalScans] = useState(0);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [clearAllOpen, setClearAllOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -47,9 +44,10 @@ export default function ScanHistory() {
       if (history.length === 0) {
         setLoading(true);
       }
-      const response = await atsScoreApi.getHistory(pageNum, 6);
+      const response = await atsScoreApi.getHistory(pageNum, 7);
       setHistory(response.data.data || []);
       setTotalPages(response.data.pagination?.totalPages || 1);
+      setTotalScans(response.data.pagination?.total || 0);
       setPage(pageNum);
     } catch {
       // silent
@@ -104,6 +102,7 @@ export default function ScanHistory() {
       setHistory([]);
       setPage(1);
       setTotalPages(1);
+      setTotalScans(0);
     } catch {
       toast.error("Failed to clear history");
     }
@@ -111,28 +110,28 @@ export default function ScanHistory() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
+    if (score >= 70) return "text-green-600";
+    if (score >= 40) return "text-yellow-600";
     return "text-red-500";
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F9FC] pt-20 pb-12">
+    <div className="min-h-screen bg-white pt-20 pb-12">
       <Wrapper>
-        {/* Header with Clear All */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 my-8">
-          <div>
-            <h2 className="text-lg font-bold text-gray-800 mb-1">All Scans</h2>
-            <p className="text-sm text-gray-600">
-              View and manage all your ATS scan results
-            </p>
-          </div>
-          <div className="flex items-center justify-between w-full sm:w-auto gap-3">
-            {history.length > 0 && (
-              <>
-                <span className="text-sm text-gray-500">
-                  {history.length} scan{history.length === 1 ? "" : "s"}
-                </span>
+        <div>
+          {/* Header */}
+          <div className="flex flex-row my-8 justify-between items-start md:items-center gap-3 md:gap-4 mb-4 md:mb-6">
+            <div>
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
+                Scan History
+              </h1>
+              <span className="text-sm text-gray-500">
+                {totalScans} scan{totalScans !== 1 ? "s" : ""}
+              </span>
+            </div>
+
+            <div className="flex items-center">
+              {totalScans > 0 && (
                 <button
                   onClick={() => setClearAllOpen(true)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/20 border border-red-500/30 text-red-600 rounded-lg hover:bg-red-500/30 transition-colors"
@@ -140,171 +139,281 @@ export default function ScanHistory() {
                   <Trash2 className="w-4 h-4" />
                   Clear All
                 </button>
-              </>
-            )}
+              )}
+            </div>
           </div>
+
+          {/* Loading */}
+          {loading ? (
+            <div className="flex justify-center py-12 md:py-16 lg:py-20">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <>
+              {/* Desktop Table - visible from md breakpoint */}
+              <div className="hidden md:block border border-gray-300 rounded-lg overflow-hidden">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-[#A5D9FC] border-b border-gray-300 text-left">
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[40%]">
+                        Name
+                      </th>
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[20%]">
+                        Score
+                      </th>
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[25%]">
+                        Scan date
+                      </th>
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[15%]"></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {history.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="py-16 lg:py-24 text-center text-sm text-gray-500"
+                        >
+                          No Scan History
+                        </td>
+                      </tr>
+                    ) : (
+                      history.map((item) => (
+                        <tr
+                          key={item.id}
+                          className="border-b border-gray-300 last:border-b-0"
+                        >
+                          <td className="px-3 lg:px-5 py-4 lg:py-5">
+                            {editingId === item.id ? (
+                              <div className="flex items-center gap-2">
+                                <input
+                                  ref={inputRef}
+                                  value={editValue}
+                                  onChange={(e) => setEditValue(e.target.value)}
+                                  onBlur={() => handleRename(item.id)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter")
+                                      handleRename(item.id);
+                                    if (e.key === "Escape") setEditingId(null);
+                                  }}
+                                  autoFocus
+                                  className="bg-transparent border border-gray-300 rounded px-2 py-1 text-gray-700 text-sm focus:outline-none"
+                                />
+                                <span
+                                  ref={measureRef}
+                                  className="absolute invisible whitespace-pre text-sm"
+                                >
+                                  {editValue}
+                                </span>
+                                <button onClick={() => handleRename(item.id)}>
+                                  <Check className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-green-600" />
+                                </button>
+
+                                <button onClick={() => setEditingId(null)}>
+                                  <X className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-red-500" />
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="group flex items-center gap-2">
+                                <span className="font-semibold text-gray-700 text-sm">
+                                  {item.resumeName}
+                                </span>
+
+                                <button
+                                  onClick={() => {
+                                    setEditingId(item.id);
+                                    setEditValue(item.resumeName);
+                                  }}
+                                  className="opacity-0 group-hover:opacity-100 transition"
+                                >
+                                  <Pencil className="w-3 h-3 lg:w-3.5 lg:h-3.5 text-gray-500 hover:text-cyan-500" />
+                                </button>
+                              </div>
+                            )}
+                          </td>
+
+                          <td className="px-3 lg:px-6 py-4 lg:py-5">
+                            <span
+                              className={`font-semibold text-sm ${getScoreColor(
+                                item.overallScore,
+                              )}`}
+                            >
+                              {item.overallScore}%
+                            </span>
+                          </td>
+
+                          <td className="px-3 lg:px-0 py-4 lg:py-5 text-gray-700 text-sm">
+                            {new Date(item.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
+                          </td>
+
+                          <td className="px-3 lg:px-5 py-4 lg:py-5">
+                            <div className="flex justify-end gap-3 lg:gap-5 text-sm text-gray-700">
+                              <button
+                                onClick={() => navigate(`/ats-scan/${item.id}`)}
+                                className="hover:text-cyan-600 transition"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+
+                              <button
+                                onClick={() => setDeleteId(item.id)}
+                                className="hover:text-red-400 transition"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Layout - visible below md breakpoint */}
+              <div className="md:hidden border border-gray-300 rounded-lg overflow-hidden divide-y divide-gray-200">
+                {history.length === 0 ? (
+                  <div className="py-12 text-center text-sm text-gray-500">
+                    No Scan History
+                  </div>
+                ) : (
+                  history.map((item) => (
+                    <div key={item.id} className="p-3">
+                      <div className="flex justify-between items-start gap-3">
+                        <div className="min-w-0 flex-1">
+                          {editingId === item.id ? (
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <input
+                                ref={inputRef}
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                onBlur={() => handleRename(item.id)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") handleRename(item.id);
+                                  if (e.key === "Escape") setEditingId(null);
+                                }}
+                                autoFocus
+                                className="bg-transparent border border-gray-300 rounded px-2 py-1 text-gray-700 text-sm w-full"
+                              />
+                              <span
+                                ref={measureRef}
+                                className="absolute invisible whitespace-pre text-sm"
+                              >
+                                {editValue}
+                              </span>
+                              <button onClick={() => handleRename(item.id)}>
+                                <Check className="w-4 h-4 text-green-600" />
+                              </button>
+
+                              <button onClick={() => setEditingId(null)}>
+                                <X className="w-4 h-4 text-red-500" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="group flex items-center gap-2">
+                              <h3 className="font-semibold text-sm truncate text-gray-700">
+                                {item.resumeName}
+                              </h3>
+
+                              <button
+                                onClick={() => {
+                                  setEditingId(item.id);
+                                  setEditValue(item.resumeName);
+                                }}
+                                className="opacity-70"
+                              >
+                                <Pencil className="w-3.5 h-3.5 text-gray-500" />
+                              </button>
+                            </div>
+                          )}
+
+                          <p className="mt-1.5 text-sm">
+                            <span className="text-gray-500">Score:</span>{" "}
+                            <span
+                              className={`font-semibold ${getScoreColor(
+                                item.overallScore,
+                              )}`}
+                            >
+                              {item.overallScore}%
+                            </span>
+                          </p>
+
+                          <p className="text-sm text-gray-500 mt-0.5">
+                            {new Date(item.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-4 mt-3 text-sm text-gray-700">
+                        <button
+                          onClick={() => navigate(`/ats-scan/${item.id}`)}
+                          className="hover:text-cyan-600 transition"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={() => setDeleteId(item.id)}
+                          className="hover:text-red-400 transition"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="mt-4 md:mt-6">
+                  <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={fetchHistory}
+                  />
+                </div>
+              )}
+            </>
+          )}
         </div>
 
-        {/* Content */}
-        {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <LoadingSpinner />
-          </div>
-        ) : history.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center text-center py-12 border border-dashed border-gray-200 rounded-2xl"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-4">
-              <FileText className="w-8 h-8 text-cyan-500" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-1">
-              No Scan History
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-md">
-              Your ATS scan results will appear here. Run your first scan to get
-              started.
-            </p>
-            <button
-              onClick={() => navigate("/ats-scan")}
-              className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
-            >
-              <Search className="w-5 h-5" />
-              Start Scanning
-            </button>
-          </motion.div>
-        ) : (
-          <div
-            className={`space-y-4 transition-opacity duration-200 ${
-              loading ? "opacity-50" : ""
-            }`}
-          >
-            {history.map((item, index) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-xl border border-gray-200 p-6 box-shadow hover:border-cyan-300 hover:shadow-md transition-all"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    {editingId === item.id ? (
-                      <div className="flex items-center gap-1 mb-1">
-                        <div className="relative inline-block">
-                          <input
-                            ref={inputRef}
-                            type="text"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            onBlur={() => handleRename(item.id)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") handleRename(item.id);
-                              if (e.key === "Escape") setEditingId(null);
-                            }}
-                            autoFocus
-                            className="text-lg font-semibold text-gray-800 h-5 px-1.5 py-0 rounded-sm border border-cyan-300 bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                          />
-                          <span
-                            ref={measureRef}
-                            aria-hidden="true"
-                            className="invisible whitespace-pre absolute top-0 left-0 text-lg font-semibold"
-                          >
-                            {editValue || " "}
-                          </span>
-                        </div>
-                        <button onClick={() => handleRename(item.id)} className="p-1 text-cyan-600 hover:text-cyan-700">
-                          <Check className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => setEditingId(null)} className="p-1 text-gray-400 hover:text-red-500">
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="group/title flex items-center gap-1 mb-1 relative w-fit">
-                        <h3 className="text-lg font-semibold text-gray-800 truncate">
-                          {item.resumeName}
-                        </h3>
-                        <button
-                          onClick={() => {
-                            setEditingId(item.id);
-                            setEditValue(item.resumeName);
-                          }}
-                          className="p-1 text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors opacity-0 group-hover/title:opacity-100"
-                          title="Rename"
-                        >
-                          <Pencil className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    )}
-                    <p className="text-sm text-gray-600 mb-4">
-                      Overall score{" "}
-                      <span className={`font-semibold ${getScoreColor(item.overallScore)}`}>
-                        → {item.overallScore}%
-                      </span>
-                    </p>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(item.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
+        <ConfirmModal
+          isOpen={!!deleteId}
+          title="Delete Entry"
+          message="Are you sure you want to delete this scan history entry?"
+          confirmText="Delete"
+          cancelText="Cancel"
+          onConfirm={() => deleteId && handleDelete(deleteId)}
+          onCancel={() => setDeleteId(null)}
+          confirmClassName="bg-red-500 hover:bg-red-600"
+        />
 
-                  <div className="flex items-center gap-1 flex-shrink-0 self-end md:self-auto">
-                    <button
-                      onClick={() => navigate(`/ats-scan/${item.id}`)}
-                      className="p-1.5 md:p-2 text-gray-600 hover:text-cyan-600 hover:bg-cyan-500/10 rounded-lg transition-colors"
-                      title="View"
-                    >
-                      <Eye className="w-4 h-4 md:w-5 md:h-5" />
-                    </button>
-                    <button
-                      onClick={() => setDeleteId(item.id)}
-                      className="p-1.5 md:p-2 text-gray-600 hover:text-red-600 hover:bg-red-500/10 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
-
-        {totalPages > 1 && (
-          <div className="mt-6">
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={fetchHistory}
-            />
-          </div>
-        )}
+        <ConfirmModal
+          isOpen={clearAllOpen}
+          title="Clear All History"
+          message="This will permanently delete all your scan history. This action cannot be undone."
+          confirmText="Clear All"
+          cancelText="Cancel"
+          onConfirm={handleClearAll}
+          onCancel={() => setClearAllOpen(false)}
+          confirmClassName="bg-red-500 hover:bg-red-600"
+        />
       </Wrapper>
-
-      <ConfirmModal
-        isOpen={!!deleteId}
-        title="Delete Entry"
-        message="Are you sure you want to delete this scan history entry?"
-        confirmText="Delete"
-        cancelText="Cancel"
-        onConfirm={() => deleteId && handleDelete(deleteId)}
-        onCancel={() => setDeleteId(null)}
-        confirmClassName="bg-red-500 hover:bg-red-600"
-      />
-
-      <ConfirmModal
-        isOpen={clearAllOpen}
-        title="Clear All History"
-        message="This will permanently delete all your scan history. This action cannot be undone."
-        confirmText="Clear All"
-        cancelText="Cancel"
-        onConfirm={handleClearAll}
-        onCancel={() => setClearAllOpen(false)}
-        confirmClassName="bg-red-500 hover:bg-red-600"
-      />
     </div>
   );
 }

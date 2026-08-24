@@ -145,6 +145,7 @@ export default function Navbar() {
           )}
         </AnimatePresence>
       </nav>
+      <div className="h-16" aria-hidden="true" />
 
       <ConfirmModal
         isOpen={showLogoutConfirm}

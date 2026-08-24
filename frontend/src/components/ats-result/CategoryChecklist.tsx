@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { RefreshCw } from "lucide-react";
 import ScoreCircle from "./ScoreCircle";
 import FormattingTipsModal from "./FormattingTipsModal";
 import { CategoriesResult } from "../../types";
@@ -8,6 +9,7 @@ interface CategoryChecklistProps {
   overallScore: number;
   categories: CategoriesResult;
   hasFormattingData?: boolean;
+  onRescan?: () => void;
 }
 
 const CATEGORY_META: Record<string, { bar: string; glow: string }> = {
@@ -88,7 +90,7 @@ const CategoryRow: React.FC<{
             <span className="text-xs text-gray-800 truncate">
               {category.title}
             </span>
-            <span className="text-xs text-gray-800 truncate">
+            <span className="text-xs text-sky-600 truncate">
               {totalItems - matchedCount} issues to fix
             </span>
           </div>
@@ -112,6 +114,7 @@ const CategoryChecklist: React.FC<CategoryChecklistProps> = ({
   overallScore,
   categories,
   hasFormattingData = false,
+  onRescan,
 }) => {
   const [tipsOpen, setTipsOpen] = useState(false);
   const order: (keyof CategoriesResult)[] = [
@@ -124,9 +127,21 @@ const CategoryChecklist: React.FC<CategoryChecklistProps> = ({
 
   return (
     <div className="bg-white/80 px-5 py-7 rounded-xl box-shadow">
-      <div className="flex justify-center pb-4">
-        <ScoreCircle score={overallScore} label="Match Rate" size="md" />
+      <div className="flex justify-center">
+        <ScoreCircle score={overallScore} size="md" />
       </div>
+
+      {onRescan && (
+        <div className="flex pt-6 pb-8 w-full px-3.5">
+          <button
+            onClick={onRescan}
+            className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-600/90 rounded-lg transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Upload & Rescan
+          </button>
+        </div>
+      )}
 
       <div className="space-y-2">
         {order.map((key) => (

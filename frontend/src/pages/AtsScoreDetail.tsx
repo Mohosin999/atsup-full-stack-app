@@ -195,27 +195,17 @@ export default function AtsScoreDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F9FC] pt-0 pb-12">
+    <div className="min-h-screen bg-[#F6F9FC] pb-12">
       <Wrapper className="!px-4 lg:!px-16">
         {/* Header */}
-        <div className="mt-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="my-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-bold text-gray-800 mb-1">
+            <h1 className="text-base font-semibold text-gray-800">
               ATS Score Report{" "}
               <span className="text-sm font-normal text-gray-600">
                 - {result?.title}
               </span>
             </h1>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button
-              onClick={() => setRescanOpen(true)}
-              disabled={rescanning}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Rescan
-            </button>
           </div>
         </div>
 
@@ -235,7 +225,7 @@ export default function AtsScoreDetail() {
             </button>
           </div>
         ) : result ? (
-          <AtsScoreResult result={result} />
+          <AtsScoreResult result={result} onRescan={() => setRescanOpen(true)} />
         ) : null}
       </Wrapper>
 

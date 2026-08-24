@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 interface ScoreCircleProps {
   score: number;
-  label: string;
+  label?: string;
   size?: "sm" | "md" | "lg";
 }
 
@@ -37,13 +37,13 @@ const ScoreCircle: React.FC<ScoreCircleProps> = ({
   const color = getScoreColor(score);
 
   const textSize =
-    size === "lg" ? "text-6xl" : size === "sm" ? "text-3xl" : "text-5xl";
+    size === "lg" ? "text-6xl" : size === "sm" ? "text-3xl" : "text-3xl";
 
   return (
     <div className="relative inline-flex flex-col items-center justify-center">
-      <p className="mb-4 text-base lg:text-lg font-semibold text-gray-700">
+      {/* <p className="mb-4 text-base lg:text-lg font-semibold text-gray-700">
         {label}
-      </p>
+      </p> */}
 
       <div className="relative inline-flex items-center justify-center">
         <svg width={sizePx} height={sizePx} className="-rotate-90">

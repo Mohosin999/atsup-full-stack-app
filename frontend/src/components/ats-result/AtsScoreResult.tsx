@@ -11,9 +11,10 @@ import FeedbackCard from "./FeedbackCard";
 interface AtsScoreResultProps {
   result: AtsScoreHistory;
   headerAction?: ReactNode;
+  onRescan?: () => void;
 }
 
-export default function AtsScoreResult({ result }: AtsScoreResultProps) {
+export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps) {
   const hasFormattingData = !!(
     result.resumeContent?.layout && result.resumeContent?.fontCheck
   );
@@ -28,6 +29,7 @@ export default function AtsScoreResult({ result }: AtsScoreResultProps) {
               overallScore={result.overallScore}
               categories={result.sectionScores.categories}
               hasFormattingData={hasFormattingData}
+              onRescan={onRescan}
             />
           </div>
 

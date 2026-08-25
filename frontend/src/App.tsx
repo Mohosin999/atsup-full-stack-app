@@ -53,9 +53,14 @@ function App() {
   // page the user came from.
   useEffect(() => {
     if (!user) return;
+    console.log("App.tsx - Google OAuth user:", user, "role:", user.role);
     const redirect = consumeRedirect();
     if (redirect) {
+      console.log("Redirecting to saved:", redirect);
       navigate(redirect, { replace: true });
+    } else if (window.location.pathname === "/login" || window.location.pathname === "/") {
+      console.log("No saved redirect, role-based redirect to:", user.role === "admin" ? "/admin-dashboard" : "/ats-scan");
+      navigate(user.role === "admin" ? "/admin-dashboard" : "/ats-scan", { replace: true });
     }
   }, [user, navigate]);
 

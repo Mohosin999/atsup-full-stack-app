@@ -147,7 +147,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
               className="flex items-start gap-2.5 xl:gap-3 xl:items-center"
             >
               <span
-                className={`mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center xl:mt-0 ${
+                className={`mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center xl:mt-0 rounded-full ${
                   check.status === "passed"
                     ? "bg-green-500/15 text-green-600"
                     : check.status === "failed"
@@ -372,9 +372,9 @@ const FeedbackCard: React.FC<{
             <p className="text-xs text-gray-500">{category.summary}</p>
           </div>
         </div>
-        <span className={`text-sm font-bold ${getScoreColor(category.score)}`}>
+        {/* <span className={`text-sm font-bold ${getScoreColor(category.score)}`}>
           {category.score}%
-        </span>
+        </span> */}
       </div>
 
       {isFormattingCategory(category.key) && !hasFormattingData ? (

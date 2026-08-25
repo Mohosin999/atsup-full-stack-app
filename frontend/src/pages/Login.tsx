@@ -43,6 +43,7 @@ export default function Login() {
       if (response.data.success) {
         const result = await dispatch(fetchUser());
         const user = result.payload as { role?: string } | null;
+        console.log("Login debug - user:", user);
         const redirect = getLoginRedirect() || consumeRedirect();
         if (redirect) {
           navigate(redirect, { replace: true });

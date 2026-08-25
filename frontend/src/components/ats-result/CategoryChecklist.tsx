@@ -67,7 +67,7 @@ const CategoryRow: React.FC<{
               </span>
             </div>
             <div className="mt-1.5 flex items-center gap-2">
-              <div className="flex-1 h-4 bg-gray-200 overflow-hidden">
+              <div className="flex-1 h-4 bg-gray-200 overflow-hidden rounded-full">
                 <motion.div
                   className="h-full bg-sky-500"
                   initial={{ width: 0 }}
@@ -95,7 +95,7 @@ const CategoryRow: React.FC<{
             </span>
           </div>
           <div className="mt-1.5 flex items-center gap-2">
-            <div className="flex-1 h-4 bg-gray-200 overflow-hidden">
+            <div className="flex-1 h-4 bg-gray-200 overflow-hidden rounded-full">
               <motion.div
                 className={`h-full ${category.score < 50 ? "bg-red-500" : "bg-sky-500"}`}
                 initial={{ width: 0 }}

@@ -48,7 +48,7 @@ export default function Login() {
           navigate(redirect, { replace: true });
         } else {
           navigate(
-            user?.role === "admin" ? "/admin-dashboard" : "/dashboard",
+            user?.role === "admin" ? "/admin-dashboard" : "/ats-scan",
             { replace: true }
           );
         }

@@ -435,7 +435,7 @@ export default function ResumeBuilder() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="my-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          className="my-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div>
             <h1 className="text-base font-semibold text-gray-800">

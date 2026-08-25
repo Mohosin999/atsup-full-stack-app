@@ -296,4 +296,29 @@ app/
 4. Push branch (`git push origin feature/name`)
 5. Open Pull Request
 
+Done. Compiles clean.
 
+     Changes:
+
+     ┌─────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────┐
+     │File                                                 │Change                                                                                       │
+     ├─────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────┤
+     │App.tsx                                              │/dashboard route removed, PublicRoute → /ats-scan redirect                                   │
+     ├─────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────┤
+     │Login.tsx                                            │User login redirect → /ats-scan                                                              │
+     ├─────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────┤
+     │AdminDashboard.tsx                                   │Non-admin redirect → /ats-scan                                                               │
+     ├─────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────┤
+     │Plans.tsx                                            │Free plan select → /ats-scan                                                                 │
+     ├─────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────┤
+     │Navbar.tsx                                           │User er jonno "Dashboard" link removed (admin e ache)                                        │
+     └─────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────┘
+
+     Flow now:
+
+     - User login → /ats-scan directly                                                                                                                          ⬖ Getting started                ✕
+     - Admin login → /admin-dashboard
+     - Plans page → free plan select → /ats-scan                                                                                                                  OpenCode includes free models
+     - Navbar e user jonno: ATS Scan + Resume Builder (2 links only)                                                                                              so you can start immediately.
+
+     Dashboard.tsx file ta still ache but unused. Delete korte ki?

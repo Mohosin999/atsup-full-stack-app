@@ -1,39 +1,13 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FilePlus2, UploadCloud, ArrowRight, Pencil } from "lucide-react";
+import { FilePlus2, UploadCloud } from "lucide-react";
 import { goToLogin } from "../utils/authGuard";
 import { useAppSelector } from "@/hooks";
 import Wrapper from "../components/Wrapper";
-import { resumeApi } from "../api/api";
-import { ResumeContent } from "../types";
-
-interface ResumeListItem {
-  id: string;
-  content: ResumeContent;
-  metadata?: { originalName?: string };
-  createdAt: string;
-  updatedAt: string;
-}
 
 export default function ResumeDashboard() {
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
-  const [recentResumes, setRecentResumes] = useState<ResumeListItem[]>([]);
-
-  useEffect(() => {
-    if (!user) return;
-    resumeApi
-      .getAll(1, 3, "builder")
-      .then((res) => setRecentResumes(res.data.data || []))
-      .catch(() => {});
-  }, [user]);
-
-  const getResumeTitle = (resume: ResumeListItem) =>
-    resume.metadata?.originalName?.trim() ||
-    resume.content?.personalInfo?.jobTitle?.trim() ||
-    resume.content?.personalInfo?.fullName?.trim() ||
-    "Untitled Resume";
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
@@ -126,51 +100,6 @@ export default function ResumeDashboard() {
             </div>
           </motion.div>
         </div>
-
-        {user && recentResumes.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mt-10"
-          >
-            <div className="bg-white border border-gray-300 overflow-hidden">
-              <div className="px-5 py-3 bg-[#A5D9FC] border-b border-gray-300">
-                <h2 className="text-sm font-semibold text-gray-800">Recent Resumes</h2>
-              </div>
-              {recentResumes.map((resume) => (
-                <div
-                  key={resume.id}
-                  className="flex items-center justify-between px-5 py-3 border-b border-gray-200 last:border-b-0"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm text-gray-700 truncate">{getResumeTitle(resume)}</p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(resume.updatedAt).toLocaleDateString("en-US", {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => navigate(`/resume-builder/${resume.id}`)}
-                    className="text-gray-400 hover:text-cyan-600 transition-colors"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-            <button
-              onClick={() => navigate("/resume-history")}
-              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-cyan-600 hover:text-cyan-700 transition-colors"
-            >
-              See More
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </motion.div>
-        )}
       </Wrapper>
     </div>
   );

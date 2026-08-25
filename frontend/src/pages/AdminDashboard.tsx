@@ -117,7 +117,7 @@ const AdminDashboard: React.FC = () => {
   };
 
   if (!user || user.role !== "admin") {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/ats-scan" replace />;
   }
 
   if (loading && !metrics) {

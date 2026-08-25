@@ -23,7 +23,7 @@ const getNavLinks = (user?: { role?: string } | null): NavLink[] => [
   ...(user
     ? user.role === "admin"
       ? [{ path: "/admin-dashboard", label: "Dashboard" }]
-      : [{ path: "/dashboard", label: "Dashboard" }]
+      : []
     : []),
   { path: "/ats-scan", label: "ATS Scan" },
   { path: "/resume-builder", label: "Resume Builder" },

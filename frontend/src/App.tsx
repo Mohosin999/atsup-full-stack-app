@@ -5,7 +5,6 @@ import { RootState } from "./store";
 import { consumeRedirect } from "./utils/authGuard";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScore";
@@ -41,7 +40,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     return <LoadingSpinner fullScreen />;
   }
 
-  return user ? <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/dashboard"} /> : <>{children}</>;
+  return user ? <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/ats-scan"} /> : <>{children}</>;
 }
 
 function App() {
@@ -71,14 +70,6 @@ function App() {
             <PublicRoute>
               <Login />
             </PublicRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
           }
         />
         <Route

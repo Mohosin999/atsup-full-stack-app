@@ -71,7 +71,7 @@ export default function Plans() {
       return;
     }
     if (planId === "free") {
-      navigate("/dashboard");
+      navigate("/ats-scan");
     }
   };
 

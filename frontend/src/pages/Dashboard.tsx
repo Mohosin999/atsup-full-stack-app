@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "../hooks/redux";
+import { useQuery } from "@tanstack/react-query";
 import { atsScoreApi, resumeApi } from "../api/api";
 import Wrapper from "../components/Wrapper";
 import WelcomeHeader from "../components/user-dashboard/WelcomeHeader";
@@ -17,13 +18,11 @@ export default function Dashboard() {
   const [totalResumes, setTotalResumes] = useState(0);
   const [recentScans, setRecentScans] = useState<any[]>([]);
   const [recentResumes, setRecentResumes] = useState<any[]>([]);
-  const [loadingStats, setLoadingStats] = useState(true);
-  const [statsError, setStatsError] = useState(false);
 
-  const fetchData = async () => {
-    setLoadingStats(true);
-    setStatsError(false);
-    try {
+  const { isLoading: loadingStats, error: statsError, refetch: fetchData } = useQuery({
+    queryKey: ["dashboard-stats", user?._id],
+    queryFn: async () => {
+      if (!user) return null;
       const [atsRes, resumesRes, recentScansRes, recentResumesRes] =
         await Promise.all([
           atsScoreApi.getHistory(1, 1),
@@ -35,17 +34,10 @@ export default function Dashboard() {
       setTotalResumes(resumesRes.data.pagination?.total || 0);
       setRecentScans(recentScansRes.data.data || []);
       setRecentResumes(recentResumesRes.data.data || []);
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
-      setStatsError(true);
-    } finally {
-      setLoadingStats(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [location.pathname]);
+      return true;
+    },
+    enabled: !!user,
+  });
 
   if (user && user.role === "admin") {
     return <Navigate to="/admin-dashboard" replace />;
@@ -67,8 +59,8 @@ export default function Dashboard() {
                 totalAtsHistory={totalAtsHistory}
                 totalResumes={totalResumes}
                 loading={loadingStats}
-                error={statsError}
-                onRetry={fetchData}
+                error={!!statsError}
+                onRetry={() => fetchData()}
               />
             </div>
 

@@ -10,6 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { resumeApi } from "../api/api";
 import { ResumeContent } from "../types";
 import { useAppSelector } from "@/hooks";
@@ -30,11 +31,8 @@ interface ResumeListItem {
 export default function ResumeHistory() {
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
-  const [resumes, setResumes] = useState<ResumeListItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalResumes, setTotalResumes] = useState(0);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [duplicateId, setDuplicateId] = useState<string | null>(null);
   const [clearAllOpen, setClearAllOpen] = useState(false);
@@ -43,27 +41,20 @@ export default function ResumeHistory() {
   const inputRef = useRef<HTMLInputElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
 
-  const fetchResumes = async (pageNum: number = 1) => {
-    try {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-      if (resumes.length === 0) {
-        setLoading(true);
-      }
-      const response = await resumeApi.getAll(pageNum, 10, "builder");
-      const items = response.data.data || [];
-      setResumes(items);
-      setTotalPages(response.data.pagination?.pages || 1);
-      setTotalResumes(response.data.pagination?.total || items.length);
-      setPage(pageNum);
-    } catch {
-      // silent
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ["resumes", user?._id, page],
+    queryFn: async () => {
+      if (!user) return { data: [], pagination: { pages: 1, total: 0 } };
+      const res = await resumeApi.getAll(page, 10, "builder");
+      return { data: res.data.data || [], pagination: res.data.pagination || { pages: 1, total: 0 } };
+    },
+    enabled: !!user,
+    placeholderData: (prev) => prev,
+  });
+
+  const resumes = data?.data || [];
+  const totalPages = data?.pagination?.pages || 1;
+  const totalResumes = data?.pagination?.total || 0;
 
   useEffect(() => {
     if (editingId && inputRef.current && measureRef.current) {
@@ -72,71 +63,56 @@ export default function ResumeHistory() {
     }
   }, [editValue, editingId]);
 
-  useEffect(() => {
-    fetchResumes();
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    try {
-      await resumeApi.delete(id);
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => resumeApi.delete(id),
+    onSuccess: () => {
       toast.success("Resume deleted");
-      fetchResumes(resumes.length === 1 && page > 1 ? page - 1 : page);
-    } catch {
-      toast.error("Failed to delete resume");
-    }
-    setDeleteId(null);
-  };
+      queryClient.invalidateQueries({ queryKey: ["resumes", user?._id] });
+      if (resumes.length === 1 && page > 1) setPage(page - 1);
+    },
+    onError: () => toast.error("Failed to delete resume"),
+  });
 
-  const handleRename = async (id: string) => {
-    if (!editValue.trim()) return;
-    try {
-      const resume = resumes.find((r) => r.id === id);
-      await resumeApi.update(id, {
-        metadata: {
-          ...resume?.metadata,
-          originalName: editValue.trim(),
-        },
+  const renameMutation = useMutation({
+    mutationFn: ({ id, name }: { id: string; name: string }) =>
+      resumeApi.update(id, {
+        metadata: { ...resumes.find((r: ResumeListItem) => r.id === id)?.metadata, originalName: name },
+      }),
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData(["resumes", user?._id, page], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.map((r: ResumeListItem) =>
+            r.id === variables.id
+              ? { ...r, metadata: { ...r.metadata, originalName: variables.name } }
+              : r
+          ),
+        };
       });
-      setResumes((prev) =>
-        prev.map((r) =>
-          r.id === id
-            ? {
-                ...r,
-                metadata: { ...r.metadata, originalName: editValue.trim() },
-              }
-            : r,
-        ),
-      );
       setEditingId(null);
-    } catch {
-      toast.error("Failed to rename");
-    }
-  };
+    },
+    onError: () => toast.error("Failed to rename"),
+  });
 
-  const handleClearAll = async () => {
-    try {
-      await resumeApi.deleteAll();
-      toast.success("All resumes deleted");
-      setResumes([]);
-      setPage(1);
-      setTotalPages(1);
-      setTotalResumes(0);
-    } catch {
-      toast.error("Failed to delete resumes");
-    }
-    setClearAllOpen(false);
-  };
-
-  const handleDuplicate = async (id: string) => {
-    try {
-      await resumeApi.duplicate(id);
+  const duplicateMutation = useMutation({
+    mutationFn: (id: string) => resumeApi.duplicate(id),
+    onSuccess: () => {
       toast.success("Resume duplicated");
-      fetchResumes(page);
-    } catch {
-      toast.error("Failed to duplicate resume");
-    }
-    setDuplicateId(null);
-  };
+      queryClient.invalidateQueries({ queryKey: ["resumes", user?._id] });
+    },
+    onError: () => toast.error("Failed to duplicate resume"),
+  });
+
+  const clearAllMutation = useMutation({
+    mutationFn: () => resumeApi.deleteAll(),
+    onSuccess: () => {
+      toast.success("All resumes deleted");
+      queryClient.invalidateQueries({ queryKey: ["resumes", user?._id] });
+      setPage(1);
+    },
+    onError: () => toast.error("Failed to delete resumes"),
+  });
 
   const getResumeTitle = (resume: ResumeListItem) =>
     resume.metadata?.originalName?.trim() ||
@@ -205,7 +181,7 @@ export default function ResumeHistory() {
                         </td>
                       </tr>
                     ) : (
-                      resumes.map((resume) => (
+                      resumes.map((resume: ResumeListItem) => (
                         <tr
                           key={resume.id}
                           className="border-b border-gray-300 last:border-b-0"
@@ -217,10 +193,9 @@ export default function ResumeHistory() {
                                   ref={inputRef}
                                   value={editValue}
                                   onChange={(e) => setEditValue(e.target.value)}
-                                  onBlur={() => handleRename(resume.id)}
+                                  onBlur={() => renameMutation.mutate({ id: resume.id, name: editValue.trim() })}
                                   onKeyDown={(e) => {
-                                    if (e.key === "Enter")
-                                      handleRename(resume.id);
+                                    if (e.key === "Enter") renameMutation.mutate({ id: resume.id, name: editValue.trim() });
                                     if (e.key === "Escape") setEditingId(null);
                                   }}
                                   autoFocus
@@ -232,7 +207,7 @@ export default function ResumeHistory() {
                                 >
                                   {editValue}
                                 </span>
-                                <button onClick={() => handleRename(resume.id)}>
+                                <button onClick={() => renameMutation.mutate({ id: resume.id, name: editValue.trim() })}>
                                   <Check className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-green-600" />
                                 </button>
 
@@ -310,7 +285,7 @@ export default function ResumeHistory() {
                     No Resumes Yet
                   </div>
                 ) : (
-                  resumes.map((resume) => (
+                  resumes.map((resume: ResumeListItem) => (
                     <div key={resume.id} className="p-3">
                       <div className="flex justify-between items-start gap-3">
                         <div className="min-w-0 flex-1">
@@ -320,10 +295,9 @@ export default function ResumeHistory() {
                                 ref={inputRef}
                                 value={editValue}
                                 onChange={(e) => setEditValue(e.target.value)}
-                                onBlur={() => handleRename(resume.id)}
+                                onBlur={() => renameMutation.mutate({ id: resume.id, name: editValue.trim() })}
                                 onKeyDown={(e) => {
-                                  if (e.key === "Enter")
-                                    handleRename(resume.id);
+                                  if (e.key === "Enter") renameMutation.mutate({ id: resume.id, name: editValue.trim() });
                                   if (e.key === "Escape") setEditingId(null);
                                 }}
                                 autoFocus
@@ -335,7 +309,7 @@ export default function ResumeHistory() {
                               >
                                 {editValue}
                               </span>
-                              <button onClick={() => handleRename(resume.id)}>
+                              <button onClick={() => renameMutation.mutate({ id: resume.id, name: editValue.trim() })}>
                                 <Check className="w-4 h-4 text-green-600" />
                               </button>
 
@@ -408,7 +382,7 @@ export default function ResumeHistory() {
                   <Pagination
                     currentPage={page}
                     totalPages={totalPages}
-                    onPageChange={fetchResumes}
+                    onPageChange={setPage}
                   />
                 </div>
               )}
@@ -422,7 +396,10 @@ export default function ResumeHistory() {
           message="Are you sure you want to delete this resume? This action cannot be undone."
           confirmText="Delete"
           cancelText="Cancel"
-          onConfirm={() => deleteId && handleDelete(deleteId)}
+          onConfirm={() => {
+            if (deleteId) deleteMutation.mutate(deleteId);
+            setDeleteId(null);
+          }}
           onCancel={() => setDeleteId(null)}
           confirmClassName="bg-red-500 hover:bg-red-600"
         />
@@ -433,7 +410,10 @@ export default function ResumeHistory() {
           message="Are you sure you want to duplicate this resume?"
           confirmText="Duplicate"
           cancelText="Cancel"
-          onConfirm={() => duplicateId && handleDuplicate(duplicateId)}
+          onConfirm={() => {
+            if (duplicateId) duplicateMutation.mutate(duplicateId);
+            setDuplicateId(null);
+          }}
           onCancel={() => setDuplicateId(null)}
           type="info"
           confirmClassName="bg-cyan-500 hover:bg-cyan-600"
@@ -445,7 +425,7 @@ export default function ResumeHistory() {
           message="This will permanently delete all your resumes. This action cannot be undone."
           confirmText="Clear All"
           cancelText="Cancel"
-          onConfirm={handleClearAll}
+          onConfirm={() => clearAllMutation.mutate()}
           onCancel={() => setClearAllOpen(false)}
           confirmClassName="bg-red-500 hover:bg-red-600"
         />

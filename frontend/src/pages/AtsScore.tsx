@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Eye, Trash2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import Wrapper from "../components/Wrapper";
 import { AtsScoreHistory } from "../types";
 import AtsScoreResult from "../components/ats-result/AtsScoreResult";
@@ -35,7 +36,16 @@ export default function AtsScorePage() {
   const [initialJobDescription] = useState<string>(
     pendingDraft?.jobDescription || "",
   );
-  const [recentScans, setRecentScans] = useState<AtsScoreHistory[]>([]);
+
+  const { data: recentScans = [] } = useQuery<AtsScoreHistory[]>({
+    queryKey: ["ats-recent-scans", user?._id],
+    queryFn: async () => {
+      if (!user) return [];
+      const res = await atsScoreApi.getHistory(1, 3);
+      return res.data.data || [];
+    },
+    enabled: !!user,
+  });
 
   useEffect(() => {
     clearScanDraft();
@@ -46,14 +56,6 @@ export default function AtsScorePage() {
       navigate(location.pathname, { replace: true, state: null });
     }
   }, [locationState, navigate, location.pathname]);
-
-  useEffect(() => {
-    if (!user) return;
-    atsScoreApi
-      .getHistory(1, 3)
-      .then((res) => setRecentScans(res.data.data || []))
-      .catch(() => {});
-  }, [user]);
 
   const getScoreColor = (score: number) => {
     if (score >= 70) return "text-green-600";

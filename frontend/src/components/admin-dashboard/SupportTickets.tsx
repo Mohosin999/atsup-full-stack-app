@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Trash2, Paperclip, Inbox } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../api/api';
 import { SupportStatus, SupportTicket } from '../../types';
 import ConfirmModal from '../ui/ConfirmModal';
@@ -43,72 +44,49 @@ const attachmentUrl = (path: string) => {
 };
 
 const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
-  const [tickets, setTickets] = useState<SupportTicket[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState<Filter>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<SupportTicket | null>(null);
 
-  const syncOpenCount = (list: SupportTicket[]) => {
-    onOpenCount(list.filter((t) => t.status === 'open').length);
-  };
-
-  const fetchTickets = async () => {
-    setLoading(true);
-    try {
+  const { data: tickets = [], isLoading: loading } = useQuery<SupportTicket[]>({
+    queryKey: ["admin-support", refreshKey],
+    queryFn: async () => {
       const res = await api.get('/admin-dashboard/support');
       if (res.data.success) {
-        setTickets(res.data.data);
-        syncOpenCount(res.data.data);
+        onOpenCount(res.data.data.filter((t: SupportTicket) => t.status === 'open').length);
+        return res.data.data;
       }
-    } catch (err) {
-      console.error('Failed to fetch tickets:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return [];
+    },
+  });
 
-  useEffect(() => {
-    fetchTickets();
-  }, [refreshKey]);
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: SupportStatus }) =>
+      api.patch(`/admin-dashboard/support/${id}`, { status }),
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData(["admin-support", refreshKey], (old: SupportTicket[] | undefined) => {
+        const next = (old || []).map((t) =>
+          t.id === variables.id ? { ...t, status: variables.status } : t
+        );
+        onOpenCount(next.filter((t) => t.status === 'open').length);
+        return next;
+      });
+    },
+  });
 
-  const setStatus = async (id: string, status: SupportStatus) => {
-    setBusyId(id);
-    try {
-      const res = await api.patch(`/admin-dashboard/support/${id}`, { status });
-      if (res.data.success) {
-        setTickets((prev) => {
-          const next = prev.map((t) => (t.id === id ? { ...t, status: res.data.data.status } : t));
-          syncOpenCount(next);
-          return next;
-        });
-      }
-    } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to update ticket');
-    } finally {
-      setBusyId(null);
-    }
-  };
-
-  const deleteTicket = async (id: string) => {
-    setBusyId(id);
-    try {
-      const res = await api.delete(`/admin-dashboard/support/${id}`);
-      if (res.data.success) {
-        setTickets((prev) => {
-          const next = prev.filter((t) => t.id !== id);
-          syncOpenCount(next);
-          return next;
-        });
-        setConfirmDelete(null);
-      }
-    } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete ticket');
-    } finally {
-      setBusyId(null);
-    }
-  };
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => api.delete(`/admin-dashboard/support/${id}`),
+    onSuccess: (_, id) => {
+      queryClient.setQueryData(["admin-support", refreshKey], (old: SupportTicket[] | undefined) => {
+        const next = (old || []).filter((t) => t.id !== id);
+        onOpenCount(next.filter((t) => t.status === 'open').length);
+        return next;
+      });
+      setConfirmDelete(null);
+    },
+  });
 
   const filtered = filter === 'all' ? tickets : tickets.filter((t) => t.status === filter);
   const formatDate = (iso: string) => {
@@ -222,7 +200,13 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                           <button
                             type="button"
                             disabled={busyId === t.id}
-                            onClick={() => setStatus(t.id, 'in-progress')}
+                            onClick={() => {
+                              setBusyId(t.id);
+                              statusMutation.mutate(
+                                { id: t.id, status: 'in-progress' },
+                                { onSettled: () => setBusyId(null) }
+                              );
+                            }}
                             className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
                           >
                             Mark in progress
@@ -232,7 +216,13 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                           <button
                             type="button"
                             disabled={busyId === t.id}
-                            onClick={() => setStatus(t.id, 'resolved')}
+                            onClick={() => {
+                              setBusyId(t.id);
+                              statusMutation.mutate(
+                                { id: t.id, status: 'resolved' },
+                                { onSettled: () => setBusyId(null) }
+                              );
+                            }}
                             className="px-3 py-1.5 text-xs font-medium bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
                           >
                             Resolve
@@ -242,7 +232,13 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
                           <button
                             type="button"
                             disabled={busyId === t.id}
-                            onClick={() => setStatus(t.id, 'open')}
+                            onClick={() => {
+                              setBusyId(t.id);
+                              statusMutation.mutate(
+                                { id: t.id, status: 'open' },
+                                { onSettled: () => setBusyId(null) }
+                              );
+                            }}
                             className="px-3 py-1.5 text-xs font-medium bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50"
                           >
                             Reopen
@@ -276,7 +272,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
         message={`Are you sure you want to delete "${confirmDelete?.title}" from "${confirmDelete?.user?.name}"? This cannot be undone.`}
         confirmText="Delete"
         type="danger"
-        onConfirm={() => confirmDelete && deleteTicket(confirmDelete.id)}
+        onConfirm={() => confirmDelete && deleteMutation.mutate(confirmDelete.id)}
         onCancel={() => setConfirmDelete(null)}
       />
     </div>

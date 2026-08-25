@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Ban,
   Pencil,
@@ -6,6 +6,7 @@ import {
   Trash2,
   RotateCcw,
 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../api/api';
 import { AdminUser, OnlineUser } from '../../types';
 import EditUserModal from './EditUserModal';
@@ -19,27 +20,52 @@ interface Props {
 type ConfirmAction = { type: 'ban' | 'unban' | 'delete'; user: AdminUser } | null;
 
 const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
-  const [users, setUsers] = useState<AdminUser[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
+  const { data: users = [], isLoading: loading } = useQuery<AdminUser[]>({
+    queryKey: ["admin-users"],
+    queryFn: async () => {
       const res = await api.get('/admin-dashboard/users');
-      if (res.data.success) setUsers(res.data.data);
-    } catch (err) {
-      console.error('Failed to fetch users:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return res.data.success ? res.data.data : [];
+    },
+  });
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const banMutation = useMutation({
+    mutationFn: ({ userId, isBanned }: { userId: string; isBanned: boolean }) =>
+      api.patch(`/admin-dashboard/users/${userId}/ban`, { isBanned }),
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData(["admin-users"], (old: AdminUser[] | undefined) =>
+        (old || []).map((u) =>
+          u.id === variables.userId ? { ...u, isBanned: variables.isBanned } : u
+        )
+      );
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (userId: string) => api.delete(`/admin-dashboard/users/${userId}`),
+    onSuccess: (_, userId) => {
+      queryClient.setQueryData(["admin-users"], (old: AdminUser[] | undefined) =>
+        (old || []).filter((u) => u.id !== userId)
+      );
+    },
+  });
+
+  const editMutation = useMutation({
+    mutationFn: ({ userId, data }: { userId: string; data: any }) =>
+      api.patch(`/admin-dashboard/users/${userId}`, data),
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData(["admin-users"], (old: AdminUser[] | undefined) =>
+        (old || []).map((u) =>
+          u.id === variables.userId ? { ...u, ...variables.data } : u
+        )
+      );
+      setEditingUser(null);
+    },
+  });
 
   const onlineIds = new Set(onlineUsers.map((u) => u.id));
 
@@ -50,65 +76,54 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
-  const toggleBan = async (user: AdminUser) => {
+  const toggleBan = (user: AdminUser) => {
     setBusyId(user.id);
-    try {
-      const res = await api.patch(`/admin-dashboard/users/${user.id}/ban`, {
-        isBanned: !user.isBanned,
-      });
-      if (res.data.success) {
-        setUsers((prev) =>
-          prev.map((u) => (u.id === user.id ? { ...u, isBanned: res.data.data.isBanned } : u)),
-        );
+    banMutation.mutate(
+      { userId: user.id, isBanned: !user.isBanned },
+      {
+        onSuccess: () => setBusyId(null),
+        onError: () => {
+          alert('Failed to update user');
+          setBusyId(null);
+        },
       }
-    } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to update user');
-    } finally {
-      setBusyId(null);
-    }
+    );
   };
 
-  const deleteUser = async (user: AdminUser) => {
+  const deleteUser = (user: AdminUser) => {
     setBusyId(user.id);
-    try {
-      const res = await api.delete(`/admin-dashboard/users/${user.id}`);
-      if (res.data.success) {
-        setUsers((prev) => prev.filter((u) => u.id !== user.id));
-      }
-    } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to delete user');
-    } finally {
-      setBusyId(null);
-    }
+    deleteMutation.mutate(user.id, {
+      onSuccess: () => setBusyId(null),
+      onError: () => {
+        alert('Failed to delete user');
+        setBusyId(null);
+      },
+    });
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!confirmAction) return;
     const { type, user } = confirmAction;
     if (type === 'delete') {
-      await deleteUser(user);
+      deleteUser(user);
     } else {
-      await toggleBan(user);
+      toggleBan(user);
     }
     setConfirmAction(null);
   };
 
-  const handleSave = async (data: { name: string; role: string; credits: number }) => {
+  const handleSave = (data: { name: string; role: string; credits: number }) => {
     if (!editingUser) return;
     setBusyId(editingUser.id);
-    try {
-      const res = await api.patch(`/admin-dashboard/users/${editingUser.id}`, data);
-      if (res.data.success) {
-        setUsers((prev) =>
-          prev.map((u) => (u.id === editingUser.id ? { ...u, ...res.data.data } : u)),
-        );
-        setEditingUser(null);
+    editMutation.mutate(
+      { userId: editingUser.id, data },
+      {
+        onError: () => {
+          alert('Failed to save user');
+          setBusyId(null);
+        },
       }
-    } catch (err: any) {
-      alert(err?.response?.data?.message || 'Failed to save user');
-    } finally {
-      setBusyId(null);
-    }
+    );
   };
 
   const formatDate = (iso: string) => {

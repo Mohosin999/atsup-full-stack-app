@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -8,6 +8,7 @@ import {
   CheckCircle,
   FileText,
 } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { atsScoreApi, unlimitedAtsApi } from "../api/api";
 import { AtsScoreHistory, ResumeContent } from "../types";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
@@ -34,9 +35,38 @@ const PIPELINE_MESSAGES = [
 export default function AtsScoreDetail() {
   const navigate = useNavigate();
   const { id: historyId } = useParams<{ id: string }>();
-  const [result, setResult] = useState<AtsScoreHistory | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const queryClient = useQueryClient();
+
+  const { data: result, isLoading: loading, error: queryError } = useQuery<AtsScoreHistory | null>({
+    queryKey: ["ats-report", historyId],
+    queryFn: async () => {
+      if (!historyId) return null;
+      const res = await atsScoreApi.getById(historyId);
+      const score = res.data?.data;
+      if (!score) return null;
+      return {
+        id: score.id,
+        _id: score.id,
+        userId: score.userId || "",
+        title: score.title,
+        resumeName: score.resumeName,
+        overallScore: score.overallScore,
+        sectionScores: {
+          ...score.sectionScores,
+          categories: score.sectionScores?.categories,
+          matchBreakdown: score.sectionScores?.matchBreakdown,
+        },
+        atsFriendliness: score.atsFriendliness,
+        suggestions: score.suggestions,
+        resumeContent: score.resumeContent || ({} as ResumeContent),
+        createdAt: score.createdAt || new Date().toISOString(),
+        updatedAt: score.updatedAt || new Date().toISOString(),
+      };
+    },
+    enabled: !!historyId,
+  });
+
+  const error = !historyId ? "No ATS report specified." : queryError ? (queryError as any)?.response?.data?.message || "Failed to load ATS report." : !loading && !result ? "ATS report not found." : "";
 
   // Rescan modal state
   const [rescanOpen, setRescanOpen] = useState(false);
@@ -49,59 +79,6 @@ export default function AtsScoreDetail() {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!historyId) {
-      setError("No ATS report specified.");
-      setLoading(false);
-      return;
-    }
-
-    let active = true;
-    setLoading(true);
-    setError("");
-    atsScoreApi
-      .getById(historyId)
-      .then((res) => {
-        if (!active) return;
-        const score = res.data?.data;
-        if (!score) {
-          setError("ATS report not found.");
-          return;
-        }
-        const analysisResult: AtsScoreHistory = {
-          id: score.id,
-          _id: score.id,
-          userId: score.userId || "",
-          title: score.title,
-          resumeName: score.resumeName,
-          overallScore: score.overallScore,
-          sectionScores: {
-            ...score.sectionScores,
-            categories: score.sectionScores?.categories,
-            matchBreakdown: score.sectionScores?.matchBreakdown,
-          },
-          atsFriendliness: score.atsFriendliness,
-          suggestions: score.suggestions,
-          resumeContent: score.resumeContent || ({} as ResumeContent),
-          createdAt: score.createdAt || new Date().toISOString(),
-          updatedAt: score.updatedAt || new Date().toISOString(),
-        };
-        setResult(analysisResult);
-      })
-      .catch((err) => {
-        if (!active) return;
-        console.error("Failed to load ATS score:", err);
-        setError(err?.response?.data?.message || "Failed to load ATS report.");
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [historyId]);
 
   const showMessage = (index: number, delay = 950) =>
     new Promise<void>((resolve) => {
@@ -175,7 +152,8 @@ export default function AtsScoreDetail() {
           createdAt: history.createdAt || new Date().toISOString(),
           updatedAt: history.updatedAt || new Date().toISOString(),
         };
-        setResult(updated);
+        queryClient.setQueryData(["ats-report", historyId], updated);
+        queryClient.invalidateQueries({ queryKey: ["ats-history"] });
       }
 
       setResumeFile(null);

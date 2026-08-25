@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -12,6 +12,7 @@ import {
   Eye,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { atsScoreApi } from "../api/api";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import Pagination from "../components/ui/Pagination";
@@ -23,11 +24,8 @@ import { useAppSelector } from "@/hooks";
 export default function ScanHistory() {
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
-  const [history, setHistory] = useState<AtsScoreHistory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalScans, setTotalScans] = useState(0);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [clearAllOpen, setClearAllOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -35,26 +33,20 @@ export default function ScanHistory() {
   const inputRef = useRef<HTMLInputElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
 
-  const fetchHistory = async (pageNum: number = 1) => {
-    try {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-      if (history.length === 0) {
-        setLoading(true);
-      }
-      const response = await atsScoreApi.getHistory(pageNum, 10);
-      setHistory(response.data.data || []);
-      setTotalPages(response.data.pagination?.totalPages || 1);
-      setTotalScans(response.data.pagination?.total || 0);
-      setPage(pageNum);
-    } catch {
-      // silent
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ["ats-history", user?._id, page],
+    queryFn: async () => {
+      if (!user) return { data: [], pagination: { totalPages: 1, total: 0 } };
+      const res = await atsScoreApi.getHistory(page, 10);
+      return { data: res.data.data || [], pagination: res.data.pagination || { totalPages: 1, total: 0 } };
+    },
+    enabled: !!user,
+    placeholderData: (prev) => prev,
+  });
+
+  const history = data?.data || [];
+  const totalPages = data?.pagination?.totalPages || 1;
+  const totalScans = data?.pagination?.total || 0;
 
   useEffect(() => {
     if (editingId && inputRef.current && measureRef.current) {
@@ -63,51 +55,44 @@ export default function ScanHistory() {
     }
   }, [editValue, editingId]);
 
-  useEffect(() => {
-    fetchHistory();
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    try {
-      await atsScoreApi.delete(id);
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => atsScoreApi.delete(id),
+    onSuccess: () => {
       toast.success("Deleted successfully");
-      fetchHistory(history.length === 1 && page > 1 ? page - 1 : page);
-    } catch {
-      toast.error("Failed to delete");
-    }
-    setDeleteId(null);
-  };
+      queryClient.invalidateQueries({ queryKey: ["ats-history", user?._id] });
+      if (history.length === 1 && page > 1) setPage(page - 1);
+    },
+    onError: () => toast.error("Failed to delete"),
+  });
 
-  const handleRename = async (id: string) => {
-    if (!editValue.trim()) return;
-    try {
-      await atsScoreApi.rename(id, editValue.trim());
-      setHistory((prev) =>
-        prev.map((item) =>
-          (item.id || (item as any)._id) === id
-            ? { ...item, resumeName: editValue.trim() }
-            : item,
-        ),
-      );
+  const renameMutation = useMutation({
+    mutationFn: ({ id, name }: { id: string; name: string }) => atsScoreApi.rename(id, name),
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData(["ats-history", user?._id, page], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.map((item: AtsScoreHistory) =>
+            (item.id || (item as any)._id) === variables.id
+              ? { ...item, resumeName: variables.name }
+              : item
+          ),
+        };
+      });
       setEditingId(null);
-    } catch {
-      toast.error("Failed to rename");
-    }
-  };
+    },
+    onError: () => toast.error("Failed to rename"),
+  });
 
-  const handleClearAll = async () => {
-    try {
-      await atsScoreApi.deleteAll();
+  const clearAllMutation = useMutation({
+    mutationFn: () => atsScoreApi.deleteAll(),
+    onSuccess: () => {
       toast.success("All history cleared");
-      setHistory([]);
+      queryClient.invalidateQueries({ queryKey: ["ats-history", user?._id] });
       setPage(1);
-      setTotalPages(1);
-      setTotalScans(0);
-    } catch {
-      toast.error("Failed to clear history");
-    }
-    setClearAllOpen(false);
-  };
+    },
+    onError: () => toast.error("Failed to clear history"),
+  });
 
   const getScoreColor = (score: number) => {
     if (score >= 70) return "text-green-600";
@@ -179,7 +164,7 @@ export default function ScanHistory() {
                         </td>
                       </tr>
                     ) : (
-                      history.map((item) => (
+                      history.map((item: AtsScoreHistory) => (
                         <tr
                           key={item.id}
                           className="border-b border-gray-300 last:border-b-0"
@@ -191,10 +176,9 @@ export default function ScanHistory() {
                                   ref={inputRef}
                                   value={editValue}
                                   onChange={(e) => setEditValue(e.target.value)}
-                                  onBlur={() => handleRename(item.id)}
+                                  onBlur={() => renameMutation.mutate({ id: item.id, name: editValue.trim() })}
                                   onKeyDown={(e) => {
-                                    if (e.key === "Enter")
-                                      handleRename(item.id);
+                                    if (e.key === "Enter") renameMutation.mutate({ id: item.id, name: editValue.trim() });
                                     if (e.key === "Escape") setEditingId(null);
                                   }}
                                   autoFocus
@@ -206,7 +190,7 @@ export default function ScanHistory() {
                                 >
                                   {editValue}
                                 </span>
-                                <button onClick={() => handleRename(item.id)}>
+                                <button onClick={() => renameMutation.mutate({ id: item.id, name: editValue.trim() })}>
                                   <Check className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-green-600" />
                                 </button>
 
@@ -285,7 +269,7 @@ export default function ScanHistory() {
                     No Scan History
                   </div>
                 ) : (
-                  history.map((item) => (
+                  history.map((item: AtsScoreHistory) => (
                     <div key={item.id} className="p-3">
                       <div className="flex justify-between items-start gap-3">
                         <div className="min-w-0 flex-1">
@@ -295,9 +279,9 @@ export default function ScanHistory() {
                                 ref={inputRef}
                                 value={editValue}
                                 onChange={(e) => setEditValue(e.target.value)}
-                                onBlur={() => handleRename(item.id)}
+                                onBlur={() => renameMutation.mutate({ id: item.id, name: editValue.trim() })}
                                 onKeyDown={(e) => {
-                                  if (e.key === "Enter") handleRename(item.id);
+                                  if (e.key === "Enter") renameMutation.mutate({ id: item.id, name: editValue.trim() });
                                   if (e.key === "Escape") setEditingId(null);
                                 }}
                                 autoFocus
@@ -309,7 +293,7 @@ export default function ScanHistory() {
                               >
                                 {editValue}
                               </span>
-                              <button onClick={() => handleRename(item.id)}>
+                              <button onClick={() => renameMutation.mutate({ id: item.id, name: editValue.trim() })}>
                                 <Check className="w-4 h-4 text-green-600" />
                               </button>
 
@@ -384,7 +368,7 @@ export default function ScanHistory() {
                   <Pagination
                     currentPage={page}
                     totalPages={totalPages}
-                    onPageChange={fetchHistory}
+                    onPageChange={setPage}
                   />
                 </div>
               )}
@@ -398,7 +382,10 @@ export default function ScanHistory() {
           message="Are you sure you want to delete this scan history entry?"
           confirmText="Delete"
           cancelText="Cancel"
-          onConfirm={() => deleteId && handleDelete(deleteId)}
+          onConfirm={() => {
+            if (deleteId) deleteMutation.mutate(deleteId);
+            setDeleteId(null);
+          }}
           onCancel={() => setDeleteId(null)}
           confirmClassName="bg-red-500 hover:bg-red-600"
         />
@@ -409,7 +396,7 @@ export default function ScanHistory() {
           message="This will permanently delete all your scan history. This action cannot be undone."
           confirmText="Clear All"
           cancelText="Cancel"
-          onConfirm={handleClearAll}
+          onConfirm={() => clearAllMutation.mutate()}
           onCancel={() => setClearAllOpen(false)}
           confirmClassName="bg-red-500 hover:bg-red-600"
         />

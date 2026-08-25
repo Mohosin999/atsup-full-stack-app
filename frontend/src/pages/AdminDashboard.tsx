@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import {
   AdminDashboardMetrics,
@@ -16,6 +16,7 @@ import {
   LifeBuoy,
   RefreshCw,
 } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api/api";
 import UserManagement from "../components/admin-dashboard/UserManagement";
 import SupportTickets from "../components/admin-dashboard/SupportTickets";
@@ -54,56 +55,66 @@ const METRIC_CONFIG: {
 ];
 
 const AdminDashboard: React.FC = () => {
-  const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
-  const [metrics, setMetrics] = useState<AdminDashboardMetrics | null>(null);
-  const [totalVisitors, setTotalVisitors] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
   const [period, setPeriod] = useState<GrowthPeriod>("today");
-  const [growth, setGrowth] = useState<GrowthData | null>(null);
-  const [growthLoading, setGrowthLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeView, setActiveView] = useState<
     "overview" | "users" | "support"
   >("overview");
-
-  const [supportOpenCount, setSupportOpenCount] = useState(0);
   const [supportRefreshKey, setSupportRefreshKey] = useState(0);
-  const [refreshing, setRefreshing] = useState(false);
 
-  const fetchAll = useCallback(async () => {
-    if (!user || user.role !== "admin") return;
-    setRefreshing(true);
-    try {
-      const [metricsRes, supportRes, visitorRes, growthRes] = await Promise.all([
-        api.get("/admin-dashboard/metrics"),
-        api.get("/admin-dashboard/support"),
-        api.get("/visitor/count"),
-        api.get(`/admin-dashboard/growth?period=${period}`),
-      ]);
-      if (metricsRes.data.success) setMetrics(metricsRes.data.data);
-      if (supportRes.data.success) {
-        const open = supportRes.data.data.filter((t: any) => t.status === "open").length;
-        setSupportOpenCount(open);
+  const { data: metrics, isLoading: loading } = useQuery<AdminDashboardMetrics | null>({
+    queryKey: ["admin-metrics"],
+    queryFn: async () => {
+      const res = await api.get("/admin-dashboard/metrics");
+      return res.data.success ? res.data.data : null;
+    },
+    enabled: !!user && user.role === "admin",
+  });
+
+  const { data: growth, isLoading: growthLoading } = useQuery<GrowthData | null>({
+    queryKey: ["admin-growth", period],
+    queryFn: async () => {
+      const res = await api.get(`/admin-dashboard/growth?period=${period}`);
+      return res.data.success ? res.data.data : null;
+    },
+    enabled: !!user && user.role === "admin",
+  });
+
+  const { data: supportData } = useQuery({
+    queryKey: ["admin-support-count"],
+    queryFn: async () => {
+      const res = await api.get("/admin-dashboard/support");
+      if (res.data.success) {
+        return res.data.data.filter((t: any) => t.status === "open").length;
       }
-      if (visitorRes.data.success) setTotalVisitors(visitorRes.data.data.totalVisitors);
-      if (growthRes.data.success) setGrowth(growthRes.data.data);
-    } catch (err) {
-      console.error("Failed to fetch dashboard data:", err);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-      setGrowthLoading(false);
-    }
-  }, [user, period]);
+      return 0;
+    },
+    enabled: !!user && user.role === "admin",
+  });
 
-  useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+  const { data: visitorData } = useQuery({
+    queryKey: ["admin-visitors"],
+    queryFn: async () => {
+      const res = await api.get("/visitor/count");
+      return res.data.success ? res.data.data.totalVisitors : 0;
+    },
+    enabled: !!user && user.role === "admin",
+  });
 
-  // Guard: only admins can access this page. Non-admins go to the regular
-  // dashboard.
+  const supportOpenCount = supportData ?? 0;
+  const totalVisitors = visitorData ?? 0;
+  const isRefreshing = loading || growthLoading;
+
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["admin-metrics"] });
+    queryClient.invalidateQueries({ queryKey: ["admin-growth", period] });
+    queryClient.invalidateQueries({ queryKey: ["admin-support-count"] });
+    queryClient.invalidateQueries({ queryKey: ["admin-visitors"] });
+  };
+
   if (!user || user.role !== "admin") {
     return <Navigate to="/dashboard" replace />;
   }
@@ -143,7 +154,7 @@ const AdminDashboard: React.FC = () => {
           ================================================================*/}
           <aside className="w-full md:w-48 lg:w-44 xl:w-64 shrink-0 md:sticky md:top-24">
             <div>
-             
+              
 
               <nav className="space-y-1">
                 <SidebarButton
@@ -181,18 +192,18 @@ const AdminDashboard: React.FC = () => {
             ) : activeView === "support" ? (
               <SupportTickets
                 refreshKey={supportRefreshKey}
-                onOpenCount={setSupportOpenCount}
+                onOpenCount={(count) => queryClient.setQueryData(["admin-support-count"], count)}
               />
             ) : (
               <>
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-gray-800">Overview</h2>
                   <button
-                    onClick={fetchAll}
-                    disabled={refreshing}
+                    onClick={handleRefresh}
+                    disabled={isRefreshing}
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-cyan-600 transition-colors disabled:opacity-50"
                   >
-                    <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+                    <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} />
                     Refresh
                   </button>
                 </div>

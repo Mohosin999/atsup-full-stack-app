@@ -1,24 +1,44 @@
-import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import App from './App';
-import { store, AppDispatch } from './store';
-import { fetchUser, tokenRefresh } from './store/slices/authSlice';
-import './index.css';
-import Navbar from './components/Navbar';
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import App from "./App";
+import "./index.css";
+import { store, AppDispatch } from "./store";
+import { fetchUser, tokenRefresh } from "./store/slices/authSlice";
+import Navbar from "./components/Navbar";
 
+// ==================================================================
+// React Query Client Configuration
+// ==================================================================
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30000, // 30s
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+// ==================================================================
+// Initialize App on first render and refresh token every 14 minutes
+// ==================================================================
 function InitializeApp() {
   const dispatch: AppDispatch = store.dispatch as AppDispatch;
 
   useEffect(() => {
     dispatch(fetchUser());
 
-    const interval = setInterval(() => {
-      dispatch(tokenRefresh());
-    }, 14 * 60 * 1000);
+    const interval = setInterval(
+      () => {
+        dispatch(tokenRefresh());
+      },
+      14 * 60 * 1000,
+    );
 
     return () => clearInterval(interval);
   }, [dispatch]);
@@ -26,26 +46,31 @@ function InitializeApp() {
   return null;
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+// ==================================================================
+// Render App
+// ==================================================================
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <InitializeApp />
-        <Navbar />
-        <App />
-        <ToastContainer
-          position="bottom-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <InitializeApp />
+          <Navbar />
+          <App />
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+        </BrowserRouter>
+      </QueryClientProvider>
     </Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

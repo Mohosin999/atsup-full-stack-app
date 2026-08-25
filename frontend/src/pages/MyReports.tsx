@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MessageSquare } from 'lucide-react';
 import { supportApi } from '../api/api';
 import { SupportStatus, SupportTicket } from '../types';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 import Wrapper from '../components/Wrapper';
 
 const STATUS_STYLES: Record<SupportStatus, string> = {
@@ -68,7 +69,7 @@ const MyReports: React.FC = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin" />
+            <LoadingSpinner size="md" text="Loading reports..." />
           </div>
         ) : tickets.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">

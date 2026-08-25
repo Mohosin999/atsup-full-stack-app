@@ -9,6 +9,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../api/api';
 import { AdminUser, OnlineUser } from '../../types';
+import LoadingSpinner from '../ui/LoadingSpinner';
 import EditUserModal from './EditUserModal';
 import ConfirmModal from '../ui/ConfirmModal';
 
@@ -218,7 +219,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent animate-spin" />
+          <LoadingSpinner size="md" text="Loading users..." />
         </div>
       ) : sortedUsers.length === 0 ? (
         <div className="py-8 text-center text-gray-500">No users found</div>

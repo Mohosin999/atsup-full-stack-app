@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api/api";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 import UserManagement from "../components/admin-dashboard/UserManagement";
 import SupportTickets from "../components/admin-dashboard/SupportTickets";
 import Wrapper from "@/components/Wrapper";
@@ -122,7 +123,7 @@ const AdminDashboard: React.FC = () => {
   if (loading && !metrics) {
     return (
       <div className="flex h-[calc(100vh-64px)] items-center justify-center">
-        Loading...
+        <LoadingSpinner size="lg" text="Loading dashboard..." />
       </div>
     );
   }
@@ -315,7 +316,7 @@ const AdminDashboard: React.FC = () => {
                   <div id="column-chart">
                     {growthLoading && !growth ? (
                       <div className="flex items-center justify-center h-40 md:h-48">
-                        <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent animate-spin" />
+                        <LoadingSpinner size="md" />
                       </div>
                     ) : (
                       <div className="overflow-x-auto scrollbar-hide">

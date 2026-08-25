@@ -50,7 +50,8 @@ const getRateLimitKey = (req: Request): string => {
  * Falls back gracefully if Redis is unavailable.
  ----------------------------------------------------*/
 const redisStore = new RedisStore({
-  sendCommand: (...args: string[]) => getRedisClient().call(args[0], ...args.slice(1)) as any,
+  sendCommand: (...args: string[]) =>
+    getRedisClient().call(args[0], ...args.slice(1)) as any,
   prefix: "rl:",
 });
 
@@ -59,8 +60,8 @@ const redisStore = new RedisStore({
  * (auth/me, profile, history, resumes, etc.)
  ----------------------------------------------------*/
 export const generalLimiter = rateLimit({
-  windowMs: 60 * 1000, // 15 minutes
-  max: 3000,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 500,
   keyGenerator: getRateLimitKey,
   store: redisStore,
   message: { message: "Too many requests, please try again later." },

@@ -214,7 +214,7 @@ export default function Login() {
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <img src="/favicon.png" alt="" className="w-4 h-4 animate-spin" />
                   Loading...
                 </span>
               ) : (

@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, Trash2, Paperclip, Inbox } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../api/api';
 import { SupportStatus, SupportTicket } from '../../types';
+import LoadingSpinner from '../ui/LoadingSpinner';
 import ConfirmModal from '../ui/ConfirmModal';
 
 interface Props {
@@ -119,7 +120,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-6 h-6 border-2 border-cyan-600 border-t-transparent animate-spin" />
+          <LoadingSpinner size="md" text="Loading tickets..." />
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-gray-500">

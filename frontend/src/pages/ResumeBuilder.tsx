@@ -83,6 +83,7 @@ export default function ResumeBuilder() {
   const [showMore, setShowMore] = useState(false);
   const initializedRef = useRef(false);
   const skipAutosaveRef = useRef(false);
+  const dirtyRef = useRef(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -108,6 +109,7 @@ export default function ResumeBuilder() {
       ...prev,
       sectionOrder: arrayMove(sectionOrder, oldIndex, newIndex),
     }));
+    dirtyRef.current = true;
   };
 
   useEffect(() => {
@@ -121,17 +123,7 @@ export default function ResumeBuilder() {
     }
 
     if (isNew) {
-      resumeApi
-        .createFromContent(defaultContent())
-        .then((res) => {
-          const rid = res.data.data.id;
-          setResumeId(rid);
-          navigate(`/resume-builder/${rid}`, { replace: true });
-        })
-        .catch(() => {
-          toast.error("Failed to create resume. Please try again.");
-        })
-        .finally(() => setLoading(false));
+      setLoading(false);
     } else if (id) {
       resumeApi
         .getById(id)
@@ -151,26 +143,35 @@ export default function ResumeBuilder() {
   }, [id, isNew, navigate]);
 
   useEffect(() => {
-    if (!resumeId) return;
     if (skipAutosaveRef.current) {
       skipAutosaveRef.current = false;
       return;
     }
+    if (!dirtyRef.current) return;
+    if (!resumeId && !isNew) return;
+
     setSaving(true);
-    const timer = setTimeout(() => {
-      resumeApi
-        .update(resumeId, { content })
-        .then((res) => {
-          setResumeId(res.data.data?.id || resumeId);
-          setSavedAt(new Date().toLocaleTimeString());
-        })
-        .catch(() => {
-          toast.error("Failed to save resume.");
-        })
-        .finally(() => setSaving(false));
+    const timer = setTimeout(async () => {
+      try {
+        let rid = resumeId;
+        if (!rid) {
+          const res = await resumeApi.createFromContent(content);
+          rid = res.data.data.id;
+          setResumeId(rid);
+          navigate(`/resume-builder/${rid}`, { replace: true });
+        } else {
+          const res = await resumeApi.update(rid, { content });
+          setResumeId(res.data.data?.id || rid);
+        }
+        setSavedAt(new Date().toLocaleTimeString());
+      } catch {
+        toast.error("Failed to save resume.");
+      } finally {
+        setSaving(false);
+      }
     }, 800);
     return () => clearTimeout(timer);
-  }, [content, resumeId]);
+  }, [content, resumeId, isNew]);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -195,20 +196,29 @@ export default function ResumeBuilder() {
   };
 
   // ---- updaters ----
+  const markContentDirty = (patch: Partial<ResumeContent> | ((prev: ResumeContent) => ResumeContent)) => {
+    dirtyRef.current = true;
+    if (typeof patch === "function") {
+      setContent(patch);
+    } else {
+      setContent((prev) => ({ ...prev, ...patch }));
+    }
+  };
+
   const updateContent = (patch: Partial<ResumeContent>) =>
-    setContent((prev) => ({ ...prev, ...patch }));
+    markContentDirty(patch);
 
   const updatePersonalInfo = (personalInfo: ResumeContent["personalInfo"]) =>
-    setContent((prev) => ({ ...prev, personalInfo }));
+    markContentDirty({ personalInfo });
 
   const setSkillCategories = (categories: SkillCategory[]) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       skillCategories: categories,
     }));
 
   const setSectionTitle = (key: SectionKey, value: string) =>
-    setContent((prev) => {
+    markContentDirty((prev) => {
       const current = prev.sectionTitles || {};
       const next = { ...current };
       if (value.trim()) next[key] = value.trim();
@@ -217,7 +227,7 @@ export default function ResumeBuilder() {
     });
 
   const addExperience = () =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       experience: [
         ...prev.experience,
@@ -234,7 +244,7 @@ export default function ResumeBuilder() {
     }));
 
   const updateExperience = (index: number, patch: Partial<Experience>) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       experience: prev.experience.map((exp, i) =>
         i === index ? { ...exp, ...patch } : exp,
@@ -242,13 +252,13 @@ export default function ResumeBuilder() {
     }));
 
   const removeExperience = (index: number) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       experience: prev.experience.filter((_, i) => i !== index),
     }));
 
   const addProject = () =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       projects: [
         ...(prev.projects || []),
@@ -264,7 +274,7 @@ export default function ResumeBuilder() {
     }));
 
   const updateProject = (index: number, patch: Partial<Project>) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       projects: (prev.projects || []).map((proj, i) =>
         i === index ? { ...proj, ...patch } : proj,
@@ -272,13 +282,13 @@ export default function ResumeBuilder() {
     }));
 
   const removeProject = (index: number) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       projects: (prev.projects || []).filter((_, i) => i !== index),
     }));
 
   const addEducation = () =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       education: [
         ...prev.education,
@@ -294,7 +304,7 @@ export default function ResumeBuilder() {
     }));
 
   const updateEducation = (index: number, patch: Partial<Education>) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       education: prev.education.map((edu, i) =>
         i === index ? { ...edu, ...patch } : edu,
@@ -302,13 +312,13 @@ export default function ResumeBuilder() {
     }));
 
   const removeEducation = (index: number) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       education: prev.education.filter((_, i) => i !== index),
     }));
 
   const addAchievement = () =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       achievements: [
         ...(prev.achievements || []),
@@ -317,7 +327,7 @@ export default function ResumeBuilder() {
     }));
 
   const updateAchievement = (index: number, patch: Partial<Achievement>) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       achievements: (prev.achievements || []).map((ach, i) =>
         i === index ? { ...ach, ...patch } : ach,
@@ -325,13 +335,13 @@ export default function ResumeBuilder() {
     }));
 
   const removeAchievement = (index: number) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       achievements: (prev.achievements || []).filter((_, i) => i !== index),
     }));
 
   const addCertification = () =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       certifications: [
         ...(prev.certifications || []),
@@ -340,7 +350,7 @@ export default function ResumeBuilder() {
     }));
 
   const updateCertification = (index: number, patch: Partial<Certification>) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       certifications: (prev.certifications || []).map((cert, i) =>
         i === index ? { ...cert, ...patch } : cert,
@@ -348,7 +358,7 @@ export default function ResumeBuilder() {
     }));
 
   const removeCertification = (index: number) =>
-    setContent((prev) => ({
+    markContentDirty((prev) => ({
       ...prev,
       certifications: (prev.certifications || []).filter((_, i) => i !== index),
     }));

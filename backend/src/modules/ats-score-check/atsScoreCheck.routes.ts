@@ -20,7 +20,7 @@ router.use(authenticate);
 router.post("/parse-resume", generalLimiter, upload.single("resume"), parseResume);
 router.post("/parse-jd", generalLimiter, parseJobDescription);
 router.post("/analyze", generalLimiter, analyzeAtsScore);
-router.get("/history", generalLimiter, getAtsScores); // TODO: start revision from here
+router.get("/history", getAtsScores); // TODO: start revision from here
 router.get("/history/:id", generalLimiter, getAtsScore);
 router.delete("/history/:id", generalLimiter, deleteAtsScoreController);
 router.put("/history/:id/rename", generalLimiter, renameAtsScoreController);

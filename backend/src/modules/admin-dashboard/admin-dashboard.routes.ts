@@ -17,13 +17,13 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get("/metrics", generalLimiter, getMetrics);
-router.get("/growth", generalLimiter, getGrowth);
+router.get("/metrics", getMetrics);
+router.get("/growth", getGrowth);
 router.get("/users", generalLimiter, getUsers);
 router.patch("/users/:id/ban", generalLimiter, toggleBan);
 router.patch("/users/:id", generalLimiter, updateUser);
 router.delete("/users/:id", generalLimiter, deleteUser);
-router.get("/support", generalLimiter, getSupportTickets);
+router.get("/support", getSupportTickets);
 router.patch("/support/:id", generalLimiter, updateSupportTicket);
 router.delete("/support/:id", generalLimiter, deleteSupportTicket);
 

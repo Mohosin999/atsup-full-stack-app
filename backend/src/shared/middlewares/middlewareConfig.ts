@@ -60,7 +60,7 @@ const redisStore = new RedisStore({
  ----------------------------------------------------*/
 export const generalLimiter = rateLimit({
   windowMs: 60 * 1000, // 15 minutes
-  max: 30,
+  max: 3000,
   keyGenerator: getRateLimitKey,
   store: redisStore,
   message: { message: "Too many requests, please try again later." },

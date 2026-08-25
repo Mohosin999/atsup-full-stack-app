@@ -4,6 +4,7 @@ import { prisma } from "../../lib/prisma";
 import { AuthRequest } from "../types";
 import { applyDailyCreditReset } from "../utils/credits";
 
+
 interface UserRecord {
   id: string;
   email: string;

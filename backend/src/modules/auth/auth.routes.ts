@@ -4,6 +4,7 @@ import { authenticate } from "../../shared/middlewares/auth";
 import { generalLimiter } from "../../shared/middlewares/middlewareConfig";
 import { AuthRequest } from "../../shared/types";
 import { generateAccessToken, generateRefreshToken } from "../../shared/config/jwt";
+import { storeRefreshToken } from "../../lib/redis";
 import {
   register,
   login,
@@ -27,6 +28,9 @@ router.get(
   }),
 );
 
+// ========================================================
+// OAuth Callback (Google)
+// ========================================================
 router.get(
   "/google/callback",
   passport.authenticate("google", {
@@ -47,12 +51,14 @@ router.get(
         email: user.email,
       });
 
+      await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
+
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: env.nodeEnv === "production",
         sameSite: env.nodeEnv === "production" ? "none" : "lax",
         path: "/",
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 15 * 60 * 1000,
       });
 
       res.cookie("refreshToken", refreshToken, {
@@ -71,7 +77,7 @@ router.get(
   },
 );
 
-router.get("/me", authenticate, generalLimiter, getMe);
+router.get("/me", authenticate, getMe);
 
 router.post("/refresh", refreshToken);
 

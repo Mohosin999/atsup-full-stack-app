@@ -296,5 +296,19 @@ app/
 4. Push branch (`git push origin feature/name`)
 5. Open Pull Request
 
+Done. Build clean.
 
-    // "build": "prisma generate && esbuild src/server.ts --bundle --platform=node --format=esm --target=node20 --packages=external --outfile=dist/server.js",
+     Changes:
+
+     Before: 4 ta setInterval (each 10s) = 24 API calls/min
+
+     After: Zero polling, ekta Refresh button = 0 automatic calls
+
+     What changed in AdminDashboard.tsx:
+
+     1. 4 ta separate useEffect + setInterval → 1 ta fetchAll function (all data Promise.all diye parallel fetch)                                               ⬖ Getting started                ✕
+     2. Page load e 1 bar data load hoy
+     3. period change e o auto refetch hoy (useEffect dependency)                                                                                                 OpenCode includes free models
+     4. Refresh button add - spin animation while loading, click korle sob data reload                                                                            so you can start immediately.
+
+     Result: Admin dashboard open thakleo rate limit counter barbe na automatically. Refresh dilei barbe.

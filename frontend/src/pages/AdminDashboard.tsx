@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import {
@@ -14,6 +14,7 @@ import {
   Users,
   LayoutDashboard,
   LifeBuoy,
+  RefreshCw,
 } from "lucide-react";
 import api from "../api/api";
 import UserManagement from "../components/admin-dashboard/UserManagement";
@@ -69,97 +70,37 @@ const AdminDashboard: React.FC = () => {
 
   const [supportOpenCount, setSupportOpenCount] = useState(0);
   const [supportRefreshKey, setSupportRefreshKey] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // Load the initial open-ticket count for the sidebar badge
-  useEffect(() => {
+  const fetchAll = useCallback(async () => {
     if (!user || user.role !== "admin") return;
-
-    const fetchSupportCount = async () => {
-      try {
-        const response = await api.get("/admin-dashboard/support");
-        if (response.data.success) {
-          const open = response.data.data.filter(
-            (t: any) => t.status === "open",
-          ).length;
-          setSupportOpenCount(open);
-        }
-      } catch (err) {
-        console.error("Failed to fetch support count:", err);
+    setRefreshing(true);
+    try {
+      const [metricsRes, supportRes, visitorRes, growthRes] = await Promise.all([
+        api.get("/admin-dashboard/metrics"),
+        api.get("/admin-dashboard/support"),
+        api.get("/visitor/count"),
+        api.get(`/admin-dashboard/growth?period=${period}`),
+      ]);
+      if (metricsRes.data.success) setMetrics(metricsRes.data.data);
+      if (supportRes.data.success) {
+        const open = supportRes.data.data.filter((t: any) => t.status === "open").length;
+        setSupportOpenCount(open);
       }
-    };
-
-    fetchSupportCount();
-    const interval = setInterval(fetchSupportCount, 10000);
-
-    return () => clearInterval(interval);
-  }, [user]);
+      if (visitorRes.data.success) setTotalVisitors(visitorRes.data.data.totalVisitors);
+      if (growthRes.data.success) setGrowth(growthRes.data.data);
+    } catch (err) {
+      console.error("Failed to fetch dashboard data:", err);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+      setGrowthLoading(false);
+    }
+  }, [user, period]);
 
   useEffect(() => {
-    if (!user || user.role !== "admin") return;
-
-    const fetchMetrics = async () => {
-      try {
-        const response = await api.get("/admin-dashboard/metrics");
-        if (response.data.success) {
-          setMetrics(response.data.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch metrics:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMetrics();
-    const interval = setInterval(fetchMetrics, 10000);
-
-    return () => clearInterval(interval);
-  }, [user, dispatch]);
-
-  useEffect(() => {
-    const fetchVisitorCount = async () => {
-      try {
-        const response = await api.get("/visitor/count");
-        if (response.data.success) {
-          setTotalVisitors(response.data.data.totalVisitors);
-        }
-      } catch (err) {
-        console.error("Failed to fetch visitor count:", err);
-      }
-    };
-
-    fetchVisitorCount();
-    const interval = setInterval(fetchVisitorCount, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Poll growth chart every 10 seconds
-  useEffect(() => {
-    if (!user || user.role !== "admin") return;
-    let cancelled = false;
-
-    const fetchGrowth = async () => {
-      try {
-        const response = await api.get(`/admin-dashboard/growth?period=${period}`);
-        if (!cancelled && response.data.success) {
-          setGrowth(response.data.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch growth data:", err);
-      } finally {
-        if (!cancelled) setGrowthLoading(false);
-      }
-    };
-
-    fetchGrowth();
-    const interval = setInterval(fetchGrowth, 10000);
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [period, user]);
+    fetchAll();
+  }, [fetchAll]);
 
   // Guard: only admins can access this page. Non-admins go to the regular
   // dashboard.
@@ -244,6 +185,17 @@ const AdminDashboard: React.FC = () => {
               />
             ) : (
               <>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-semibold text-gray-800">Overview</h2>
+                  <button
+                    onClick={fetchAll}
+                    disabled={refreshing}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-cyan-600 transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+                    Refresh
+                  </button>
+                </div>
                 {/* =====================================================
                   * Summary cards
                  ======================================================*/}

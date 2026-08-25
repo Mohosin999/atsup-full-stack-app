@@ -1,12 +1,14 @@
 import helmet from "helmet";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
+import { RedisStore } from "rate-limit-redis";
 import express, { Application, Request } from "express";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import path from "path";
 import { configureGoogleStrategy } from "../config/passport";
 import { env } from "../config/env";
+import { getRedisClient } from "../../lib/redis";
 
 /** -------------------------------------------------
  * Real client IP extraction
@@ -43,26 +45,24 @@ const getRateLimitKey = (req: Request): string => {
 };
 
 /** -------------------------------------------------
+ * Redis-backed store factory
+ * Shared store instance for all rate limiters.
+ * Falls back gracefully if Redis is unavailable.
+ ----------------------------------------------------*/
+const redisStore = new RedisStore({
+  sendCommand: (...args: string[]) => getRedisClient().call(args[0], ...args.slice(1)) as any,
+  prefix: "rl:",
+});
+
+/** -------------------------------------------------
  * General limiter for light/normal endpoints
  * (auth/me, profile, history, resumes, etc.)
  ----------------------------------------------------*/
 export const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 300,
+  windowMs: 60 * 1000, // 15 minutes
+  max: 30,
   keyGenerator: getRateLimitKey,
-  message: { message: "Too many requests, please try again later." },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-/** -------------------------------------------------
- * Stricter limiter for expensive AI routes
- * (parse-resume, parse-jd, analyze)
- ----------------------------------------------------*/
-export const aiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20,
-  keyGenerator: getRateLimitKey,
+  store: redisStore,
   message: { message: "Too many requests, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
@@ -75,6 +75,7 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
   keyGenerator: (req) => `ip:${getClientIp(req)}`,
+  store: redisStore,
   message: { message: "Too many requests, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,

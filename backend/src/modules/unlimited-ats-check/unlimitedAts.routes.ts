@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth";
-import { aiLimiter } from "../../shared/middlewares/middlewareConfig";
+import { generalLimiter } from "../../shared/middlewares/middlewareConfig";
 import { upload } from "../../shared/config/multer";
 import {
   analyzeUnlimitedAts,
@@ -13,14 +13,14 @@ router.use(authenticate);
 
 router.post(
   "/analyze",
-  aiLimiter,
+  generalLimiter,
   upload.single("resume"),
   analyzeUnlimitedAts,
 );
 
 router.post(
   "/rescan/:id",
-  aiLimiter,
+  generalLimiter,
   upload.single("resume"),
   rescanUnlimitedAts,
 );

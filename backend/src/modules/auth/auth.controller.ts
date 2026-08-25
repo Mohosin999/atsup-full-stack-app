@@ -11,6 +11,12 @@ import {
 } from "./auth.service";
 import { env } from "../../shared/config/env";
 import { applyDailyCreditReset } from "../../shared/utils/credits";
+import {
+  storeRefreshToken,
+  deleteRefreshToken,
+  getRefreshToken,
+} from "../../lib/redis";
+import jwt from "jsonwebtoken";
 
 const setAuthCookies = (
   res: Response,
@@ -22,7 +28,7 @@ const setAuthCookies = (
     secure: env.nodeEnv === "production",
     sameSite: env.nodeEnv === "production" ? "none" : "lax",
     path: "/",
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: 15 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
@@ -56,6 +62,8 @@ export const register = async (req: AuthRequest, res: Response) => {
     const user = await createUser({ name, email, password });
 
     const { accessToken, refreshToken } = createTokens(user.id, user.email);
+
+    await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
 
     setAuthCookies(res, accessToken, refreshToken);
 
@@ -131,6 +139,8 @@ export const login = async (req: AuthRequest, res: Response) => {
 
     const { accessToken, refreshToken } = createTokens(user.id, user.email);
 
+    await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
+
     setAuthCookies(res, accessToken, refreshToken);
 
     res.json({
@@ -194,14 +204,27 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    await deleteRefreshToken(refreshTokenValue);
+
     const newAccessToken = generateNewAccessToken(user.id, user.email);
+    const { refreshToken: newRefreshToken } = createTokens(user.id, user.email);
+
+    await storeRefreshToken(newRefreshToken, user.id, 7 * 24 * 60 * 60);
 
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
       secure: env.nodeEnv === "production",
       sameSite: env.nodeEnv === "production" ? "none" : "lax",
       path: "/",
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: env.nodeEnv === "production",
+      sameSite: env.nodeEnv === "production" ? "none" : "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.json({
@@ -216,12 +239,27 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const logout = async (_req: AuthRequest, res: Response) => {
-  res.clearCookie("accessToken", { path: "/" });
-  res.clearCookie("refreshToken", { path: "/" });
+export const logout = async (req: AuthRequest, res: Response) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (refreshToken) {
+      await deleteRefreshToken(refreshToken);
+    }
 
-  res.json({
-    success: true,
-    message: "Logged out successfully",
-  });
+    res.clearCookie("accessToken", { path: "/" });
+    res.clearCookie("refreshToken", { path: "/" });
+
+    res.json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    res.clearCookie("accessToken", { path: "/" });
+    res.clearCookie("refreshToken", { path: "/" });
+
+    res.json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  }
 };

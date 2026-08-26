@@ -2,18 +2,12 @@ import { useState } from "react";
 import { useAppDispatch } from "../hooks/redux";
 import { logoutUser } from "../store/slices/authSlice";
 import ConfirmModal from "../components/ui/ConfirmModal";
-import {
-  allFeatures,
-  analysisSteps,
-  testimonials,
-} from "../constants/landingData";
-import FloatingOrbs from "../components/home-page/FloatingOrbs";
+import { allFeatures, testimonials } from "../constants/landingData";
+// import FloatingOrbs from "../components/home-page/FloatingOrbs";
 import HeroSection from "../components/home-page/HeroSection";
-import AudienceAnnouncement from "../components/home-page/AudienceAnnouncement";
 import FeatureShowcase from "../components/home-page/FeatureShowcase";
-import StatsSection from "../components/home-page/StatsSection";
-import FeaturesSection from "../components/home-page/FeaturesSection";
-import HowItWorksSection from "../components/home-page/HowItWorksSection";
+// import StatsSection from "../components/home-page/StatsSection";
+import WhyChooseUs from "../components/home-page/WhyChooseUs";
 import TestimonialsSection from "../components/home-page/TestimonialsSection";
 import CTASection from "../components/home-page/CTASection";
 import Footer from "../components/Footer";
@@ -36,11 +30,9 @@ export default function HomePage() {
             user={undefined}
             onLogout={() => setShowLogoutConfirm(true)}
           />
-          <AudienceAnnouncement />
           <FeatureShowcase />
           {/* <StatsSection /> */}
-          <FeaturesSection features={allFeatures} />
-          <HowItWorksSection steps={analysisSteps} />
+          <WhyChooseUs features={allFeatures} />
           <TestimonialsSection testimonials={testimonials} />
           <CTASection />
         </main>

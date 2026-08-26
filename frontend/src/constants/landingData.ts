@@ -5,6 +5,9 @@ import {
   TrendingUp,
   Wand2,
   FileCheck,
+  Infinity,
+  Layers,
+  ShieldCheck,
 } from "lucide-react";
 
 export const steps = [
@@ -56,23 +59,23 @@ export const testimonials = [
 // ==================================================================
 export const allFeatures = [
   {
-    icon: FileText,
-    title: "AI Resume Analysis",
+    icon: Infinity,
+    title: "Unlimited Free Checks",
     description:
-      "Advanced AI analyzes your resume against job descriptions to identify gaps and opportunities.",
+      "Get unlimited ATS checks on core features for free — scan as many times as you want with no credits.",
   },
   {
-    icon: TrendingUp,
-    title: "ATS Optimization",
+    icon: Layers,
+    title: "All-in-One Platform",
     description:
-      "Get detailed ATS compatibility scores and recommendations to pass automated screening.",
+      "Check your ATS score and build a professional resume without switching tools.",
   },
   {
-    icon: Wand2,
-    title: "Smart Suggestions",
+    icon: ShieldCheck,
+    title: "100% ATS Formatting Score",
     description:
-      "Receive personalized improvements for skills, experience, and formatting.",
-  }
+      "Our resume builder format scored 100% on Jobscan, Enhancv and other top ATS checkers.",
+  },
 ];
 
 // Steps for analysis

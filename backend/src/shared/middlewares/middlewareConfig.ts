@@ -46,14 +46,14 @@ const getRateLimitKey = (req: Request): string => {
 
 /** -------------------------------------------------
  * Redis-backed store factory
- * Shared store instance for all rate limiters.
- * Falls back gracefully if Redis is unavailable.
+ * Each limiter gets its own store with a unique prefix.
  ----------------------------------------------------*/
-const redisStore = new RedisStore({
-  sendCommand: (...args: string[]) =>
-    getRedisClient().call(args[0], ...args.slice(1)) as any,
-  prefix: "rl:",
-});
+const createRedisStore = (prefix: string) =>
+  new RedisStore({
+    sendCommand: (...args: string[]) =>
+      getRedisClient().call(args[0], ...args.slice(1)) as any,
+    prefix,
+  });
 
 /** -------------------------------------------------
  * General limiter for light/normal endpoints
@@ -63,7 +63,7 @@ export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 500,
   keyGenerator: getRateLimitKey,
-  store: redisStore,
+  store: createRedisStore("rl:general:"),
   message: { message: "Too many requests, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
@@ -76,7 +76,7 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
   keyGenerator: (req) => `ip:${getClientIp(req)}`,
-  store: redisStore,
+  store: createRedisStore("rl:auth:"),
   message: { message: "Too many requests, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ChevronRight, FilePlus2, Hammer } from "lucide-react";
+import { ChevronRight, FilePlus2 } from "lucide-react";
 import Wrapper from "../Wrapper";
 
 interface HeroSectionProps {
@@ -9,20 +9,19 @@ interface HeroSectionProps {
 
 export default function HeroSection({ user, onLogout }: HeroSectionProps) {
   return (
-    // <section className="pt-28 md:pt-32 lg:pt-10 xl:pt-20 2xl:pt-24 pb-24 text-center lg:text-start">
-    <section className="pt-10 md:pt-14 lg:pt-6 xl:pt-16 2xl:pt-20 pb-24 text-center lg:text-start">
+    <section className="pt-10 md:pt-14 lg:pt-6 xl:pt-16 2xl:pt-20 pb-0 md:pb-4 lg:pb-0 xl:pb-10 2xl:pb-16 text-center lg:text-start">
       <Wrapper>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-10 items-center">
           {/* Left Content - 2/3 */}
           <div className="lg:col-span-2 text-center lg:text-start">
             {/* Heading */}
-            <div className="text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-gray-700 md:space-y-3 xl:space-y-4">
+            <div className="text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-gray-800 md:space-y-3 xl:space-y-4">
               <h1>Prepare your resume for</h1>
 
               <h1>
                 the{" "}
                 <span className="relative inline-block px-1">
-                  <span className="relative z-10 text-gray-700">
+                  <span className="relative z-10 text-gray-800">
                     ATS screening
                   </span>
 

@@ -1,9 +1,9 @@
 /* ===================================
-Testimonials Section Component
+Testimonials Section Component - Carousel
 =================================== */
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
-import { fadeInUp, staggerContainer } from "../../animations";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import Wrapper from "../Wrapper";
 
 interface Testimonial {
@@ -20,77 +20,137 @@ interface TestimonialsSectionProps {
 export default function TestimonialsSection({
   testimonials,
 }: TestimonialsSectionProps) {
+  const [current, setCurrent] = useState(0);
+  const [perView, setPerView] = useState(3);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [translateX, setTranslateX] = useState(0);
+
+  useEffect(() => {
+    const update = () => {
+      if (window.innerWidth < 768) setPerView(1);
+      else if (window.innerWidth < 1280) setPerView(2);
+      else setPerView(3);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  useEffect(() => {
+    setCurrent((prev) =>
+      Math.min(prev, Math.max(0, testimonials.length - perView)),
+    );
+  }, [perView, testimonials.length]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const containerWidth = containerRef.current.offsetWidth;
+    const gap = 32;
+    const cardWidth = (containerWidth - (perView - 1) * gap) / perView;
+    const step = cardWidth + gap;
+    setTranslateX(-(current * step));
+  }, [current, perView]);
+
+  const maxIndex = Math.max(0, testimonials.length - perView);
+
+  const next = () => setCurrent((prev) => Math.min(prev + 1, maxIndex));
+  const prevSlide = () => setCurrent((prev) => Math.max(prev - 1, 0));
+
+  const gapClass = "gap-6 lg:gap-8";
+  const cardStyle = {
+    flex: `0 0 calc(${100 / perView}% - ${(perView - 1) * 32 / perView}px)`,
+  };
+
   return (
-    <section className="py-24">
+    <section className="pb-24">
       <Wrapper>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ type: "spring", delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-100 rounded-full text-cyan-700 text-sm font-semibold mb-4 border border-cyan-200"
-          >
-            <Star className="w-4 h-4" /> Success Stories
-          </motion.div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-800">
-            Loved by{" "}
-            <span className="bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">
-              Thousands
-            </span>
+        <div className="text-center mb-6 lg:mb-8">
+          <h2 className="text-2xl xl:text-3xl font-semibold text-gray-800">
+            Loved by <span className="text-cyan-500">Thousands</span>
           </h2>
-          <p className="mt-4 text-base md:text-lg text-gray-700">
+          <p className="mt-3 text-sm md:text-base text-gray-700 max-w-lg md:max-w-xl xl:max-w-3xl 2xl:max-w-4xl mx-auto">
             See what our users have to say
           </p>
-        </motion.div>
-        <motion.div
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-        >
-          {testimonials.map((testimonial, index) => (
+        </div>
+
+        <div className="relative" ref={containerRef}>
+          <div className="overflow-hidden py-4">
             <motion.div
-              key={testimonial.name}
-              variants={fadeInUp}
-              whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-200 hover:border-cyan-600 transition-all duration-300"
+              className={`flex ${gapClass}`}
+              animate={{ x: translateX }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              style={{ willChange: "transform" } as any}
             >
-              <div className="flex gap-1 mb-6">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 + i * 0.05 }}
-                  >
-                    <Star className="w-5 h-5 fill-amber-400 text-amber-600" />
-                  </motion.div>
-                ))}
-              </div>
-              <p className="text-gray-700 mb-6 leading-relaxed italic">
-                "{testimonial.content}"
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
-                  {testimonial.name.charAt(0)}
-                </div>
-                <div>
-                  <p className="font-bold text-gray-800">{testimonial.name}</p>
-                  <p className="text-sm text-gray-700">{testimonial.role}</p>
-                </div>
-              </div>
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={testimonial.name}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.08,
+                    type: "spring",
+                    stiffness: 100,
+                  }}
+                  className="shrink-0 bg-white rounded-3xl p-8 shadow-lg border border-gray-200 transition-all duration-300"
+                  style={cardStyle}
+                >
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ scale: 0, rotate: -180 }}
+                        whileInView={{ scale: 1, rotate: 0 }}
+                        viewport={{ once: true }}
+                        transition={{
+                          delay: index * 0.08 + i * 0.07,
+                          type: "spring",
+                          stiffness: 200,
+                        }}
+                      >
+                        <Star className="w-5 h-5 fill-amber-400 text-amber-600" />
+                      </motion.div>
+                    ))}
+                  </div>
+                  <p className="text-gray-700 mb-6 leading-relaxed italic">
+                    "{testimonial.content}"
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-800">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-sm text-gray-700">{testimonial.role}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
-          ))}
-        </motion.div>
+          </div>
+
+          {current > 0 && (
+            <button
+              onClick={prevSlide}
+              aria-label="Previous"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 lg:-translate-x-4 w-10 h-10 lg:w-11 lg:h-11 bg-white border border-gray-200 rounded-full shadow-md hover:shadow-lg hover:border-cyan-300 flex items-center justify-center text-gray-700 hover:text-cyan-600 transition-all duration-200 z-10"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+          )}
+          {current < maxIndex && (
+            <button
+              onClick={next}
+              aria-label="Next"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 lg:translate-x-4 w-10 h-10 lg:w-11 lg:h-11 bg-white border border-gray-200 rounded-full shadow-md hover:shadow-lg hover:border-cyan-300 flex items-center justify-center text-gray-700 hover:text-cyan-600 transition-all duration-200 z-10"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          )}
+        </div>
       </Wrapper>
     </section>
   );

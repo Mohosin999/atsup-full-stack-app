@@ -36,7 +36,6 @@ export default function HomePage() {
           <TestimonialsSection testimonials={testimonials} />
           <CTASection />
         </main>
-        <Footer />
       </div>
       <ConfirmModal
         isOpen={showLogoutConfirm}

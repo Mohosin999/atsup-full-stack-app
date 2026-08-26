@@ -4,16 +4,19 @@ CTA Section Component
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight } from "lucide-react";
+import { useAppSelector } from "../../hooks/redux";
 import Wrapper from "../Wrapper";
 
 export default function CTASection() {
+  const user = useAppSelector((state) => state.auth.user);
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8 }}
-      className="py-24"
+      className="pb-24"
     >
       <Wrapper maxWidth="max-w-5xl">
         <motion.div
@@ -44,10 +47,10 @@ export default function CTASection() {
               Join thousands of job seekers who have transformed their resumes
               and landed their dream jobs with ResumeAI.
             </p>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link to="/login" className="group gradient-btn-lg gap-3">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+              <Link to={user ? "/ats-scan" : "/login"} className="group inline-flex items-center gap-3 py-3 px-8 bg-white text-gray-800 text-sm xl:text-base font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
                 Get Started for Free{" "}
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
             <motion.p

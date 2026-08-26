@@ -1,86 +1,101 @@
-import { Flame } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
+import { useAppSelector, useAppDispatch } from "../hooks/redux";
+import { logoutUser } from "../store/slices/authSlice";
+import ConfirmModal from "./ui/ConfirmModal";
 import Wrapper from "./Wrapper";
 
+const socialLinks = [
+  { name: "GitHub", url: "#" },
+  { name: "LinkedIn", url: "#" },
+  { name: "Twitter", url: "#" },
+  { name: "mohosin.hasan.akash@gmail.com", url: "mailto:mohosin.hasan.akash@gmail.com" },
+];
+
 const Footer = () => {
+  const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogout = async () => {
+    setShowLogoutConfirm(false);
+    await dispatch(logoutUser());
+    navigate("/");
+  };
+
   return (
-    <footer className="bg-gray-50 text-gray-800 py-16 border-t border-gray-200">
-      <Wrapper>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 via-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center">
-                <Flame className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold">
-                CV
-                <span className="bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">
-                  Coach
-                </span>
-              </span>
-            </div>
-            <p className="text-gray-700 leading-relaxed max-w-md">
-              AI-powered resume analysis and generation platform helping job
-              seekers land their dream careers with optimized, ATS-friendly
-              resumes.
-            </p>
-          </div>
+    <footer className="bg-white text-gray-800 py-8">
+      <Wrapper className="!px-4 lg:!px-16">
+        {/* Top Divider */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="flex-1 h-px bg-gray-400"></div>
 
-          <div>
-            <h4 className="font-bold text-lg mb-4 text-cyan-600">
-              Quick Links
-            </h4>
-            <ul className="space-y-3">
-              {["Features", "How It Works", "Testimonials", "Pricing"].map(
-                (item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
-                      className="text-gray-700 hover:text-cyan-600 transition-colors"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                ),
-              )}
-            </ul>
-          </div>
+          <span className="text-sm italic text-gray-600 whitespace-nowrap">
+            Built to pass every ATS
+          </span>
 
-          <div>
-            <h4 className="font-bold text-lg mb-4 text-cyan-600">Legal</h4>
-            <ul className="space-y-3">
-              {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(
-                (item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
-                      className="text-gray-700 hover:text-cyan-600 transition-colors"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                ),
-              )}
-            </ul>
-          </div>
+          <div className="flex-1 h-px bg-gray-400"></div>
         </div>
 
-        <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-500 text-sm">
-            © 2026 CVCoach. All rights reserved.
-          </p>
-          <div className="flex items-center gap-6">
-            {["Twitter", "LinkedIn", "GitHub"].map((social) => (
-              <a
-                key={social}
-                href="#"
-                className="text-gray-700 hover:text-cyan-600 transition-colors text-sm"
-              >
-                {social}
-              </a>
+        {/* Main Footer Row */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 text-sm">
+          {/* Left: Logo */}
+          <div className="flex items-center gap-2 whitespace-nowrap">
+            <img src="/favicon.png" alt="ATSUp" className="w-8 h-6" />
+            <span className="text-lg font-bold text-gray-800">
+              ATS<span className="text-cyan-500">Up</span>
+            </span>
+          </div>
+
+          {/* Center Links */}
+          <div className="flex flex-wrap items-center justify-center gap-2 text-gray-800">
+            {socialLinks.map((link, i) => (
+              <span key={link.name} className="flex items-center gap-2">
+                {i > 0 && <span>•</span>}
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  {link.name}
+                </a>
+              </span>
             ))}
           </div>
+
+          {/* Right */}
+          <div className="flex items-center gap-3 whitespace-nowrap">
+            {user && (
+              <button
+                onClick={() => setShowLogoutConfirm(true)}
+                className="flex items-center gap-1 px-3 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors"
+              >
+                <LogOut size={14} />
+                Logout
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Bottom: Copyright */}
+        <p className="text-center text-xs text-gray-600 mt-8">
+          © 2026 ATSUp. All Rights Reserved.
+        </p>
       </Wrapper>
+
+      <ConfirmModal
+        isOpen={showLogoutConfirm}
+        title="Logout"
+        message="Are you sure you want to logout?"
+        confirmText="Logout"
+        cancelText="Cancel"
+        onConfirm={handleLogout}
+        onCancel={() => setShowLogoutConfirm(false)}
+        type="danger"
+      />
     </footer>
   );
 };

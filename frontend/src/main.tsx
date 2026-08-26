@@ -10,6 +10,7 @@ import "./index.css";
 import { store, AppDispatch } from "./store";
 import { fetchUser, tokenRefresh } from "./store/slices/authSlice";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 // ==================================================================
 // React Query Client Configuration
@@ -57,6 +58,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <InitializeApp />
           <Navbar />
           <App />
+          <Footer />
           <ToastContainer
             position="bottom-right"
             autoClose={5000}

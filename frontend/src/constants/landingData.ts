@@ -52,6 +52,41 @@ export const testimonials = [
       "Love how easy it is to improve my resume for different positions.",
     rating: 5,
   },
+  {
+    name: "David Wilson",
+    role: "Marketing Manager at Amazon",
+    content:
+      "The resume builder is fantastic — clean format that scored 100% on every ATS checker I tried.",
+    rating: 5,
+  },
+  {
+    name: "Priya Sharma",
+    role: "UX Designer at Microsoft",
+    content:
+      "Free unlimited checks saved me so much time. I optimized my resume for 10+ jobs without paying a cent.",
+    rating: 5,
+  },
+  {
+    name: "Priya Sharma",
+    role: "UX Designer at Microsoft",
+    content:
+      "Free unlimited checks saved me so much time. I optimized my resume for 10+ jobs without paying a cent.",
+    rating: 5,
+  },
+  {
+    name: "Priya Sharma",
+    role: "UX Designer at Microsoft",
+    content:
+      "Free unlimited checks saved me so much time. I optimized my resume for 10+ jobs without paying a cent.",
+    rating: 5,
+  },
+  {
+    name: "Priya Sharma",
+    role: "UX Designer at Microsoft",
+    content:
+      "Free unlimited checks saved me so much time. I optimized my resume for 10+ jobs without paying a cent.",
+    rating: 5,
+  },
 ];
 
 // ==================================================================
@@ -62,19 +97,19 @@ export const allFeatures = [
     icon: Infinity,
     title: "Unlimited Free Checks",
     description:
-      "Get unlimited ATS checks on core features for free — scan as many times as you want with no credits.",
+      "Get unlimited ATS checks on core features for free — scan as many times as you want with no credits. Premium will unlock unlimited access to all advanced features.",
   },
   {
     icon: Layers,
-    title: "All-in-One Platform",
+    title: "All-in-One: Scan & Build",
     description:
-      "Check your ATS score and build a professional resume without switching tools.",
+      "Everything in one place — check your ATS score and build a professional resume without switching tools.",
   },
   {
     icon: ShieldCheck,
     title: "100% ATS Formatting Score",
     description:
-      "Our resume builder format scored 100% on Jobscan, Enhancv and other top ATS checkers.",
+      "Our resume builder format scored 100% on Jobscan, Enhancv and other top ATS checkers — clean, recruiter-approved formatting that always passes.",
   },
 ];
 
@@ -93,11 +128,13 @@ export const analysisSteps = [
   {
     number: "03",
     title: "Get ATS Score",
-    description: "Receive detailed ATS compatibility score with section-by-section breakdown.",
+    description:
+      "Receive detailed ATS compatibility score with section-by-section breakdown.",
   },
   {
     number: "04",
     title: "Smart Suggestions",
-    description: "Get AI-powered suggestions to optimize your resume for the job.",
+    description:
+      "Get AI-powered suggestions to optimize your resume for the job.",
   },
 ];

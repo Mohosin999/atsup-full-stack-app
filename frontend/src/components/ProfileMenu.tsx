@@ -4,7 +4,7 @@ Profile Menu Component
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings, LogOut } from "lucide-react";
+import { Settings, LogOut, FileText, MessageSquare } from "lucide-react";
 
 interface ProfileMenuProps {
   user: {
@@ -77,6 +77,22 @@ export default function ProfileMenu({
             >
               <Settings className="w-4 h-4" /> <span>Settings</span>
             </Link>
+            <Link
+              to="/my-reports"
+              className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              onClick={() => setProfileMenuOpen(false)}
+            >
+              <FileText className="w-4 h-4" /> <span>My Reports</span>
+            </Link>
+            <button
+              onClick={() => {
+                setProfileMenuOpen(false);
+                window.dispatchEvent(new Event("open-report-modal"));
+              }}
+              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+            >
+              <MessageSquare className="w-4 h-4" /> <span>Report a Problem</span>
+            </button>
             <button
               onClick={() => {
                 setProfileMenuOpen(false);

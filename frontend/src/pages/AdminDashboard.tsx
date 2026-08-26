@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import {
-  AdminDashboardMetrics,
-  GrowthData,
-  GrowthPeriod,
-} from "../types";
+import { AdminDashboardMetrics, GrowthData, GrowthPeriod } from "../types";
 import { Navigate } from "react-router-dom";
 import {
   ChevronDown,
@@ -27,7 +23,6 @@ import AllResumes from "../components/admin-dashboard/AllResumes";
 import AllAtsScores from "../components/admin-dashboard/AllAtsScores";
 import Wrapper from "@/components/Wrapper";
 import SidebarButton from "../components/ui/SidebarButton";
-
 
 const PERIOD_OPTIONS: { value: GrowthPeriod; label: string }[] = [
   { value: "yesterday", label: "Yesterday" },
@@ -69,24 +64,27 @@ const AdminDashboard: React.FC = () => {
     "overview" | "users" | "support" | "resumes" | "ats-scores"
   >("overview");
   const [supportRefreshKey, setSupportRefreshKey] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const { data: metrics, isLoading: loading } = useQuery<AdminDashboardMetrics | null>({
-    queryKey: ["admin-metrics"],
-    queryFn: async () => {
-      const res = await api.get("/admin-dashboard/metrics");
-      return res.data.success ? res.data.data : null;
-    },
-    enabled: !!user && user.role === "admin",
-  });
+  const { data: metrics, isLoading: loading } =
+    useQuery<AdminDashboardMetrics | null>({
+      queryKey: ["admin-metrics"],
+      queryFn: async () => {
+        const res = await api.get("/admin-dashboard/metrics");
+        return res.data.success ? res.data.data : null;
+      },
+      enabled: !!user && user.role === "admin",
+    });
 
-  const { data: growth, isLoading: growthLoading } = useQuery<GrowthData | null>({
-    queryKey: ["admin-growth", period],
-    queryFn: async () => {
-      const res = await api.get(`/admin-dashboard/growth?period=${period}`);
-      return res.data.success ? res.data.data : null;
-    },
-    enabled: !!user && user.role === "admin",
-  });
+  const { data: growth, isLoading: growthLoading } =
+    useQuery<GrowthData | null>({
+      queryKey: ["admin-growth", period],
+      queryFn: async () => {
+        const res = await api.get(`/admin-dashboard/growth?period=${period}`);
+        return res.data.success ? res.data.data : null;
+      },
+      enabled: !!user && user.role === "admin",
+    });
 
   const { data: supportData } = useQuery({
     queryKey: ["admin-support-count"],
@@ -111,13 +109,17 @@ const AdminDashboard: React.FC = () => {
 
   const supportOpenCount = supportData ?? 0;
   const totalVisitors = visitorData ?? 0;
-  const isRefreshing = loading || growthLoading;
+  const isInitialLoading = loading || growthLoading;
 
-  const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ["admin-metrics"] });
-    queryClient.invalidateQueries({ queryKey: ["admin-growth", period] });
-    queryClient.invalidateQueries({ queryKey: ["admin-support-count"] });
-    queryClient.invalidateQueries({ queryKey: ["admin-visitors"] });
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["admin-metrics"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-growth", period] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-support-count"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-visitors"] }),
+    ]);
+    setIsRefreshing(false);
   };
 
   if (!user || user.role !== "admin") {
@@ -140,11 +142,7 @@ const AdminDashboard: React.FC = () => {
     );
   }
 
-  const {
-    totalUsers,
-    todayNewUsers,
-    bestFeatureToday,
-  } = metrics;
+  const { totalUsers, todayNewUsers, bestFeatureToday } = metrics;
 
   const periodLabel =
     PERIOD_OPTIONS.find((p) => p.value === period)?.label ?? "Today";
@@ -157,7 +155,7 @@ const AdminDashboard: React.FC = () => {
           {/* ==============================================================
            * Sidebar
           ================================================================*/}
-          <aside className="w-full md:w-48 lg:w-44 xl:w-64 shrink-0 md:sticky md:top-24">
+          {/* <aside className="w-full md:w-48 lg:w-44 xl:w-64 shrink-0 md:sticky md:top-24">
             <div>
               
 
@@ -195,21 +193,53 @@ const AdminDashboard: React.FC = () => {
                 />
               </nav>
             </div>
-          </aside>
+          </aside> */}
 
+          <aside className="flex flex-col w-full md:w-48 lg:w-44 xl:w-64 shrink-0 md:sticky md:top-24">
+            <SidebarButton
+              icon={LayoutDashboard}
+              label="Overview"
+              active={activeView === "overview"}
+              onClick={() => setActiveView("overview")}
+            />
+            <SidebarButton
+              icon={Users}
+              label="User Management"
+              active={activeView === "users"}
+              onClick={() => setActiveView("users")}
+            />
+            <SidebarButton
+              icon={LifeBuoy}
+              label="Support"
+              active={activeView === "support"}
+              badge={supportOpenCount}
+              onClick={() => setActiveView("support")}
+            />
+            <SidebarButton
+              icon={FileText}
+              label="All Resumes"
+              active={activeView === "resumes"}
+              onClick={() => setActiveView("resumes")}
+            />
+            <SidebarButton
+              icon={ClipboardCheck}
+              label="All ATS Scores"
+              active={activeView === "ats-scores"}
+              onClick={() => setActiveView("ats-scores")}
+            />
+          </aside>
           {/* ==============================================================
            * Main content
           ================================================================*/}
           <main className="md:flex-1 md:min-w-0 mt-8 md:mt-0">
             {activeView === "users" ? (
-              <UserManagement
-                onlineUsers={[]}
-                currentAdminId={user._id}
-              />
+              <UserManagement onlineUsers={[]} currentAdminId={user._id} />
             ) : activeView === "support" ? (
               <SupportTickets
                 refreshKey={supportRefreshKey}
-                onOpenCount={(count) => queryClient.setQueryData(["admin-support-count"], count)}
+                onOpenCount={(count) =>
+                  queryClient.setQueryData(["admin-support-count"], count)
+                }
               />
             ) : activeView === "resumes" ? (
               <AllResumes />
@@ -217,14 +247,18 @@ const AdminDashboard: React.FC = () => {
               <AllAtsScores />
             ) : (
               <>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-gray-800">Overview</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    Overview
+                  </h2>
                   <button
                     onClick={handleRefresh}
                     disabled={isRefreshing}
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-cyan-600 transition-colors disabled:opacity-50"
                   >
-                    <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                    <RefreshCw
+                      className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
+                    />
                     Refresh
                   </button>
                 </div>

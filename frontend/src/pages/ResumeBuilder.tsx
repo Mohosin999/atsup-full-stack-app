@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { Download, RotateCcw, Sparkles, ChevronDown } from "lucide-react";
+import { Download, Sparkles, ChevronDown } from "lucide-react";
 import { toast } from "react-toastify";
 import {
   DndContext,
@@ -182,16 +182,6 @@ export default function ResumeBuilder() {
       toast.error("Failed to generate PDF. Please try again.");
     } finally {
       setDownloading(false);
-    }
-  };
-
-  const handleReset = () => {
-    if (
-      window.confirm(
-        "Reset the builder? All entered resume data will be cleared.",
-      )
-    ) {
-      setContent(defaultContent());
     }
   };
 
@@ -460,7 +450,7 @@ export default function ResumeBuilder() {
           <div className="flex items-center gap-3">
             <span className="text-xs text-gray-500 flex items-center gap-1.5">
               <span
-                className={`w-2 h-2 ${
+                className={`w-2 h-2 rounded-full ${
                   saving ? "bg-amber-400 animate-pulse" : "bg-cyan-500"
                 }`}
               />
@@ -473,15 +463,9 @@ export default function ResumeBuilder() {
                     : ""}
             </span>
             <button
-              onClick={handleReset}
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 transition-colors"
-            >
-              <RotateCcw className="w-4 h-4" /> Reset
-            </button>
-            <button
               onClick={handleDownload}
               disabled={downloading}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold bg-cyan-600 hover:bg-cyan-700 text-white  transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold bg-cyan-600 hover:bg-cyan-700 text-white  transition-all disabled:opacity-50 rounded-full"
             >
               <Download className="w-4 h-4" />
               {downloading ? "Preparing..." : "Download PDF"}

@@ -56,9 +56,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <InitializeApp />
-          <Navbar />
-          <App />
-          <Footer />
+          <div className="bg-red-50">
+            <Navbar />
+              <App />
+            <Footer />
+          </div>
           <ToastContainer
             position="bottom-right"
             autoClose={5000}

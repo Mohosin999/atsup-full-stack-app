@@ -2,7 +2,9 @@
 Mobile Menu Component
 =================================== */
 import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { Clock, ChevronDown } from "lucide-react";
 
 interface NavLink {
   path: string;
@@ -11,6 +13,7 @@ interface NavLink {
 
 export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navLinks: NavLink[]; user: any; setMobileMenuOpen: (v: boolean) => void }) {
   const location = useLocation();
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   return (
     <motion.div
@@ -36,29 +39,49 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
         ))}
 
         <div className="border-t border-gray-200 mt-2 pt-2">
-          <p className="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">History</p>
-          <Link
-            to="/scan-history"
-            className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 ${
-              location.pathname === "/scan-history"
-                ? "bg-cyan-500/20 text-cyan-600"
-                : "text-gray-700"
-            }`}
-            onClick={() => setMobileMenuOpen(false)}
+          <button
+            onClick={() => setHistoryOpen(!historyOpen)}
+            className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-cyan-500/20 hover:text-cyan-600 transition-colors"
           >
-            Scan History
-          </Link>
-          <Link
-            to="/resume-history"
-            className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 ${
-              location.pathname === "/resume-history"
-                ? "bg-cyan-500/20 text-cyan-600"
-                : "text-gray-700"
-            }`}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Resume History
-          </Link>
+            <Clock className="w-4 h-4" />
+            History
+            <ChevronDown className={`w-4 h-4 ml-auto transition-transform ${historyOpen ? "rotate-180" : ""}`} />
+          </button>
+          <AnimatePresence>
+            {historyOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="pl-6 space-y-1 py-1">
+                  <Link
+                    to="/scan-history"
+                    className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 ${
+                      location.pathname === "/scan-history"
+                        ? "bg-cyan-500/20 text-cyan-600"
+                        : "text-gray-700"
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Scan History
+                  </Link>
+                  <Link
+                    to="/resume-history"
+                    className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 ${
+                      location.pathname === "/resume-history"
+                        ? "bg-cyan-500/20 text-cyan-600"
+                        : "text-gray-700"
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Resume History
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <div className="border-t border-gray-200 mt-2 pt-2">

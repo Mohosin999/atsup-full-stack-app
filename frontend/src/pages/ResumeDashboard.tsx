@@ -10,7 +10,7 @@ export default function ResumeDashboard() {
   const user = useAppSelector((state) => state.auth.user);
 
   return (
-    <div className="min-h-screen bg-white lg:pt-20 pb-12">
+    <div className="min-h-screen lg:pt-20 pb-12">
       <Wrapper>
         <div className="py-8 lg:mb-4 flex flex-col items-center justify-center">
           <h1 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4 gap-2">

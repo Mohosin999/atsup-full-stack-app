@@ -173,10 +173,10 @@ export default function AtsScoreDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F9FC] pb-12">
+    <div className="min-h-screen lg:pt-24 pb-12">
       <Wrapper className="!px-4 lg:!px-16">
         {/* Header */}
-        <div className="my-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="pt-8 lg:pt-0 pb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-2">
             <h1 className="text-base font-semibold text-gray-700">
               ATS Score Report{" "}

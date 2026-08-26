@@ -46,7 +46,10 @@ export default function ResumeHistory() {
     queryFn: async () => {
       if (!user) return { data: [], pagination: { pages: 1, total: 0 } };
       const res = await resumeApi.getAll(page, 10, "builder");
-      return { data: res.data.data || [], pagination: res.data.pagination || { pages: 1, total: 0 } };
+      return {
+        data: res.data.data || [],
+        pagination: res.data.pagination || { pages: 1, total: 0 },
+      };
     },
     enabled: !!user,
     placeholderData: (prev) => prev,
@@ -76,7 +79,10 @@ export default function ResumeHistory() {
   const renameMutation = useMutation({
     mutationFn: ({ id, name }: { id: string; name: string }) =>
       resumeApi.update(id, {
-        metadata: { ...resumes.find((r: ResumeListItem) => r.id === id)?.metadata, originalName: name },
+        metadata: {
+          ...resumes.find((r: ResumeListItem) => r.id === id)?.metadata,
+          originalName: name,
+        },
       }),
     onSuccess: (_, variables) => {
       queryClient.setQueryData(["resumes", user?._id, page], (old: any) => {
@@ -85,8 +91,11 @@ export default function ResumeHistory() {
           ...old,
           data: old.data.map((r: ResumeListItem) =>
             r.id === variables.id
-              ? { ...r, metadata: { ...r.metadata, originalName: variables.name } }
-              : r
+              ? {
+                  ...r,
+                  metadata: { ...r.metadata, originalName: variables.name },
+                }
+              : r,
           ),
         };
       });
@@ -121,13 +130,13 @@ export default function ResumeHistory() {
     "Untitled Resume";
 
   return (
-    <div className="min-h-screen bg-[#F6F9FC] pb-12">
+    <div className="min-h-screen lg:pt-20 pb-12">
       <Wrapper>
         <div>
           {/* Header */}
-          <div className="flex flex-col md:flex-row my-3 justify-between items-start md:items-center gap-3 md:gap-4">
+          <div className="pt-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
             <div>
-              <h1 className="text-xl font-semibold text-gray-800">
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
                 Resume History{" "}
                 <span className="text-sm !font-normal text-gray-500">
                   - {totalResumes} resume{totalResumes !== 1 ? "s" : ""}
@@ -193,13 +202,22 @@ export default function ResumeHistory() {
                                   ref={inputRef}
                                   value={editValue}
                                   onChange={(e) => setEditValue(e.target.value)}
-                                  onBlur={() => renameMutation.mutate({ id: resume.id, name: editValue.trim() })}
+                                  onBlur={() =>
+                                    renameMutation.mutate({
+                                      id: resume.id,
+                                      name: editValue.trim(),
+                                    })
+                                  }
                                   onKeyDown={(e) => {
-                                    if (e.key === "Enter") renameMutation.mutate({ id: resume.id, name: editValue.trim() });
+                                    if (e.key === "Enter")
+                                      renameMutation.mutate({
+                                        id: resume.id,
+                                        name: editValue.trim(),
+                                      });
                                     if (e.key === "Escape") setEditingId(null);
                                   }}
                                   autoFocus
-                                   className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 text-sm focus:outline-none"
+                                  className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 text-sm focus:outline-none"
                                 />
                                 <span
                                   ref={measureRef}
@@ -207,7 +225,14 @@ export default function ResumeHistory() {
                                 >
                                   {editValue}
                                 </span>
-                                <button onClick={() => renameMutation.mutate({ id: resume.id, name: editValue.trim() })}>
+                                <button
+                                  onClick={() =>
+                                    renameMutation.mutate({
+                                      id: resume.id,
+                                      name: editValue.trim(),
+                                    })
+                                  }
+                                >
                                   <Check className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-green-600" />
                                 </button>
 
@@ -295,9 +320,18 @@ export default function ResumeHistory() {
                                 ref={inputRef}
                                 value={editValue}
                                 onChange={(e) => setEditValue(e.target.value)}
-                                onBlur={() => renameMutation.mutate({ id: resume.id, name: editValue.trim() })}
+                                onBlur={() =>
+                                  renameMutation.mutate({
+                                    id: resume.id,
+                                    name: editValue.trim(),
+                                  })
+                                }
                                 onKeyDown={(e) => {
-                                  if (e.key === "Enter") renameMutation.mutate({ id: resume.id, name: editValue.trim() });
+                                  if (e.key === "Enter")
+                                    renameMutation.mutate({
+                                      id: resume.id,
+                                      name: editValue.trim(),
+                                    });
                                   if (e.key === "Escape") setEditingId(null);
                                 }}
                                 autoFocus
@@ -309,7 +343,14 @@ export default function ResumeHistory() {
                               >
                                 {editValue}
                               </span>
-                              <button onClick={() => renameMutation.mutate({ id: resume.id, name: editValue.trim() })}>
+                              <button
+                                onClick={() =>
+                                  renameMutation.mutate({
+                                    id: resume.id,
+                                    name: editValue.trim(),
+                                  })
+                                }
+                              >
                                 <Check className="w-4 h-4 text-green-600" />
                               </button>
 

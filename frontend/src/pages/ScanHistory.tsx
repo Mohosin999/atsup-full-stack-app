@@ -101,13 +101,13 @@ export default function ScanHistory() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F9FC] pb-12">
+    <div className="min-h-screen lg:pt-20 pb-12">
       <Wrapper>
         <div>
           {/* Header */}
-          <div className="flex flex-col md:flex-row my-3 justify-between items-start md:items-center gap-3 md:gap-4">
+          <div className="pt-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
             <div>
-              <h1 className="text-xl font-semibold text-gray-800">
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
                 Scan History{" "}
                 <span className="text-sm !font-normal text-gray-500">
                   - {totalScans} scan{totalScans !== 1 ? "s" : ""}

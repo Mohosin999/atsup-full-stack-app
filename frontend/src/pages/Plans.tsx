@@ -76,7 +76,7 @@ export default function Plans() {
   };
 
   return (
-    <div className="min-h-screen bg-white lg:pt-20 pb-12">
+    <div className="min-h-screen lg:pt-20 pb-12">
       <Wrapper>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

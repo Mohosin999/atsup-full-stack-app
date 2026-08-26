@@ -44,7 +44,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
+    <div className="min-h-screen pt-20 pb-12">
       <Wrapper>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

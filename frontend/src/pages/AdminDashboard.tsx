@@ -151,7 +151,7 @@ const AdminDashboard: React.FC = () => {
   const changeIsUp = (growth?.change ?? 0) >= 0;
 
   return (
-    <div className="bg-[#F6F9FC] pt-24 pb-12">
+    <div className="min-h-screen pt-8 md:pt-10 lg:pt-24 pb-12">
       <Wrapper className="!px-4 lg:!px-16">
         <div className="md:flex md:flex-row items-start gap-6">
           {/* ==============================================================

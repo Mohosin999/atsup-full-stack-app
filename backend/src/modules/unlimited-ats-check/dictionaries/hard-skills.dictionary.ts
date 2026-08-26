@@ -314,7 +314,8 @@ export const HARD_SKILLS_DICTIONARY: string[][] = [
   // GENERATIVE AI & AGENTS
   // ============================================
   ["Generative AI", "GenAI", "Gen AI"],
-  ["Artificial Intelligence", "AI"],
+  ["Artificial Intelligence"],
+  ["AI"],
   ["AI Agents", "AI Agent"],
   ["Agentic AI"],
   ["Multi-Agent", "Multi Agent"],

@@ -440,12 +440,12 @@ export default function ResumeBuilder() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen lg:pt-24 pb-12">
       <Wrapper className="!px-4 lg:!px-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="my-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          className="pt-8 lg:pt-0 pb-4  flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div>
             <h1 className="text-base font-semibold text-gray-800">
@@ -455,6 +455,8 @@ export default function ResumeBuilder() {
               ATS-friendly layout — no images, emojis, tables or underlines.
             </p>
           </div>
+
+          {/* Save and Reset */}
           <div className="flex items-center gap-3">
             <span className="text-xs text-gray-500 flex items-center gap-1.5">
               <span

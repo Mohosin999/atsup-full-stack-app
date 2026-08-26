@@ -9,9 +9,10 @@ interface HeroSectionProps {
 
 export default function HeroSection({ user, onLogout }: HeroSectionProps) {
   return (
-    <section className="pt-28 md:pt-32 lg:pt-10 xl:pt-20 2xl:pt-24 pb-24 text-center lg:text-start">
+    // <section className="pt-28 md:pt-32 lg:pt-10 xl:pt-20 2xl:pt-24 pb-24 text-center lg:text-start">
+    <section className="pt-10 md:pt-14 lg:pt-6 xl:pt-16 2xl:pt-20 pb-24 text-center lg:text-start">
       <Wrapper>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-10 items-center">
           {/* Left Content - 2/3 */}
           <div className="lg:col-span-2 text-center lg:text-start">
             {/* Heading */}
@@ -39,10 +40,10 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
             </p>
 
             {/* Buttons */}
-            <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+            <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 mx-6 md:mx-0">
               <Link
                 to="/ats-scan"
-                className="group gradient-btn-lg text-sm xl:text-lg gap-2"
+                className="group flex items-center justify-center bg-cyan-600 text-white px-6 py-3 lg:py-2 rounded-lg text-sm xl:text-lg gap-2 font-medium hover:bg-cyan-600/90"
               >
                 Scan Your Resume for Free
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -50,7 +51,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
 
               <Link
                 to="/resume-builder"
-                className="flex items-center gap-2 text-sm xl:text-lg border-2 border-gray-600 hover:bg-gray-600/10 px-6 py-2 rounded-lg"
+                className="flex items-center justify-center gap-2 text-sm xl:text-lg border-2 border-gray-600 hover:bg-gray-600/10 px-6 py-3 lg:py-2 rounded-lg"
               >
                 <FilePlus2 className="w-5 h-5" />
                 Create Resume

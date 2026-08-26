@@ -94,7 +94,7 @@ export default function Navbar() {
             </div>
           </div>
         </Wrapper>
-        
+
         {/* =============================================================
          * Mobile menus when click on three dots
          ==============================================================*/}
@@ -145,7 +145,11 @@ export default function Navbar() {
           )}
         </AnimatePresence>
       </nav>
-      <div className="h-16" aria-hidden="true" />
+
+      {/* =======================================
+       * Spacer to push content below nav
+      ========================================*/}
+      <div className="h-14 lg:h-0" aria-hidden="true" />
 
       <ConfirmModal
         isOpen={showLogoutConfirm}

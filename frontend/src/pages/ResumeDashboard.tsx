@@ -10,14 +10,14 @@ export default function ResumeDashboard() {
   const user = useAppSelector((state) => state.auth.user);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen bg-white lg:pt-20 pb-12">
       <Wrapper>
-        <div className="my-8 mb-14 flex flex-col items-center justify-center">
-          <h1 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            How would you like to start?
+        <div className="py-8 lg:mb-4 flex flex-col items-center justify-center">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4 gap-2">
+            How Would You Like to Start?
           </h1>
 
-          <div className="text-gray-600 text-sm max-w-xl xl:max-w-2xl text-center space-y-4">
+          <div className="text-gray-600 text-sm xl:text-base max-w-xl xl:max-w-2xl text-center space-y-4">
             <p>
               Start with our best ATS-optimized resume template, designed to
               help your resume pass applicant tracking systems while keeping a

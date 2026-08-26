@@ -43,15 +43,15 @@ export default function AtsScorePage() {
   }, [locationState, navigate, location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[#F6F9FC] pb-12">
+    <div className="min-h-screen bg-white lg:pt-20 pb-12">
       <Wrapper>
-        <div className="my-8">
-          <h1 className="text-lg font-bold text-gray-800 mb-1">
+        <div className="py-8 lg:mb-4">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 text-center mb-4">
             ATS Score Check
           </h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm xl:text-base text-gray-600 text-center max-w-xl xl:max-w-2xl mx-auto">
             Analyze your resume for ATS (Applicant Tracking System)
-            compatibility — unlimited, no credits used
+            compatibility. You can use this service unlimited, no credits used
           </p>
         </div>
 

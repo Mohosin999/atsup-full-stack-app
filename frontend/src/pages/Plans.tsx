@@ -76,17 +76,17 @@ export default function Plans() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-50 pt-20 pb-12">
+    <div className="min-h-screen bg-white lg:pt-20 pb-12">
       <Wrapper>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="my-8 text-center"
+          className="py-8 lg:mb-4 text-center"
         >
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-1">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4">
             Choose Your Plan
           </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm xl:text-base text-gray-600 max-w-xl xl:max-w-2xl mx-auto">
             Get more credits to analyze your resumes and land your dream job.
             Upgrade anytime as your needs grow.
           </p>

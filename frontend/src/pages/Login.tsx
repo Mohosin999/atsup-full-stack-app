@@ -48,8 +48,9 @@ export default function Login() {
         if (redirect) {
           navigate(redirect, { replace: true });
         } else {
+          // Email/password login/register → stay on home page (admin → dashboard)
           navigate(
-            user?.role === "admin" ? "/admin-dashboard" : "/ats-scan",
+            user?.role === "admin" ? "/admin-dashboard" : "/",
             { replace: true }
           );
         }

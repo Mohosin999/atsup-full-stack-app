@@ -40,7 +40,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     return <LoadingSpinner fullScreen />;
   }
 
-  return user ? <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/ats-scan"} /> : <>{children}</>;
+  return user ? <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/"} /> : <>{children}</>;
 }
 
 function App() {
@@ -50,7 +50,7 @@ function App() {
   useVisitorTracking();
 
   // After a successful login (incl. Google OAuth round-trip), return to the
-  // page the user came from.
+  // page the user came from. For email/password & OAuth, stay on home page.
   useEffect(() => {
     if (!user) return;
     console.log("App.tsx - Google OAuth user:", user, "role:", user.role);
@@ -58,10 +58,11 @@ function App() {
     if (redirect) {
       console.log("Redirecting to saved:", redirect);
       navigate(redirect, { replace: true });
-    } else if (window.location.pathname === "/login" || window.location.pathname === "/") {
-      console.log("No saved redirect, role-based redirect to:", user.role === "admin" ? "/admin-dashboard" : "/ats-scan");
-      navigate(user.role === "admin" ? "/admin-dashboard" : "/ats-scan", { replace: true });
+    } else if (window.location.pathname === "/login") {
+      console.log("No saved redirect, role-based redirect to:", user.role === "admin" ? "/admin-dashboard" : "/");
+      navigate(user.role === "admin" ? "/admin-dashboard" : "/", { replace: true });
     }
+    // If already on "/" after OAuth (backend redirects to frontendUrl), stay on home page
   }, [user, navigate]);
 
   return (

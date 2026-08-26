@@ -8,6 +8,12 @@ import {
   adminUpdateUser,
   adminDeleteUser,
   GrowthPeriod,
+  getAllResumesForAdmin,
+  adminDeleteResume,
+  adminDeleteAllResumes,
+  getAllAtsScoresForAdmin,
+  adminDeleteAtsScore,
+  adminDeleteAllAtsScores,
 } from "./admin-dashboard.service";
 import {
   getAllTickets,
@@ -178,6 +184,76 @@ export const deleteSupportTicket = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     console.error("Error deleting support ticket:", error);
+    sendError(res, error);
+  }
+};
+
+// ── All Resumes (admin) ──────────────────────────────────────────────
+
+export const getAllResumes = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const resumes = await getAllResumesForAdmin();
+    res.json({ success: true, data: resumes });
+  } catch (error) {
+    console.error("Error fetching all resumes:", error);
+    sendError(res, error);
+  }
+};
+
+export const deleteResume = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    await adminDeleteResume(req.params.id);
+    res.json({ success: true, message: "Resume deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting resume:", error);
+    sendError(res, error);
+  }
+};
+
+export const deleteAllResumes = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const result = await adminDeleteAllResumes();
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error("Error deleting all resumes:", error);
+    sendError(res, error);
+  }
+};
+
+// ── All ATS Scores (admin) ───────────────────────────────────────────
+
+export const getAllAtsScores = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const scores = await getAllAtsScoresForAdmin();
+    res.json({ success: true, data: scores });
+  } catch (error) {
+    console.error("Error fetching all ATS scores:", error);
+    sendError(res, error);
+  }
+};
+
+export const deleteAtsScore = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    await adminDeleteAtsScore(req.params.id);
+    res.json({ success: true, message: "ATS score deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting ATS score:", error);
+    sendError(res, error);
+  }
+};
+
+export const deleteAllAtsScores = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const result = await adminDeleteAllAtsScores();
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error("Error deleting all ATS scores:", error);
     sendError(res, error);
   }
 };

@@ -15,12 +15,16 @@ import {
   LayoutDashboard,
   LifeBuoy,
   RefreshCw,
+  FileText,
+  ClipboardCheck,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api/api";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import UserManagement from "../components/admin-dashboard/UserManagement";
 import SupportTickets from "../components/admin-dashboard/SupportTickets";
+import AllResumes from "../components/admin-dashboard/AllResumes";
+import AllAtsScores from "../components/admin-dashboard/AllAtsScores";
 import Wrapper from "@/components/Wrapper";
 import SidebarButton from "../components/ui/SidebarButton";
 
@@ -62,7 +66,7 @@ const AdminDashboard: React.FC = () => {
   const [period, setPeriod] = useState<GrowthPeriod>("today");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeView, setActiveView] = useState<
-    "overview" | "users" | "support"
+    "overview" | "users" | "support" | "resumes" | "ats-scores"
   >("overview");
   const [supportRefreshKey, setSupportRefreshKey] = useState(0);
 
@@ -177,6 +181,18 @@ const AdminDashboard: React.FC = () => {
                   badge={supportOpenCount}
                   onClick={() => setActiveView("support")}
                 />
+                <SidebarButton
+                  icon={FileText}
+                  label="All Resumes"
+                  active={activeView === "resumes"}
+                  onClick={() => setActiveView("resumes")}
+                />
+                <SidebarButton
+                  icon={ClipboardCheck}
+                  label="All ATS Scores"
+                  active={activeView === "ats-scores"}
+                  onClick={() => setActiveView("ats-scores")}
+                />
               </nav>
             </div>
           </aside>
@@ -195,6 +211,10 @@ const AdminDashboard: React.FC = () => {
                 refreshKey={supportRefreshKey}
                 onOpenCount={(count) => queryClient.setQueryData(["admin-support-count"], count)}
               />
+            ) : activeView === "resumes" ? (
+              <AllResumes />
+            ) : activeView === "ats-scores" ? (
+              <AllAtsScores />
             ) : (
               <>
                 <div className="flex items-center justify-between mb-6">

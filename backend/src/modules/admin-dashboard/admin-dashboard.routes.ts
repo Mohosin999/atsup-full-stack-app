@@ -11,6 +11,12 @@ import {
   getSupportTickets,
   updateSupportTicket,
   deleteSupportTicket,
+  getAllResumes,
+  deleteResume,
+  deleteAllResumes,
+  getAllAtsScores,
+  deleteAtsScore,
+  deleteAllAtsScores,
 } from "./admin-dashboard.controller";
 
 const router = Router();
@@ -26,5 +32,13 @@ router.delete("/users/:id", generalLimiter, deleteUser);
 router.get("/support", getSupportTickets);
 router.patch("/support/:id", generalLimiter, updateSupportTicket);
 router.delete("/support/:id", generalLimiter, deleteSupportTicket);
+
+router.get("/resumes", getAllResumes);
+router.delete("/resumes/:id", generalLimiter, deleteResume);
+router.delete("/resumes", generalLimiter, deleteAllResumes);
+
+router.get("/ats-scores", getAllAtsScores);
+router.delete("/ats-scores/:id", generalLimiter, deleteAtsScore);
+router.delete("/ats-scores", generalLimiter, deleteAllAtsScores);
 
 export default router;

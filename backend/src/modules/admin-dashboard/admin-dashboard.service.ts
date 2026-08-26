@@ -331,3 +331,69 @@ export const adminDeleteUser = async (adminId: string, userId: string) => {
 
   return prisma.user.delete({ where: { id: userId } });
 };
+
+// ── All Resumes (admin) ──────────────────────────────────────────────
+
+export const getAllResumesForAdmin = async () => {
+  return prisma.resume.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      sourceType: true,
+      metadata: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      user: {
+        select: { id: true, name: true, email: true },
+      },
+    },
+  });
+};
+
+export const adminDeleteResume = async (resumeId: string) => {
+  const existing = await prisma.resume.findUnique({ where: { id: resumeId } });
+  if (!existing) {
+    throw Object.assign(new Error("Resume not found"), { status: 404 });
+  }
+  await prisma.resume.delete({ where: { id: resumeId } });
+  return { success: true };
+};
+
+export const adminDeleteAllResumes = async () => {
+  const result = await prisma.resume.deleteMany();
+  return { deletedCount: result.count };
+};
+
+// ── All ATS Scores (admin) ───────────────────────────────────────────
+
+export const getAllAtsScoresForAdmin = async () => {
+  return prisma.atsScoreHistory.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      resumeName: true,
+      overallScore: true,
+      atsFriendliness: true,
+      createdAt: true,
+      user: {
+        select: { id: true, name: true, email: true },
+      },
+    },
+  });
+};
+
+export const adminDeleteAtsScore = async (historyId: string) => {
+  const existing = await prisma.atsScoreHistory.findUnique({ where: { id: historyId } });
+  if (!existing) {
+    throw Object.assign(new Error("ATS Score history not found"), { status: 404 });
+  }
+  await prisma.atsScoreHistory.delete({ where: { id: historyId } });
+  return { success: true };
+};
+
+export const adminDeleteAllAtsScores = async () => {
+  const result = await prisma.atsScoreHistory.deleteMany();
+  return { deletedCount: result.count };
+};

@@ -5,10 +5,13 @@ import api from '../../api/api';
 import { SupportStatus, SupportTicket } from '../../types';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import ConfirmModal from '../ui/ConfirmModal';
+import AdminViewHeader from './AdminViewHeader';
 
 interface Props {
   refreshKey: number;
   onOpenCount: (count: number) => void;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
 type Filter = 'all' | SupportStatus;
@@ -44,7 +47,7 @@ const attachmentUrl = (path: string) => {
   return path;
 };
 
-const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
+const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, isRefreshing }) => {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<Filter>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -99,26 +102,33 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
   };
 
   return (
-    <div className="bg-white box-shadow p-4 md:p-6">
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-        <h2 className="text-lg font-medium text-gray-800">Support Tickets</h2>
-        <div className="flex flex-wrap gap-1">
-          {FILTERS.map((f) => (
-            <button
-              key={f.value}
-              type="button"
-              onClick={() => setFilter(f.value)}
-              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                filter === f.value ? 'bg-cyan-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    <>
+      <AdminViewHeader
+        title="Support Tickets"
+        count={tickets.length}
+        onRefresh={onRefresh}
+        isRefreshing={isRefreshing}
+      />
 
-      {loading ? (
+      <div className="bg-white box-shadow p-4 md:p-6">
+        <div className="flex items-center justify-end mb-4">
+          <div className="flex flex-wrap gap-1">
+            {FILTERS.map((f) => (
+              <button
+                key={f.value}
+                type="button"
+                onClick={() => setFilter(f.value)}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                  filter === f.value ? 'bg-cyan-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {loading ? (
         <div className="flex items-center justify-center py-12">
           <LoadingSpinner size="md" text="Loading tickets..." />
         </div>
@@ -276,7 +286,8 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount }) => {
         onConfirm={() => confirmDelete && deleteMutation.mutate(confirmDelete.id)}
         onCancel={() => setConfirmDelete(null)}
       />
-    </div>
+      </div>
+    </>
   );
 };
 

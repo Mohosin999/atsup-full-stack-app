@@ -12,15 +12,18 @@ import { AdminUser, OnlineUser } from '../../types';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import EditUserModal from './EditUserModal';
 import ConfirmModal from '../ui/ConfirmModal';
+import AdminViewHeader from './AdminViewHeader';
 
 interface Props {
   onlineUsers: OnlineUser[];
   currentAdminId: string;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
 type ConfirmAction = { type: 'ban' | 'unban' | 'delete'; user: AdminUser } | null;
 
-const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
+const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefresh, isRefreshing }) => {
   const queryClient = useQueryClient();
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
@@ -211,13 +214,16 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
   );
 
   return (
-    <div className="bg-white box-shadow p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-medium text-gray-800">All Users</h2>
-        <span className="text-sm text-gray-500">{users.length} total</span>
-      </div>
+    <>
+      <AdminViewHeader
+        title="All Users"
+        count={users.length}
+        onRefresh={onRefresh}
+        isRefreshing={isRefreshing}
+      />
 
-      {loading ? (
+      <div className="bg-white box-shadow p-6">
+        {loading ? (
         <div className="flex items-center justify-center py-12">
           <LoadingSpinner size="md" text="Loading users..." />
         </div>
@@ -342,7 +348,8 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId }) => {
         onConfirm={handleConfirm}
         onCancel={() => setConfirmAction(null)}
       />
-    </div>
+      </div>
+    </>
   );
 };
 

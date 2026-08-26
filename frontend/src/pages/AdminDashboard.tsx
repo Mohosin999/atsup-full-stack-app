@@ -10,7 +10,6 @@ import {
   Users,
   LayoutDashboard,
   LifeBuoy,
-  RefreshCw,
   FileText,
   ClipboardCheck,
 } from "lucide-react";
@@ -23,6 +22,7 @@ import AllResumes from "../components/admin-dashboard/AllResumes";
 import AllAtsScores from "../components/admin-dashboard/AllAtsScores";
 import Wrapper from "@/components/Wrapper";
 import SidebarButton from "../components/ui/SidebarButton";
+import AdminViewHeader from "../components/admin-dashboard/AdminViewHeader";
 
 const PERIOD_OPTIONS: { value: GrowthPeriod; label: string }[] = [
   { value: "yesterday", label: "Yesterday" },
@@ -118,7 +118,12 @@ const AdminDashboard: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["admin-growth", period] }),
       queryClient.invalidateQueries({ queryKey: ["admin-support-count"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-visitors"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-support"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-all-resumes"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-all-ats-scores"] }),
     ]);
+    setSupportRefreshKey((k) => k + 1);
     setIsRefreshing(false);
   };
 
@@ -181,13 +186,13 @@ const AdminDashboard: React.FC = () => {
                 />
                 <SidebarButton
                   icon={FileText}
-                  label="All Resumes"
+                  label="Total Resumes"
                   active={activeView === "resumes"}
                   onClick={() => setActiveView("resumes")}
                 />
                 <SidebarButton
                   icon={ClipboardCheck}
-                  label="All ATS Scores"
+                  label="Total ATS Check"
                   active={activeView === "ats-scores"}
                   onClick={() => setActiveView("ats-scores")}
                 />
@@ -217,13 +222,13 @@ const AdminDashboard: React.FC = () => {
             />
             <SidebarButton
               icon={FileText}
-              label="All Resumes"
+              label="Total Resumes"
               active={activeView === "resumes"}
               onClick={() => setActiveView("resumes")}
             />
             <SidebarButton
               icon={ClipboardCheck}
-              label="All ATS Scores"
+              label="Total ATS Check"
               active={activeView === "ats-scores"}
               onClick={() => setActiveView("ats-scores")}
             />
@@ -233,35 +238,38 @@ const AdminDashboard: React.FC = () => {
           ================================================================*/}
           <main className="md:flex-1 md:min-w-0 mt-8 md:mt-0">
             {activeView === "users" ? (
-              <UserManagement onlineUsers={[]} currentAdminId={user._id} />
+              <UserManagement
+                onlineUsers={[]}
+                currentAdminId={user._id}
+                onRefresh={handleRefresh}
+                isRefreshing={isRefreshing}
+              />
             ) : activeView === "support" ? (
               <SupportTickets
                 refreshKey={supportRefreshKey}
                 onOpenCount={(count) =>
                   queryClient.setQueryData(["admin-support-count"], count)
                 }
+                onRefresh={handleRefresh}
+                isRefreshing={isRefreshing}
               />
             ) : activeView === "resumes" ? (
-              <AllResumes />
+              <AllResumes
+                onRefresh={handleRefresh}
+                isRefreshing={isRefreshing}
+              />
             ) : activeView === "ats-scores" ? (
-              <AllAtsScores />
+              <AllAtsScores
+                onRefresh={handleRefresh}
+                isRefreshing={isRefreshing}
+              />
             ) : (
               <>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    Overview
-                  </h2>
-                  <button
-                    onClick={handleRefresh}
-                    disabled={isRefreshing}
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-cyan-600 transition-colors disabled:opacity-50"
-                  >
-                    <RefreshCw
-                      className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
-                    />
-                    Refresh
-                  </button>
-                </div>
+                <AdminViewHeader
+                  title="Overview"
+                  isRefreshing={isRefreshing}
+                  onRefresh={handleRefresh}
+                />
                 {/* =====================================================
                   * Summary cards
                  ======================================================*/}

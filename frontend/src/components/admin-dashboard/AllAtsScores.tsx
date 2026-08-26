@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../api/api";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import ConfirmModal from "../ui/ConfirmModal";
+import AdminViewHeader from "./AdminViewHeader";
 
 interface AdminAtsScore {
   id: string;
@@ -21,7 +22,7 @@ const getScoreColor = (score: number) => {
   return "text-red-600 bg-red-50";
 };
 
-const AllAtsScores: React.FC = () => {
+const AllAtsScores: React.FC<{ onRefresh?: () => void; isRefreshing?: boolean }> = ({ onRefresh, isRefreshing }) => {
   const queryClient = useQueryClient();
   const [confirmDelete, setConfirmDelete] = useState<AdminAtsScore | null>(null);
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
@@ -62,25 +63,27 @@ const AllAtsScores: React.FC = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-800">
-          All ATS Scores <span className="text-sm font-normal text-gray-500">({scores.length})</span>
-        </h2>
-        {scores.length > 0 && (
-          <button
-            onClick={() => setConfirmDeleteAll(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
-          >
-            <Trash2 className="w-4 h-4" />
-            Delete All
-          </button>
-        )}
-      </div>
+      <AdminViewHeader
+        title="Total ATS Check"
+        count={scores.length}
+        onRefresh={onRefresh}
+        isRefreshing={isRefreshing}
+        rightActions={
+          <>
+            <button
+              onClick={() => setConfirmDeleteAll(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+            >
+              Clear All
+            </button>
+          </>
+        }
+      />
 
       {scores.length === 0 ? (
-        <div className="text-center py-16 text-gray-500">No ATS scores found.</div>
+        <div className="bg-white box-shadow p-6 text-center py-16 text-gray-500">No ATS scores found.</div>
       ) : (
-        <div className="bg-white border border-gray-200 overflow-hidden">
+        <div className="bg-white box-shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -153,9 +156,9 @@ const AllAtsScores: React.FC = () => {
 
       <ConfirmModal
         isOpen={confirmDeleteAll}
-        title="Delete All ATS Scores"
-        message={`Are you sure you want to delete ALL ${scores.length} ATS scores? This will permanently delete them from the database. This action cannot be undone.`}
-        confirmText="Delete All"
+        title="Clear All ATS Scores"
+        message={`Are you sure you want to clear ALL ${scores.length} ATS scores? This will permanently delete them from the database. This action cannot be undone.`}
+        confirmText="Clear All"
         onConfirm={() => deleteAllMutation.mutate()}
         onCancel={() => setConfirmDeleteAll(false)}
       />

@@ -9,6 +9,8 @@ import {
 } from "../constants/landingData";
 import FloatingOrbs from "../components/home-page/FloatingOrbs";
 import HeroSection from "../components/home-page/HeroSection";
+import AudienceAnnouncement from "../components/home-page/AudienceAnnouncement";
+import FeatureShowcase from "../components/home-page/FeatureShowcase";
 import StatsSection from "../components/home-page/StatsSection";
 import FeaturesSection from "../components/home-page/FeaturesSection";
 import HowItWorksSection from "../components/home-page/HowItWorksSection";
@@ -34,6 +36,8 @@ export default function HomePage() {
             user={undefined}
             onLogout={() => setShowLogoutConfirm(true)}
           />
+          <AudienceAnnouncement />
+          <FeatureShowcase />
           {/* <StatsSection /> */}
           <FeaturesSection features={allFeatures} />
           <HowItWorksSection steps={analysisSteps} />

@@ -84,7 +84,7 @@ export default function Navbar() {
                   onLogout={() => setShowLogoutConfirm(true)}
                 />
               ) : (
-                <div className="hidden md:flex items-center">
+                <div className="hidden lg:flex items-center">
                   <AuthButtons />
                 </div>
               )}
@@ -112,7 +112,7 @@ export default function Navbar() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="md:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 py-6 px-4"
+              className="lg:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 py-6 px-4"
             >
               <div className="flex flex-col gap-1 mb-4">
                 {getNavLinks(null).map((link) => (

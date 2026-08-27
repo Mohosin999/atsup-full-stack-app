@@ -71,7 +71,7 @@ export default function ProjectsForm({
                       onUpdate(index, { startDate: e.target.value })
                     }
                     placeholder="e.g. Jan 2020"
-                    className="w-full px-3 py-2 text-xs border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
@@ -86,7 +86,7 @@ export default function ProjectsForm({
                       onUpdate(index, { endDate: e.target.value })
                     }
                     placeholder="e.g. July 2025 / Ongoing"
-                    className="w-full px-3 py-2 text-xs border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
+                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
                   />
                 </div>
               </div>

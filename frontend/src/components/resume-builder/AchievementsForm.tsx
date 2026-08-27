@@ -56,6 +56,7 @@ export default function AchievementsForm({
                 }
                 rows={2}
                 placeholder="Short description of the achievement"
+                className="rounded-md"
               />
             </div>
           </div>

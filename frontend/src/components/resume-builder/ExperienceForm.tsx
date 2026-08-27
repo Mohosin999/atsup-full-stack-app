@@ -44,6 +44,7 @@ export default function ExperienceForm({
                   value={exp.title || ""}
                   onChange={(e) => onUpdate(index, { title: e.target.value })}
                   placeholder="Software Engineer"
+                  className="rounded-md"
                 />
                 <Input
                   label="Company"
@@ -75,7 +76,7 @@ export default function ExperienceForm({
                       onUpdate(index, { startDate: e.target.value })
                     }
                     placeholder="e.g. Jan 2020"
-                    className="w-full px-3 py-2 text-xs border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
@@ -90,7 +91,7 @@ export default function ExperienceForm({
                       onUpdate(index, { endDate: e.target.value })
                     }
                     placeholder="e.g. July 2025 / Present"
-                    className="w-full px-3 py-2 text-xs border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
+                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
                   />
                 </div>
               </div>

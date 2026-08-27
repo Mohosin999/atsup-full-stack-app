@@ -15,6 +15,7 @@ export default function SummaryForm({ value, onChange }: SummaryFormProps) {
       onChange={(e) => onChange(e.target.value)}
       rows={8}
       placeholder="Write a brief summary with highlights of your top skills and achievements."
+      className="rounded-md"
     />
   );
 }

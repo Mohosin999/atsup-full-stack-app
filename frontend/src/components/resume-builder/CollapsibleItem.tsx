@@ -26,7 +26,7 @@ export default function CollapsibleItem({
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
-    <div className="border border-gray-200 overflow-hidden">
+    <div className="border border-gray-200 overflow-hidden rounded-md">
       <div className="flex items-center gap-2 px-3 py-2.5">
         <button
           type="button"

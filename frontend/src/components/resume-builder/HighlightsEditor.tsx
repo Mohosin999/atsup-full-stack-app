@@ -83,7 +83,7 @@ function SortableHighlight({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex items-start gap-2 border px-3 py-3 bg-white ${
+      className={`flex items-start gap-2 border px-3 py-3 bg-white rounded-md ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
       } ${
         editing
@@ -247,7 +247,7 @@ export default function HighlightsEditor({
       </DndContext>
 
       {adding && (
-        <div className="flex items-start gap-2 border border-gray-200 px-3 py-3 bg-white mt-2">
+        <div className="flex items-start gap-2 border border-gray-200 px-3 py-3 bg-white mt-2 rounded-md">
           {/* <Plus className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" /> */}
           <input
             type="text"

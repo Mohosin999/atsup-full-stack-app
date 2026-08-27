@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
@@ -18,9 +18,9 @@ import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
 import MyReports from "./pages/MyReports";
-import ReportButton from "./components/support/ReportButton";
 import ReviewModal from "./components/ReviewModal";
 import { useVisitorTracking } from "./hooks/useVisitorTracking";
+import { Star } from "lucide-react";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -48,6 +48,10 @@ function App() {
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
   const [reviewOpen, setReviewOpen] = useState(false);
+  const location = useLocation();
+
+  const reviewButtonPages = ["/ats-scan", "/resume-builder", "/scan-history", "/resume-history", "/my-reports"];
+  const showReviewButton = user && reviewButtonPages.some((p) => location.pathname.startsWith(p));
 
   useVisitorTracking();
 
@@ -147,7 +151,18 @@ function App() {
         <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      {user && <ReportButton />}
+
+      {showReviewButton && (
+        <button
+          type="button"
+          onClick={() => setReviewOpen(true)}
+          title="Give a review"
+          className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-orange-300 text-gray-800 hover:bg-orange-300/90 transition-colors"
+        >
+          <Star className="w-5 h-5" />
+          <span className="hidden md:inline text-sm font-medium">Review</span>
+        </button>
+      )}
       <ReviewModal isOpen={reviewOpen} onClose={() => setReviewOpen(false)} />
     </ThemeWrapper>
   );

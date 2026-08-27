@@ -56,7 +56,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <InitializeApp />
-          <div className="bg-red-50">
+          <div className="bg-white">
             <Navbar />
               <App />
             <Footer />

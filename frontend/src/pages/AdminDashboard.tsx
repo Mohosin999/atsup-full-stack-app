@@ -88,23 +88,11 @@ const AdminDashboard: React.FC = () => {
       enabled: !!user && user.role === "admin",
     });
 
-  const { data: supportData } = useQuery({
-    queryKey: ["admin-support-count"],
+  const { data: unreadData, refetch: refetchUnread } = useQuery({
+    queryKey: ["admin-unread-counts"],
     queryFn: async () => {
-      const res = await api.get("/admin-dashboard/support");
-      if (res.data.success) {
-        return res.data.data.filter((t: any) => t.status === "open").length;
-      }
-      return 0;
-    },
-    enabled: !!user && user.role === "admin",
-  });
-
-  const { data: reviewCount } = useQuery({
-    queryKey: ["admin-reviews-count"],
-    queryFn: async () => {
-      const res = await api.get("/admin-dashboard/reviews");
-      return res.data.success ? res.data.data.length : 0;
+      const res = await api.get("/admin-dashboard/unread-counts");
+      return res.data.success ? res.data.data : { unreadSupport: 0, unreadReviews: 0 };
     },
     enabled: !!user && user.role === "admin",
   });
@@ -118,23 +106,28 @@ const AdminDashboard: React.FC = () => {
     enabled: !!user && user.role === "admin",
   });
 
-  const supportOpenCount = supportData ?? 0;
+  const unreadSupport = unreadData?.unreadSupport ?? 0;
+  const unreadReviews = unreadData?.unreadReviews ?? 0;
   const totalVisitors = visitorData ?? 0;
   const isInitialLoading = loading || growthLoading;
+
+  const markSeen = async (section: "support" | "reviews") => {
+    await api.patch(`/admin-dashboard/last-seen/${section}`);
+    refetchUnread();
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["admin-metrics"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-growth", period] }),
-      queryClient.invalidateQueries({ queryKey: ["admin-support-count"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-unread-counts"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-visitors"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-support"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-all-resumes"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-all-ats-scores"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] }),
-      queryClient.invalidateQueries({ queryKey: ["admin-reviews-count"] }),
     ]);
     setSupportRefreshKey((k) => k + 1);
     setIsRefreshing(false);
@@ -230,15 +223,21 @@ const AdminDashboard: React.FC = () => {
               icon={LifeBuoy}
               label="Support"
               active={activeView === "support"}
-              badge={supportOpenCount}
-              onClick={() => setActiveView("support")}
+              badge={unreadSupport}
+              onClick={() => {
+                setActiveView("support");
+                markSeen("support");
+              }}
             />
             <SidebarButton
               icon={Star}
               label="Reviews"
               active={activeView === "reviews"}
-              badge={reviewCount}
-              onClick={() => setActiveView("reviews")}
+              badge={unreadReviews}
+              onClick={() => {
+                setActiveView("reviews");
+                markSeen("reviews");
+              }}
             />
             <SidebarButton
               icon={FileText}
@@ -267,9 +266,7 @@ const AdminDashboard: React.FC = () => {
             ) : activeView === "support" ? (
               <SupportTickets
                 refreshKey={supportRefreshKey}
-                onOpenCount={(count) =>
-                  queryClient.setQueryData(["admin-support-count"], count)
-                }
+                onOpenCount={() => refetchUnread()}
                 onRefresh={handleRefresh}
                 isRefreshing={isRefreshing}
               />

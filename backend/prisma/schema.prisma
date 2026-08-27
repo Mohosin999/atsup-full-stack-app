@@ -23,6 +23,8 @@ model User {
   isBanned          Boolean             @default(false)
   isActive          Boolean             @default(true)
   lastActiveAt      DateTime?           @db.Timestamp()
+  lastSeenSupportAt DateTime?           @db.Timestamp()
+  lastSeenReviewsAt DateTime?           @db.Timestamp()
 
   @@index([role, isActive])
 

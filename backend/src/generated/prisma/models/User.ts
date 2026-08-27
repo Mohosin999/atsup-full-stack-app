@@ -38,6 +38,8 @@ export type UserMinAggregateOutputType = {
   isBanned: boolean | null
   isActive: boolean | null
   lastActiveAt: Date | null
+  lastSeenSupportAt: Date | null
+  lastSeenReviewsAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -54,6 +56,8 @@ export type UserMaxAggregateOutputType = {
   isBanned: boolean | null
   isActive: boolean | null
   lastActiveAt: Date | null
+  lastSeenSupportAt: Date | null
+  lastSeenReviewsAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -72,6 +76,8 @@ export type UserCountAggregateOutputType = {
   isBanned: number
   isActive: number
   lastActiveAt: number
+  lastSeenSupportAt: number
+  lastSeenReviewsAt: number
   _all: number
 }
 
@@ -90,6 +96,8 @@ export type UserMinAggregateInputType = {
   isBanned?: true
   isActive?: true
   lastActiveAt?: true
+  lastSeenSupportAt?: true
+  lastSeenReviewsAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -106,6 +114,8 @@ export type UserMaxAggregateInputType = {
   isBanned?: true
   isActive?: true
   lastActiveAt?: true
+  lastSeenSupportAt?: true
+  lastSeenReviewsAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -124,6 +134,8 @@ export type UserCountAggregateInputType = {
   isBanned?: true
   isActive?: true
   lastActiveAt?: true
+  lastSeenSupportAt?: true
+  lastSeenReviewsAt?: true
   _all?: true
 }
 
@@ -215,6 +227,8 @@ export type UserGroupByOutputType = {
   isBanned: boolean
   isActive: boolean
   lastActiveAt: Date | null
+  lastSeenSupportAt: Date | null
+  lastSeenReviewsAt: Date | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -254,6 +268,8 @@ export type UserWhereInput = {
   isBanned?: Prisma.BoolFilter<"User"> | boolean
   isActive?: Prisma.BoolFilter<"User"> | boolean
   lastActiveAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  lastSeenSupportAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  lastSeenReviewsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   resumes?: Prisma.ResumeListRelationFilter
   analyses?: Prisma.AnalysisListRelationFilter
   atsScores?: Prisma.AtsScoreListRelationFilter
@@ -280,6 +296,8 @@ export type UserOrderByWithRelationInput = {
   isBanned?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastActiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenSupportAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenReviewsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   resumes?: Prisma.ResumeOrderByRelationAggregateInput
   analyses?: Prisma.AnalysisOrderByRelationAggregateInput
   atsScores?: Prisma.AtsScoreOrderByRelationAggregateInput
@@ -309,6 +327,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   isBanned?: Prisma.BoolFilter<"User"> | boolean
   isActive?: Prisma.BoolFilter<"User"> | boolean
   lastActiveAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  lastSeenSupportAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  lastSeenReviewsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   resumes?: Prisma.ResumeListRelationFilter
   analyses?: Prisma.AnalysisListRelationFilter
   atsScores?: Prisma.AtsScoreListRelationFilter
@@ -335,6 +355,8 @@ export type UserOrderByWithAggregationInput = {
   isBanned?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastActiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenSupportAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSeenReviewsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -359,6 +381,8 @@ export type UserScalarWhereWithAggregatesInput = {
   isBanned?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   lastActiveAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  lastSeenSupportAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  lastSeenReviewsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -377,6 +401,8 @@ export type UserCreateInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -403,6 +429,8 @@ export type UserUncheckedCreateInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -429,6 +457,8 @@ export type UserUpdateInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -455,6 +485,8 @@ export type UserUncheckedUpdateInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -481,6 +513,8 @@ export type UserCreateManyInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -499,6 +533,8 @@ export type UserUpdateManyMutationInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -517,6 +553,8 @@ export type UserUncheckedUpdateManyInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -535,6 +573,8 @@ export type UserCountOrderByAggregateInput = {
   isBanned?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastActiveAt?: Prisma.SortOrder
+  lastSeenSupportAt?: Prisma.SortOrder
+  lastSeenReviewsAt?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -551,6 +591,8 @@ export type UserMaxOrderByAggregateInput = {
   isBanned?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastActiveAt?: Prisma.SortOrder
+  lastSeenSupportAt?: Prisma.SortOrder
+  lastSeenReviewsAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -567,6 +609,8 @@ export type UserMinOrderByAggregateInput = {
   isBanned?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   lastActiveAt?: Prisma.SortOrder
+  lastSeenSupportAt?: Prisma.SortOrder
+  lastSeenReviewsAt?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -722,6 +766,8 @@ export type UserCreateWithoutResumesInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
@@ -747,6 +793,8 @@ export type UserUncheckedCreateWithoutResumesInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -788,6 +836,8 @@ export type UserUpdateWithoutResumesInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
@@ -813,6 +863,8 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -838,6 +890,8 @@ export type UserCreateWithoutAnalysesInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
@@ -863,6 +917,8 @@ export type UserUncheckedCreateWithoutAnalysesInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -904,6 +960,8 @@ export type UserUpdateWithoutAnalysesInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
@@ -929,6 +987,8 @@ export type UserUncheckedUpdateWithoutAnalysesInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -954,6 +1014,8 @@ export type UserCreateWithoutAtsScoresInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
@@ -979,6 +1041,8 @@ export type UserUncheckedCreateWithoutAtsScoresInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -1020,6 +1084,8 @@ export type UserUpdateWithoutAtsScoresInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
@@ -1045,6 +1111,8 @@ export type UserUncheckedUpdateWithoutAtsScoresInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -1070,6 +1138,8 @@ export type UserCreateWithoutAtsScoreHistoriesInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1095,6 +1165,8 @@ export type UserUncheckedCreateWithoutAtsScoreHistoriesInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1136,6 +1208,8 @@ export type UserUpdateWithoutAtsScoreHistoriesInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1161,6 +1235,8 @@ export type UserUncheckedUpdateWithoutAtsScoreHistoriesInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1186,6 +1262,8 @@ export type UserCreateWithoutJobDescriptionsInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1211,6 +1289,8 @@ export type UserUncheckedCreateWithoutJobDescriptionsInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1252,6 +1332,8 @@ export type UserUpdateWithoutJobDescriptionsInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1277,6 +1359,8 @@ export type UserUncheckedUpdateWithoutJobDescriptionsInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1302,6 +1386,8 @@ export type UserCreateWithoutPaymentsInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1327,6 +1413,8 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1368,6 +1456,8 @@ export type UserUpdateWithoutPaymentsInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1393,6 +1483,8 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1418,6 +1510,8 @@ export type UserCreateWithoutSupportTicketsInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1443,6 +1537,8 @@ export type UserUncheckedCreateWithoutSupportTicketsInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1484,6 +1580,8 @@ export type UserUpdateWithoutSupportTicketsInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1509,6 +1607,8 @@ export type UserUncheckedUpdateWithoutSupportTicketsInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1534,6 +1634,8 @@ export type UserCreateWithoutFeedbacksInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1559,6 +1661,8 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: Date | string | null
+  lastSeenSupportAt?: Date | string | null
+  lastSeenReviewsAt?: Date | string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1600,6 +1704,8 @@ export type UserUpdateWithoutFeedbacksInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1625,6 +1731,8 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   isBanned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1744,6 +1852,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: boolean
+  lastSeenSupportAt?: boolean
+  lastSeenReviewsAt?: boolean
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   analyses?: boolean | Prisma.User$analysesArgs<ExtArgs>
   atsScores?: boolean | Prisma.User$atsScoresArgs<ExtArgs>
@@ -1771,6 +1881,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: boolean
+  lastSeenSupportAt?: boolean
+  lastSeenReviewsAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1789,6 +1901,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: boolean
+  lastSeenSupportAt?: boolean
+  lastSeenReviewsAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1807,9 +1921,11 @@ export type UserSelectScalar = {
   isBanned?: boolean
   isActive?: boolean
   lastActiveAt?: boolean
+  lastSeenSupportAt?: boolean
+  lastSeenReviewsAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "googleId" | "password" | "picture" | "preferences" | "subscription" | "createdAt" | "updatedAt" | "lastLoginAt" | "role" | "isBanned" | "isActive" | "lastActiveAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "googleId" | "password" | "picture" | "preferences" | "subscription" | "createdAt" | "updatedAt" | "lastLoginAt" | "role" | "isBanned" | "isActive" | "lastActiveAt" | "lastSeenSupportAt" | "lastSeenReviewsAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   analyses?: boolean | Prisma.User$analysesArgs<ExtArgs>
@@ -1852,6 +1968,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isBanned: boolean
     isActive: boolean
     lastActiveAt: Date | null
+    lastSeenSupportAt: Date | null
+    lastSeenReviewsAt: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2298,6 +2416,8 @@ export interface UserFieldRefs {
   readonly isBanned: Prisma.FieldRef<"User", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
   readonly lastActiveAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly lastSeenSupportAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly lastSeenReviewsAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

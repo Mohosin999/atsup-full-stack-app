@@ -21,6 +21,9 @@ import {
   deleteReview,
   deleteAllReviews,
   toggleReviewHome,
+  markSupportSeen,
+  markReviewsSeen,
+  getUnreadCounts,
 } from "./admin-dashboard.controller";
 
 const router = Router();
@@ -49,5 +52,9 @@ router.get("/reviews", getReviews);
 router.delete("/reviews/:id", generalLimiter, deleteReview);
 router.delete("/reviews", generalLimiter, deleteAllReviews);
 router.patch("/reviews/:id/toggle-home", generalLimiter, toggleReviewHome);
+
+router.get("/unread-counts", getUnreadCounts);
+router.patch("/last-seen/support", markSupportSeen);
+router.patch("/last-seen/reviews", markReviewsSeen);
 
 export default router;

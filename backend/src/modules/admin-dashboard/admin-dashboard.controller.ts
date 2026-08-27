@@ -317,3 +317,66 @@ export const toggleReviewHome = async (req: AuthRequest, res: Response) => {
     sendError(res, error);
   }
 };
+
+// ── Last Seen / Unread Counts ──────────────────────────────────────
+
+export const markSupportSeen = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: { lastSeenSupportAt: new Date() },
+    });
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error marking support seen:", error);
+    sendError(res, error);
+  }
+};
+
+export const markReviewsSeen = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: { lastSeenReviewsAt: new Date() },
+    });
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error marking reviews seen:", error);
+    sendError(res, error);
+  }
+};
+
+export const getUnreadCounts = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { lastSeenSupportAt: true, lastSeenReviewsAt: true },
+    });
+
+    const supportWhere: any = { status: "open" };
+    if (user?.lastSeenSupportAt) {
+      supportWhere.createdAt = { gt: user.lastSeenSupportAt };
+    }
+
+    const reviewsWhere: any = {};
+    if (user?.lastSeenReviewsAt) {
+      reviewsWhere.createdAt = { gt: user.lastSeenReviewsAt };
+    }
+
+    const [unreadSupport, unreadReviews] = await Promise.all([
+      prisma.supportTicket.count({ where: supportWhere }),
+      prisma.feedback.count({ where: reviewsWhere }),
+    ]);
+
+    res.json({
+      success: true,
+      data: { unreadSupport, unreadReviews },
+    });
+  } catch (error) {
+    console.error("Error fetching unread counts:", error);
+    sendError(res, error);
+  }
+};

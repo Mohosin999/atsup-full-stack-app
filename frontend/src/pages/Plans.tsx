@@ -1,9 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  Check,
-  Star,
-} from "lucide-react";
+import { Check, Star } from "lucide-react";
 import { useAppSelector } from "../hooks/redux";
 import Wrapper from "../components/Wrapper";
 
@@ -99,7 +96,7 @@ export default function Plans() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`relative bg-white dark:bg-white rounded-2xl shadow-lg overflow-hidden ${
+              className={`relative bg-white dark:bg-white rounded-2xl shadow-[0_0_6px_rgba(0,0,0,0.2)] overflow-hidden ${
                 plan.popular ? "ring-2 ring-primary" : ""
               }`}
             >

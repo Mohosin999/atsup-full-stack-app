@@ -19,6 +19,7 @@ import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
 import MyReports from "./pages/MyReports";
 import ReviewModal from "./components/ReviewModal";
+import ReportButton from "./components/support/ReportButton";
 import { useVisitorTracking } from "./hooks/useVisitorTracking";
 import { Star } from "lucide-react";
 
@@ -165,6 +166,7 @@ function App() {
         </button>
       )}
       <ReviewModal isOpen={reviewOpen} onClose={() => setReviewOpen(false)} />
+      <ReportButton />
     </ThemeWrapper>
   );
 }

@@ -64,16 +64,6 @@ const ReportButton: React.FC = () => {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        title="Report a problem"
-        className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-cyan-600 text-white shadow-lg hover:bg-cyan-700 transition-colors"
-      >
-        <MessageSquare className="w-5 h-5" />
-        <span className="hidden sm:inline text-sm font-medium">Help</span>
-      </button>
-
       {open && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div className="absolute inset-0 bg-black/40" onClick={close} />

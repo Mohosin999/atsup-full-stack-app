@@ -94,7 +94,7 @@ const ProfileSection = ({
   name: string;
   setName: (v: string) => void;
 }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6">
+  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)]">
     <div className="flex items-center gap-3 mb-6">
       <h2 className="text-lg font-semibold text-gray-800">Profile Information</h2>
     </div>
@@ -126,7 +126,7 @@ const ProfileSection = ({
 );
 
 const SubscriptionSection = ({ user }: { user: any }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6">
+  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)]">
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
         <h2 className="text-lg font-semibold text-gray-800">Subscription</h2>
@@ -152,7 +152,7 @@ const SubscriptionSection = ({ user }: { user: any }) => (
 );
 
 const DangerZone = ({ onDelete }: { onDelete: () => void }) => (
-  <div className="bg-white rounded-xl border border-red-300 p-6">
+  <div className="bg-white rounded-xl border border-red-300 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)]">
     <div className="flex items-center gap-3 mb-1">
       <h2 className="text-lg font-semibold text-gray-800">Danger Zone</h2>
     </div>

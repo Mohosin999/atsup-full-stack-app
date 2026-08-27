@@ -6,6 +6,7 @@ import unlimitedAtsRoutes from "./unlimited-ats-check/unlimitedAts.routes";
 import adminDashboardRoutes from "./admin-dashboard/admin-dashboard.routes";
 import supportRoutes from "./support/support.routes";
 import visitorRoutes from "./visitor/visitor.routes";
+import feedbackRoutes from "./feedback/feedback.routes";
 
 export const moduleRoutes = [
   { path: "/api/auth", router: authRoutes },
@@ -16,4 +17,5 @@ export const moduleRoutes = [
   { path: "/api/admin-dashboard", router: adminDashboardRoutes },
   { path: "/api/support", router: supportRoutes },
   { path: "/api/visitor", router: visitorRoutes },
+  { path: "/api/feedback", router: feedbackRoutes },
 ];

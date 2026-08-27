@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
 import { consumeRedirect } from "./utils/authGuard";
@@ -19,6 +19,7 @@ import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
 import MyReports from "./pages/MyReports";
 import ReportButton from "./components/support/ReportButton";
+import FeedbackModal from "./components/FeedbackModal";
 import { useVisitorTracking } from "./hooks/useVisitorTracking";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -46,8 +47,15 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   useVisitorTracking();
+
+  useEffect(() => {
+    const handleOpen = () => setFeedbackOpen(true);
+    window.addEventListener("open-feedback-modal", handleOpen);
+    return () => window.removeEventListener("open-feedback-modal", handleOpen);
+  }, []);
 
   // After a successful login (incl. Google OAuth round-trip), return to the
   // page the user came from. For email/password & OAuth, stay on home page.
@@ -140,6 +148,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       {user && <ReportButton />}
+      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </ThemeWrapper>
   );
 }

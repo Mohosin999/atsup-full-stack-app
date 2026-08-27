@@ -58,6 +58,11 @@ export type Payment = Prisma.PaymentModel
  */
 export type SupportTicket = Prisma.SupportTicketModel
 /**
+ * Model Feedback
+ * 
+ */
+export type Feedback = Prisma.FeedbackModel
+/**
  * Model Visitor
  * 
  */

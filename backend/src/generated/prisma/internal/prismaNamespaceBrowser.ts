@@ -59,6 +59,7 @@ export const ModelName = {
   JobDescription: 'JobDescription',
   Payment: 'Payment',
   SupportTicket: 'SupportTicket',
+  Feedback: 'Feedback',
   Visitor: 'Visitor',
   SiteStats: 'SiteStats'
 } as const
@@ -221,6 +222,18 @@ export const SupportTicketScalarFieldEnum = {
 } as const
 
 export type SupportTicketScalarFieldEnum = (typeof SupportTicketScalarFieldEnum)[keyof typeof SupportTicketScalarFieldEnum]
+
+
+export const FeedbackScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  rating: 'rating',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FeedbackScalarFieldEnum = (typeof FeedbackScalarFieldEnum)[keyof typeof FeedbackScalarFieldEnum]
 
 
 export const VisitorScalarFieldEnum = {

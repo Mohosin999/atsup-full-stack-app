@@ -4,7 +4,7 @@ Profile Menu Component
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings, LogOut, FileText, MessageSquare } from "lucide-react";
+import { Settings, LogOut, FileText, MessageSquare, Star } from "lucide-react";
 
 interface ProfileMenuProps {
   user: {
@@ -77,6 +77,15 @@ export default function ProfileMenu({
             >
               <Settings className="w-4 h-4" /> <span>Settings</span>
             </Link>
+            <button
+              onClick={() => {
+                setProfileMenuOpen(false);
+                window.dispatchEvent(new Event("open-feedback-modal"));
+              }}
+              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+            >
+              <Star className="w-4 h-4" /> <span>Give Feedback</span>
+            </button>
             <Link
               to="/my-reports"
               className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"

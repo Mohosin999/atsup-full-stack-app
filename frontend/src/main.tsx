@@ -56,13 +56,13 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <InitializeApp />
-          <div className="bg-white">
+          <div className="bg-[#fffdf6]">
             <Navbar />
               <App />
             <Footer />
           </div>
           <ToastContainer
-            position="top-right"
+            position="bottom-right"
             autoClose={3000}
             hideProgressBar={false}
             newestOnTop

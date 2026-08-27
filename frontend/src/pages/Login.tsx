@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, User, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux";
@@ -216,7 +216,7 @@ export default function Login() {
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <img src="/favicon.png" alt="" className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Loading...
                 </span>
               ) : (

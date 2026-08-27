@@ -56,7 +56,7 @@ export default function FeatureShowcase() {
                   {isActive && (
                     <motion.span
                       layoutId="activeTab"
-                      className="absolute inset-0 rounded-lg bg-slate-900"
+                      className="absolute inset-0 rounded-lg bg-slate-800"
                       transition={{
                         type: "spring",
                         stiffness: 400,

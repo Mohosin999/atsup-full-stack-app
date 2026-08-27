@@ -39,7 +39,7 @@ export default function ResumeDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="bg-cyan-50 p-4 md:p-6 xl:p-8 flex flex-col items-start box-shadow"
+            className="bg-cyan-50 p-4 md:p-6 xl:p-8 flex flex-col items-start rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]"
           >
             <div className="w-12 h-12 bg-cyan-600 text-white flex items-center justify-center mb-4">
               <FilePlus2 className="w-6 h-6 text-white" />
@@ -71,7 +71,7 @@ export default function ResumeDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white border-2 border-dashed border-gray-300 p-4 md:p-6 xl:p-8 flex flex-col items-start group relative"
+            className="bg-white border-2 border-dashed border-gray-300 p-4 md:p-6 xl:p-8 flex flex-col items-start group relative rounded-lg"
           >
             <div className="w-12 h-12 bg-violet-500/10 border border-violet-500/30 flex items-center justify-center mb-4">
               <UploadCloud className="w-6 h-6 text-violet-500" />

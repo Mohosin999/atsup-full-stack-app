@@ -45,7 +45,7 @@ export default function ResumeHistory() {
     queryKey: ["resumes", user?._id, page],
     queryFn: async () => {
       if (!user) return { data: [], pagination: { pages: 1, total: 0 } };
-      const res = await resumeApi.getAll(page, 10, "builder");
+      const res = await resumeApi.getAll(page, 7, "builder");
       return {
         data: res.data.data || [],
         pagination: res.data.pagination || { pages: 1, total: 0 },
@@ -148,7 +148,7 @@ export default function ResumeHistory() {
               {totalResumes > 0 && (
                 <button
                   onClick={() => setClearAllOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/20 border border-red-500/30 text-red-600 hover:bg-red-500/30 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm bg-red-500/20 border border-red-500/30 text-red-600 hover:bg-red-500/30 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                   Clear All
@@ -165,7 +165,7 @@ export default function ResumeHistory() {
           ) : (
             <>
               {/* Desktop Table */}
-              <div className="bg-white hidden md:block border border-gray-300 overflow-hidden">
+              <div className="hidden md:block border border-gray-300 overflow-hidden rounded-lg">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-[#A5D9FC] border-b border-[#A5D9FC] text-left">

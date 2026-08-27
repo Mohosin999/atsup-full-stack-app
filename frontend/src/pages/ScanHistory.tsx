@@ -2,10 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Calendar,
-  FileText,
   Trash2,
-  Search,
   Pencil,
   Check,
   X,
@@ -37,7 +34,7 @@ export default function ScanHistory() {
     queryKey: ["ats-history", user?._id, page],
     queryFn: async () => {
       if (!user) return { data: [], pagination: { totalPages: 1, total: 0 } };
-      const res = await atsScoreApi.getHistory(page, 10);
+      const res = await atsScoreApi.getHistory(page, 7);
       return { data: res.data.data || [], pagination: res.data.pagination || { totalPages: 1, total: 0 } };
     },
     enabled: !!user,
@@ -119,7 +116,7 @@ export default function ScanHistory() {
               {totalScans > 0 && (
                 <button
                   onClick={() => setClearAllOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-red-500/20 border border-red-500/30 text-red-600 hover:bg-red-500/30 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm bg-red-500/20 border border-red-500/30 text-red-600 hover:bg-red-500/30 transition-colors rounded-full"
                 >
                   <Trash2 className="w-4 h-4" />
                   Clear All
@@ -136,7 +133,7 @@ export default function ScanHistory() {
           ) : (
             <>
               {/* Desktop Table - visible from md breakpoint */}
-              <div className="bg-white hidden md:block border border-gray-300 overflow-hidden">
+              <div className="hidden md:block border border-gray-300 overflow-hidden rounded-lg">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-[#A5D9FC] border-b border-[#A5D9FC]  text-left">

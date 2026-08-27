@@ -73,56 +73,6 @@ const STATUS_ICON: Record<
   },
 };
 
-// ==========================================================================
-// Sub group block component (contact, section heading etc...)
-// ==========================================================================
-// const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
-//   subgroup,
-// }) => {
-//   return (
-//     <div className="rounded-xl border border-gray-200/60 bg-gray-0 overflow-hidden">
-//       <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-50 border-b border-gray-200/60">
-//         <div className="min-w-0">
-//           <h4 className="text-sm font-semibold text-gray-800 leading-tight">
-//             {subgroup.title}
-//           </h4>
-//         </div>
-//       </div>
-
-//       <ul className="px-4 py-2.5 space-y-2.5">
-//         {subgroup.checks.map((check) => {
-//           const st = STATUS_ICON[check.status] || STATUS_ICON["not-applicable"];
-//           return (
-//             <li key={check.label} className="flex items-start gap-2.5">
-//               <span
-//                 className={`mt-0.5 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
-//                   check.status === "passed"
-//                     ? "bg-green-500/15 text-green-600"
-//                     : check.status === "failed"
-//                       ? "bg-red-500/15 text-red-600"
-//                       : "bg-gray-50 text-gray-500"
-//                 }`}
-//               >
-//                 <span className="text-[18px] xl:text-[20px] leading-none">
-//                   {st.mark}
-//                 </span>
-//               </span>
-//               <div className="min-w-0">
-//                 <p className="text-[13px] font-medium text-gray-700 leading-snug">
-//                   {check.label}
-//                 </p>
-//                 <p className="text-xs text-gray-600 leading-snug mt-0.5">
-//                   {check.detail}
-//                 </p>
-//               </div>
-//             </li>
-//           );
-//         })}
-//       </ul>
-//     </div>
-//   );
-// };
-
 const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
   subgroup,
 }) => {
@@ -355,7 +305,7 @@ const ReviewCard: React.FC<{
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className={`bg-white/80 ${meta.accent} p-5 box-shadow`}
+      className={`${meta.accent} p-5 bg-white rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -387,48 +337,6 @@ const ReviewCard: React.FC<{
         isOpen={tipsOpen}
         onClose={() => setTipsOpen(false)}
       />
-
-      {/* Strengths */}
-      {/* {!hasSubgroups && category.strengths.length > 0 && (
-        <div className="mb-3">
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-green-600 mb-2">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            What you did well
-          </p>
-          <ul className="space-y-1.5">
-            {category.strengths.slice(0, 4).map((s, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-2 text-[13px] text-gray-700"
-              >
-                <span className="text-green-600 mt-0.5">✓</span>
-                {s}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )} */}
-
-      {/* Improvements */}
-      {/* {!hasSubgroups && category.improvements.length > 0 && (
-        <div>
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-amber-600 mb-2">
-            <AlertTriangle className="w-3.5 h-3.5" />
-            How to improve
-          </p>
-          <ul className="space-y-1.5">
-            {category.improvements.slice(0, 4).map((s, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-2 text-[13px] text-gray-700"
-              >
-                <span className="text-amber-500 mt-0.5">→</span>
-                {s}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )} */}
     </motion.div>
   );
 };

@@ -1,71 +1,3 @@
-// import { motion } from "framer-motion";
-// import { clsx } from "clsx";
-
-// interface LoadingSpinnerProps {
-//   size?: "sm" | "md" | "lg";
-//   fullScreen?: boolean;
-//   className?: string;
-//   text?: string;
-// }
-
-// const sizeMap = {
-//   sm: { img: "w-8 h-8", text: "text-xs" },
-//   md: { img: "w-12 h-12", text: "text-sm" },
-//   lg: { img: "w-16 h-16", text: "text-base" },
-// };
-
-// export default function LoadingSpinner({
-//   size = "md",
-//   fullScreen,
-//   className,
-//   text,
-// }: LoadingSpinnerProps) {
-//   const s = sizeMap[size];
-
-//   const spinner = (
-//     <motion.div
-//       initial={{ opacity: 0, scale: 0.8 }}
-//       animate={{ opacity: 1, scale: 1 }}
-//       className={clsx(
-//         "flex flex-col items-center justify-center gap-3",
-//         className,
-//       )}
-//     >
-//       <motion.img
-//         src="/favicon.png"
-//         alt="Loading"
-//         className={clsx(s.img, "object-contain")}
-//         animate={{ rotate: 360 }}
-//         transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
-//       />
-//       {text && (
-//         <motion.p
-//           initial={{ opacity: 0 }}
-//           animate={{ opacity: 1 }}
-//           transition={{ delay: 0.3 }}
-//           className={clsx("text-gray-500 font-medium", s.text)}
-//         >
-//           {text}
-//         </motion.p>
-//       )}
-//     </motion.div>
-//   );
-
-//   if (fullScreen) {
-//     return (
-//       <motion.div
-//         initial={{ opacity: 0 }}
-//         animate={{ opacity: 1 }}
-//         className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50"
-//       >
-//         {spinner}
-//       </motion.div>
-//     );
-//   }
-
-//   return spinner;
-// }
-
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
 
@@ -161,7 +93,7 @@ export default function LoadingSpinner({
             {text}
           </motion.p>
           {/* Animated dots */}
-          <div className="flex gap-1">
+          {/* <div className="flex gap-1">
             {[0, 1, 2].map((i) => (
               <motion.span
                 key={i}
@@ -174,7 +106,7 @@ export default function LoadingSpinner({
                 }}
               />
             ))}
-          </div>
+          </div> */}
         </motion.div>
       )}
     </motion.div>

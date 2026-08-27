@@ -26,7 +26,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-white text-gray-800 py-8">
+    <footer className="py-8">
       <Wrapper className="!px-4 lg:!px-16">
         {/* Top Divider */}
         <div className="flex items-center gap-4 mb-8">

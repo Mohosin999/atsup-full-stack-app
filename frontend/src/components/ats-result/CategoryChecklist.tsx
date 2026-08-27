@@ -126,7 +126,7 @@ const CategoryChecklist: React.FC<CategoryChecklistProps> = ({
   ];
 
   return (
-    <div className="bg-white/80 px-5 py-7 box-shadow">
+    <div className="px-5 py-7 bg-white shadow-[0_0_6px_rgba(0,0,0,0.2)] rounded-lg">
       <div className="flex justify-center">
         <ScoreCircle score={overallScore} size="md" />
       </div>

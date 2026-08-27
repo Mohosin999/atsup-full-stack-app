@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { User, Trash2, Save } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
-import { logoutUser, fetchUser } from "../store/slices/authSlice";
+import { logoutUser, setUser } from "../store/slices/authSlice";
 import { userApi } from "../api/api";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import Wrapper from "../components/Wrapper";
@@ -15,17 +14,20 @@ export default function Settings() {
     loading: state.auth.loading,
   }));
 
-  console.log('oi sunny leo ', user)
   const dispatch = useAppDispatch();
   const [name, setName] = useState(user?.name || "");
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const handleSaveProfile = async () => {
+  const hasChanges = name.trim() !== "" && name !== user?.name;
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
     setSaving(true);
     try {
-      await userApi.updateProfile({ name });
-      await dispatch(fetchUser());
+      const res = await userApi.updateProfile({ name });
+      const updatedUser = res.data.data ?? res.data;
+      dispatch(setUser(updatedUser));
       toast.success("Profile updated successfully");
     } catch (error) {
       toast.error("Failed to update profile");
@@ -46,25 +48,22 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-12">
+    <div className="min-h-screen lg:pt-20 pb-12">
       <Wrapper maxWidth="md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="my-8"
-        >
-          <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
+        <div className="my-8">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800">Settings</h1>
           <p className="text-gray-600 mt-1">Manage your account preferences</p>
-        </motion.div>
+        </div>
         <div className="space-y-6">
           <ProfileSection user={user} name={name} setName={setName} />
           <SubscriptionSection user={user} />
           <DangerZone onDelete={() => setShowDeleteConfirm(true)} />
           <div className="flex justify-end">
             <button
+              type="button"
               onClick={handleSaveProfile}
-              disabled={saving}
-              className="gradient-btn"
+              disabled={saving || !hasChanges}
+              className="flex items-center gap-2 text-sm bg-cyan-600 text-white px-4 py-2 hover:bg-cyan-600/90 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save className="w-4 h-4" />
               {saving ? "Saving..." : "Save Changes"}
@@ -95,30 +94,16 @@ const ProfileSection = ({
   name: string;
   setName: (v: string) => void;
 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.1 }}
-    className="bg-white rounded-xl border border-gray-200 p-6"
-  >
+  <div className="bg-white rounded-xl border border-gray-200 p-6">
     <div className="flex items-center gap-3 mb-6">
-      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-        <User className="w-5 h-5 text-primary" />
-      </div>
       <h2 className="text-lg font-semibold text-gray-800">Profile Information</h2>
     </div>
     <div className="flex items-center gap-4 mb-6">
-      {user?.picture ? (
-        <img
-          src={user.picture}
-          alt={user.name}
-          className="w-16 h-16 rounded-full"
-        />
-      ) : (
-        <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white text-xl font-bold">
-          {user?.name?.charAt(0) || "U"}
-        </div>
-      )}
+      <img
+        src="/profile_avatar.jpg"
+        alt={user?.name}
+        className="w-16 h-16 rounded-full bg-gray-100"
+      />
       <div>
         <p className="font-medium text-gray-800">{user?.name}</p>
         <p className="text-sm text-gray-600">{user?.email}</p>
@@ -133,20 +118,15 @@ const ProfileSection = ({
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-transparent transition-all duration-200"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:border-transparent transition-all duration-200"
         />
       </div>
     </div>
-  </motion.div>
+  </div>
 );
 
 const SubscriptionSection = ({ user }: { user: any }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.2 }}
-    className="bg-white rounded-xl border border-gray-200 p-6"
-  >
+  <div className="bg-white rounded-xl border border-gray-200 p-6">
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
         <h2 className="text-lg font-semibold text-gray-800">Subscription</h2>
@@ -158,39 +138,32 @@ const SubscriptionSection = ({ user }: { user: any }) => (
         </p>
         <p className="text-sm text-gray-600">
           Credits remaining:{" "}
-          <span className="font-medium">{user?.subscription.credits}</span>
+          {/* <span className="font-medium">{user?.subscription.credits}</span> */}
+          <span className="font-medium">0</span>
         </p>
       </div>
       {user?.subscription.plan === "free" && (
-        <Link to="/plans" className="gradient-btn">
+        <Link to="/plans" className="text-sm bg-cyan-600 text-white px-4 py-2 hover:bg-cyan-600/90 cursor-pointer">
           Upgrade to Pro
         </Link>
       )}
     </div>
-  </motion.div>
+  </div>
 );
 
 const DangerZone = ({ onDelete }: { onDelete: () => void }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.3 }}
-    className="bg-white rounded-xl border border-red-300 p-6"
-  >
-    <div className="flex items-center gap-3 mb-6">
-      <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center">
-        <Trash2 className="w-5 h-5 text-red-500" />
-      </div>
+  <div className="bg-white rounded-xl border border-red-300 p-6">
+    <div className="flex items-center gap-3 mb-1">
       <h2 className="text-lg font-semibold text-gray-800">Danger Zone</h2>
     </div>
-    <p className="text-sm text-gray-600 mb-4">
+    <p className="text-sm text-gray-600 mb-6">
       Once you delete your account, there is no going back. Please be certain.
     </p>
     <button
       onClick={onDelete}
-      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
+      className="px-4 py-2 bg-red-500 text-white hover:bg-red-600 transition-colors text-sm font-medium"
     >
       Delete Account
     </button>
-  </motion.div>
+  </div>
 );

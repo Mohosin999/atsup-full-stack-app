@@ -99,7 +99,7 @@ export default function TestimonialsSection({
   ];
 
   return (
-    <section className="pb-24">
+    <section className="pb-20 lg:pb-20 xl:pb-28">
       <Wrapper>
         <div className="text-center mb-10 lg:mb-14">
           <h2 className="text-3xl xl:text-4xl font-bold text-gray-900">

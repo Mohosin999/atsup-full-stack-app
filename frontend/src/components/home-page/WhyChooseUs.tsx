@@ -14,7 +14,7 @@ interface WhyChooseUsProps {
 
 export default function WhyChooseUs({ features }: WhyChooseUsProps) {
   return (
-    <section className="pb-24">
+    <section className="pb-20 lg:pb-20 xl:pb-28">
       <Wrapper>
         <div className="text-center mb-6 lg:mb-8">
           <h2 className="text-2xl xl:text-3xl font-semibold text-gray-800">
@@ -28,13 +28,7 @@ export default function WhyChooseUs({ features }: WhyChooseUsProps) {
           </p>
         </div>
 
-        <motion.div
-          variants={staggerContainer}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 xl:gap-8"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 xl:gap-8">
           {features.map((feature) => (
             <motion.div
               key={feature.title}
@@ -56,7 +50,7 @@ export default function WhyChooseUs({ features }: WhyChooseUsProps) {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </Wrapper>
     </section>
   );

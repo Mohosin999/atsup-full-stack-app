@@ -59,7 +59,7 @@ export default function AtsScorePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white p-6 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
+          className="bg-white p-6 rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]"
         >
           <ResumeScanForm
             initialResumeFile={initialResumeFile}

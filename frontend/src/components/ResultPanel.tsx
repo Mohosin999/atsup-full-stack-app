@@ -4,7 +4,7 @@ Result Panel Component
 import { motion } from "framer-motion";
 import { Analysis } from "../types";
 import ATSScoreBreakdown from "./ATSScoreBreakdown";
-import OverallFeedback from "./OverallFeedback";
+import OverallReview from "./OverallReview";
 import SkillsAnalysis from "./SkillsAnalysis";
 import MissingKeywords from "./MissingKeywords";
 
@@ -34,7 +34,7 @@ export default function ResultPanel({ analysis }: ResultPanelProps) {
         suggestions={atsSuggestions}
       />
 
-      <OverallFeedback analysis={analysis} />
+      <OverallReview analysis={analysis} />
       <SkillsAnalysis analysis={analysis} />
       {analysis.keywords?.missing?.length > 0 && <MissingKeywords keywords={analysis.keywords.missing} />}
     </motion.div>

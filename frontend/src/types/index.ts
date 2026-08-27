@@ -264,7 +264,7 @@ export interface Analysis {
   atsScore?: number;
   atsBreakdown?: ATSBreakdown;
   atsSuggestions?: string[];
-  feedback: Feedback;
+  review: Review;
   sectionScores: SectionScores;
   keywords: Keywords;
   missingKeywords: MissingKeywords;
@@ -275,7 +275,7 @@ export interface Analysis {
   createdAt: string;
 }
 
-export interface Feedback {
+export interface Review {
   overall: string;
   strengths: string[];
   weaknesses: string[];
@@ -337,20 +337,20 @@ export interface AtsScore {
   resumeId: Resume | string;
   overallScore: number;
   sectionScores: {
-    summary: { score: number; feedback: string };
-    experience: { score: number; feedback: string };
-    projects: { score: number; feedback: string };
-    skills: { score: number; feedback: string };
-    contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
+    summary: { score: number; review: string };
+    experience: { score: number; review: string };
+    projects: { score: number; review: string };
+    skills: { score: number; review: string };
+    contactInfo: { score: number; review: string; hasContactInfo: boolean };
     measurableResults: {
       score: number;
-      feedback: string;
+      review: string;
       count: number;
       found: string[];
     };
     actionVerbs?: {
       score: number;
-      feedback: string;
+      review: string;
       count: number;
       found: string[];
     };
@@ -435,20 +435,20 @@ export interface AtsScoreHistory {
   resumeName: string;
   overallScore: number;
   sectionScores: {
-    summary: { score: number; feedback: string };
-    experience: { score: number; feedback: string };
-    projects: { score: number; feedback: string };
-    skills: { score: number; feedback: string };
-    contactInfo: { score: number; feedback: string; hasContactInfo: boolean };
+    summary: { score: number; review: string };
+    experience: { score: number; review: string };
+    projects: { score: number; review: string };
+    skills: { score: number; review: string };
+    contactInfo: { score: number; review: string; hasContactInfo: boolean };
     measurableResults: {
       score: number;
-      feedback: string;
+      review: string;
       count: number;
       found: string[];
     };
     actionVerbs?: {
       score: number;
-      feedback: string;
+      review: string;
       count: number;
       found: string[];
     };

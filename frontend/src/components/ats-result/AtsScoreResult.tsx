@@ -6,7 +6,7 @@ import SectionScoreCard from "../SectionScoreCard";
 import SuggestionList from "../SuggestionList";
 import JobMatchBreakdown from "../JobMatchBreakdown";
 import CategoryChecklist from "./CategoryChecklist";
-import FeedbackCard from "./FeedbackCard";
+import ReviewCard from "./ReviewCard";
 
 interface AtsScoreResultProps {
   result: AtsScoreHistory;
@@ -33,7 +33,7 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
             />
           </div>
 
-          {/* RIGHT: feedback cards column (wider) */}
+          {/* RIGHT: review cards column (wider) */}
           <div className="lg:col-span-8 xl:col-span-9 space-y-6">
             {(
               [
@@ -44,7 +44,7 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
                 "formatting",
               ] as const
             ).map((key, idx) => (
-              <FeedbackCard
+              <ReviewCard
                 key={key}
                 category={result.sectionScores.categories![key]}
                 index={idx}
@@ -116,42 +116,42 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
               <SectionScoreCard
                 sectionName="Summary"
                 score={result.sectionScores.summary.score}
-                feedback={result.sectionScores.summary.feedback}
+                review={result.sectionScores.summary.review}
               />
               <SectionScoreCard
                 sectionName="Experience"
                 score={result.sectionScores.experience.score}
-                feedback={result.sectionScores.experience.feedback}
+                review={result.sectionScores.experience.review}
               />
               <SectionScoreCard
                 sectionName="Projects"
                 score={result.sectionScores.projects.score}
-                feedback={result.sectionScores.projects.feedback}
+                review={result.sectionScores.projects.review}
               />
               <SectionScoreCard
                 sectionName="Skills"
                 score={result.sectionScores.skills.score}
-                feedback={result.sectionScores.skills.feedback}
+                review={result.sectionScores.skills.review}
               />
               <SectionScoreCard
                 sectionName="Contact Info"
                 score={result.sectionScores.contactInfo.score}
-                feedback={result.sectionScores.contactInfo.feedback}
+                review={result.sectionScores.contactInfo.review}
                 hasContactInfo={result.sectionScores.contactInfo.hasContactInfo}
               />
               <SectionScoreCard
                 sectionName="Measurable Results"
                 score={result.sectionScores.measurableResults?.score ?? 0}
-                feedback={
-                  result.sectionScores.measurableResults?.feedback ??
+                review={
+                  result.sectionScores.measurableResults?.review ??
                   "No measurable result data available."
                 }
               />
               <SectionScoreCard
                 sectionName="Action Verbs"
                 score={result.sectionScores.actionVerbs?.score ?? 0}
-                feedback={
-                  result.sectionScores.actionVerbs?.feedback ??
+                review={
+                  result.sectionScores.actionVerbs?.review ??
                   "No action verb data available."
                 }
               />

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Star, X, Send, CheckCircle2 } from "lucide-react";
-import { feedbackApi } from "../api/api";
+import { reviewApi } from "../api/api";
 
-interface FeedbackModalProps {
+interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
+const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose }) => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [message, setMessage] = useState("");
@@ -41,7 +41,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
     setSubmitting(true);
     setError("");
     try {
-      await feedbackApi.submit({ rating, message: message.trim() });
+      await reviewApi.submit({ rating, message: message.trim() });
       setDone(true);
     } catch (err: any) {
       setError(
@@ -60,7 +60,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
       <div className="relative w-full sm:max-w-md bg-white rounded-t-xl sm:rounded-lg shadow-xl p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800">
-            {done ? "Thank You!" : "Share Your Feedback"}
+            {done ? "Thank You!" : "Share Your Review"}
           </h3>
           <button
             type="button"
@@ -75,7 +75,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
           <div className="text-center py-6">
             <CheckCircle2 className="w-12 h-12 text-cyan-500 mx-auto mb-3" />
             <p className="text-gray-700 mb-1">
-              Thanks for your feedback! It helps us improve.
+              Thanks for your review! It helps us improve.
             </p>
             <button
               type="button"
@@ -128,7 +128,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Your feedback
+                Your review
               </label>
               <textarea
                 value={message}
@@ -152,7 +152,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
               >
                 <Send className="w-4 h-4" />
-                {submitting ? "Submitting..." : "Submit Feedback"}
+                {submitting ? "Submitting..." : "Submit Review"}
               </button>
             </div>
           </form>
@@ -162,4 +162,4 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default FeedbackModal;
+export default ReviewModal;

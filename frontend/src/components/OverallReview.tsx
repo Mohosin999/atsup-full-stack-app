@@ -1,10 +1,10 @@
 /* ===================================
-Overall Feedback Component
+Overall Review Component
 =================================== */
 import { TrendingUp } from "lucide-react";
 import { Analysis } from "../types";
 
-export default function OverallFeedback({ analysis }: { analysis: Analysis }) {
+export default function OverallReview({ analysis }: { analysis: Analysis }) {
   return (
     <div className="card p-6">
       <div className="flex items-start gap-3">
@@ -12,7 +12,7 @@ export default function OverallFeedback({ analysis }: { analysis: Analysis }) {
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Analysis Summary</h3>
           <p className="text-gray-600 dark:text-gray-600 leading-relaxed">
-            {analysis.feedback?.overall || "Analysis complete. Review the detailed breakdown below for actionable insights."}
+            {analysis.review?.overall || "Analysis complete. Review the detailed breakdown below for actionable insights."}
           </p>
         </div>
       </div>

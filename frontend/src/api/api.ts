@@ -132,9 +132,9 @@ export const supportApi = {
   getMine: () => api.get("/support/mine"),
 };
 
-export const feedbackApi = {
+export const reviewApi = {
   submit: (data: { rating: number; message: string }) =>
-    api.post("/feedback", data),
+    api.post("/review", data),
 };
 
 export default api;

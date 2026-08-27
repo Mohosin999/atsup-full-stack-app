@@ -19,7 +19,7 @@ import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
 import MyReports from "./pages/MyReports";
 import ReportButton from "./components/support/ReportButton";
-import FeedbackModal from "./components/FeedbackModal";
+import ReviewModal from "./components/ReviewModal";
 import { useVisitorTracking } from "./hooks/useVisitorTracking";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -47,14 +47,14 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
-  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
 
   useVisitorTracking();
 
   useEffect(() => {
-    const handleOpen = () => setFeedbackOpen(true);
-    window.addEventListener("open-feedback-modal", handleOpen);
-    return () => window.removeEventListener("open-feedback-modal", handleOpen);
+    const handleOpen = () => setReviewOpen(true);
+    window.addEventListener("open-review-modal", handleOpen);
+    return () => window.removeEventListener("open-review-modal", handleOpen);
   }, []);
 
   // After a successful login (incl. Google OAuth round-trip), return to the
@@ -148,7 +148,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       {user && <ReportButton />}
-      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+      <ReviewModal isOpen={reviewOpen} onClose={() => setReviewOpen(false)} />
     </ThemeWrapper>
   );
 }

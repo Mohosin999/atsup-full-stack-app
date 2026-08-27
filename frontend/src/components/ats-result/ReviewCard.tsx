@@ -307,7 +307,7 @@ const FormattingLock: React.FC<{ onShowTips: () => void }> = ({
   );
 };
 
-const FeedbackCard: React.FC<{
+const ReviewCard: React.FC<{
   category: CategoryResult;
   index: number;
   hasFormattingData?: boolean;
@@ -433,4 +433,4 @@ const FeedbackCard: React.FC<{
   );
 };
 
-export default FeedbackCard;
+export default ReviewCard;

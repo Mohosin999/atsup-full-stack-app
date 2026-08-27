@@ -5,14 +5,14 @@ import { CheckCircle, XCircle, AlertCircle } from "lucide-react";
 interface SectionScoreCardProps {
   sectionName: string;
   score: number;
-  feedback: string;
+  review: string;
   hasContactInfo?: boolean;
 }
 
 const SectionScoreCard: React.FC<SectionScoreCardProps> = ({
   sectionName,
   score,
-  feedback,
+  review,
   hasContactInfo,
 }) => {
   const getScoreColor = (score: number) => {
@@ -50,7 +50,7 @@ const SectionScoreCard: React.FC<SectionScoreCardProps> = ({
         </div>
         <span className="text-2xl font-bold">{score}%</span>
       </div>
-      <p className="text-sm text-gray-700 dark:text-gray-700">{feedback}</p>
+      <p className="text-sm text-gray-700 dark:text-gray-700">{review}</p>
     </motion.div>
   );
 };

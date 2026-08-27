@@ -134,7 +134,16 @@ export const supportApi = {
 
 export const reviewApi = {
   submit: (data: { rating: number; message: string }) =>
-    api.post("/review", data),
+    api.post("/feedback", data),
+  getHomeReviews: () => api.get("/feedback/home"),
+};
+
+// Admin review management
+export const adminReviewApi = {
+  getAll: () => api.get("/admin-dashboard/reviews"),
+  delete: (id: string) => api.delete(`/admin-dashboard/reviews/${id}`),
+  deleteAll: () => api.delete("/admin-dashboard/reviews"),
+  toggleHome: (id: string) => api.patch(`/admin-dashboard/reviews/${id}/toggle-home`),
 };
 
 export default api;

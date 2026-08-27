@@ -20,6 +20,7 @@ import {
   updateTicketStatus,
   deleteTicket,
 } from "../support/support.service";
+import { prisma } from "../../lib/prisma";
 
 const ensureAdmin = (req: AuthRequest, res: Response): boolean => {
   if (!req.user || req.user.role !== "admin") {
@@ -254,6 +255,65 @@ export const deleteAllAtsScores = async (req: AuthRequest, res: Response) => {
     res.json({ success: true, data: result });
   } catch (error) {
     console.error("Error deleting all ATS scores:", error);
+    sendError(res, error);
+  }
+};
+
+// ── Reviews (admin) ────────────────────────────────────────────────
+
+export const getReviews = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const reviews = await prisma.feedback.findMany({
+      include: { user: { select: { id: true, name: true, email: true, picture: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+    res.json({ success: true, data: reviews });
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    sendError(res, error);
+  }
+};
+
+export const deleteReview = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    await prisma.feedback.delete({ where: { id: req.params.id } });
+    res.json({ success: true, message: "Review deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    sendError(res, error);
+  }
+};
+
+export const deleteAllReviews = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const result = await prisma.feedback.deleteMany();
+    res.json({ success: true, data: { count: result.count } });
+  } catch (error) {
+    console.error("Error deleting all reviews:", error);
+    sendError(res, error);
+  }
+};
+
+export const toggleReviewHome = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const existing = await prisma.feedback.findUnique({
+      where: { id: req.params.id },
+      select: { showOnHome: true },
+    });
+    if (!existing) {
+      return res.status(404).json({ success: false, message: "Review not found" });
+    }
+    const review = await prisma.feedback.update({
+      where: { id: req.params.id },
+      data: { showOnHome: !existing.showOnHome },
+    });
+    res.json({ success: true, data: review });
+  } catch (error) {
+    console.error("Error toggling review home:", error);
     sendError(res, error);
   }
 };

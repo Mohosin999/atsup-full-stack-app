@@ -182,12 +182,13 @@ model SupportTicket {
 }
 
 model Feedback {
-  id        String   @id @default(cuid())
-  userId    String
-  rating    Int      @db.Integer
-  message   String   @db.Text
-  createdAt DateTime @default(now()) @db.Timestamp()
-  updatedAt DateTime @updatedAt @db.Timestamp()
+  id          String   @id @default(cuid())
+  userId      String
+  rating      Int      @db.Integer
+  message     String   @db.Text
+  showOnHome  Boolean  @default(false)
+  createdAt   DateTime @default(now()) @db.Timestamp()
+  updatedAt   DateTime @updatedAt @db.Timestamp()
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

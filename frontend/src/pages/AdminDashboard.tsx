@@ -12,6 +12,7 @@ import {
   LifeBuoy,
   FileText,
   ClipboardCheck,
+  Star,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api/api";
@@ -20,6 +21,7 @@ import UserManagement from "../components/admin-dashboard/UserManagement";
 import SupportTickets from "../components/admin-dashboard/SupportTickets";
 import AllResumes from "../components/admin-dashboard/AllResumes";
 import AllAtsScores from "../components/admin-dashboard/AllAtsScores";
+import ReviewManagement from "../components/admin-dashboard/ReviewManagement";
 import Wrapper from "@/components/Wrapper";
 import SidebarButton from "../components/ui/SidebarButton";
 import AdminViewHeader from "../components/admin-dashboard/AdminViewHeader";
@@ -61,7 +63,7 @@ const AdminDashboard: React.FC = () => {
   const [period, setPeriod] = useState<GrowthPeriod>("today");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeView, setActiveView] = useState<
-    "overview" | "users" | "support" | "resumes" | "ats-scores"
+    "overview" | "users" | "support" | "reviews" | "resumes" | "ats-scores"
   >("overview");
   const [supportRefreshKey, setSupportRefreshKey] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -98,6 +100,15 @@ const AdminDashboard: React.FC = () => {
     enabled: !!user && user.role === "admin",
   });
 
+  const { data: reviewCount } = useQuery({
+    queryKey: ["admin-reviews-count"],
+    queryFn: async () => {
+      const res = await api.get("/admin-dashboard/reviews");
+      return res.data.success ? res.data.data.length : 0;
+    },
+    enabled: !!user && user.role === "admin",
+  });
+
   const { data: visitorData } = useQuery({
     queryKey: ["admin-visitors"],
     queryFn: async () => {
@@ -122,6 +133,8 @@ const AdminDashboard: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["admin-support"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-all-resumes"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-all-ats-scores"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-reviews"] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-reviews-count"] }),
     ]);
     setSupportRefreshKey((k) => k + 1);
     setIsRefreshing(false);
@@ -221,6 +234,13 @@ const AdminDashboard: React.FC = () => {
               onClick={() => setActiveView("support")}
             />
             <SidebarButton
+              icon={Star}
+              label="Reviews"
+              active={activeView === "reviews"}
+              badge={reviewCount}
+              onClick={() => setActiveView("reviews")}
+            />
+            <SidebarButton
               icon={FileText}
               label="Total Resumes"
               active={activeView === "resumes"}
@@ -250,6 +270,11 @@ const AdminDashboard: React.FC = () => {
                 onOpenCount={(count) =>
                   queryClient.setQueryData(["admin-support-count"], count)
                 }
+                onRefresh={handleRefresh}
+                isRefreshing={isRefreshing}
+              />
+            ) : activeView === "reviews" ? (
+              <ReviewManagement
                 onRefresh={handleRefresh}
                 isRefreshing={isRefreshing}
               />

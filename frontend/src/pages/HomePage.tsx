@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppDispatch } from "../hooks/redux";
 import { logoutUser } from "../store/slices/authSlice";
 import ConfirmModal from "../components/ui/ConfirmModal";
-import { allFeatures, testimonials } from "../constants/landingData";
+import { allFeatures, testimonials as staticTestimonials } from "../constants/landingData";
 // import FloatingOrbs from "../components/home-page/FloatingOrbs";
 import HeroSection from "../components/home-page/HeroSection";
 import FeatureShowcase from "../components/home-page/FeatureShowcase";
@@ -11,10 +11,23 @@ import WhyChooseUs from "../components/home-page/WhyChooseUs";
 import TestimonialsSection from "../components/home-page/TestimonialsSection";
 import CTASection from "../components/home-page/CTASection";
 import Footer from "../components/Footer";
+import { useQuery } from "@tanstack/react-query";
+import { reviewApi } from "../api/api";
 
 export default function HomePage() {
   const dispatch = useAppDispatch();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const { data: homeReviews } = useQuery({
+    queryKey: ["home-reviews"],
+    queryFn: async () => {
+      const res = await reviewApi.getHomeReviews();
+      return res.data.success ? res.data.data : [];
+    },
+  });
+
+  const displayTestimonials =
+    homeReviews && homeReviews.length > 0 ? homeReviews : staticTestimonials;
 
   const handleLogout = async () => {
     setShowLogoutConfirm(false);
@@ -33,7 +46,7 @@ export default function HomePage() {
           <FeatureShowcase />
           {/* <StatsSection /> */}
           <WhyChooseUs features={allFeatures} />
-          <TestimonialsSection testimonials={testimonials} />
+          <TestimonialsSection testimonials={displayTestimonials} />
           <CTASection />
         </main>
       </div>

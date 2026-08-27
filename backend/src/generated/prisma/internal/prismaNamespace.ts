@@ -1429,6 +1429,7 @@ export const FeedbackScalarFieldEnum = {
   userId: 'userId',
   rating: 'rating',
   message: 'message',
+  showOnHome: 'showOnHome',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

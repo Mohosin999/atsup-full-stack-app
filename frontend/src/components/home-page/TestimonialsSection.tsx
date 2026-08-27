@@ -7,6 +7,7 @@ import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import Wrapper from "../Wrapper";
 
 interface Testimonial {
+  id?: string;
   name: string;
   role: string;
   content: string;
@@ -83,7 +84,7 @@ export default function TestimonialsSection({
             >
               {testimonials.map((testimonial, index) => (
                 <motion.div
-                  key={testimonial.name}
+                  key={testimonial.id || `${testimonial.name}-${index}`}
                   initial={{ opacity: 0, y: 30, scale: 0.95 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true }}

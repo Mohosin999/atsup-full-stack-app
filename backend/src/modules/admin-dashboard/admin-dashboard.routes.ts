@@ -17,6 +17,10 @@ import {
   getAllAtsScores,
   deleteAtsScore,
   deleteAllAtsScores,
+  getReviews,
+  deleteReview,
+  deleteAllReviews,
+  toggleReviewHome,
 } from "./admin-dashboard.controller";
 
 const router = Router();
@@ -40,5 +44,10 @@ router.delete("/resumes", generalLimiter, deleteAllResumes);
 router.get("/ats-scores", getAllAtsScores);
 router.delete("/ats-scores/:id", generalLimiter, deleteAtsScore);
 router.delete("/ats-scores", generalLimiter, deleteAllAtsScores);
+
+router.get("/reviews", getReviews);
+router.delete("/reviews/:id", generalLimiter, deleteReview);
+router.delete("/reviews", generalLimiter, deleteAllReviews);
+router.patch("/reviews/:id/toggle-home", generalLimiter, toggleReviewHome);
 
 export default router;

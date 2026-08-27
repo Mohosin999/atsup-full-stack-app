@@ -62,8 +62,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Footer />
           </div>
           <ToastContainer
-            position="bottom-right"
-            autoClose={5000}
+            position="top-right"
+            autoClose={3000}
             hideProgressBar={false}
             newestOnTop
             closeOnClick
@@ -71,7 +71,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme="colored"
+            theme="dark"
           />
         </BrowserRouter>
       </QueryClientProvider>

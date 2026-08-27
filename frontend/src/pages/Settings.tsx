@@ -14,6 +14,8 @@ export default function Settings() {
     user: state.auth.user,
     loading: state.auth.loading,
   }));
+
+  console.log('oi sunny leo ', user)
   const dispatch = useAppDispatch();
   const [name, setName] = useState(user?.name || "");
   const [saving, setSaving] = useState(false);
@@ -45,7 +47,7 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen pt-20 pb-12">
-      <Wrapper>
+      <Wrapper maxWidth="md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

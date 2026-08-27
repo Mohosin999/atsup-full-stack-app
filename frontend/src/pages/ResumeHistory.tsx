@@ -251,7 +251,7 @@ export default function ResumeHistory() {
                                     setEditingId(resume.id);
                                     setEditValue(getResumeTitle(resume));
                                   }}
-                                  className="opacity-0 group-hover:opacity-100 transition"
+                                   className="transition"
                                 >
                                   <Pencil className="w-3 h-3 lg:w-3.5 lg:h-3.5 text-gray-500 hover:text-cyan-500" />
                                 </button>

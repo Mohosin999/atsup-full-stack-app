@@ -258,7 +258,7 @@ export default function ResumeScanForm({
           </div>
 
           {resumeFile ? (
-            <div className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-cyan-400 bg-cyan-50 rounded-lg">
+            <div className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-cyan-400 bg-cyan-50 dark:bg-primary-900 rounded-lg">
               <div className="flex flex-col items-center gap-2">
                 <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-cyan-500" />
@@ -272,14 +272,14 @@ export default function ResumeScanForm({
                   setResumeFile(null);
                   setResumeName("");
                 }}
-                className="absolute bottom-2 right-2 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-300 rounded-lg transition-colors shadow-sm"
+                className="absolute bottom-2 right-2 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-800 hover:bg-red-50 hover:text-red-600 hover:border-red-300 rounded-lg"
               >
                 <X className="w-3.5 h-3.5" />
                 Clear
               </button>
             </div>
           ) : (
-              <label className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded-lg transition-colors">
+              <label className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-700 bg-white dark:bg-secondary hover:bg-gray-100 dark:hover:bg-primary cursor-pointer rounded-lg transition-colors">
               <Upload className="w-8 h-8 text-gray-600 dark:text-gray-400 mb-2" />
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 <span className="font-semibold">Click to upload</span> or drag
@@ -328,7 +328,7 @@ export default function ResumeScanForm({
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="Paste the job description here..."
-              className="flex-1 min-h-[280px] w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-4 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-500 resize-none"
+              className="flex-1 min-h-[280px] w-full bg-gray-100 dark:bg-primary border border-gray-300 dark:border-accent rounded-lg p-4 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none resize-none"
             />
           </div>
         </div>

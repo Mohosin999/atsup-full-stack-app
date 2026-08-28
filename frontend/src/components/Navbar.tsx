@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { LogIn } from "lucide-react";
 
 import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
@@ -65,7 +65,7 @@ export default function Navbar() {
               {user && <HistoryDropdown />}
               <Link
                 to="/plans"
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-3 py-2 rounded-lg text-sm xl:text-[15px] font-medium transition-colors ${
                   location.pathname === "/plans"
                     ? "bg-cyan-500/20 text-cyan-600"
                     : "text-gray-700 hover:text-cyan-600 dark:text-gray-300 dark:hover:text-cyan-400"
@@ -76,7 +76,7 @@ export default function Navbar() {
             </div>
 
             {/* Right: Auth / Profile */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-3 md:gap-4 xl:gap-5 shrink-0">
               <ThemeToggle />
               {user ? (
                 <ProfileMenu
@@ -116,12 +116,6 @@ export default function Navbar() {
               exit={{ opacity: 0, y: -10 }}
               className="lg:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 py-6 px-4 dark:bg-gray-900/95 dark:border-gray-700"
             >
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Theme
-                </span>
-                <ThemeToggle />
-              </div>
               <div className="flex flex-col gap-1 mb-4">
                 {getNavLinks(null).map((link) => (
                   <Link
@@ -145,10 +139,10 @@ export default function Navbar() {
               <Link
                 to="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 font-medium rounded-md transition-all duration-200 focus:outline-none bg-cyan-600 text-white hover:bg-cyan-700"
+                className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 font-medium rounded-md transition-all duration-200 focus:outline-none bg-cyan-600 text-white hover:bg-cyan-700"
               >
                 Login
-                <ArrowRight className="w-4 h-4" />
+                <LogIn className="w-4 h-4" />
               </Link>
             </motion.div>
           )}

@@ -49,7 +49,7 @@ export default function FeatureShowcase() {
                   key={tab.id}
                   onClick={() => setActive(tab.id)}
                   className={`
-                    relative flex items-center gap-2 rounded-lg px-4 md:px-5 py-2 md:py-2.5 text-[13px] md:text-sm font-semibold transition-colors duration-200
+                    relative flex items-center gap-2 rounded-lg px-4 md:px-5 py-2 md:py-2.5 text-[13px] md:text-sm font-semibold
                     ${isActive ? "text-white dark:text-slate-800" : "text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100"}
                   `}
                 >

@@ -115,14 +115,11 @@ export default function TestimonialsSection({
             <div
               key={testimonial.id || `${testimonial.name}-${index}`}
               className="group relative bg-cyan-50 p-5 cursor-pointer
-                         transition-all duration-300 ease-out border border-cyan-400 dark:bg-gray-800"
+                         transition-all duration-300 ease-out border border-cyan-400 dark:bg-secondary dark:border-accent"
               style={{
                 transform: `rotate(${cardStyles[index].rotate}deg) translateY(${cardStyles[index].translateY}px) translateX(${cardStyles[index].translateX}px)`,
               }}
             >
-              {/* Subtle border highlight on hover
-              <div className="absolute inset-0 border-2 border-cyan-500/0 group-hover:border-cyan-500/20 transition-all duration-300 pointer-events-none" /> */}
-
               <div className="flex items-center justify-between mb-3">
                 <div className="flex gap-0.5">
                   {[...Array(testimonial.rating)].map((_, i) => (

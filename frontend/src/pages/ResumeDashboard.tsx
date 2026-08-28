@@ -34,12 +34,14 @@ export default function ResumeDashboard() {
 
         {/* Two action cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Create new resume */}
+          {/* ========================================================
+            * Create a new resume
+          ==========================================================*/}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="bg-cyan-50 p-4 md:p-6 xl:p-8 flex flex-col items-start rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]"
+            className="bg-cyan-50 dark:bg-secondary p-4 md:p-6 xl:p-8 flex flex-col items-start rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]"
           >
             <div className="w-12 h-12 bg-cyan-600 text-white flex items-center justify-center mb-4">
               <FilePlus2 className="w-6 h-6 text-white" />
@@ -50,7 +52,7 @@ export default function ResumeDashboard() {
             <p className="text-sm text-gray-600 mb-6 flex-1 dark:text-gray-400">
               Start building your resume with our easy-to-use resume builder.
               Every section is movable and editable, so you can customize it to
-              your preferences. No need to save it, it'll be saved
+              your preferences. No need to save, it'll be saved
               automatically.
             </p>
             <button
@@ -59,14 +61,16 @@ export default function ResumeDashboard() {
                   ? navigate("/resume-builder/new")
                   : goToLogin(navigate, "/resume-builder")
               }
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-cyan-600 hover:bg-cyan-600/90 text-white font-semibold shadow-lg shadow-cyan-500/25 transition-all"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-cyan-600 hover:bg-cyan-600/90 text-white font-semibold transition-all"
             >
               <FilePlus2 className="w-5 h-5" />
               Create Resume
             </button>
           </motion.div>
 
-          {/* Upload resume (upcoming) */}
+          {/* ========================================================
+            * Upload resume and rewrite with AI (upcoming)
+          ==========================================================*/}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

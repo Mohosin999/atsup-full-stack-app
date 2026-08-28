@@ -69,7 +69,7 @@ export default function ResumeBuilderSection({
       style={sortableStyle}
       className={sortable && sortable.isDragging ? "relative z-10 opacity-90" : ""}
     >
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-secondary border border-gray-200 dark:border-accent overflow-hidden">
         <div className="px-4 py-3">
           {editing ? (
             <div className="w-full flex items-center justify-between text-left min-w-0">

@@ -56,7 +56,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <InitializeApp />
-          <div className="bg-white dark:bg-[#2a2438]">
+          <div className="bg-white dark:bg-primary">
           {/* <div className="bg-[#fffdf6] dark:bg-[#222831]"> */}
             <Navbar />
               <App />

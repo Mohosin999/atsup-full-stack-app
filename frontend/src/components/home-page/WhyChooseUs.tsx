@@ -34,7 +34,7 @@ export default function WhyChooseUs({ features }: WhyChooseUsProps) {
               key={feature.title}
               variants={fadeInUp}
               whileHover={{ y: -10, transition: { duration: 0.1 } }}
-              className="group relative bg-white/70 backdrop-blur rounded-3xl p-8 shadow-md hover:shadow-lg hover:shadow-cyan-500/90 border border-gray-200 transition-all duration-300 overflow-hidden dark:bg-gray-800/70 dark:border-gray-700"
+              className="group relative bg-white/70 backdrop-blur rounded-3xl p-8 shadow-md hover:shadow-lg hover:shadow-cyan-500/90 border border-gray-200 transition-all duration-300 overflow-hidden dark:bg-secondary dark:border-accent"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative">

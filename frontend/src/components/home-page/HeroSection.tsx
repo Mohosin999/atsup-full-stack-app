@@ -26,7 +26,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
                   </span>
 
                   {/* Marker Effect */}
-                  <span className="absolute left-0 right-0 bottom-1 h-8 md:h-10 lg:h-8 xl:h-10 2xl:h-12 bg-cyan-200/80 dark:bg-cyan-800/30 rounded-sm -z-0" />
+                  <span className="absolute left-0 right-0 bottom-1 h-8 md:h-10 lg:h-8 xl:h-10 2xl:h-12 bg-cyan-200/80 dark:bg-secondary rounded-sm -z-0" />
                 </span>
               </h1>
             </div>

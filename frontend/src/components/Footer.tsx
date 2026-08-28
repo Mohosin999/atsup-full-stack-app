@@ -71,7 +71,7 @@ const Footer = () => {
             {user && (
               <button
                 onClick={() => setShowLogoutConfirm(true)}
-                className="flex items-center gap-1 px-3 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors"
+                className="flex items-center gap-1 px-3 py-2 text-sm text-red-600 dark:text-red-100 hover:bg-red-50 dark:hover:bg-red-950 hover:text-red-700 rounded-lg"
               >
                 <LogOut size={14} />
                 Logout

@@ -93,9 +93,9 @@ export default function ScanHistory() {
   });
 
   const getScoreColor = (score: number) => {
-    if (score >= 70) return "text-green-600";
+    if (score >= 80) return "text-green-600";
     if (score >= 40) return "text-yellow-600";
-    return "text-red-500";
+    return "text-red-400";
   };
 
   return (

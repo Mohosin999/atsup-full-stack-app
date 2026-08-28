@@ -45,12 +45,12 @@ const CATEGORY_META: Record<
   },
 };
 
-const getScoreColor = (score: number) => {
-  if (score >= 80) return "text-green-600";
-  if (score >= 60) return "text-yellow-600";
-  if (score >= 40) return "text-orange-600";
-  return "text-red-600";
-};
+// const getScoreColor = (score: number) => {
+//   if (score >= 80) return "text-green-600";
+//   if (score >= 60) return "text-yellow-600";
+//   if (score >= 40) return "text-orange-600";
+//   return "text-red-600";
+// };
 
 const STATUS_ICON: Record<
   CheckStatus,
@@ -97,12 +97,20 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
               className="flex items-start gap-2.5 xl:gap-3 xl:items-center"
             >
               <span
+                // className={`mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center xl:mt-0 rounded-full ${
+                //   check.status === "passed"
+                //     ? "bg-green-500/15 text-green-600"
+                //     : check.status === "failed"
+                //       ? "bg-red-500/15 text-red-600"
+                //       : "bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400"
+                // }`}
+
                 className={`mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center xl:mt-0 rounded-full ${
                   check.status === "passed"
-                    ? "bg-green-500/15 text-green-600"
+                    ? "bg-green-500/15 text-green-600 dark:text-green-400"
                     : check.status === "failed"
-                      ? "bg-red-500/15 text-red-600"
-                      : "bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400"
+                      ? "bg-red-500/15 text-red-600 dark:bg-red-50"
+                      : "bg-gray-50 dark:bg-gray-500/50 text-gray-500 dark:text-gray-100"
                 }`}
               >
                 <span className="text-[16px] xl:text-[18px] leading-none">
@@ -169,7 +177,7 @@ const SkillsTable: React.FC<{
                     </span>
                   ) : (
                     <span
-                      className="inline-flex text-[16px] xl:text-[18px] items-center justify-center text-red-600"
+                      className="inline-flex text-[16px] xl:text-[18px] items-center justify-center text-red-600 dark:text-red-300"
                       title={`${s.item} missing from resume`}
                     >
                       ✗
@@ -305,16 +313,16 @@ const ReviewCard: React.FC<{
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className={`${meta.accent} p-5 bg-white dark:bg-gray-800 rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]`}
+      className={`${meta.accent} p-5 bg-white dark:bg-secondary rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
-          <div
+          {/* <div
             className={`w-10 h-10 flex items-center justify-center ${meta.iconColor}`}
           >
             {meta.icon}
-          </div>
+          </div> */}
           <div>
             <h3 className="font-semibold text-gray-800 dark:text-gray-100 leading-tight">
               {category.title}

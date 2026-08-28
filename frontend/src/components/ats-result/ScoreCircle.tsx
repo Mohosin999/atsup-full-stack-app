@@ -9,7 +9,7 @@ interface ScoreCircleProps {
 
 const getScoreColor = (score: number) => {
   if (score < 40) return "#9CA3AF"; // Full Gray
-  if (score < 70) return "#F59E0B"; // Amber/Yellow
+  if (score < 80) return "#F59E0B"; // Amber/Yellow
   return "#32BE7E"; // Green
 };
 

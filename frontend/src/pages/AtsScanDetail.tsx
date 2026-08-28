@@ -178,9 +178,9 @@ export default function AtsScoreDetail() {
         {/* Header */}
         <div className="pt-8 lg:pt-0 pb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-2">
-            <h1 className="text-base font-semibold text-gray-700">
+            <h1 className="text-base font-semibold text-gray-700 dark:text-gray-100">
               ATS Score Report{" "}
-              <span className="text-sm font-normal text-gray-600">
+              <span className="text-sm font-normal text-gray-600 dark:text-gray-300">
                 - {result?.title}
               </span>
             </h1>

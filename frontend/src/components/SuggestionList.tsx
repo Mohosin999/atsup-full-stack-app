@@ -40,7 +40,7 @@ const SuggestionList: React.FC<SuggestionListProps> = ({
 
   return (
     <div
-      className={`border-l-4 ${getBorderColor()} bg-gray-50 dark:bg-gray-800 p-4`}
+      className={`border-l-4 ${getBorderColor()} bg-gray-50 dark:bg-secondary p-4`}
     >
      
       <ul className="space-y-2">

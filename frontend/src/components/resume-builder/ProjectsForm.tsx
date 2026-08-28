@@ -2,7 +2,7 @@
 Projects Form
 =================================== */
 import { Plus } from "lucide-react";
-import { Input } from "../ui/FormField";
+import { Input, DateRangeInput } from "../ui/FormField";
 import HighlightsEditor from "./HighlightsEditor";
 import CollapsibleItem from "./CollapsibleItem";
 import { Project } from "../../types";
@@ -59,37 +59,14 @@ export default function ProjectsForm({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                    Start Date
-                  </label>
-                  <input
-                    type="text"
-                    value={proj.startDate || ""}
-                    onChange={(e) =>
-                      onUpdate(index, { startDate: e.target.value })
-                    }
-                    placeholder="e.g. Jan 2020"
-                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                    End Date
-                  </label>
-                  <input
-                    type="text"
-                    value={proj.endDate || ""}
-                    disabled={!!proj.current}
-                    onChange={(e) =>
-                      onUpdate(index, { endDate: e.target.value })
-                    }
-                    placeholder="e.g. July 2025 / Ongoing"
-                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
-                  />
-                </div>
-              </div>
+              <DateRangeInput
+                startDate={proj.startDate}
+                endDate={proj.endDate}
+                onStartChange={(v) => onUpdate(index, { startDate: v })}
+                onEndChange={(v) => onUpdate(index, { endDate: v })}
+                endDisabled={!!proj.current}
+                endPlaceholder="e.g. July 2025 / Ongoing"
+              />
 
               <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">

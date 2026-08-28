@@ -15,7 +15,7 @@ export default function AddButton({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-1 px-4 py-2.5 text-xs font-medium text-blue-600 hover:bg-cyan-600 hover:text-white transition-colors ${className}`}
+      className={`inline-flex items-center gap-1 px-4 py-2.5 text-xs font-medium text-blue-600 dark:text-cyan-500 hover:bg-cyan-600 hover:text-white ${className}`}
     >
       <Plus className="w-4 h-4" />
       {children}

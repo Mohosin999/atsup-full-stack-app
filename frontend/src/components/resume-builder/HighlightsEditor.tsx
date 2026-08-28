@@ -83,13 +83,9 @@ function SortableHighlight({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex items-start gap-2 border px-3 py-3 bg-white dark:bg-gray-800 rounded-md ${
+      className={`flex items-start gap-2 border px-3 py-3 bg-white dark:bg-primary rounded-md ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
-      } ${
-        editing
-          ? "border-black ring-2 ring-black/10"
-          : "border-gray-200"
-      }`}
+      } ${editing ? "border-black dark:border-cyan-500" : "border-gray-200 dark:border-gray-600"}`}
     >
       <button
         type="button"
@@ -118,11 +114,11 @@ function SortableHighlight({
           }}
           autoFocus
           rows={1}
-          className="flex-1 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 resize-none overflow-hidden focus:outline-none"
+          className="flex-1 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-primary resize-none overflow-hidden focus:outline-none"
         />
       ) : (
         <span
-          className="flex-1 text-xs text-gray-700 dark:text-gray-300 break-words cursor-text hover:bg-gray-50 dark:hover:bg-gray-700/50 px-1 py-0.5 -mx-1"
+          className="flex-1 text-xs text-gray-700 dark:text-gray-300 break-words cursor-text px-1 py-0.5 -mx-1"
           onClick={onStartEdit}
           title="Click to edit"
         >
@@ -212,6 +208,9 @@ export default function HighlightsEditor({
 
   return (
     <div>
+      {/* ============================================================
+        * Bullet point list
+      ============================================================ */}
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -237,6 +236,7 @@ export default function HighlightsEditor({
                 {highlight}
               </SortableHighlight>
             ))}
+
             {highlights.length === 0 && (
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 No bullet points added yet.
@@ -246,8 +246,11 @@ export default function HighlightsEditor({
         </SortableContext>
       </DndContext>
 
+      {/* ============================================================
+        * Add new bullet point
+      ============================================================ */}
       {adding && (
-        <div className="flex items-start gap-2 border border-gray-200 dark:border-gray-700 px-3 py-3 bg-white dark:bg-gray-800 mt-2 rounded-md">
+        <div className="flex items-start gap-2 border border-gray-200 dark:border-gray-600 px-3 py-3 bg-white dark:bg-primary mt-2 rounded-md">
           {/* <Plus className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" /> */}
           <input
             type="text"
@@ -266,7 +269,7 @@ export default function HighlightsEditor({
             //   "e.g. Increased website traffic by 40% through SEO optimization"
             // }
             autoFocus
-            className="flex-1 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 focus:outline-none"
+            className="flex-1 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-primary focus:outline-none"
           />
           <button
             type="button"

@@ -116,7 +116,7 @@ export default function ScanHistory() {
               {totalScans > 0 && (
                 <button
                   onClick={() => setClearAllOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm bg-red-500/20 border border-red-500/30 text-red-600 hover:bg-red-500/30 transition-colors rounded-full"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm bg-red-500/20 dark:bg-red-500/10 border border-red-500/30 dark:border-accent text-red-600 dark:text-red-100 hover:bg-red-500/30 dark:hover:bg-accent rounded-full"
                 >
                   <Trash2 className="w-4 h-4" />
                   Clear All
@@ -133,10 +133,10 @@ export default function ScanHistory() {
           ) : (
             <>
               {/* Desktop Table - visible from md breakpoint */}
-              <div className="hidden md:block border border-gray-300 overflow-hidden rounded-lg dark:border-gray-600">
+              <div className="hidden md:block dark:bg-secondary border border-gray-300 overflow-hidden rounded-lg dark:border-gray-600">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr className="bg-[#A5D9FC] border-b border-[#A5D9FC]  text-left">
+                    <tr className="bg-[#A5D9FC] dark:bg-accent border-b border-[#A5D9FC] dark:border-accent text-left">
                       <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm w-[40%]">
                         Name
                       </th>

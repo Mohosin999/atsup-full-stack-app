@@ -25,7 +25,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             className={clsx(
-              'w-full px-4 py-2 lg:py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-xs rounded-md',
+              'w-full px-4 py-2 lg:py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-primary text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-xs rounded-md',
               icon && 'pl-8',
               error && 'border-red-500 focus:ring-red-500',
               className
@@ -60,7 +60,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           ref={ref}
           className={clsx(
-            'w-full text-xs px-4 py-2 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none leading-5',
+            'w-full text-xs px-4 py-2 border border-gray-200 dark:border-gray-600 bg-white dark:bg-primary text-gray-700 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none leading-5',
             error && 'border-red-500 focus:ring-red-500',
             className
           )}
@@ -116,4 +116,54 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
 Select.displayName = 'Select';
 
-export default { Input, Textarea, Select };
+interface DateRangeInputProps {
+  startDate?: string;
+  endDate?: string;
+  onStartChange?: (value: string) => void;
+  onEndChange?: (value: string) => void;
+  endDisabled?: boolean;
+  startPlaceholder?: string;
+  endPlaceholder?: string;
+}
+
+export const DateRangeInput = ({
+  startDate,
+  endDate,
+  onStartChange,
+  onEndChange,
+  endDisabled = false,
+  startPlaceholder = "e.g. Jan 2020",
+  endPlaceholder = "e.g. July 2025",
+}: DateRangeInputProps) => {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <div>
+        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+          Start Date
+        </label>
+        <input
+          type="text"
+          value={startDate || ""}
+          onChange={(e) => onStartChange?.(e.target.value)}
+          placeholder={startPlaceholder}
+          className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-primary text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        />
+      </div>
+      <div>
+        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+          End Date
+        </label>
+        <input
+          type="text"
+          value={endDate || ""}
+          disabled={endDisabled}
+          onChange={(e) => onEndChange?.(e.target.value)}
+          placeholder={endPlaceholder}
+          className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-primary text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default { Input, Textarea, Select, DateRangeInput };

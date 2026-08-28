@@ -125,8 +125,8 @@ export default function ResumeHistory() {
   });
 
   const getResumeTitle = (resume: ResumeListItem) =>
-    resume.metadata?.originalName?.trim() ||
     resume.content?.personalInfo?.jobTitle?.trim() ||
+    resume.metadata?.originalName?.trim() ||
     resume.content?.personalInfo?.fullName?.trim() ||
     "Untitled Resume";
 
@@ -252,7 +252,7 @@ export default function ResumeHistory() {
                                     setEditingId(resume.id);
                                     setEditValue(getResumeTitle(resume));
                                   }}
-                                   className="transition"
+                                  className="transition"
                                 >
                                   <Pencil className="w-3 h-3 lg:w-3.5 lg:h-3.5 text-gray-500 dark:text-gray-400 hover:text-cyan-500" />
                                 </button>
@@ -305,7 +305,7 @@ export default function ResumeHistory() {
               </div>
 
               {/* Mobile Layout */}
-                <div className="bg-white md:hidden border border-gray-300 overflow-hidden divide-y divide-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:divide-gray-700">
+              <div className="bg-white md:hidden border border-gray-300 overflow-hidden divide-y divide-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:divide-gray-700">
                 {resumes.length === 0 ? (
                   <div className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
                     No Resumes Yet

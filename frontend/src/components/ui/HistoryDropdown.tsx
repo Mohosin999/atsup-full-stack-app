@@ -13,7 +13,7 @@ export default function HistoryDropdown() {
       onMouseLeave={() => setOpen(false)}
     >
       <button className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-        location.pathname === "/scan-history" || location.pathname === "/resume-history" || location.pathname.startsWith("/ats-scan/") || location.pathname.startsWith("/resume-builder/")
+        location.pathname === "/scan-history" || location.pathname === "/resume-history"
           ? "bg-cyan-500/20 text-cyan-600"
           : "text-gray-700 dark:text-gray-100 hover:text-cyan-600"
       }`}>

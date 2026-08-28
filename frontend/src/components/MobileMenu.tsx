@@ -20,7 +20,7 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: "auto" }}
       exit={{ opacity: 0, height: 0 }}
-      className="lg:hidden bg-gray-50 border-t border-gray-200"
+      className="lg:hidden bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700"
     >
       <div className="px-4 py-3 space-y-2">
         {navLinks.map((link) => (
@@ -30,7 +30,7 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
             className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 ${
               location.pathname === link.path
                 ? "bg-cyan-500/20 text-cyan-600"
-                : "text-gray-700"
+                : "text-gray-700 dark:text-gray-300"
             }`}
             onClick={() => setMobileMenuOpen(false)}
           >
@@ -38,10 +38,10 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
           </Link>
         ))}
 
-        <div className="border-t border-gray-200 mt-2 pt-2">
-          <button
-            onClick={() => setHistoryOpen(!historyOpen)}
-            className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-cyan-500/20 hover:text-cyan-600 transition-colors"
+          <div className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+            <button
+              onClick={() => setHistoryOpen(!historyOpen)}
+              className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-cyan-500/20 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
           >
             <Clock className="w-4 h-4" />
             History
@@ -61,7 +61,7 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
                     className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 ${
                       location.pathname === "/scan-history"
                         ? "bg-cyan-500/20 text-cyan-600"
-                        : "text-gray-700"
+                        : "text-gray-700 dark:text-gray-300"
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -72,7 +72,7 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
                     className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 ${
                       location.pathname === "/resume-history"
                         ? "bg-cyan-500/20 text-cyan-600"
-                        : "text-gray-700"
+                        : "text-gray-700 dark:text-gray-300"
                     }`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -84,14 +84,14 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
           </AnimatePresence>
         </div>
 
-        <div className="border-t border-gray-200 mt-2 pt-2">
-          <Link
-            to="/plans"
-            className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 ${
-              location.pathname === "/plans"
-                ? "bg-cyan-500/20 text-cyan-600"
-                : "text-gray-700"
-            }`}
+          <div className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+            <Link
+              to="/plans"
+              className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-cyan-500/20 ${
+                location.pathname === "/plans"
+                  ? "bg-cyan-500/20 text-cyan-600"
+                  : "text-gray-700 dark:text-gray-300"
+              }`}
             onClick={() => setMobileMenuOpen(false)}
           >
             Pricing

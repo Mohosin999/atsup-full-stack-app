@@ -57,14 +57,14 @@ export default function ProfileMenu({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50"
+            className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50"
           >
-            <div className="px-4 py-3 border-b border-gray-200">
-              <p className="text-sm font-semibold text-gray-800 truncate">
+            <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+              <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
                 {user.name}
               </p>
               <p
-                className="text-xs text-gray-600 truncate mt-1"
+                className="text-xs text-gray-600 dark:text-gray-400 truncate mt-1"
                 title={user.email}
               >
                 {user.email}
@@ -72,7 +72,7 @@ export default function ProfileMenu({
             </div>
             <Link
               to="/settings"
-              className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               onClick={() => setProfileMenuOpen(false)}
             >
               <Settings className="w-4 h-4" /> <span>Settings</span>
@@ -82,13 +82,13 @@ export default function ProfileMenu({
                 setProfileMenuOpen(false);
                 window.dispatchEvent(new Event("open-review-modal"));
               }}
-              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <Star className="w-4 h-4" /> <span>Give Review</span>
             </button>
             <Link
               to="/my-reports"
-              className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               onClick={() => setProfileMenuOpen(false)}
             >
               <FileText className="w-4 h-4" /> <span>My Reports</span>
@@ -98,7 +98,7 @@ export default function ProfileMenu({
                 setProfileMenuOpen(false);
                 window.dispatchEvent(new Event("open-report-modal"));
               }}
-              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <MessageSquare className="w-4 h-4" /> <span>Report a Problem</span>
             </button>

@@ -46,10 +46,10 @@ export default function AtsScorePage() {
     <div className="min-h-screen lg:pt-20 pb-12">
       <Wrapper>
         <div className="py-8 lg:mb-4">
-          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 text-center mb-4">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 text-center mb-4 dark:text-gray-100">
             ATS Score Check
           </h1>
-          <p className="text-sm xl:text-base text-gray-600 text-center max-w-xl xl:max-w-2xl mx-auto">
+          <p className="text-sm xl:text-base text-gray-600 text-center max-w-xl xl:max-w-2xl mx-auto dark:text-gray-400">
             Analyze your resume for ATS (Applicant Tracking System)
             compatibility. You can use this service unlimited, no credits used
           </p>
@@ -59,7 +59,7 @@ export default function AtsScorePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white p-6 rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]"
+          className="bg-white p-6 rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-gray-800"
         >
           <ResumeScanForm
             initialResumeFile={initialResumeFile}

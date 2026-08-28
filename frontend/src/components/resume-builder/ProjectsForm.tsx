@@ -61,7 +61,7 @@ export default function ProjectsForm({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                     Start Date
                   </label>
                   <input
@@ -71,11 +71,11 @@ export default function ProjectsForm({
                       onUpdate(index, { startDate: e.target.value })
                     }
                     placeholder="e.g. Jan 2020"
-                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                     End Date
                   </label>
                   <input
@@ -86,14 +86,14 @@ export default function ProjectsForm({
                       onUpdate(index, { endDate: e.target.value })
                     }
                     placeholder="e.g. July 2025 / Ongoing"
-                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
+                    className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Bullet Points
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                    Bullet Points
                 </label>
                 <HighlightsEditor
                   highlights={proj.highlights || []}

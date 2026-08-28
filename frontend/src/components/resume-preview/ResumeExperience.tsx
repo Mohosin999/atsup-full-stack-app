@@ -16,11 +16,11 @@ export default function ResumeExperience({
 }: ResumeExperienceProps) {
   const textColor = forPdf
     ? "text-gray-800"
-    : "text-gray-800 dark:text-gray-800";
-  const titleColor = forPdf ? "text-black" : "text-gray-800 dark:text-white";
+    : "text-gray-800";
+  const titleColor = forPdf ? "text-black" : "text-gray-800";
   const borderColor = forPdf
     ? "border-gray-200"
-    : "border-gray-200 dark:border-gray-300";
+    : "border-gray-200";
 
   return (
     <div className="mb-4">
@@ -43,7 +43,7 @@ export default function ResumeExperience({
             {exp.company}
           </p>
           <div
-            className={`${forPdf ? "text-gray-800" : "text-gray-800 dark:text-gray-800"} text-sm mt-1`}
+            className={`${forPdf ? "text-gray-800" : "text-gray-800"} text-sm mt-1`}
           >
             {formatDescription(exp.highlights)}
           </div>

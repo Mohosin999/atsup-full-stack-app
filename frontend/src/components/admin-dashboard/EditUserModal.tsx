@@ -31,13 +31,13 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative bg-white shadow-xl w-full max-w-md p-6">
+      <div className="relative bg-white dark:bg-gray-800 dark:border dark:border-gray-700 shadow-xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-800">Edit User</h3>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Edit User</h3>
           <button
             type="button"
             onClick={onClose}
-            className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            className="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             <X className="w-5 h-5" />
           </button>
@@ -45,37 +45,37 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
 
         <form onSubmit={submit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
               disabled={isSelf}
-              className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-100 disabled:text-gray-400"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-400"
             >
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
-            {isSelf && <p className="mt-1 text-xs text-gray-400">You cannot change your own role.</p>}
+            {isSelf && <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">You cannot change your own role.</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Credits</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Credits</label>
             <input
               type="number"
               min={0}
               value={credits}
               onChange={(e) => setCredits(Number(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
@@ -83,7 +83,7 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className="px-4 py-2 text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
             >
               Cancel
             </button>

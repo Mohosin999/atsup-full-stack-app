@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { User, Trash2, Save } from "lucide-react";
+import { User, Trash2, Save, Moon, Sun } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
+import { setTheme } from "../store/slices/themeSlice";
 import { logoutUser, setUser } from "../store/slices/authSlice";
 import { userApi } from "../api/api";
 import ConfirmModal from "../components/ui/ConfirmModal";
@@ -15,6 +16,7 @@ export default function Settings() {
   }));
 
   const dispatch = useAppDispatch();
+  const theme = useAppSelector((state) => state.theme.theme);
   const [name, setName] = useState(user?.name || "");
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -51,12 +53,13 @@ export default function Settings() {
     <div className="min-h-screen lg:pt-20 pb-12">
       <Wrapper maxWidth="md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
         <div className="my-8">
-          <h1 className="text-xl md:text-2xl font-semibold text-gray-800">Settings</h1>
-          <p className="text-gray-600 mt-1">Manage your account preferences</p>
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-100">Settings</h1>
+          <p className="text-gray-600 mt-1 dark:text-gray-400">Manage your account preferences</p>
         </div>
         <div className="space-y-6">
           <ProfileSection user={user} name={name} setName={setName} />
           <SubscriptionSection user={user} />
+          <ThemeSection theme={theme} onToggle={() => dispatch(setTheme(theme === "dark" ? "light" : "dark"))} />
           <DangerZone onDelete={() => setShowDeleteConfirm(true)} />
           <div className="flex justify-end">
             <button
@@ -94,49 +97,85 @@ const ProfileSection = ({
   name: string;
   setName: (v: string) => void;
 }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)]">
+  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-gray-800 dark:border-gray-700">
     <div className="flex items-center gap-3 mb-6">
-      <h2 className="text-lg font-semibold text-gray-800">Profile Information</h2>
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Profile Information</h2>
     </div>
     <div className="flex items-center gap-4 mb-6">
       <img
         src="/profile_avatar.jpg"
         alt={user?.name}
-        className="w-16 h-16 rounded-full bg-gray-100"
+        className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700"
       />
       <div>
-        <p className="font-medium text-gray-800">{user?.name}</p>
-        <p className="text-sm text-gray-600">{user?.email}</p>
+        <p className="font-medium text-gray-800 dark:text-gray-100">{user?.name}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</p>
       </div>
     </div>
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
           Display Name
         </label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:border-transparent transition-all duration-200"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:border-transparent transition-all duration-200 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-100"
         />
       </div>
     </div>
   </div>
 );
 
+const ThemeSection = ({
+  theme,
+  onToggle,
+}: {
+  theme: string;
+  onToggle: () => void;
+}) => (
+  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-gray-800 dark:border-gray-700">
+    <div className="flex items-center justify-between gap-4">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+          Appearance
+        </h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          Choose how CVCoach looks to you.
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex items-center gap-2 text-sm bg-cyan-600 text-white px-4 py-2 hover:bg-cyan-600/90 transition-colors"
+      >
+        {theme === "dark" ? (
+          <>
+            <Sun className="w-4 h-4" /> Light Mode
+          </>
+        ) : (
+          <>
+            <Moon className="w-4 h-4" /> Dark Mode
+          </>
+        )}
+      </button>
+    </div>
+  </div>
+);
+
 const SubscriptionSection = ({ user }: { user: any }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)]">
+  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-gray-800 dark:border-gray-700">
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
-        <h2 className="text-lg font-semibold text-gray-800">Subscription</h2>
-        <p className="text-sm text-gray-600 mt-1">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Subscription</h2>
+        <p className="text-sm text-gray-600 mt-1 dark:text-gray-400">
           Current plan:{" "}
-          <span className="font-medium capitalize">
+          <span className="font-medium capitalize dark:text-gray-200">
             {user?.subscription.plan}
           </span>
         </p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Credits remaining:{" "}
           {/* <span className="font-medium">{user?.subscription.credits}</span> */}
           <span className="font-medium">0</span>
@@ -152,11 +191,11 @@ const SubscriptionSection = ({ user }: { user: any }) => (
 );
 
 const DangerZone = ({ onDelete }: { onDelete: () => void }) => (
-  <div className="bg-white rounded-xl border border-red-300 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)]">
+  <div className="bg-white rounded-xl border border-red-300 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-gray-800 dark:border-red-500/50">
     <div className="flex items-center gap-3 mb-1">
-      <h2 className="text-lg font-semibold text-gray-800">Danger Zone</h2>
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Danger Zone</h2>
     </div>
-    <p className="text-sm text-gray-600 mb-6">
+    <p className="text-sm text-gray-600 mb-6 dark:text-gray-400">
       Once you delete your account, there is no going back. Please be certain.
     </p>
     <button

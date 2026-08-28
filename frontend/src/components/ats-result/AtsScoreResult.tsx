@@ -62,7 +62,7 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
                 Improvement Suggestions
               </h2>
               <SuggestionList
@@ -89,14 +89,14 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
               />
             </div>
 
-            <div className="md:col-span-2 bg-white p-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            <div className="md:col-span-2 bg-white dark:bg-gray-800 p-6">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
                 Summary
               </h2>
               <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-gray-100 p-4">
-                  <p className="text-gray-600 text-sm mb-1">ATS Friendliness</p>
-                  <p className="text-2xl font-bold text-gray-800">
+                <div className="bg-gray-100 dark:bg-gray-700 p-4">
+                  <p className="text-gray-600 text-sm mb-1 dark:text-gray-400">ATS Friendliness</p>
+                  <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                     {result.atsFriendliness}%
                   </p>
                 </div>

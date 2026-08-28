@@ -77,11 +77,11 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
   subgroup,
 }) => {
   return (
-    <div className="border border-gray-200/60 bg-gray-0 overflow-hidden xl:flex xl:items-stretch">
+    <div className="border border-gray-200/60 dark:border-gray-700/60 bg-gray-0 overflow-hidden xl:flex xl:items-stretch">
       {/* Left side - Title with border on xl screens */}
-      <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-50 border-b border-gray-200/60 xl:border-b-0 xl:border-r xl:w-64 xl:flex-shrink-0 xl:px-6 xl:py-4">
+      <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200/60 dark:border-gray-700/60 xl:border-b-0 xl:border-r xl:w-64 xl:flex-shrink-0 xl:px-6 xl:py-4">
         <div className="min-w-0">
-          <h4 className="text-sm font-semibold text-gray-700 leading-tight">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 leading-tight">
             {subgroup.title}
           </h4>
         </div>
@@ -102,7 +102,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
                     ? "bg-green-500/15 text-green-600"
                     : check.status === "failed"
                       ? "bg-red-500/15 text-red-600"
-                      : "bg-gray-50 text-gray-500"
+                      : "bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400"
                 }`}
               >
                 <span className="text-[16px] xl:text-[18px] leading-none">
@@ -113,7 +113,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
                 {/* <p className="text-[13px] font-medium text-gray-700 leading-snug xl:text-sm">
                   {check.label}
                 </p> */}
-                <p className="text-xs text-gray-600 leading-snug mt-0.5 xl:text-[13px]">
+                <p className="text-xs text-gray-600 dark:text-gray-400 leading-snug mt-0.5 xl:text-[13px]">
                   {check.detail}
                 </p>
               </div>
@@ -215,7 +215,7 @@ const FormattingLock: React.FC<{ onShowTips: () => void }> = ({
       {/* Blurred content placeholder */}
       <div className="blur-[5px] select-none pointer-events-none p-4 opacity-60">
         <div className="space-y-3">
-          <div className="bg-gray-100 p-4 space-y-2.5">
+          <div className="bg-gray-100 dark:bg-gray-700 p-4 space-y-2.5">
             <div className="w-24 h-4 bg-gray-300" />
             {[0, 1, 2].map((i) => (
               <div key={i} className="flex items-center gap-2.5">
@@ -224,7 +224,7 @@ const FormattingLock: React.FC<{ onShowTips: () => void }> = ({
               </div>
             ))}
           </div>
-          <div className="bg-gray-100 p-4 space-y-2.5">
+          <div className="bg-gray-100 dark:bg-gray-700 p-4 space-y-2.5">
             <div className="w-20 h-4 bg-gray-300" />
             {[0, 1].map((i) => (
               <div key={i} className="flex items-center gap-2.5">
@@ -238,10 +238,10 @@ const FormattingLock: React.FC<{ onShowTips: () => void }> = ({
 
       {/* Overlay text on top of blur */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 py-6">
-        <p className="text-lg md:text-xl font-bold text-gray-800 leading-tight mb-1.5">
+          <p className="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 leading-tight mb-1.5">
           Unavailable for Free
         </p>
-        <p className="text-sm text-gray-700 mb-4 max-w-md">
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 max-w-md">
           This section only works with AI scans. Get free tips to make your
           resume formatting perfect.
         </p>
@@ -305,7 +305,7 @@ const ReviewCard: React.FC<{
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className={`${meta.accent} p-5 bg-white rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]`}
+      className={`${meta.accent} p-5 bg-white dark:bg-gray-800 rounded-lg shadow-[0_0_6px_rgba(0,0,0,0.2)]`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -316,10 +316,10 @@ const ReviewCard: React.FC<{
             {meta.icon}
           </div>
           <div>
-            <h3 className="font-semibold text-gray-800 leading-tight">
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100 leading-tight">
               {category.title}
             </h3>
-            <p className="text-xs text-gray-500">{category.summary}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{category.summary}</p>
           </div>
         </div>
         {/* <span className={`text-sm font-bold ${getScoreColor(category.score)}`}>

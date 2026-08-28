@@ -30,13 +30,13 @@ const Footer = () => {
       <Wrapper className="!px-4 lg:!px-16">
         {/* Top Divider */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="flex-1 h-px bg-gray-400"></div>
+          <div className="flex-1 h-px bg-gray-400 dark:bg-gray-600"></div>
 
-          <span className="text-sm italic text-gray-600 whitespace-nowrap">
+          <span className="text-sm italic text-gray-600 whitespace-nowrap dark:text-gray-400">
             Built to pass every ATS
           </span>
 
-          <div className="flex-1 h-px bg-gray-400"></div>
+          <div className="flex-1 h-px bg-gray-400 dark:bg-gray-600"></div>
         </div>
 
         {/* Main Footer Row */}
@@ -44,13 +44,13 @@ const Footer = () => {
           {/* Left: Logo */}
           <div className="flex items-center gap-2 whitespace-nowrap">
             <img src="/favicon.png" alt="ATSUp" className="w-8 h-6" />
-            <span className="text-lg font-bold text-gray-800">
+            <span className="text-lg font-bold text-gray-800 dark:text-gray-100">
               ATS<span className="text-cyan-500">Up</span>
             </span>
           </div>
 
           {/* Center Links */}
-          <div className="flex flex-wrap items-center justify-center gap-2 text-gray-800">
+          <div className="flex flex-wrap items-center justify-center gap-2 text-gray-800 dark:text-gray-100">
             {socialLinks.map((link, i) => (
               <span key={link.name} className="flex items-center gap-2">
                 {i > 0 && <span>•</span>}
@@ -81,7 +81,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom: Copyright */}
-        <p className="text-center text-xs text-gray-600 mt-8">
+        <p className="text-center text-xs text-gray-600 dark:text-gray-400 mt-8">
           © 2026 ATSUp. All Rights Reserved.
         </p>
       </Wrapper>

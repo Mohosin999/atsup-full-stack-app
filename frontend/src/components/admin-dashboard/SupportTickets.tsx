@@ -110,7 +110,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
         isRefreshing={isRefreshing}
       />
 
-      <div className="bg-white box-shadow p-4 md:p-6">
+      <div className="bg-white dark:bg-gray-800 box-shadow p-4 md:p-6">
         <div className="flex items-center justify-end mb-4">
           <div className="flex flex-wrap gap-1">
             {FILTERS.map((f) => (
@@ -119,7 +119,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
                 type="button"
                 onClick={() => setFilter(f.value)}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                  filter === f.value ? 'bg-cyan-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  filter === f.value ? 'bg-cyan-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 {f.label}
@@ -133,7 +133,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
           <LoadingSpinner size="md" text="Loading tickets..." />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="py-12 text-center text-gray-500">
+          <div className="py-12 text-center text-gray-500 dark:text-gray-400">
           <Inbox className="w-10 h-10 mx-auto mb-2 text-gray-300" />
           No tickets found
         </div>
@@ -142,31 +142,31 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
           {filtered.map((t) => {
             const expanded = expandedId === t.id;
             return (
-              <div key={t.id} className="border border-gray-200">
+              <div key={t.id} className="border border-gray-200 dark:border-gray-700">
                 <button
                   type="button"
                   onClick={() => setExpandedId(expanded ? null : t.id)}
-                  className="w-full flex items-center gap-3 p-4 text-left hover:bg-gray-50"
+                  className="w-full flex items-center gap-3 p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 >
                   <div className="w-9 h-9 bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-semibold shrink-0">
                     {t.user?.name?.charAt(0)?.toUpperCase() || '?'}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-800 truncate flex-1">{t.title}</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-100 truncate flex-1">{t.title}</p>
                       <div className="shrink-0 sm:hidden">
                         {expanded ? (
-                          <ChevronUp className="w-4 h-4 text-gray-400" />
+                          <ChevronUp className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                         ) : (
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                          <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                         )}
                       </div>
                     </div>
-                    <p className="text-xs text-gray-500 truncate mt-0.5">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
                       {t.user?.name || 'Unknown'} · {t.user?.email || ''} · {formatDate(t.createdAt)}
                     </p>
                     <div className="flex flex-wrap items-center gap-2 mt-2 sm:hidden">
-                      <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 text-gray-600">
+                      <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                         {TYPE_LABELS[t.type] || t.type}
                       </span>
                       <span className={`text-xs font-medium px-2 py-0.5 ${STATUS_STYLES[t.status]}`}>
@@ -190,8 +190,8 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
                 </button>
 
                 {expanded && (
-                  <div className="px-4 pb-4 border-t border-gray-100 pt-3">
-                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{t.message}</p>
+                  <div className="px-4 pb-4 border-t border-gray-100 dark:border-gray-700 pt-3">
+                      <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{t.message}</p>
 
                     {t.attachment && (
                       <a

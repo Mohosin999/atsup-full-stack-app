@@ -193,11 +193,11 @@ export default function AtsScoreDetail() {
             <LoadingSpinner />
           </div>
         ) : error ? (
-          <div className="bg-white rounded-lg p-8 text-center">
+            <div className="bg-white rounded-lg p-8 text-center dark:bg-gray-800">
             <p className="text-red-600 font-medium mb-4">{error}</p>
             <button
               onClick={() => navigate("/ats-scan")}
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors"
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100"
             >
               Go to ATS Score
             </button>
@@ -221,12 +221,12 @@ export default function AtsScoreDetail() {
               setJobDescription("");
             }}
           />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-800">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <div className="flex items-center gap-2">
                 <RefreshCw className="w-5 h-5 text-cyan-600" />
-                <h2 className="text-lg font-semibold text-gray-800">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                   Rescan Resume
                 </h2>
               </div>
@@ -237,7 +237,7 @@ export default function AtsScoreDetail() {
                   setResumeName("");
                   setJobDescription("");
                 }}
-                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-700"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -247,7 +247,7 @@ export default function AtsScoreDetail() {
             <div className="p-6 space-y-6">
               {/* Upload Resume */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                   Upload Resume (PDF)
                 </label>
                 {resumeFile ? (
@@ -255,7 +255,7 @@ export default function AtsScoreDetail() {
                     <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center shrink-0">
                       <CheckCircle className="w-6 h-6 text-cyan-500" />
                     </div>
-                    <p className="text-sm font-medium text-gray-800 truncate flex-1">
+                      <p className="text-sm font-medium text-gray-800 truncate flex-1 dark:text-gray-100">
                       {resumeName}
                     </p>
                     <button
@@ -269,15 +269,15 @@ export default function AtsScoreDetail() {
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer rounded-lg transition-colors p-6">
-                    <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600">
+                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer rounded-lg transition-colors p-6 dark:border-gray-600 dark:bg-gray-800/50 dark:hover:bg-gray-700">
+                    <Upload className="w-8 h-8 text-gray-400 mb-2 dark:text-gray-500" />
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                       <span className="font-semibold text-cyan-600">
                         Click to upload
                       </span>{" "}
                       or drag and drop
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
                       PDF only (MAX. 10MB)
                     </p>
                     <input
@@ -299,7 +299,7 @@ export default function AtsScoreDetail() {
 
               {/* Job Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                   Job Description
                 </label>
                 <textarea
@@ -307,7 +307,7 @@ export default function AtsScoreDetail() {
                   onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the job description here..."
                   rows={8}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none dark:bg-gray-800/50 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
                 />
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function AtsScoreDetail() {
                   setResumeName("");
                   setJobDescription("");
                 }}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300"
               >
                 Cancel
               </button>

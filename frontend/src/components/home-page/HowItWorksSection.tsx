@@ -32,11 +32,11 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
             whileInView={{ scale: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full text-cyan-700 text-sm font-semibold mb-4 border border-gray-200"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-cyan-700 text-sm font-semibold mb-4 border border-gray-200 dark:border-gray-700"
           >
             <Award className="w-4 h-4" /> Simple Process
           </motion.div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-8">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-8">
             How It <span className="bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">Works</span>
           </h2>
         </motion.div>
@@ -54,10 +54,10 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
               className="relative group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-cyan-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative p-8 rounded-2xl bg-white/70 border border-gray-200 hover:border-cyan-500/50 transition-colors h-full">
+              <div className="relative p-8 rounded-2xl bg-white/70 border border-gray-200 hover:border-cyan-500/50 transition-colors h-full dark:bg-gray-800/70 dark:border-gray-700">
                 <div className="text-6xl font-bold text-cyan-500/20 mb-4">{step.number}</div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3">{step.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{step.description}</p>
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-3">{step.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{step.description}</p>
               </div>
             </motion.div>
           ))}

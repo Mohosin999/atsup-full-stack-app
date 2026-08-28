@@ -79,13 +79,13 @@ const AllResumes: React.FC<{ onRefresh?: () => void; isRefreshing?: boolean }> =
       />
 
       {resumes.length === 0 ? (
-        <div className="bg-white box-shadow p-6 text-center py-16 text-gray-500">No resumes found.</div>
+        <div className="bg-white dark:bg-gray-800 box-shadow p-6 text-center py-16 text-gray-500 dark:text-gray-400">No resumes found.</div>
       ) : (
-        <div className="bg-white box-shadow overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 box-shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   <th className="px-4 py-3">Resume</th>
                   <th className="px-4 py-3">User</th>
                   <th className="px-4 py-3">Source</th>
@@ -93,35 +93,35 @@ const AllResumes: React.FC<{ onRefresh?: () => void; isRefreshing?: boolean }> =
                   <th className="px-4 py-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {resumes.map((resume) => (
-                  <tr key={resume.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={resume.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-gray-400 shrink-0" />
-                        <span className="text-gray-800 truncate max-w-[200px]">
+                        <FileText className="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
+                        <span className="text-gray-800 dark:text-gray-100 truncate max-w-[200px]">
                           {getFileName(resume.metadata)}
                         </span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <div>
-                        <p className="text-gray-800 font-medium">{resume.user.name || "—"}</p>
-                        <p className="text-gray-500 text-xs">{resume.user.email}</p>
+                        <p className="text-gray-800 dark:text-gray-100 font-medium">{resume.user.name || "—"}</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs">{resume.user.email}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+                      <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
                         {resume.sourceType}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
+                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs whitespace-nowrap">
                       {new Date(resume.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => setConfirmDelete(resume)}
-                        className="text-gray-400 hover:text-red-600 transition-colors"
+                        className="text-gray-400 dark:text-gray-500 hover:text-red-600 transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

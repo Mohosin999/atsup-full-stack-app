@@ -64,14 +64,14 @@ export default function HeroUploadBox() {
       transition={{ duration: 0.8, delay: 0.4 }}
       className="relative"
     >
-      <div className="bg-white rounded-3xl shadow-2xl shadow-cyan-500/20 p-8 border border-cyan-200">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl shadow-cyan-500/20 p-8 border border-cyan-200">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-14 h-14 bg-gradient-to-br from-cyan-500 to-cyan-500 rounded-2xl flex items-center justify-center">
             <Upload className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-gray-800">Upload Resume</h3>
-            <p className="text-sm text-gray-700">Get instant ATS score</p>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">Upload Resume</h3>
+            <p className="text-sm text-gray-700 dark:text-gray-300">Get instant ATS score</p>
           </div>
         </div>
 
@@ -82,15 +82,15 @@ export default function HeroUploadBox() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="min-h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-cyan-400 bg-cyan-50 rounded-2xl p-6"
+              className="min-h-[180px] flex flex-col items-center justify-center border-2 border-dashed border-cyan-400 bg-cyan-50 dark:bg-gray-800/50 rounded-2xl p-6"
             >
               <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center mb-3">
                 <Loader2 className="w-7 h-7 text-cyan-600 animate-spin" />
               </div>
-              <p className="text-sm font-semibold text-gray-800">
+              <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
                 Uploading {fileName}
               </p>
-              <div className="w-full max-w-[200px] h-2 bg-gray-200 rounded-full overflow-hidden mt-4">
+              <div className="w-full max-w-[200px] h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mt-4">
                 <motion.div
                   className="h-full bg-gradient-to-r from-cyan-500 to-cyan-500 rounded-full"
                   initial={{ width: 0 }}
@@ -98,7 +98,7 @@ export default function HeroUploadBox() {
                   transition={{ ease: "easeInOut" }}
                 />
               </div>
-              <p className="text-xs text-gray-600 mt-2">Preparing ATS analysis...</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">Preparing ATS analysis...</p>
             </motion.div>
           ) : (
             <motion.div
@@ -115,22 +115,22 @@ export default function HeroUploadBox() {
                     ? "border-cyan-500 bg-cyan-50"
                     : isDragReject
                       ? "border-red-400 bg-red-50"
-                      : "border-gray-200 bg-white hover:bg-gray-50",
+                      : "border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700/50",
                 )}
               >
                 <input {...getInputProps()} />
                 <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center mb-3">
                   <FileUp className="w-6 h-6 text-cyan-600" />
                 </div>
-                <p className="text-sm text-gray-700 text-center">
-                  <span className="font-semibold text-gray-800">
+                <p className="text-sm text-gray-700 dark:text-gray-300 text-center">
+                  <span className="font-semibold text-gray-800 dark:text-gray-100">
                     {isDragActive
                       ? "Drop your resume here"
                       : "Click to upload"}
                   </span>{" "}
                   or drag and drop
                 </p>
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                   PDF only (MAX. 10MB)
                 </p>
               </div>
@@ -143,7 +143,7 @@ export default function HeroUploadBox() {
           )}
         </AnimatePresence>
 
-        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-500">
+        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
           <CheckCircle className="w-3.5 h-3.5 text-cyan-500" />
           Free ATS scan · No credit needed
         </div>

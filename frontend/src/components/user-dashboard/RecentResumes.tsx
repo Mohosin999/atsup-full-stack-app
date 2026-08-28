@@ -58,10 +58,10 @@ export default function RecentResumes({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.45 }}
-        className="bg-white box-shadow border border-gray-100 p-6"
+        className="bg-white dark:bg-gray-800 box-shadow border border-gray-100 dark:border-gray-700 p-6"
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-gray-800">Recent Resumes</h2>
+          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">Recent Resumes</h2>
           {!loading && resumes.length > 0 && (
             <Link
               to="/resume-history"
@@ -77,12 +77,12 @@ export default function RecentResumes({
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="h-14 bg-gray-100 animate-pulse"
+                className="h-14 bg-gray-100 dark:bg-gray-700 animate-pulse"
               />
             ))}
           </div>
         ) : resumes.length === 0 ? (
-          <p className="text-sm text-gray-500 py-4 text-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">
             No resumes yet
           </p>
         ) : (
@@ -90,17 +90,17 @@ export default function RecentResumes({
             {resumes.map((resume) => (
               <div
                 key={resume.id || resume._id}
-                className="flex items-center justify-between p-3 border-b border-gray-200 last:border-b-0"
+                className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 bg-emerald-50 flex items-center justify-center">
                     <FileText className="w-4 h-4 text-emerald-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-800 truncate max-w-[200px]">
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate max-w-[200px]">
                       {getResumeName(resume)}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {new Date(resume.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -110,14 +110,14 @@ export default function RecentResumes({
                     onClick={() =>
                       navigate(`/resume-builder/${resume.id || resume._id}`)
                     }
-                    className="p-1.5 hover:bg-cyan-50 text-gray-400 hover:text-cyan-600 transition-colors"
+                    className="p-1.5 hover:bg-cyan-50 text-gray-400 dark:text-gray-500 hover:text-cyan-600 transition-colors"
                     title="Edit"
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setDeleteId(resume.id || resume._id)}
-                    className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
+                    className="p-1.5 hover:bg-red-50 text-gray-400 dark:text-gray-500 hover:text-red-600 transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />

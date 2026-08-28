@@ -91,9 +91,9 @@ const ScoreCircle: React.FC<ScoreCircleProps> = ({
             transition={{ delay: 0.5, duration: 0.5, ease: "backOut" }}
             className="text-center"
           >
-            <span className={`${textSize} font-bold text-gray-700`}>
+            <span className={`${textSize} font-bold text-gray-700 dark:text-gray-300`}>
               {score}
-              <span className="text-xl font-semibold text-gray-500">%</span>
+              <span className="text-xl font-semibold text-gray-500 dark:text-gray-400">%</span>
             </span>
           </motion.div>
         </div>

@@ -67,15 +67,15 @@ const ReportButton: React.FC = () => {
       {open && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div className="absolute inset-0 bg-black/40" onClick={close} />
-          <div className="relative w-full sm:max-w-md bg-white rounded-t-xl sm:rounded-lg shadow-xl p-6 max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full sm:max-w-md bg-white dark:bg-gray-800 dark:border dark:border-gray-700 rounded-t-xl sm:rounded-lg shadow-xl p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                 {done ? "Report Submitted" : "Report a Problem"}
               </h3>
               <button
                 type="button"
                 onClick={close}
-                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                className="p-1 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -84,10 +84,10 @@ const ReportButton: React.FC = () => {
             {done ? (
               <div className="text-center py-6">
                 <CheckCircle2 className="w-12 h-12 text-cyan-500 mx-auto mb-3" />
-                <p className="text-gray-700 mb-1">
+                <p className="text-gray-700 dark:text-gray-300 mb-1">
                   Thank you! Your report has been sent to our team.
                 </p>
-                <p className="text-sm text-gray-500 mb-5">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
                   You can track its status from My Reports.
                 </p>
                 <div className="flex items-center justify-center gap-2">
@@ -101,7 +101,7 @@ const ReportButton: React.FC = () => {
                   <button
                     type="button"
                     onClick={close}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    className="px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
                   >
                     Close
                   </button>
@@ -110,13 +110,13 @@ const ReportButton: React.FC = () => {
             ) : (
               <form onSubmit={submit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Problem type
                   </label>
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value as SupportType)}
-                    className="w-full px-3 py-2 border-[1px] border-gray-400 rounded-lg text-sm focus:outline-none focus:ring-0 bg-white text-gray-700"
+                    className="w-full px-3 py-2 border-[1px] border-gray-400 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-0 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100"
                   >
                     <option value="bug">Bug / Something is broken</option>
                     <option value="feature">Feature request</option>
@@ -130,7 +130,7 @@ const ReportButton: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Title
                   </label>
                   <input
@@ -139,12 +139,12 @@ const ReportButton: React.FC = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Short summary of the problem"
                     maxLength={255}
-                    className="w-full px-3 py-2 border-[1px] border-gray-400 rounded-lg text-sm focus:outline-none focus:ring-0  bg-white text-gray-700 placeholder-gray-400"
+                    className="w-full px-3 py-2 border-[1px] border-gray-400 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-0  bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Description
                   </label>
                   <textarea
@@ -152,19 +152,19 @@ const ReportButton: React.FC = () => {
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Tell us what happened and what you expected..."
                     rows={4}
-                    className="w-full px-3 py-2 border-[1px] border-gray-400 rounded-lg text-sm focus:outline-none focus:ring-0 resize-none bg-white text-gray-00 placeholder-gray-400"
+                    className="w-full px-3 py-2 border-[1px] border-gray-400 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-0 resize-none bg-white dark:bg-gray-900 text-gray-00 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Screenshot{" "}
-                    <span className="text-gray-500 font-normal">
+                    <span className="text-gray-500 dark:text-gray-400 font-normal">
                       (optional)
                     </span>
                   </label>
                   <div className="flex items-center gap-2">
-                    <label className="flex-1 flex items-center gap-2 px-3 py-2 border-[1px] border-dashed border-gray-400 rounded-lg text-sm text-gray-600 cursor-pointer hover:border-cyan-500 hover:text-cyan-600 bg-white">
+                      <label className="flex-1 flex items-center gap-2 px-3 py-2 border-[1px] border-dashed border-gray-400 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-300 cursor-pointer hover:border-cyan-500 hover:text-cyan-600 bg-white dark:bg-gray-900">
                       <Paperclip className="w-4 h-4" />
                       <span className="truncate">
                         {attachment ? attachment.name : "Attach an image"}
@@ -182,7 +182,7 @@ const ReportButton: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setAttachment(null)}
-                        className="px-2 py-1 text-xs rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 border border-black"
+                        className="px-2 py-1 text-xs rounded-md bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 border border-black dark:border-gray-600"
                       >
                         Remove
                       </button>

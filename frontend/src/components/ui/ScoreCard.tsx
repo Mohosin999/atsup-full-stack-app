@@ -46,24 +46,24 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({
   breakdown,
 }) => {
   return (
-    <div className="bg-gray-50 dark:bg-gray-100 rounded-lg p-4">
+    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4">
       <div className="text-center mb-2">
         <div
           className={`font-bold ${getSizeClasses(size)} ${getScoreColor(score)}`}
         >
           {score}%
         </div>
-        <p className="text-sm font-medium text-gray-700 dark:text-gray-700 mt-1">
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-1">
           {label}
         </p>
         {sublabel && (
-          <p className="text-xs text-gray-500 dark:text-gray-600">{sublabel}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{sublabel}</p>
         )}
       </div>
 
       {showProgress && (
         <div className="mt-3">
-          <div className="h-2 bg-gray-200 dark:bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${score}%` }}
@@ -81,10 +81,10 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({
               key={index}
               className="flex items-center justify-between text-xs"
             >
-              <span className="text-gray-600 dark:text-gray-600">
+              <span className="text-gray-600 dark:text-gray-400">
                 {item.label}
               </span>
-              <span className="font-medium text-gray-800 dark:text-white">
+              <span className="font-medium text-gray-800 dark:text-gray-100">
                 {item.score}% ({item.weight}%)
               </span>
             </div>

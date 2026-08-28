@@ -102,10 +102,10 @@ export default function TestimonialsSection({
     <section className="pb-20 lg:pb-20 xl:pb-28">
       <Wrapper>
         <div className="text-center mb-10 lg:mb-14">
-          <h2 className="text-3xl xl:text-4xl font-bold text-gray-900">
+          <h2 className="text-3xl xl:text-4xl font-bold text-gray-900 dark:text-gray-100">
             Loved by <span className="text-cyan-600">Thousands</span>
           </h2>
-          <p className="mt-2 text-base text-gray-600">
+          <p className="mt-2 text-base text-gray-600 dark:text-gray-400">
             See what our users have to say
           </p>
         </div>
@@ -115,7 +115,7 @@ export default function TestimonialsSection({
             <div
               key={testimonial.id || `${testimonial.name}-${index}`}
               className="group relative bg-cyan-50 p-5 cursor-pointer
-                         transition-all duration-300 ease-out border border-cyan-400"
+                         transition-all duration-300 ease-out border border-cyan-400 dark:bg-gray-800"
               style={{
                 transform: `rotate(${cardStyles[index].rotate}deg) translateY(${cardStyles[index].translateY}px) translateX(${cardStyles[index].translateX}px)`,
               }}
@@ -132,24 +132,24 @@ export default function TestimonialsSection({
                     />
                   ))}
                 </div>
-                <span className="text-[10px] uppercase tracking-wider text-gray-500 font-medium">
+                <span className="text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400 font-medium">
                   Verified
                 </span>
               </div>
 
-              <p className="text-gray-700 mb-4 leading-snug text-sm line-clamp-4">
+              <p className="text-gray-700 dark:text-gray-300 mb-4 leading-snug text-sm line-clamp-4">
                 "{testimonial.content}"
               </p>
 
-              <div className="flex items-center gap-2.5 pt-3 border-t border-gray-100">
-                <div className="w-8 h-8 bg-gray-300 flex items-center justify-center text-gray-800 font-bold text-xs shrink-0 rounded-full">
+              <div className="flex items-center gap-2.5 pt-3 border-t border-gray-100 dark:border-gray-700">
+                <div className="w-8 h-8 bg-gray-300 flex items-center justify-center text-gray-800 dark:text-gray-100 font-bold text-xs shrink-0 rounded-full dark:bg-gray-700">
                   {testimonial.name.charAt(0)}
                 </div>
                 <div className="min-w-0">
-                  <p className="font-medium text-gray-700 text-[13px] truncate">
+                  <p className="font-medium text-gray-700 dark:text-gray-300 text-[13px] truncate">
                     {testimonial.name}
                   </p>
-                  <p className="text-[11px] text-gray-500 truncate">
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
                     {testimonial.role} Frontend Developer
                   </p>
                 </div>

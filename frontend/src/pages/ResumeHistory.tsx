@@ -136,9 +136,9 @@ export default function ResumeHistory() {
           {/* Header */}
           <div className="pt-8 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
             <div>
-              <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-100">
                 Resume History{" "}
-                <span className="text-sm !font-normal text-gray-500">
+                <span className="text-sm !font-normal text-gray-500 dark:text-gray-400 dark:text-gray-400">
                   - {totalResumes} resume{totalResumes !== 1 ? "s" : ""}
                 </span>
               </h1>
@@ -165,17 +165,17 @@ export default function ResumeHistory() {
           ) : (
             <>
               {/* Desktop Table */}
-              <div className="hidden md:block border border-gray-300 overflow-hidden rounded-lg">
+              <div className="hidden md:block border border-gray-300 overflow-hidden rounded-lg dark:border-gray-600">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-[#A5D9FC] border-b border-[#A5D9FC] text-left">
-                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[45%]">
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 dark:text-gray-300 w-[45%]">
                         Name
                       </th>
-                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[25%]">
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 dark:text-gray-300 w-[25%]">
                         Date
                       </th>
-                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 w-[30%]"></th>
+                      <th className="px-3 lg:px-5 py-2.5 lg:py-3 font-medium text-sm text-gray-700 dark:text-gray-300 w-[30%]"></th>
                     </tr>
                   </thead>
 
@@ -184,7 +184,7 @@ export default function ResumeHistory() {
                       <tr>
                         <td
                           colSpan={3}
-                          className="py-16 lg:py-24 text-center text-sm text-gray-500"
+                          className="py-16 lg:py-24 text-center text-sm text-gray-500 dark:text-gray-400"
                         >
                           No Resumes Yet
                         </td>
@@ -193,7 +193,7 @@ export default function ResumeHistory() {
                       resumes.map((resume: ResumeListItem) => (
                         <tr
                           key={resume.id}
-                          className="border-b border-gray-300 last:border-b-0"
+                          className="border-b border-gray-300 last:border-b-0 dark:border-gray-600"
                         >
                           <td className="px-3 lg:px-5 py-4 lg:py-5">
                             {editingId === resume.id ? (
@@ -217,7 +217,7 @@ export default function ResumeHistory() {
                                     if (e.key === "Escape") setEditingId(null);
                                   }}
                                   autoFocus
-                                  className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 text-sm focus:outline-none"
+                                  className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 dark:text-gray-300 text-sm focus:outline-none dark:border-gray-600"
                                 />
                                 <span
                                   ref={measureRef}
@@ -242,7 +242,7 @@ export default function ResumeHistory() {
                               </div>
                             ) : (
                               <div className="group flex items-center gap-2">
-                                <span className="text-gray-700 text-sm">
+                                <span className="text-gray-700 dark:text-gray-300 text-sm">
                                   {getResumeTitle(resume)}
                                 </span>
 
@@ -253,13 +253,13 @@ export default function ResumeHistory() {
                                   }}
                                    className="transition"
                                 >
-                                  <Pencil className="w-3 h-3 lg:w-3.5 lg:h-3.5 text-gray-500 hover:text-cyan-500" />
+                                  <Pencil className="w-3 h-3 lg:w-3.5 lg:h-3.5 text-gray-500 dark:text-gray-400 hover:text-cyan-500" />
                                 </button>
                               </div>
                             )}
                           </td>
 
-                          <td className="px-3 lg:px-0 py-4 lg:py-5 text-gray-700 text-sm">
+                          <td className="px-3 lg:px-0 py-4 lg:py-5 text-gray-700 dark:text-gray-300 text-sm">
                             {new Date(resume.updatedAt).toLocaleDateString(
                               "en-US",
                               {
@@ -271,7 +271,7 @@ export default function ResumeHistory() {
                           </td>
 
                           <td className="px-3 lg:px-5 py-4 lg:py-5">
-                            <div className="flex justify-end gap-3 lg:gap-5 text-sm text-gray-700">
+                            <div className="flex justify-end gap-3 lg:gap-5 text-sm text-gray-700 dark:text-gray-300">
                               <button
                                 onClick={() =>
                                   navigate(`/resume-builder/${resume.id}`)
@@ -304,9 +304,9 @@ export default function ResumeHistory() {
               </div>
 
               {/* Mobile Layout */}
-              <div className="bg-white md:hidden border border-gray-300 overflow-hidden divide-y divide-gray-200">
+                <div className="bg-white md:hidden border border-gray-300 overflow-hidden divide-y divide-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:divide-gray-700">
                 {resumes.length === 0 ? (
-                  <div className="py-12 text-center text-sm text-gray-500">
+                  <div className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
                     No Resumes Yet
                   </div>
                 ) : (
@@ -335,7 +335,7 @@ export default function ResumeHistory() {
                                   if (e.key === "Escape") setEditingId(null);
                                 }}
                                 autoFocus
-                                className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 text-sm w-full"
+                                className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 dark:text-gray-300 text-sm w-full dark:border-gray-600"
                               />
                               <span
                                 ref={measureRef}
@@ -360,7 +360,7 @@ export default function ResumeHistory() {
                             </div>
                           ) : (
                             <div className="group flex items-center gap-2">
-                              <h3 className="text-sm truncate text-gray-700">
+                              <h3 className="text-sm truncate text-gray-700 dark:text-gray-300">
                                 {getResumeTitle(resume)}
                               </h3>
 
@@ -371,12 +371,12 @@ export default function ResumeHistory() {
                                 }}
                                 className="opacity-70"
                               >
-                                <Pencil className="w-3.5 h-3.5 text-gray-500" />
+                                <Pencil className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
                               </button>
                             </div>
                           )}
 
-                          <p className="mt-1.5 text-xs text-gray-500">
+                          <p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                             {new Date(resume.updatedAt).toLocaleDateString(
                               "en-US",
                               {
@@ -389,7 +389,7 @@ export default function ResumeHistory() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-end gap-4 mt-3 text-xs text-gray-700">
+                      <div className="flex items-center justify-end gap-4 mt-3 text-xs text-gray-700 dark:text-gray-300">
                         <button
                           onClick={() =>
                             navigate(`/resume-builder/${resume.id}`)

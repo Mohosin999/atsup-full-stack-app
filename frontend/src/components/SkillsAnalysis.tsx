@@ -16,14 +16,14 @@ export default function SkillsAnalysis({ analysis }: { analysis: Analysis }) {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <CheckCircle className="w-4 h-4 text-cyan-500" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-700">Matched Skills ({analysis.sectionScores?.skills?.matched?.length || 0})</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Matched Skills ({analysis.sectionScores?.skills?.matched?.length || 0})</span>
           </div>
           <SkillList skills={analysis.sectionScores?.skills?.matched || []} type="matched" maxDisplay={12} />
         </div>
         <div>
           <div className="flex items-center gap-2 mb-3">
             <AlertCircle className="w-4 h-4 text-red-500" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-700">Missing Skills ({analysis.sectionScores?.skills?.missing?.length || 0})</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Missing Skills ({analysis.sectionScores?.skills?.missing?.length || 0})</span>
           </div>
           <SkillList skills={analysis.sectionScores?.skills?.missing || []} type="missing" maxDisplay={12} />
         </div>

@@ -12,7 +12,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-xs font-medium text-gray-700 dark:text-gray-700 mb-1">
+          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
             {label}
           </label>
         )}
@@ -25,7 +25,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             className={clsx(
-              'w-full px-4 py-2 lg:py-3 border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-xs rounded-md',
+              'w-full px-4 py-2 lg:py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-xs rounded-md',
               icon && 'pl-8',
               error && 'border-red-500 focus:ring-red-500',
               className
@@ -51,16 +51,16 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, label, error, ...props }, ref) => {
     return (
-      <div className="w-full mt-2">
-        {label && (
-          <label className="block text-xs font-medium text-gray-700 dark:text-gray-700 mb-1">
+        <div className="w-full mt-2">
+          {label && (
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
             {label}
           </label>
         )}
         <textarea
           ref={ref}
           className={clsx(
-            'w-full text-xs px-4 py-2 border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none leading-5',
+            'w-full text-xs px-4 py-2 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none leading-5',
             error && 'border-red-500 focus:ring-red-500',
             className
           )}
@@ -87,14 +87,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             {label}
           </label>
         )}
         <select
           ref={ref}
           className={clsx(
-            'w-full px-4 py-2 border border-gray-200 dark:border-gray-200 bg-white dark:bg-white text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all',
+            'w-full px-4 py-2 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all',
             error && 'border-red-500 focus:ring-red-500',
             className
           )}

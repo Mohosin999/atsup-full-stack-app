@@ -78,7 +78,7 @@ function SkillTagInput({
         }
       }}
       onBlur={() => addSkills(text)}
-      className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
+      className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
       placeholder={placeholder || "Type a skill and press Enter"}
     />
   );
@@ -120,7 +120,7 @@ return (
         title="Drag to reorder"
         className="flex items-center text-cyan-400 hover:text-cyan-600 cursor-grab active:cursor-grabbing touch-none"
       >
-        <GripVertical className="w-3 h-3 text-gray-400" />
+        <GripVertical className="w-3 h-3 text-gray-400 dark:text-gray-500" />
       </button>
       {children}
       <button
@@ -271,7 +271,7 @@ function SortableCategory({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`border border-gray-200 p-3 space-y-3 rounded-md ${
+      className={`border border-gray-200 dark:border-gray-700 p-3 space-y-3 rounded-md ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
       }`}
     >
@@ -282,11 +282,11 @@ function SortableCategory({
             {...attributes}
             {...listeners}
             title="Drag to reorder category"
-            className="text-gray-400 hover:text-gray-700 cursor-grab active:cursor-grabbing touch-none"
+            className="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-grab active:cursor-grabbing touch-none"
           >
             <GripVertical className="w-4 h-4" />
           </button>
-          <span className="text-xs font-semibold text-gray-700">
+          <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
             Cat. {index + 1}
           </span>
         </div>
@@ -305,7 +305,7 @@ function SortableCategory({
             list="skill-category-presets"
             value={cat.name || ""}
             onChange={(e) => onNameChange(e.target.value)}
-            className="w-full text-xs px-3 py-2 lg:py-3 border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
+            className="w-full text-xs px-3 py-2 lg:py-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
             placeholder="e.g. Technical Skills"
           />
         </div>
@@ -383,7 +383,7 @@ export default function SkillsForm({
   return (
     <div className="space-y-3">
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1.5">
+        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
           Add your own skill
         </label>
         <SkillTagsInput
@@ -419,7 +419,7 @@ export default function SkillsForm({
       <AddButton onClick={addCategory}>Add Skill Category</AddButton>
 
       {categories.length === 0 && (
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           Tip: Add categories like Technical Skills and Soft Skills. Each
           category appears on its own line in the resume.
         </p>

@@ -13,11 +13,11 @@ export default function ResumeDashboard() {
     <div className="min-h-screen lg:pt-20 pb-12">
       <Wrapper>
         <div className="py-8 lg:mb-4 flex flex-col items-center justify-center">
-          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4 gap-2">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4 gap-2 dark:text-gray-100">
             How Would You Like to Start?
           </h1>
 
-          <div className="text-gray-600 text-sm xl:text-base max-w-xl xl:max-w-2xl text-center space-y-4">
+          <div className="text-gray-600 text-sm xl:text-base max-w-xl xl:max-w-2xl text-center space-y-4 dark:text-gray-400">
             <p>
               Start with our best ATS-optimized resume template, designed to
               help your resume pass applicant tracking systems while keeping a
@@ -44,10 +44,10 @@ export default function ResumeDashboard() {
             <div className="w-12 h-12 bg-cyan-600 text-white flex items-center justify-center mb-4">
               <FilePlus2 className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
+            <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">
               Create a new resume
             </h3>
-            <p className="text-sm text-gray-600 mb-6 flex-1">
+            <p className="text-sm text-gray-600 mb-6 flex-1 dark:text-gray-400">
               Start building your resume with our easy-to-use resume builder.
               Every section is movable and editable, so you can customize it to
               your preferences. No need to save it, it'll be saved
@@ -71,15 +71,15 @@ export default function ResumeDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white border-2 border-dashed border-gray-300 p-4 md:p-6 xl:p-8 flex flex-col items-start group relative rounded-lg"
+            className="bg-white border-2 border-dashed border-gray-300 p-4 md:p-6 xl:p-8 flex flex-col items-start group relative rounded-lg dark:bg-gray-800 dark:border-gray-600"
           >
             <div className="w-12 h-12 bg-violet-500/10 border border-violet-500/30 flex items-center justify-center mb-4">
               <UploadCloud className="w-6 h-6 text-violet-500" />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
+            <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">
               Upload resume and rewrite with AI
             </h3>
-            <p className="text-sm text-gray-600 mb-6 flex-1">
+            <p className="text-sm text-gray-600 mb-6 flex-1 dark:text-gray-400">
               Upload your existing resume along with a job description, and our
               AI will rewrite and optimize your resume to match the role,
               improve ATS compatibility, and strengthen the sections that matter
@@ -89,7 +89,7 @@ export default function ResumeDashboard() {
               <button
                 disabled
                 title="Coming soon"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-gray-100 text-gray-400 cursor-not-allowed font-semibold"
+                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-gray-100 text-gray-400 cursor-not-allowed font-semibold dark:bg-gray-700 dark:text-gray-500"
               >
                 <UploadCloud className="w-5 h-5" />
                 Upload Resume

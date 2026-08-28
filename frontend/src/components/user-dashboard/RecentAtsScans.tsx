@@ -45,10 +45,10 @@ export default function RecentAtsScans({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-white box-shadow border border-gray-100 p-6"
+        className="bg-white dark:bg-gray-800 box-shadow border border-gray-100 dark:border-gray-700 p-6"
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-gray-800">Recent ATS Scans</h2>
+          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">Recent ATS Scans</h2>
           {!loading && scans.length > 0 && (
             <Link
               to="/scan-history"
@@ -62,27 +62,27 @@ export default function RecentAtsScans({
         {loading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-14 bg-gray-100 animate-pulse" />
+              <div key={i} className="h-14 bg-gray-100 dark:bg-gray-700 animate-pulse" />
             ))}
           </div>
         ) : scans.length === 0 ? (
-          <p className="text-sm text-gray-500 py-4 text-center">No scans yet</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 py-4 text-center">No scans yet</p>
         ) : (
           <div>
             {scans.map((scan) => (
               <div
                 key={scan.id || scan._id}
-                className="flex items-center justify-between p-3 border-b border-gray-200 last:border-b-0"
+                className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 bg-cyan-50 flex items-center justify-center">
                     <FileCheck className="w-4 h-4 text-cyan-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-800 truncate max-w-[200px]">
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate max-w-[200px]">
                       {scan.resumeName}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {new Date(scan.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -90,14 +90,14 @@ export default function RecentAtsScans({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => navigate(`/ats-scan/${scan.id || scan._id}`)}
-                    className="p-1.5 hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors"
+                    className="p-1.5 hover:bg-blue-50 text-gray-400 dark:text-gray-500 hover:text-blue-600 transition-colors"
                     title="View"
                   >
                     <Eye className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setDeleteId(scan.id || scan._id)}
-                    className="p-1.5 hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
+                    className="p-1.5 hover:bg-red-50 text-gray-400 dark:text-gray-500 hover:text-red-600 transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />

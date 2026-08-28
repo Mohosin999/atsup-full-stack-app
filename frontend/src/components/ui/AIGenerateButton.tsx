@@ -23,7 +23,7 @@ const AIGenerateButton: React.FC<AIGenerateButtonProps> = ({
     primary:
       'bg-cyan-600 hover:bg-cyan-700 text-white focus:ring-cyan-500',
     secondary:
-      'bg-gray-100 dark:bg-gray-100 hover:bg-gray-200 dark:hover:bg-gray-200 text-gray-800 dark:text-white focus:ring-gray-500',
+      'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 focus:ring-gray-500',
   };
 
   const sizeClasses = {

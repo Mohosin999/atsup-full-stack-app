@@ -23,10 +23,10 @@ const AdminViewHeader: React.FC<AdminViewHeaderProps> = ({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
       <div className="flex items-center gap-3 flex-wrap">
-        <h2 className="text-lg font-semibold text-gray-800">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
           {title}
           {count !== undefined && (
-            <span className="text-sm font-normal text-gray-500 ml-1.5">
+            <span className="text-sm font-normal text-gray-500 dark:text-gray-400 ml-1.5">
               ({count} {countLabel})
             </span>
           )}
@@ -39,7 +39,7 @@ const AdminViewHeader: React.FC<AdminViewHeaderProps> = ({
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-cyan-600 border border-gray-300 hover:border-cyan-500 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-cyan-600 border border-gray-300 dark:border-gray-600 hover:border-cyan-500 transition-colors disabled:opacity-50"
           >
             <RefreshCw
               className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}

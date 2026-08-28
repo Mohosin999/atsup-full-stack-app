@@ -342,18 +342,18 @@ const AdminDashboard: React.FC = () => {
                 {/* =====================================================
                   * User activity chart
                  ======================================================*/}
-                <div className="w-full bg-white border border-gray-200 box-shadow p-4 md:p-6 mb-6 text-">
+                <div className="w-full bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 box-shadow p-4 md:p-6 mb-6 text-">
                   {/* Header */}
-                  <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200">
+                  <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gray-100 border border-gray-200 flex items-center justify-center me-3">
-                        <Users className="w-4 h-4 text-gray-600" />
+                      <div className="w-8 h-8 bg-gray-100 border border-gray-200 flex items-center justify-center me-3 dark:bg-gray-700 dark:border-gray-700">
+                        <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                       </div>
                       <div className="flex items-center gap-1">
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           User activity in {periodLabel.toLowerCase()} ➤
                         </p>
-                        <h5 className="text-sm font-semibold text-gray-800">
+                        <h5 className="text-sm font-semibold text-gray-800 dark:text-gray-100">
                           {(growth?.totals.activity ?? 0).toLocaleString()}
                         </h5>
                       </div>
@@ -379,18 +379,18 @@ const AdminDashboard: React.FC = () => {
                   {/* Two stats */}
                   <div className="grid grid-cols-2">
                     <dl className="flex items-center">
-                      <dt className="text-gray-600 text-xs font-normal me-1">
+                      <dt className="text-gray-600 text-xs font-normal me-1 dark:text-gray-400">
                         Resume builds:
                       </dt>
-                      <dd className="text-gray-800 text-xs font-semibold">
+                      <dd className="text-gray-800 text-xs font-semibold dark:text-gray-100">
                         {growth?.totals.resumeBuild ?? "—"}
                       </dd>
                     </dl>
                     <dl className="flex items-center justify-end">
-                      <dt className="text-gray-600 text-xs font-normal me-1">
+                      <dt className="text-gray-600 text-xs font-normal me-1 dark:text-gray-400">
                         ATS checks:
                       </dt>
-                      <dd className="text-gray-800 text-xs font-semibold">
+                      <dd className="text-gray-800 text-xs font-semibold dark:text-gray-100">
                         {growth?.totals.atsUse ?? "—"}
                       </dd>
                     </dl>
@@ -405,13 +405,13 @@ const AdminDashboard: React.FC = () => {
                     ) : (
                       <div className="overflow-x-auto scrollbar-hide">
                         <div className="min-w-[480px] pt-8">
-                          <div className="relative h-40 md:h-64 border-b border-gray-200">
+                          <div className="relative h-40 md:h-64 border-b border-gray-200 dark:border-gray-700">
                             {/* Y-axis scale: 50 activities = full height */}
                             <div className="absolute inset-y-0 left-0 pointer-events-none select-none">
                               {[50, 40, 30, 20, 10, 0].map((v) => (
                                 <span
                                   key={v}
-                                  className={`absolute text-[10px] leading-none text-gray-400 ${
+                                  className={`absolute text-[10px] leading-none text-gray-400 dark:text-gray-500 ${
                                     v === 0
                                       ? "-translate-y-full"
                                       : "-translate-y-1/2"
@@ -427,14 +427,14 @@ const AdminDashboard: React.FC = () => {
                               {[50, 40, 30, 20, 10].map((v) => (
                                 <div
                                   key={`major-${v}`}
-                                  className="absolute left-7 right-0 border-t border-gray-300"
+                                  className="absolute left-7 right-0 border-t border-gray-300 dark:border-gray-600"
                                   style={{ top: `${100 - v * 2}%` }}
                                 />
                               ))}
                               {[45, 35, 25, 15, 5].map((v) => (
                                 <div
                                   key={`minor-${v}`}
-                                  className="absolute left-7 right-0 border-t border-dashed border-gray-200"
+                                  className="absolute left-7 right-0 border-t border-dashed border-gray-200 dark:border-gray-700"
                                   style={{ top: `${100 - v * 2}%` }}
                                 />
                               ))}
@@ -482,7 +482,7 @@ const AdminDashboard: React.FC = () => {
                               growth.labels.map((label, i) => (
                                 <div
                                   key={i}
-                                  className="flex-1 text-center text-[10px] text-gray-400 truncate"
+                                  className="flex-1 text-center text-[10px] text-gray-400 truncate dark:text-gray-500"
                                 >
                                   {label}
                                 </div>
@@ -494,13 +494,13 @@ const AdminDashboard: React.FC = () => {
                   </div>
 
                   {/* Footer */}
-                  <div className="grid grid-cols-1 items-center border-t border-gray-200">
+                  <div className="grid grid-cols-1 items-center border-t border-gray-200 dark:border-gray-700">
                     <div className="flex justify-between items-center pt-4 md:pt-6">
                       <div className="relative">
                         <button
                           type="button"
                           onClick={() => setDropdownOpen(!dropdownOpen)}
-                          className="text-sm font-medium text-gray-600 hover:text-gray-800 text-center inline-flex items-center"
+                          className="text-sm font-medium text-gray-600 hover:text-gray-800 text-center inline-flex items-center dark:text-gray-400 dark:hover:text-gray-100"
                         >
                           {periodLabel}
                           <ChevronDown
@@ -515,8 +515,8 @@ const AdminDashboard: React.FC = () => {
                               className="fixed inset-0 z-10"
                               onClick={() => setDropdownOpen(false)}
                             />
-                            <div className="absolute z-20 bottom-full mb-2 w-44 bg-white border border-gray-200 shadow-lg">
-                              <ul className="p-2 text-sm text-gray-700 font-medium">
+                            <div className="absolute z-20 bottom-full mb-2 w-44 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 shadow-lg">
+                              <ul className="p-2 text-sm text-gray-700 font-medium dark:text-gray-300">
                                 {PERIOD_OPTIONS.map((opt) => (
                                   <li key={opt.value}>
                                     <button
@@ -525,10 +525,10 @@ const AdminDashboard: React.FC = () => {
                                         setPeriod(opt.value);
                                         setDropdownOpen(false);
                                       }}
-                                      className={`inline-flex items-center w-full p-2 hover:bg-gray-100 ${
+                                      className={`inline-flex items-center w-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
                                         period === opt.value
                                           ? "text-cyan-600"
-                                          : "text-gray-700"
+                                          : "text-gray-700 dark:text-gray-300"
                                       }`}
                                     >
                                       {opt.label}

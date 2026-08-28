@@ -9,9 +9,9 @@ interface ResumeEducationProps {
 }
 
 export default function ResumeEducation({ education, forPdf }: ResumeEducationProps) {
-  const textColor = forPdf ? "text-gray-800" : "text-gray-800 dark:text-gray-800";
-  const titleColor = forPdf ? "text-black" : "text-gray-800 dark:text-white";
-  const borderColor = forPdf ? "border-gray-200" : "border-gray-200 dark:border-gray-300";
+  const textColor = forPdf ? "text-gray-800" : "text-gray-800";
+  const titleColor = forPdf ? "text-black" : "text-gray-800";
+  const borderColor = forPdf ? "border-gray-200" : "border-gray-200";
 
   return (
     <div className="mb-4">

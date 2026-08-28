@@ -45,19 +45,19 @@ export default function AnalysisProgressModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-gray-50/70 backdrop-blur-md flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-gray-50/70 dark:bg-gray-800/70 backdrop-blur-md flex items-center justify-center p-4"
         >
           <motion.div
             initial={{ y: 90, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 90, opacity: 0 }}
             transition={{ type: "spring", damping: 22, stiffness: 220 }}
-            className="bg-white border border-gray-200 rounded-2xl shadow-2xl max-w-md w-full p-6"
+            className="bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-2xl shadow-2xl max-w-md w-full p-6"
           >
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-cyan-600" />
-                <h3 className="text-lg font-semibold text-gray-800">
+                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                   Analyzing your resume
                 </h3>
               </div>
@@ -75,7 +75,7 @@ export default function AnalysisProgressModal({
                     ) : isActive ? (
                       <Loader2 className="w-5 h-5 text-cyan-600 animate-spin shrink-0" />
                     ) : (
-                      <Circle className="w-5 h-5 text-gray-600 shrink-0" />
+                       <Circle className="w-5 h-5 text-gray-600 dark:text-gray-400 shrink-0" />
                     )}
                     <span
                       className={clsx(
@@ -83,8 +83,8 @@ export default function AnalysisProgressModal({
                         isDone
                           ? "text-cyan-600"
                           : isActive
-                            ? "text-gray-800"
-                            : "text-gray-500",
+                            ? "text-gray-800 dark:text-gray-100"
+                            : "text-gray-500 dark:text-gray-400",
                       )}
                     >
                       {step.label}
@@ -94,7 +94,7 @@ export default function AnalysisProgressModal({
               })}
             </div>
 
-            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden mb-6">
+            <div className="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden mb-6">
               <motion.div
                 className="h-full bg-gradient-to-r from-cyan-500 to-cyan-500"
                 initial={{ width: 0 }}
@@ -103,7 +103,7 @@ export default function AnalysisProgressModal({
               />
             </div>
 
-            <div className="relative h-14 bg-white/70 border border-gray-200/60 rounded-xl overflow-hidden flex items-center justify-center">
+            <div className="relative h-14 bg-white/70 dark:bg-gray-800/70 border border-gray-200/60 dark:border-gray-700/60 rounded-xl overflow-hidden flex items-center justify-center">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={currentMessage}

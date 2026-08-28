@@ -40,14 +40,14 @@ const SuggestionList: React.FC<SuggestionListProps> = ({
 
   return (
     <div
-      className={`border-l-4 ${getBorderColor()} bg-gray-50 dark:bg-gray-100 p-4`}
+      className={`border-l-4 ${getBorderColor()} bg-gray-50 dark:bg-gray-800 p-4`}
     >
      
       <ul className="space-y-2">
         {suggestions.map((suggestion, idx) => (
           <li
             key={idx}
-            className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-700"
+            className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
           >
             <span className="text-blue-500 flex-shrink-0 text-lg leading-5">
               •

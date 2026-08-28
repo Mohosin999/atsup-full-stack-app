@@ -248,12 +248,12 @@ export default function ResumeScanForm({
         <div className="flex flex-col">
           <div className="flex items-center gap-3 mb-4">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${resumeFile ? "bg-cyan-500/20 text-cyan-600" : "bg-gray-100 text-gray-600"}`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${resumeFile ? "bg-cyan-500/20 text-cyan-600" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"}`}
             >
               {resumeFile ? <CheckCircle className="w-5 h-5" /> : "1"}
             </div>
-            <h2 className="text-xl font-semibold text-gray-800">
-              Upload Resume
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                Upload Resume
             </h2>
           </div>
 
@@ -263,7 +263,7 @@ export default function ResumeScanForm({
                 <div className="w-12 h-12 rounded-full bg-cyan-100 flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-cyan-500" />
                 </div>
-                <p className="text-sm font-medium text-gray-800 text-center px-4">
+                <p className="text-sm font-medium text-gray-800 text-center px-4 dark:text-gray-100">
                   {resumeName}
                 </p>
               </div>
@@ -272,20 +272,20 @@ export default function ResumeScanForm({
                   setResumeFile(null);
                   setResumeName("");
                 }}
-                className="absolute bottom-2 right-2 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-red-50 hover:text-red-600 hover:border-red-300 rounded-lg transition-colors shadow-sm"
+                className="absolute bottom-2 right-2 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-300 rounded-lg transition-colors shadow-sm"
               >
                 <X className="w-3.5 h-3.5" />
                 Clear
               </button>
             </div>
           ) : (
-            <label className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-white hover:bg-gray-100 cursor-pointer rounded-lg transition-colors">
-              <Upload className="w-8 h-8 text-gray-600 mb-2" />
-              <p className="text-sm text-gray-600">
+              <label className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded-lg transition-colors">
+              <Upload className="w-8 h-8 text-gray-600 dark:text-gray-400 mb-2" />
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 <span className="font-semibold">Click to upload</span> or drag
                 and drop
               </p>
-              <p className="text-xs text-gray-500 mt-1">PDF only (MAX. 10MB)</p>
+              <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">PDF only (MAX. 10MB)</p>
               <input
                 type="file"
                 className="hidden"
@@ -309,7 +309,7 @@ export default function ResumeScanForm({
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription.trim().length >= 20 ? "bg-cyan-500/20 text-cyan-600" : "bg-gray-100 text-gray-600"}`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${jobDescription.trim().length >= 20 ? "bg-cyan-500/20 text-cyan-600" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"}`}
               >
                 {jobDescription.trim().length >= 20 ? (
                   <CheckCircle className="w-5 h-5" />
@@ -317,7 +317,7 @@ export default function ResumeScanForm({
                   "2"
                 )}
               </div>
-              <h2 className="text-xl font-semibold text-gray-800">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
                 Paste Job Description
               </h2>
             </div>
@@ -328,7 +328,7 @@ export default function ResumeScanForm({
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="Paste the job description here..."
-              className="flex-1 min-h-[280px] w-full bg-gray-100 border border-gray-300 rounded-lg p-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-500 resize-none"
+              className="flex-1 min-h-[280px] w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-4 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-cyan-500 resize-none"
             />
           </div>
         </div>

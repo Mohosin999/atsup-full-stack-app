@@ -48,7 +48,7 @@ export default function CTASection() {
               and landed their dream jobs with ResumeAI.
             </p>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
-              <Link to={user ? "/ats-scan" : "/login"} className="group inline-flex items-center gap-3 py-3 px-8 bg-white text-gray-800 text-sm xl:text-base font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+              <Link to={user ? "/ats-scan" : "/login"}               className="group inline-flex items-center gap-3 py-3 px-8 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 text-sm xl:text-base font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
                 Get Started for Free{" "}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>

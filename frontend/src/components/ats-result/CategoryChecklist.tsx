@@ -59,15 +59,15 @@ const CategoryRow: React.FC<{
         <div className="w-full flex items-center gap-3 px-3.5 py-1 text-left">
           <div className="flex-1 min-w-0 blur-[0.1px] select-none pointer-events-none opacity-40">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs text-gray-800 truncate">
+              <span className="text-xs text-gray-800 dark:text-gray-100 truncate">
                 {category.title}
               </span>
-              <span className="text-xs text-gray-800 truncate">
+              <span className="text-xs text-gray-800 dark:text-gray-100 truncate">
                 {totalItems - matchedCount} issues to fix
               </span>
             </div>
             <div className="mt-1.5 flex items-center gap-2">
-              <div className="flex-1 h-4 bg-gray-200 overflow-hidden rounded-full">
+              <div className="flex-1 h-4 bg-gray-200 dark:bg-gray-700 overflow-hidden rounded-full">
                 <motion.div
                   className="h-full bg-sky-500"
                   initial={{ width: 0 }}
@@ -84,7 +84,7 @@ const CategoryRow: React.FC<{
 
   return (
     <div className="overflow-hidden">
-      <div className="w-full flex items-center gap-3 px-3.5 py-1 text-left hover:bg-white/90 transition-colors">
+        <div className="w-full flex items-center gap-3 px-3.5 py-1 text-left hover:bg-white/90 dark:hover:bg-gray-800/90 transition-colors">
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs text-gray-800 truncate">
@@ -126,7 +126,7 @@ const CategoryChecklist: React.FC<CategoryChecklistProps> = ({
   ];
 
   return (
-    <div className="px-5 py-7 bg-white shadow-[0_0_6px_rgba(0,0,0,0.2)] rounded-lg">
+    <div className="px-5 py-7 bg-white dark:bg-gray-800 shadow-[0_0_6px_rgba(0,0,0,0.2)] rounded-lg">
       <div className="flex justify-center">
         <ScoreCircle score={overallScore} size="md" />
       </div>

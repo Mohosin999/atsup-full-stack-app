@@ -10,15 +10,15 @@ export default function CreditUpgradeBanner({ credits }: { credits: number }) {
       transition={{ delay: 0.3 }}
       className="bg-gradient-to-r from-cyan-600 to-teal-500 p-[1px] shadow-lg"
     >
-      <div className="bg-white p-6">
+      <div className="bg-white dark:bg-gray-800 p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-amber-100 flex items-center justify-center">
               <Award className="w-6 h-6 text-amber-600" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-800">Running low on credits</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">Running low on credits</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 You have {credits} credits left. Upgrade to continue optimizing your resume
               </p>
             </div>

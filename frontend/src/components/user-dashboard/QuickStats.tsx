@@ -23,17 +23,17 @@ const StatCard = ({
     initial={{ opacity: 0, scale: 0.9 }}
     animate={{ opacity: 1, scale: 1 }}
     transition={{ delay }}
-    className={`border p-5`}
+      className={`border dark:border-gray-700 p-5`}
   >
     <div className="flex items-center justify-start gap-3">
-      <div className="w-8 h-8 bg-white border border-gray-300 shadow-sm flex items-center justify-center">
+      <div className="w-8 h-8 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 shadow-sm flex items-center justify-center">
         <Icon className="w-4 h-4" />
       </div>
       {/* <ArrowUpRight className="w-4 h-4 opacity-50" /> */}
-      <p className="text-sm text-gray-600 mt-1">{label}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{label}</p>
     </div>
     <div className="mt-4">
-      <p className="text-2xl font-bold text-gray-800">{value}</p>
+      <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{value}</p>
       {/* <p className="text-sm text-gray-600 mt-1">{label}</p> */}
     </div>
   </motion.div>
@@ -59,10 +59,10 @@ export default function QuickStats({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15 }}
-      className="bg-white box-shadow border border-gray-100 p-6"
+      className="bg-white dark:bg-gray-800 box-shadow border border-gray-100 dark:border-gray-700 p-6"
     >
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-800">
+        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
           Performance Overview
         </h2>
         <TrendingUp className="w-5 h-5 text-cyan-600" />
@@ -74,7 +74,7 @@ export default function QuickStats({
         </div>
       ) : error ? (
         <div className="text-center py-8">
-          <p className="text-gray-600 mb-4">Failed to load statistics</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">Failed to load statistics</p>
           <button
             onClick={onRetry}
             className="px-4 py-2 bg-cyan-600 text-white hover:bg-cyan-700 transition-colors"

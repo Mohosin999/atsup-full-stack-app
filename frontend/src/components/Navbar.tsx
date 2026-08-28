@@ -12,6 +12,7 @@ import MobileMenuButton from "./MobileMenuButton";
 import MobileMenu from "./MobileMenu";
 import AuthButtons from "./ui/AuthButtons";
 import HistoryDropdown from "./ui/HistoryDropdown";
+import ThemeToggle from "./ui/ThemeToggle";
 import Wrapper from "./Wrapper";
 
 interface NavLink {
@@ -47,13 +48,13 @@ export default function Navbar() {
   return (
     <>
       {/* <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-white/80 border-b border-gray-200"> */}
-      <nav className="fixed top-0 left-0 right-0 z-50 py-1">
+      <nav className="fixed top-0 left-0 right-0 z-50 py-1 bg-white dark:bg-[#2a2438]">
         <Wrapper className="!px-4 lg:!px-16">
           <div className="flex items-center justify-between h-14">
             {/* Left: Logo */}
             <Link to="/" className="flex items-center gap-2 font-mono shrink-0">
               <img src="/favicon.png" alt="CVCoach" className="w-10 h-8" />
-              <span className="text-xl font-bold text-gray-800">
+              <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
                 ATS<span className="text-cyan-500">Up</span>
               </span>
             </Link>
@@ -67,7 +68,7 @@ export default function Navbar() {
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname === "/plans"
                     ? "bg-cyan-500/20 text-cyan-600"
-                    : "text-gray-700 hover:text-cyan-600"
+                    : "text-gray-700 hover:text-cyan-600 dark:text-gray-300 dark:hover:text-cyan-400"
                 }`}
               >
                 Pricing
@@ -76,6 +77,7 @@ export default function Navbar() {
 
             {/* Right: Auth / Profile */}
             <div className="flex items-center gap-3 shrink-0">
+              <ThemeToggle />
               {user ? (
                 <ProfileMenu
                   user={user}
@@ -112,15 +114,21 @@ export default function Navbar() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="lg:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 py-6 px-4"
+              className="lg:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 py-6 px-4 dark:bg-gray-900/95 dark:border-gray-700"
             >
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Theme
+                </span>
+                <ThemeToggle />
+              </div>
               <div className="flex flex-col gap-1 mb-4">
                 {getNavLinks(null).map((link) => (
                   <Link
                     key={link.path}
                     to={link.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                   >
                     {link.label}
                   </Link>
@@ -128,7 +136,7 @@ export default function Navbar() {
                 <Link
                   to="/plans"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 >
                   Pricing
                 </Link>

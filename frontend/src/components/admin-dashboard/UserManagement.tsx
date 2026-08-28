@@ -178,7 +178,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
         onClick={() => setEditingUser(u)}
         disabled={isOtherAdmin(u) || busyId === u.id}
         title={isOtherAdmin(u) ? "Can't edit another admin" : 'Edit'}
-        className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <Pencil className="w-4 h-4" />
       </button>
@@ -195,7 +195,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
                 ? 'Unban'
                 : 'Ban'
         }
-        className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-amber-600 hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {u.isBanned ? <RotateCcw className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
       </button>
@@ -206,7 +206,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
         title={
           isSelf(u) ? "Can't delete yourself" : isOtherAdmin(u) ? "Can't delete another admin" : 'Delete'
         }
-        className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <Trash2 className="w-4 h-4" />
       </button>
@@ -222,20 +222,20 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
         isRefreshing={isRefreshing}
       />
 
-      <div className="bg-white box-shadow p-6">
+      <div className="bg-white dark:bg-gray-800 box-shadow p-6">
         {loading ? (
         <div className="flex items-center justify-center py-12">
           <LoadingSpinner size="md" text="Loading users..." />
         </div>
       ) : sortedUsers.length === 0 ? (
-        <div className="py-8 text-center text-gray-500">No users found</div>
+        <div className="py-8 text-center text-gray-500 dark:text-gray-400">No users found</div>
       ) : (
         <>
           {/* Desktop table */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-gray-500 border-b border-gray-200">
+                <tr className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
                   <th className="py-2 pr-4 font-medium">User</th>
                   <th className="py-2 pr-4 font-medium">Role</th>
                   <th className="py-2 pr-4 font-medium">Status</th>
@@ -246,25 +246,25 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
               </thead>
               <tbody>
                 {sortedUsers.map((u) => (
-                  <tr key={u.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <tr key={u.id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
                     <td className="py-3 pr-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold shrink-0">
                           {u.name?.charAt(0)?.toUpperCase() || '?'}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium text-gray-800 truncate">
+                          <p className="font-medium text-gray-800 dark:text-gray-100 truncate">
                             {u.name}
-                            {isSelf(u) && <span className="ml-1 text-xs text-gray-400">(you)</span>}
+                            {isSelf(u) && <span className="ml-1 text-xs text-gray-400 dark:text-gray-500">(you)</span>}
                           </p>
-                          <p className="text-xs text-gray-500 truncate">{u.email}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{u.email}</p>
                         </div>
                       </div>
                     </td>
                     <td className="py-3 pr-4">{renderRole(u)}</td>
                     <td className="py-3 pr-4">{renderStatus(u, onlineIds.has(u.id))}</td>
-                    <td className="py-3 pr-4 text-gray-700">{u.subscription?.credits ?? 0}</td>
-                    <td className="py-3 pr-4 text-gray-500">{formatDate(u.createdAt)}</td>
+                    <td className="py-3 pr-4 text-gray-700 dark:text-gray-300">{u.subscription?.credits ?? 0}</td>
+                    <td className="py-3 pr-4 text-gray-500 dark:text-gray-400">{formatDate(u.createdAt)}</td>
                     <td className="py-3">
                       <div className="flex items-center justify-end">{renderActions(u)}</div>
                     </td>
@@ -279,7 +279,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
             {sortedUsers.map((u) => {
               const online = onlineIds.has(u.id);
               return (
-                <div key={u.id} className="border border-gray-200 p-4">
+                <div key={u.id} className="border border-gray-200 dark:border-gray-700 p-4">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-semibold shrink-0">
                       {u.name?.charAt(0)?.toUpperCase() || '?'}
@@ -299,21 +299,21 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 mb-3">
-                    <div className="flex items-center justify-between bg-gray-50 px-3 py-2">
-                      <span className="text-xs text-gray-500">Credits</span>
-                      <span className="text-[10px] lg:text-sm font-semibold text-gray-800">
+                      <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 px-3 py-2">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Credits</span>
+                      <span className="text-[10px] lg:text-sm font-semibold text-gray-800 dark:text-gray-100">
                         {u.subscription?.credits ?? 0}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between bg-gray-50 px-3 py-2">
-                      <span className="text-xs text-gray-500">Joined</span>
-                      <span className="text-[10px] lg:text-sm font-medium text-gray-800">
+                      <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 px-3 py-2">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Joined</span>
+                      <span className="text-[10px] lg:text-sm font-medium text-gray-800 dark:text-gray-100">
                         {formatDate(u.createdAt)}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end border-t border-gray-100 pt-3">
+                  <div className="flex items-center justify-end border-t border-gray-100 dark:border-gray-700 pt-3">
                     {renderActions(u)}
                   </div>
                 </div>

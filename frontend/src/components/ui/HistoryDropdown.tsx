@@ -19,13 +19,13 @@ export default function HistoryDropdown() {
 
       {open && (
         <div className="absolute top-full right-0 pt-2 w-64 z-50">
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+          <div className="bg-white rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 py-2">
             <Link
               to="/scan-history"
-              className={`block px-5 py-2.5 text-sm font-medium border-b border-gray-100 transition-colors hover:bg-cyan-500/20 hover:text-cyan-600 ${
+              className={`block px-5 py-2.5 text-sm font-medium border-b border-gray-100 dark:border-gray-700 transition-colors hover:bg-cyan-500/20 hover:text-cyan-600 ${
                 location.pathname === "/scan-history"
                   ? "bg-cyan-500/20 text-cyan-600"
-                  : "text-gray-700"
+                  : "text-gray-700 dark:text-gray-300"
               }`}
               onClick={() => setOpen(false)}
             >
@@ -36,7 +36,7 @@ export default function HistoryDropdown() {
               className={`block px-5 py-2.5 text-sm font-medium transition-colors hover:bg-cyan-500/20 hover:text-cyan-600 ${
                 location.pathname === "/resume-history"
                   ? "bg-cyan-500/20 text-cyan-600"
-                  : "text-gray-700"
+                  : "text-gray-700 dark:text-gray-300"
               }`}
               onClick={() => setOpen(false)}
             >

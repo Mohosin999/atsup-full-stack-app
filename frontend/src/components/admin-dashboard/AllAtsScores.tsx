@@ -81,13 +81,13 @@ const AllAtsScores: React.FC<{ onRefresh?: () => void; isRefreshing?: boolean }>
       />
 
       {scores.length === 0 ? (
-        <div className="bg-white box-shadow p-6 text-center py-16 text-gray-500">No ATS scores found.</div>
+        <div className="bg-white dark:bg-gray-800 box-shadow p-6 text-center py-16 text-gray-500 dark:text-gray-400">No ATS scores found.</div>
       ) : (
-        <div className="bg-white box-shadow overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 box-shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   <th className="px-4 py-3">Title</th>
                   <th className="px-4 py-3">User</th>
                   <th className="px-4 py-3">Score</th>
@@ -96,22 +96,22 @@ const AllAtsScores: React.FC<{ onRefresh?: () => void; isRefreshing?: boolean }>
                   <th className="px-4 py-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {scores.map((score) => (
-                  <tr key={score.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={score.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <ClipboardCheck className="w-4 h-4 text-gray-400 shrink-0" />
+                        <ClipboardCheck className="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
                         <div>
-                          <p className="text-gray-800 font-medium truncate max-w-[180px]">{score.title}</p>
-                          <p className="text-gray-500 text-xs truncate max-w-[180px]">{score.resumeName}</p>
+                          <p className="text-gray-800 dark:text-gray-100 font-medium truncate max-w-[180px]">{score.title}</p>
+                          <p className="text-gray-500 dark:text-gray-400 text-xs truncate max-w-[180px]">{score.resumeName}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <div>
-                        <p className="text-gray-800 font-medium">{score.user.name || "—"}</p>
-                        <p className="text-gray-500 text-xs">{score.user.email}</p>
+                        <p className="text-gray-800 dark:text-gray-100 font-medium">{score.user.name || "—"}</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs">{score.user.email}</p>
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -124,13 +124,13 @@ const AllAtsScores: React.FC<{ onRefresh?: () => void; isRefreshing?: boolean }>
                         {score.atsFriendliness}%
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
+                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs whitespace-nowrap">
                       {new Date(score.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => setConfirmDelete(score)}
-                        className="text-gray-400 hover:text-red-600 transition-colors"
+                        className="text-gray-400 dark:text-gray-500 hover:text-red-600 transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

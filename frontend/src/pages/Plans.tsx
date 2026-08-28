@@ -80,10 +80,10 @@ export default function Plans() {
           animate={{ opacity: 1, y: 0 }}
           className="py-8 lg:mb-4 text-center"
         >
-          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4 dark:text-gray-100">
             Choose Your Plan
           </h1>
-          <p className="text-sm xl:text-base text-gray-600 max-w-xl xl:max-w-2xl mx-auto">
+          <p className="text-sm xl:text-base text-gray-600 max-w-xl xl:max-w-2xl mx-auto dark:text-gray-400">
             Get more credits to analyze your resumes and land your dream job.
             Upgrade anytime as your needs grow.
           </p>
@@ -96,7 +96,7 @@ export default function Plans() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`relative bg-white dark:bg-white rounded-2xl shadow-[0_0_6px_rgba(0,0,0,0.2)] overflow-hidden ${
+              className={`relative bg-white dark:bg-gray-800 rounded-2xl shadow-[0_0_6px_rgba(0,0,0,0.2)] overflow-hidden ${
                 plan.popular ? "ring-2 ring-primary" : ""
               }`}
             >
@@ -118,7 +118,7 @@ export default function Plans() {
                     ${plan.price}
                   </span>
                   {plan.price > 0 && (
-                    <span className="text-gray-500 dark:text-gray-600">
+                    <span className="text-gray-500 dark:text-gray-400">
                       /month
                     </span>
                   )}
@@ -130,7 +130,7 @@ export default function Plans() {
                     <span className="text-2xl font-bold text-gray-800 dark:text-white">
                       {plan.credits}
                     </span>
-                    <span className="text-gray-500 dark:text-gray-600">
+                    <span className="text-gray-500 dark:text-gray-400">
                       credits
                     </span>
                   </div>
@@ -140,7 +140,7 @@ export default function Plans() {
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2">
                       <Check className="w-5 h-5 text-cyan-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-600 dark:text-gray-700 text-sm">
+                      <span className="text-gray-600 dark:text-gray-300 text-sm">
                         {feature}
                       </span>
                     </li>
@@ -154,7 +154,7 @@ export default function Plans() {
                     className={`w-full py-3 rounded-xl font-medium transition-colors ${
                       plan.popular
                         ? "gradient-btn"
-                        : "bg-gray-100 dark:bg-gray-100 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-200"
+                        : "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600"
                     } disabled:opacity-60 disabled:cursor-not-allowed`}
                   >
                     {!user && plan.price === 0

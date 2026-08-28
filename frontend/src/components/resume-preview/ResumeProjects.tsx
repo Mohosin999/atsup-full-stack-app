@@ -10,9 +10,9 @@ interface ResumeProjectsProps {
 }
 
 export default function ResumeProjects({ projects, forPdf, formatDescription }: ResumeProjectsProps) {
-  const textColor = forPdf ? "text-gray-800" : "text-gray-800 dark:text-gray-800";
-  const titleColor = forPdf ? "text-black" : "text-gray-800 dark:text-white";
-  const borderColor = forPdf ? "border-gray-200" : "border-gray-200 dark:border-gray-300";
+  const textColor = forPdf ? "text-gray-800" : "text-gray-800";
+  const titleColor = forPdf ? "text-black" : "text-gray-800";
+  const borderColor = forPdf ? "border-gray-200" : "border-gray-200";
 
   return (
     <div className="mb-4">
@@ -29,7 +29,7 @@ export default function ResumeProjects({ projects, forPdf, formatDescription }: 
                   href={proj.links.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-800 dark:text-gray-800 underline"
+                  className="text-sm text-gray-800 underline"
                 >
                   Live link
                 </a>
@@ -39,7 +39,7 @@ export default function ResumeProjects({ projects, forPdf, formatDescription }: 
           {proj.technologies && proj.technologies.length > 0 && (
             <p className={`text-sm ${textColor} mt-1 italic`}>{proj.technologies.join(", ")}</p>
           )}
-          <div className={`${forPdf ? "text-gray-800" : "text-gray-800 dark:text-gray-800"} text-sm mt-1`}>
+          <div className={`${forPdf ? "text-gray-800" : "text-gray-800"} text-sm mt-1`}>
             {formatDescription(proj.highlights)}
           </div>
         </div>

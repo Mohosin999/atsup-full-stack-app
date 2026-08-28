@@ -423,7 +423,7 @@ export default function ResumeBuilder() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center dark:bg-gray-800/50">
         <LoadingSpinner />
       </div>
     );
@@ -438,17 +438,17 @@ export default function ResumeBuilder() {
           className="pt-8 lg:pt-0 pb-4  flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div>
-            <h1 className="text-base font-semibold text-gray-800">
+            <h1 className="text-base font-semibold text-gray-800 dark:text-gray-100">
               ATS Resume Builder
             </h1>
-            <p className="text-xs text-gray-600">
+              <p className="text-xs text-gray-600 dark:text-gray-400">
               ATS-friendly layout — no images, emojis, tables or underlines.
             </p>
           </div>
 
           {/* Save and Reset */}
           <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-500 flex items-center gap-1.5">
+            <span className="text-xs text-gray-500 flex items-center gap-1.5 dark:text-gray-400">
               <span
                 className={`w-2 h-2 rounded-full ${
                   saving ? "bg-amber-400 animate-pulse" : "bg-cyan-500"
@@ -527,7 +527,7 @@ export default function ResumeBuilder() {
               <button
                 type="button"
                 onClick={() => setShowMore(!showMore)}
-                className="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-cyan-600 hover:text-cyan-700 border border-dashed border-cyan-300 hover:bg-cyan-50 transition-all"
+                className="w-full flex items-center justify-center gap-2 py-3 text-sm font-medium text-cyan-600 hover:text-cyan-700 border border-dashed border-cyan-300 hover:bg-cyan-50 transition-all dark:hover:bg-cyan-500/10"
               >
                 {showMore ? "Show Less" : "Add More"}
                 <ChevronDown

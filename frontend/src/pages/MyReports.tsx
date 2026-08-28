@@ -56,7 +56,7 @@ const MyReports: React.FC = () => {
       <Wrapper>
         <div>
           <div className="pt-8 pb-4 flex items-center justify-between">
-            <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-100">
               My Reports
             </h1>
             <button
@@ -75,12 +75,12 @@ const MyReports: React.FC = () => {
               <LoadingSpinner size="md" text="Loading reports..." />
             </div>
           ) : tickets.length === 0 ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
+            <div className="bg-white rounded-xl border border-gray-200 p-10 text-center dark:bg-gray-800 dark:border-gray-700">
               <MessageSquare className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-600 mb-1">
+              <p className="text-gray-600 mb-1 dark:text-gray-400">
                 You haven't submitted any reports yet.
               </p>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-gray-400 dark:text-gray-500">
                 Use the "Help" button at the bottom-right to report a problem.
               </p>
             </div>
@@ -89,12 +89,12 @@ const MyReports: React.FC = () => {
               {tickets.map((t) => (
                 <div
                   key={t.id}
-                  className="bg-white rounded-xl border border-gray-200 p-4 md:p-5"
+                  className="bg-white rounded-xl border border-gray-200 p-4 md:p-5 dark:bg-gray-800 dark:border-gray-700"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
                           {TYPE_LABELS[t.type] || t.type}
                         </span>
                         <span
@@ -120,7 +120,7 @@ const MyReports: React.FC = () => {
                         </a>
                       )}
                     </div>
-                    <span className="text-xs text-gray-400 shrink-0">
+                      <span className="text-xs text-gray-400 shrink-0 dark:text-gray-500">
                       {formatDate(t.createdAt)}
                     </span>
                   </div>

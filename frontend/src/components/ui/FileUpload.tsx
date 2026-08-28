@@ -100,7 +100,7 @@ export default function FileUpload({
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="border border-gray-200 dark:border-gray-200 rounded-xl p-6 bg-white dark:bg-white"
+        className="border border-gray-200 dark:border-gray-700 rounded-xl p-6 bg-white dark:bg-gray-800"
       >
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -114,23 +114,23 @@ export default function FileUpload({
           </div>
           
           <div className="flex-1 min-w-0">
-            <p className="font-medium text-gray-800 dark:text-white truncate">
+            <p className="font-medium text-gray-800 dark:text-gray-100 truncate">
               {uploadState.file.name}
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-600">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               {(uploadState.file.size / 1024 / 1024).toFixed(2)} MB
             </p>
             
             {uploadState.status === 'uploading' && (
               <div className="mt-2">
-                <div className="h-2 bg-gray-200 dark:bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-primary rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${uploadState.progress}%` }}
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Uploading... {uploadState.progress}%</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Uploading... {uploadState.progress}%</p>
               </div>
             )}
             
@@ -142,9 +142,9 @@ export default function FileUpload({
           {(uploadState.status === 'success' || uploadState.status === 'error') && (
             <button
               onClick={removeFile}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </button>
           )}
         </div>
@@ -161,7 +161,7 @@ export default function FileUpload({
           ? 'border-primary bg-primary/5'
           : isDragReject
           ? 'border-error bg-error/5'
-          : 'border-gray-300 dark:border-gray-300 hover:border-primary hover:bg-gray-50 dark:hover:bg-white'
+          : 'border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-gray-50 dark:hover:bg-gray-700/50'
       )}
     >
       <input {...getInputProps()} />
@@ -172,15 +172,15 @@ export default function FileUpload({
         </div>
         
         <div>
-          <p className="font-medium text-gray-800 dark:text-white">
+          <p className="font-medium text-gray-800 dark:text-gray-100">
             {isDragActive ? 'Drop your resume here' : 'Drag & drop your resume'}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-600 mt-1">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             or click to browse
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-gray-600">
+        <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
           <span>PDF</span>
           <span>•</span>
           <span>Max {maxSize / 1024 / 1024}MB</span>

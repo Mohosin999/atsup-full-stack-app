@@ -26,7 +26,7 @@ export default function CollapsibleItem({
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
-    <div className="border border-gray-200 overflow-hidden rounded-md">
+    <div className="border border-gray-200 dark:border-gray-700 overflow-hidden rounded-md">
       <div className="flex items-center gap-2 px-3 py-2.5">
         <button
           type="button"
@@ -34,11 +34,11 @@ export default function CollapsibleItem({
           className="flex-1 flex items-center gap-2 text-left min-w-0"
         >
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-gray-700 truncate">
+            <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate">
               {title}
             </p>
             {subtitle && (
-              <p className="text-[11px] text-gray-500 truncate">{subtitle}</p>
+              <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{subtitle}</p>
             )}
           </div>
         </button>
@@ -47,7 +47,7 @@ export default function CollapsibleItem({
             type="button"
             onClick={() => setConfirmOpen(true)}
             aria-label="Remove item"
-            className="text-gray-600 hover:text-red-600 flex-shrink-0"
+            className="text-gray-600 dark:text-gray-400 hover:text-red-600 flex-shrink-0"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -56,7 +56,7 @@ export default function CollapsibleItem({
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Collapse item" : "Expand item"}
-          className="text-gray-500 hover:text-gray-800 flex-shrink-0"
+          className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 flex-shrink-0"
         >
           <ChevronDown
             className={`w-4 h-4 transition-transform duration-200 ${
@@ -66,7 +66,7 @@ export default function CollapsibleItem({
         </button>
       </div>
       {open && (
-        <div className="px-3 pb-3 pt-3 border-t border-gray-200 space-y-3">
+        <div className="px-3 pb-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
           {children}
         </div>
       )}

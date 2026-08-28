@@ -83,7 +83,7 @@ function SortableHighlight({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex items-start gap-2 border px-3 py-3 bg-white rounded-md ${
+      className={`flex items-start gap-2 border px-3 py-3 bg-white dark:bg-gray-800 rounded-md ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
       } ${
         editing
@@ -96,7 +96,7 @@ function SortableHighlight({
         {...attributes}
         {...listeners}
         title="Drag to reorder"
-        className="text-gray-400 hover:text-gray-700 mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing touch-none"
+        className="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing touch-none"
       >
         <GripVertical className="w-4 h-4" />
       </button>
@@ -118,11 +118,11 @@ function SortableHighlight({
           }}
           autoFocus
           rows={1}
-          className="flex-1 text-xs text-gray-700 bg-white resize-none overflow-hidden focus:outline-none"
+          className="flex-1 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 resize-none overflow-hidden focus:outline-none"
         />
       ) : (
         <span
-          className="flex-1 text-xs text-gray-700 break-words cursor-text hover:bg-gray-50 px-1 py-0.5 -mx-1"
+          className="flex-1 text-xs text-gray-700 dark:text-gray-300 break-words cursor-text hover:bg-gray-50 dark:hover:bg-gray-700/50 px-1 py-0.5 -mx-1"
           onClick={onStartEdit}
           title="Click to edit"
         >
@@ -133,7 +133,7 @@ function SortableHighlight({
         <button
           type="button"
           onClick={onEditSave}
-          className="text-cyan-600 hover:bg-gray-100 mt-0.5 flex-shrink-0 p-0.5"
+          className="text-cyan-600 hover:bg-gray-100 dark:hover:bg-gray-700 mt-0.5 flex-shrink-0 p-0.5"
           title="Save"
         >
           <Check className="w-4 h-4" />
@@ -142,7 +142,7 @@ function SortableHighlight({
       <button
         type="button"
         onClick={onDelete}
-        className="text-gray-600 hover:text-red-600 mt-0.5 flex-shrink-0"
+        className="text-gray-600 dark:text-gray-400 hover:text-red-600 mt-0.5 flex-shrink-0"
       >
         <Trash2 className="w-4 h-4" />
       </button>
@@ -238,7 +238,7 @@ export default function HighlightsEditor({
               </SortableHighlight>
             ))}
             {highlights.length === 0 && (
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 No bullet points added yet.
               </p>
             )}
@@ -247,7 +247,7 @@ export default function HighlightsEditor({
       </DndContext>
 
       {adding && (
-        <div className="flex items-start gap-2 border border-gray-200 px-3 py-3 bg-white mt-2 rounded-md">
+        <div className="flex items-start gap-2 border border-gray-200 dark:border-gray-700 px-3 py-3 bg-white dark:bg-gray-800 mt-2 rounded-md">
           {/* <Plus className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" /> */}
           <input
             type="text"
@@ -266,7 +266,7 @@ export default function HighlightsEditor({
             //   "e.g. Increased website traffic by 40% through SEO optimization"
             // }
             autoFocus
-            className="flex-1 text-xs text-gray-700 bg-white focus:outline-none"
+            className="flex-1 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 focus:outline-none"
           />
           <button
             type="button"
@@ -279,7 +279,7 @@ export default function HighlightsEditor({
           <button
             type="button"
             onClick={() => setAdding(false)}
-            className="text-gray-400 hover:text-red-600 mt-0.5 flex-shrink-0"
+            className="text-gray-400 dark:text-gray-500 hover:text-red-600 mt-0.5 flex-shrink-0"
           >
             <X className="w-4 h-4" />
           </button>

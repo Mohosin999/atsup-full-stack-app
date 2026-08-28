@@ -101,7 +101,7 @@ export default function ReviewManagement({
       )}
 
       {reviews.length === 0 ? (
-        <div className="text-center py-16 text-gray-500">
+        <div className="text-center py-16 text-gray-500 dark:text-gray-400">
           <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
           <p>No reviews yet</p>
         </div>
@@ -110,10 +110,10 @@ export default function ReviewManagement({
           {reviews.map((review) => (
             <div
               key={review.id}
-              className={`bg-white border rounded-lg p-4 transition-colors ${
+              className={`bg-white dark:bg-gray-800 border rounded-lg p-4 transition-colors ${
                 review.showOnHome
-                  ? "border-cyan-300 bg-cyan-50/30"
-                  : "border-gray-200"
+                  ? "border-cyan-300 bg-cyan-50/30 dark:border-cyan-400 dark:bg-cyan-500/10"
+                  : "border-gray-200 dark:border-gray-700"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -123,10 +123,10 @@ export default function ReviewManagement({
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-semibold text-gray-800 text-sm">
+                      <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm">
                         {review.user.name || "Anonymous"}
                       </p>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-gray-400 dark:text-gray-500">
                         {review.user.email}
                       </span>
                     </div>
@@ -141,11 +141,11 @@ export default function ReviewManagement({
                           }`}
                         />
                       ))}
-                      <span className="text-xs text-gray-400 ml-1">
+                      <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">
                         {formatDate(review.createdAt)}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
                       {review.message}
                     </p>
                   </div>
@@ -158,7 +158,7 @@ export default function ReviewManagement({
                     className={`p-2 rounded-lg border transition-colors ${
                       review.showOnHome
                         ? "bg-cyan-100 border-cyan-300 text-cyan-600 hover:bg-cyan-200"
-                        : "bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-cyan-600"
+                        : "bg-gray-50 dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-cyan-600"
                     }`}
                   >
                     <CheckCircle className="w-4 h-4" />
@@ -166,7 +166,7 @@ export default function ReviewManagement({
                   <button
                     onClick={() => setDeleteId(review.id)}
                     title="Delete review"
-                    className="p-2 rounded-lg border border-gray-200 text-gray-400 hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition-colors"
+                    className="p-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-200 dark:hover:border-red-500/50 hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

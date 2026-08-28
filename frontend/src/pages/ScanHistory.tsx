@@ -87,6 +87,7 @@ export default function ScanHistory() {
       toast.success("All history cleared");
       queryClient.invalidateQueries({ queryKey: ["ats-history", user?._id] });
       setPage(1);
+      setClearAllOpen(false);
     },
     onError: () => toast.error("Failed to clear history"),
   });

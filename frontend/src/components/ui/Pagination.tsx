@@ -36,7 +36,7 @@ export default function Pagination({
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className={clsx(
-          'p-1.5 transition-colors',
+          'p-1.5 rounded-full transition-colors',
           currentPage === 1
             ? 'text-gray-700 dark:text-gray-300 cursor-not-allowed'
             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
@@ -50,7 +50,7 @@ export default function Pagination({
           <button
             onClick={() => onPageChange(1)}
             className={clsx(
-              'w-8 h-8 text-xs font-medium transition-colors',
+              'w-8 h-8 rounded-full text-xs font-medium transition-colors',
               1 === currentPage
                 ? 'bg-primary text-white'
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
@@ -69,9 +69,9 @@ export default function Pagination({
           key={page}
           onClick={() => onPageChange(page)}
           className={clsx(
-            'w-8 h-8 text-xs font-medium transition-colors',
+            'w-8 h-8 rounded-full text-xs font-medium transition-colors',
             page === currentPage
-              ? 'bg-primary text-white'
+              ? 'bg-gray-600 dark:bg-accent text-white'
               : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
           )}
         >
@@ -87,7 +87,7 @@ export default function Pagination({
           <button
             onClick={() => onPageChange(totalPages)}
             className={clsx(
-              'w-8 h-8 text-xs font-medium transition-colors',
+              'w-8 h-8 rounded-full text-xs font-medium transition-colors',
               totalPages === currentPage
               ? 'bg-primary text-white'
               : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
@@ -102,7 +102,7 @@ export default function Pagination({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className={clsx(
-          'p-1.5 transition-colors',
+          'p-1.5 rounded-full transition-colors',
           currentPage === totalPages
             ? 'text-gray-700 dark:text-gray-300 cursor-not-allowed'
             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'

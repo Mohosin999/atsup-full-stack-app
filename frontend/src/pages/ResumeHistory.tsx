@@ -119,6 +119,7 @@ export default function ResumeHistory() {
       toast.success("All resumes deleted");
       queryClient.invalidateQueries({ queryKey: ["resumes", user?._id] });
       setPage(1);
+      setClearAllOpen(false);
     },
     onError: () => toast.error("Failed to delete resumes"),
   });

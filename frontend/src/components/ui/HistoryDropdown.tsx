@@ -12,7 +12,11 @@ export default function HistoryDropdown() {
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-cyan-600">
+      <button className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+        location.pathname === "/scan-history" || location.pathname === "/resume-history" || location.pathname.startsWith("/ats-scan/") || location.pathname.startsWith("/resume-builder/")
+          ? "bg-cyan-500/20 text-cyan-600"
+          : "text-gray-700 dark:text-gray-100 hover:text-cyan-600"
+      }`}>
         History
         <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>

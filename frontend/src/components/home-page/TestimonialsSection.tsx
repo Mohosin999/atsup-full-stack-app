@@ -138,17 +138,17 @@ export default function TestimonialsSection({
                 "{testimonial.content}"
               </p>
 
-              <div className="flex items-center gap-2.5 pt-3 border-t border-gray-100 dark:border-gray-700">
-                <div className="w-8 h-8 bg-gray-300 flex items-center justify-center text-gray-800 dark:text-gray-100 font-bold text-xs shrink-0 rounded-full dark:bg-gray-700">
+              <div className="flex items-center gap-2.5 pt-3 border-t border-gray-200 dark:border-gray-700">
+                <div className="w-6 h-6 bg-gray-300 flex items-center justify-center text-gray-800 dark:text-gray-100 font-bold text-xs shrink-0 rounded-full dark:bg-accent">
                   {testimonial.name.charAt(0)}
                 </div>
                 <div className="min-w-0">
                   <p className="font-medium text-gray-700 dark:text-gray-300 text-[13px] truncate">
                     {testimonial.name}
                   </p>
-                  <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                  {/* <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
                     {testimonial.role} Frontend Developer
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </div>

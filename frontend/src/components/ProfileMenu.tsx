@@ -107,7 +107,7 @@ export default function ProfileMenu({
                 setProfileMenuOpen(false);
                 onLogout();
               }}
-              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 bg-red-50 dark:bg-accent hover:bg-red-100 hover:text-red-700 dark:text-red-100 dark:hover:bg-accent/80 transition-colors"
             >
               <LogOut className="w-4 h-4" /> <span>Logout</span>
             </button>

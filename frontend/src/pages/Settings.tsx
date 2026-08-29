@@ -97,7 +97,7 @@ const ProfileSection = ({
   name: string;
   setName: (v: string) => void;
 }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-gray-800 dark:border-gray-700">
+  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-secondary dark:border-accent">
     <div className="flex items-center gap-3 mb-6">
       <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Profile Information</h2>
     </div>
@@ -121,7 +121,7 @@ const ProfileSection = ({
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:border-transparent transition-all duration-200 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-100"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-gray-400 transition-all duration-200 dark:bg-primary dark:border-accent dark:text-gray-100"
         />
       </div>
     </div>
@@ -135,7 +135,7 @@ const ThemeSection = ({
   theme: string;
   onToggle: () => void;
 }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-gray-800 dark:border-gray-700">
+  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-secondary dark:border-accent">
     <div className="flex items-center justify-between gap-4">
       <div>
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
@@ -165,7 +165,7 @@ const ThemeSection = ({
 );
 
 const SubscriptionSection = ({ user }: { user: any }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-gray-800 dark:border-gray-700">
+  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-secondary dark:border-accent">
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Subscription</h2>
@@ -191,7 +191,7 @@ const SubscriptionSection = ({ user }: { user: any }) => (
 );
 
 const DangerZone = ({ onDelete }: { onDelete: () => void }) => (
-  <div className="bg-white rounded-xl border border-red-300 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-gray-800 dark:border-red-500/50">
+  <div className="bg-white rounded-xl border border-red-300 p-6 shadow-[0_0_6px_rgba(0,0,0,0.2)] dark:bg-secondary dark:border-red-500/80">
     <div className="flex items-center gap-3 mb-1">
       <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Danger Zone</h2>
     </div>

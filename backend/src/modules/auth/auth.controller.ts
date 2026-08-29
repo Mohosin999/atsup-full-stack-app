@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Response, CookieOptions } from "express";
 import { AuthRequest } from "../../shared/types";
 import {
   createUser,
@@ -18,10 +18,10 @@ import {
 } from "../../lib/redis";
 import jwt from "jsonwebtoken";
 
-const cookieOptions = (maxAge?: number) => ({
+const cookieOptions = (maxAge?: number): CookieOptions => ({
   httpOnly: true,
   secure: env.nodeEnv === "production",
-  sameSite: env.nodeEnv === "production" ? "none" : ("lax" as const),
+  sameSite: env.nodeEnv === "production" ? "none" : "lax",
   path: "/",
   ...(maxAge ? { maxAge } : {}),
 });

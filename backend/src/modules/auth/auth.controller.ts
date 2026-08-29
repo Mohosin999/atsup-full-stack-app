@@ -23,18 +23,20 @@ const setAuthCookies = (
   accessToken: string,
   refreshToken: string,
 ) => {
+  const isProduction = env.nodeEnv === "production";
+
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: env.nodeEnv === "production",
-    sameSite: env.nodeEnv === "production" ? "none" : "lax",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     path: "/",
     maxAge: 15 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: env.nodeEnv === "production",
-    sameSite: env.nodeEnv === "production" ? "none" : "lax",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -211,18 +213,20 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
 
     await storeRefreshToken(newRefreshToken, user.id, 7 * 24 * 60 * 60);
 
+    const isProduction = env.nodeEnv === "production";
+
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      secure: env.nodeEnv === "production",
-      sameSite: env.nodeEnv === "production" ? "none" : "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       path: "/",
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      secure: env.nodeEnv === "production",
-      sameSite: env.nodeEnv === "production" ? "none" : "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -246,16 +250,30 @@ export const logout = async (req: AuthRequest, res: Response) => {
       await deleteRefreshToken(refreshToken);
     }
 
-    res.clearCookie("accessToken", { path: "/" });
-    res.clearCookie("refreshToken", { path: "/" });
+    const isProduction = env.nodeEnv === "production";
+    const cookieOptions = {
+      path: "/",
+      secure: isProduction,
+      sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+    };
+
+    res.clearCookie("accessToken", cookieOptions);
+    res.clearCookie("refreshToken", cookieOptions);
 
     res.json({
       success: true,
       message: "Logged out successfully",
     });
   } catch (error) {
-    res.clearCookie("accessToken", { path: "/" });
-    res.clearCookie("refreshToken", { path: "/" });
+    const isProduction = env.nodeEnv === "production";
+    const cookieOptions = {
+      path: "/",
+      secure: isProduction,
+      sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+    };
+
+    res.clearCookie("accessToken", cookieOptions);
+    res.clearCookie("refreshToken", cookieOptions);
 
     res.json({
       success: true,

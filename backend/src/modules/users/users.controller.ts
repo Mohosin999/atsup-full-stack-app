@@ -6,6 +6,7 @@ import {
   deleteUserAccount,
 } from "./users.service";
 import { updateProfileSchema } from "./users.validation";
+import { env } from "../../shared/config/env";
 
 export const getProfile = async (req: AuthRequest, res: Response) => {
   try {
@@ -52,8 +53,15 @@ export const deleteAccount = async (req: AuthRequest, res: Response) => {
   try {
     await deleteUserAccount(req.user.id);
 
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    const isProduction = env.nodeEnv === "production";
+    const cookieOptions = {
+      path: "/",
+      secure: isProduction,
+      sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+    };
+
+    res.clearCookie("accessToken", cookieOptions);
+    res.clearCookie("refreshToken", cookieOptions);
 
     res.json({
       success: true,

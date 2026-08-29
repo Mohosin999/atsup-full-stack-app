@@ -53,22 +53,24 @@ router.get(
 
       await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
 
+      const isProduction = env.nodeEnv === "production";
+
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: env.nodeEnv === "production",
-        sameSite: env.nodeEnv === "production" ? "none" : "lax",
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
         path: "/",
         maxAge: 15 * 60 * 1000,
       });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: env.nodeEnv === "production",
-        sameSite: env.nodeEnv === "production" ? "none" : "lax",
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        path: "/",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      // res.redirect(env.frontendUrl || "http://localhost:4173");
       res.redirect(env.frontendUrl);
     } catch (error) {
       console.error("OAuth callback error:", error);

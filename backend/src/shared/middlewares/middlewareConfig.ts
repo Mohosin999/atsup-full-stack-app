@@ -99,12 +99,19 @@ export const applyMiddleware = (app: Application): void => {
    ----------------------------------------------------*/
   app.use(
     cors({
-      origin: [
-        env.frontendUrl,
-        "http://localhost:5173",
-        "http://localhost:4173",
-        "http://localhost:3000",
-      ],
+      origin: (origin, callback) => {
+        const allowedOrigins = [
+          env.frontendUrl,
+          "http://localhost:5173",
+          "http://localhost:4173",
+          "http://localhost:3000",
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      },
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       allowedHeaders: ["Content-Type", "Authorization"],

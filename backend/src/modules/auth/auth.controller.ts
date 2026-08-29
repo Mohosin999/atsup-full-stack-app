@@ -18,28 +18,22 @@ import {
 } from "../../lib/redis";
 import jwt from "jsonwebtoken";
 
+const cookieOptions = (maxAge?: number) => ({
+  httpOnly: true,
+  secure: env.nodeEnv === "production",
+  sameSite: env.nodeEnv === "production" ? "none" : ("lax" as const),
+  path: "/",
+  ...(maxAge ? { maxAge } : {}),
+});
+
 const setAuthCookies = (
   res: Response,
   accessToken: string,
   refreshToken: string,
 ) => {
-  const isProduction = env.nodeEnv === "production";
+  res.cookie("accessToken", accessToken, cookieOptions(15 * 60 * 1000));
 
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
-    path: "/",
-    maxAge: 15 * 60 * 1000,
-  });
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
-    path: "/",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  res.cookie("refreshToken", refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000));
 };
 
 export const register = async (req: AuthRequest, res: Response) => {
@@ -213,23 +207,9 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
 
     await storeRefreshToken(newRefreshToken, user.id, 7 * 24 * 60 * 60);
 
-    const isProduction = env.nodeEnv === "production";
+    res.cookie("accessToken", newAccessToken, cookieOptions(15 * 60 * 1000));
 
-    res.cookie("accessToken", newAccessToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      path: "/",
-      maxAge: 15 * 60 * 1000,
-    });
-
-    res.cookie("refreshToken", newRefreshToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      path: "/",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("refreshToken", newRefreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000));
 
     res.json({
       success: true,
@@ -250,32 +230,16 @@ export const logout = async (req: AuthRequest, res: Response) => {
       await deleteRefreshToken(refreshToken);
     }
 
-    const isProduction = env.nodeEnv === "production";
-    const cookieConfig = {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
-      path: "/",
-    };
-
-    res.cookie("accessToken", "", { ...cookieConfig, maxAge: 0 });
-    res.cookie("refreshToken", "", { ...cookieConfig, maxAge: 0 });
+    res.clearCookie("accessToken", cookieOptions());
+    res.clearCookie("refreshToken", cookieOptions());
 
     res.json({
       success: true,
       message: "Logged out successfully",
     });
   } catch (error) {
-    const isProduction = env.nodeEnv === "production";
-    const cookieConfig = {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
-      path: "/",
-    };
-
-    res.cookie("accessToken", "", { ...cookieConfig, maxAge: 0 });
-    res.cookie("refreshToken", "", { ...cookieConfig, maxAge: 0 });
+    res.clearCookie("accessToken", cookieOptions());
+    res.clearCookie("refreshToken", cookieOptions());
 
     res.json({
       success: true,

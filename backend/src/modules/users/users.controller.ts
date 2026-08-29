@@ -54,14 +54,15 @@ export const deleteAccount = async (req: AuthRequest, res: Response) => {
     await deleteUserAccount(req.user.id);
 
     const isProduction = env.nodeEnv === "production";
-    const cookieOptions = {
-      path: "/",
+    const cookieConfig = {
+      httpOnly: true,
       secure: isProduction,
       sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+      path: "/",
     };
 
-    res.clearCookie("accessToken", cookieOptions);
-    res.clearCookie("refreshToken", cookieOptions);
+    res.cookie("accessToken", "", { ...cookieConfig, maxAge: 0 });
+    res.cookie("refreshToken", "", { ...cookieConfig, maxAge: 0 });
 
     res.json({
       success: true,

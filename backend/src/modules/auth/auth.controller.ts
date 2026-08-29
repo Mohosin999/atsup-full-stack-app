@@ -251,14 +251,15 @@ export const logout = async (req: AuthRequest, res: Response) => {
     }
 
     const isProduction = env.nodeEnv === "production";
-    const cookieOptions = {
-      path: "/",
+    const cookieConfig = {
+      httpOnly: true,
       secure: isProduction,
       sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+      path: "/",
     };
 
-    res.clearCookie("accessToken", cookieOptions);
-    res.clearCookie("refreshToken", cookieOptions);
+    res.cookie("accessToken", "", { ...cookieConfig, maxAge: 0 });
+    res.cookie("refreshToken", "", { ...cookieConfig, maxAge: 0 });
 
     res.json({
       success: true,
@@ -266,14 +267,15 @@ export const logout = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     const isProduction = env.nodeEnv === "production";
-    const cookieOptions = {
-      path: "/",
+    const cookieConfig = {
+      httpOnly: true,
       secure: isProduction,
       sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+      path: "/",
     };
 
-    res.clearCookie("accessToken", cookieOptions);
-    res.clearCookie("refreshToken", cookieOptions);
+    res.cookie("accessToken", "", { ...cookieConfig, maxAge: 0 });
+    res.cookie("refreshToken", "", { ...cookieConfig, maxAge: 0 });
 
     res.json({
       success: true,

@@ -198,7 +198,7 @@ res.cookie("refreshToken", newRefreshToken, {
 
 ---
 
-### 3c. `logout` Endpoint - clearCookie
+### 3c. `logout` Endpoint - clearCookie → res.cookie maxAge:0
 
 #### AGE (Original):
 ```typescript
@@ -238,14 +238,15 @@ export const logout = async (req: AuthRequest, res: Response) => {
     }
 
     const isProduction = env.nodeEnv === "production";
-    const cookieOptions = {
-      path: "/",
+    const cookieConfig = {
+      httpOnly: true,
       secure: isProduction,
       sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+      path: "/",
     };
 
-    res.clearCookie("accessToken", cookieOptions);
-    res.clearCookie("refreshToken", cookieOptions);
+    res.cookie("accessToken", "", { ...cookieConfig, maxAge: 0 });
+    res.cookie("refreshToken", "", { ...cookieConfig, maxAge: 0 });
 
     res.json({
       success: true,
@@ -253,14 +254,15 @@ export const logout = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     const isProduction = env.nodeEnv === "production";
-    const cookieOptions = {
-      path: "/",
+    const cookieConfig = {
+      httpOnly: true,
       secure: isProduction,
       sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+      path: "/",
     };
 
-    res.clearCookie("accessToken", cookieOptions);
-    res.clearCookie("refreshToken", cookieOptions);
+    res.cookie("accessToken", "", { ...cookieConfig, maxAge: 0 });
+    res.cookie("refreshToken", "", { ...cookieConfig, maxAge: 0 });
 
     res.json({
       success: true,
@@ -271,8 +273,9 @@ export const logout = async (req: AuthRequest, res: Response) => {
 ```
 
 #### Ki Change Hoyche:
-- `clearCookie` e sirf `path: "/"` dewa chilo, ekhon **`secure`** ar **`sameSite`** o dewa hoyeche
-- **Karon:** Cookie clear korar jonno `clearCookie` er options **match** korte hobe `setCookie` er options sathe. Na hole production e cookie clear hobe na
+- **`res.clearCookie`** completely badal diye **`res.cookie("", "", { maxAge: 0 })`** use kora hoyeche
+- **Karon:** `clearCookie` Vercel proxy te `Set-Cookie` header properly forward kore na. `res.cookie` diye empty string set + `maxAge: 0` dile browser guaranteed cookie delete kore
+- **IMPORTANT:** Cookie set korar shomoy jati attributes (httpOnly, secure, sameSite, path) dewa hoy, clear korar o shetai dite hobe - na hole browser cookie clear korbe na
 
 ---
 
@@ -378,14 +381,15 @@ export const deleteAccount = async (req: AuthRequest, res: Response) => {
     await deleteUserAccount(req.user.id);
 
     const isProduction = env.nodeEnv === "production";
-    const cookieOptions = {
-      path: "/",
+    const cookieConfig = {
+      httpOnly: true,
       secure: isProduction,
       sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+      path: "/",
     };
 
-    res.clearCookie("accessToken", cookieOptions);
-    res.clearCookie("refreshToken", cookieOptions);
+    res.cookie("accessToken", "", { ...cookieConfig, maxAge: 0 });
+    res.cookie("refreshToken", "", { ...cookieConfig, maxAge: 0 });
 
     res.json({
       success: true,
@@ -402,8 +406,8 @@ export const deleteAccount = async (req: AuthRequest, res: Response) => {
 
 ### Ki Change Hoyche:
 - `import { env }` add kora hoyeche
-- `clearCookie` e sirf default (empty object) dewa chilo, ekhon **proper cookie options** dewa hoyeche (`path`, `secure`, `sameSite`)
-- **Karon:** Same reason - production e cookie clear korar jonno options match korte hobe
+- **`res.clearCookie`** badal diye **`res.cookie("", "", { maxAge: 0 })`** use kora hoyeche
+- Logout er sathe same approach - cookie set er attributes (httpOnly, secure, sameSite, path) + maxAge:0 dile guaranteed cookie delete hoy
 
 ---
 
@@ -412,7 +416,7 @@ export const deleteAccount = async (req: AuthRequest, res: Response) => {
 | Issue | Fix |
 |---|---|
 | Cookie different domain e set hoy, frontend e pathay na | Vercel proxy/rewrite - same-origin baniyechi |
-| `clearCookie` e options match kore na `setCookie` sathe | Logout + deleteAccount e proper `secure`, `sameSite`, `path` add |
+| `clearCookie` Vercel proxy te kaj kore na | `res.cookie("", "", { maxAge: 0 })` use - guaranteed cookie delete |
 | Refresh token cookie te `path: "/"` missing | Google OAuth callback ar refresh endpoint e add |
 | CORS strict array - proxy er sathe incompatible | Dynamic function e convert, `!origin` check add |
 

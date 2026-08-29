@@ -30,64 +30,7 @@ export const steps = [
   },
 ];
 
-export const testimonials = [
-  {
-    name: "Sarah Johnson",
-    role: "Software Engineer at Google",
-    content:
-      "ResumeAI helped me land my dream job! The AI suggestions were incredibly helpful.",
-    rating: 5,
-  },
-  {
-    name: "Michael Chen",
-    role: "Product Manager at Meta",
-    content:
-      "The ATS optimization feature is a game-changer. Got past screening every time.",
-    rating: 5,
-  },
-  {
-    name: "Emily Davis",
-    role: "Data Scientist at Netflix",
-    content:
-      "Love how easy it is to improve my resume for different positions.",
-    rating: 5,
-  },
-  {
-    name: "David Wilson",
-    role: "Marketing Manager at Amazon",
-    content:
-      "The resume builder is fantastic — clean format that scored 100% on every ATS checker I tried.",
-    rating: 5,
-  },
-  {
-    name: "Priya Sharma",
-    role: "UX Designer at Microsoft",
-    content:
-      "Free unlimited checks saved me so much time. I optimized my resume for 10+ jobs without paying a cent.",
-    rating: 5,
-  },
-  {
-    name: "Priya Sharma",
-    role: "UX Designer at Microsoft",
-    content:
-      "Free unlimited checks saved me so much time. I optimized my resume for 10+ jobs without paying a cent.",
-    rating: 5,
-  },
-  {
-    name: "Priya Sharma",
-    role: "UX Designer at Microsoft",
-    content:
-      "Free unlimited checks saved me so much time. I optimized my resume for 10+ jobs without paying a cent.",
-    rating: 5,
-  },
-  {
-    name: "Priya Sharma",
-    role: "UX Designer at Microsoft",
-    content:
-      "Free unlimited checks saved me so much time. I optimized my resume for 10+ jobs without paying a cent.",
-    rating: 5,
-  },
-];
+
 
 // ==================================================================
 // All features of the app

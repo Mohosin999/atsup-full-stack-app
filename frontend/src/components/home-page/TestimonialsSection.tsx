@@ -1,73 +1,3 @@
-// import { Star } from "lucide-react";
-// import Wrapper from "../Wrapper";
-
-// interface Testimonial {
-//   id?: string;
-//   name: string;
-//   role: string;
-//   content: string;
-//   rating: number;
-// }
-
-// interface TestimonialsSectionProps {
-//   testimonials: Testimonial[];
-// }
-
-// export default function TestimonialsSection({
-//   testimonials,
-// }: TestimonialsSectionProps) {
-//   const displayed = testimonials.slice(0, 6);
-
-//   return (
-//     <section className="pb-24">
-//       <Wrapper>
-//         <div className="text-center mb-6 lg:mb-8">
-//           <h2 className="text-2xl xl:text-3xl font-semibold text-gray-800">
-//             Loved by <span className="text-cyan-500">Thousands</span>
-//           </h2>
-//           <p className="mt-3 text-sm md:text-base text-gray-700 max-w-lg md:max-w-xl xl:max-w-3xl 2xl:max-w-4xl mx-auto">
-//             See what our users have to say
-//           </p>
-//         </div>
-
-//         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
-//           {displayed.map((testimonial, index) => (
-//             <div
-//               key={testimonial.id || `${testimonial.name}-${index}`}
-//               className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200 transition-all duration-300"
-//             >
-//               <div className="flex gap-1 mb-6">
-//                 {[...Array(testimonial.rating)].map((_, i) => (
-//                   <Star
-//                     key={i}
-//                     className="w-5 h-5 fill-amber-400 text-amber-600"
-//                   />
-//                 ))}
-//               </div>
-//               <p className="text-gray-700 mb-6 leading-relaxed italic">
-//                 "{testimonial.content}"
-//               </p>
-//               <div className="flex items-center gap-4">
-//                 <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
-//                   {testimonial.name.charAt(0)}
-//                 </div>
-//                 <div>
-//                   <p className="font-bold text-gray-800">
-//                     {testimonial.name}
-//                   </p>
-//                   <p className="text-sm text-gray-700">
-//                     {testimonial.role}
-//                   </p>
-//                 </div>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </Wrapper>
-//     </section>
-//   );
-// }
-
 import { Star } from "lucide-react";
 import Wrapper from "../Wrapper";
 
@@ -87,6 +17,28 @@ export default function TestimonialsSection({
   testimonials,
 }: TestimonialsSectionProps) {
   const displayed = testimonials.slice(0, 6);
+
+  if (displayed.length === 0) {
+    return (
+      <section className="pb-20 lg:pb-20 xl:pb-28">
+        <Wrapper>
+          <div className="text-center mb-10 lg:mb-14">
+            <h2 className="text-3xl xl:text-4xl font-bold text-gray-900 dark:text-gray-100">
+              Loved by <span className="text-cyan-600">Thousands</span>
+            </h2>
+            <p className="mt-2 text-base text-gray-600 dark:text-gray-400">
+              See what our users have to say
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-gray-500 dark:text-gray-400 text-lg">
+              No reviews yet. Be the first to share your experience!
+            </p>
+          </div>
+        </Wrapper>
+      </section>
+    );
+  }
 
   // Different rotation and offset for organic 3D feel
   const cardStyles = [
@@ -146,9 +98,6 @@ export default function TestimonialsSection({
                   <p className="font-medium text-gray-700 dark:text-gray-300 text-[13px] truncate">
                     {testimonial.name}
                   </p>
-                  {/* <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
-                    {testimonial.role} Frontend Developer
-                  </p> */}
                 </div>
               </div>
             </div>

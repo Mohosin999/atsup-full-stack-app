@@ -1,5 +1,3 @@
-
-
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, CheckCircle2, Circle, Sparkles } from "lucide-react";
@@ -57,7 +55,7 @@ export default function AnalysisProgressModal({
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-cyan-600" />
-                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                   Analyzing your resume
                 </h3>
               </div>
@@ -75,7 +73,7 @@ export default function AnalysisProgressModal({
                     ) : isActive ? (
                       <Loader2 className="w-5 h-5 text-cyan-600 animate-spin shrink-0" />
                     ) : (
-                       <Circle className="w-5 h-5 text-gray-600 dark:text-gray-400 shrink-0" />
+                      <Circle className="w-5 h-5 text-gray-600 dark:text-gray-400 shrink-0" />
                     )}
                     <span
                       className={clsx(

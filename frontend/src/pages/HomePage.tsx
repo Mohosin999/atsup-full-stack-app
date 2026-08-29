@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppDispatch } from "../hooks/redux";
 import { logoutUser } from "../store/slices/authSlice";
 import ConfirmModal from "../components/ui/ConfirmModal";
-import { allFeatures, testimonials as staticTestimonials } from "../constants/landingData";
+import { allFeatures } from "../constants/landingData";
 // import FloatingOrbs from "../components/home-page/FloatingOrbs";
 import HeroSection from "../components/home-page/HeroSection";
 import FeatureShowcase from "../components/home-page/FeatureShowcase";
@@ -26,8 +26,7 @@ export default function HomePage() {
     },
   });
 
-  const displayTestimonials =
-    homeReviews && homeReviews.length > 0 ? homeReviews : staticTestimonials;
+  const displayTestimonials = homeReviews && homeReviews.length > 0 ? homeReviews : [];
 
   const handleLogout = async () => {
     setShowLogoutConfirm(false);

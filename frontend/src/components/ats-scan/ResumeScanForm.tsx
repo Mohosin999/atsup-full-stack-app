@@ -252,8 +252,8 @@ export default function ResumeScanForm({
             >
               {resumeFile ? <CheckCircle className="w-5 h-5" /> : "1"}
             </div>
-              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-                Upload Resume
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+              Upload Resume
             </h2>
           </div>
 
@@ -279,13 +279,15 @@ export default function ResumeScanForm({
               </button>
             </div>
           ) : (
-              <label className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-700 bg-white dark:bg-secondary hover:bg-gray-100 dark:hover:bg-primary cursor-pointer rounded-lg transition-colors">
+            <label className="relative min-h-[280px] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-700 bg-white dark:bg-secondary hover:bg-gray-100 dark:hover:bg-primary cursor-pointer rounded-lg">
               <Upload className="w-8 h-8 text-gray-600 dark:text-gray-400 mb-2" />
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 <span className="font-semibold">Click to upload</span> or drag
                 and drop
               </p>
-              <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">PDF only (MAX. 10MB)</p>
+              <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
+                PDF only (MAX. 10MB)
+              </p>
               <input
                 type="file"
                 className="hidden"

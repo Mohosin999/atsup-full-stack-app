@@ -75,7 +75,7 @@ const MyReports: React.FC = () => {
               <LoadingSpinner size="md" text="Loading reports..." />
             </div>
           ) : tickets.length === 0 ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-10 text-center dark:bg-gray-800 dark:border-gray-700">
+            <div className="bg-white rounded-xl border border-gray-200 p-10 text-center dark:bg-secondary dark:border-accent">
               <MessageSquare className="w-10 h-10 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-600 mb-1 dark:text-gray-400">
                 You haven't submitted any reports yet.
@@ -89,7 +89,7 @@ const MyReports: React.FC = () => {
               {tickets.map((t) => (
                 <div
                   key={t.id}
-                  className="bg-white rounded-xl border border-gray-200 p-4 md:p-5 dark:bg-gray-800 dark:border-gray-700"
+                  className="bg-white rounded-xl border border-gray-200 p-4 md:p-5 dark:bg-secondary dark:border-accent"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">

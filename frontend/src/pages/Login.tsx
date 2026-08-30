@@ -49,10 +49,9 @@ export default function Login() {
           navigate(redirect, { replace: true });
         } else {
           // Email/password login/register → stay on home page (admin → dashboard)
-          navigate(
-            user?.role === "admin" ? "/admin-dashboard" : "/",
-            { replace: true }
-          );
+          navigate(user?.role === "admin" ? "/admin-dashboard" : "/", {
+            replace: true,
+          });
         }
       }
     } catch (err: any) {
@@ -69,7 +68,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center px-4 pt-28 pb-12">
+    <div className="min-h-screen w-full flex md:items-center justify-center px-4 pt-16 lg:pt-20 pb-12">
       {/* Decorative background */}
       {/* <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-400/20 blur-3xl animate-[pulseSoft_4s_ease-in-out_infinite]" />
@@ -82,9 +81,8 @@ export default function Login() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="relative z-10 w-full max-w-sm xl:max-w-md"
       >
-
         {/* Professional card with only the inputs */}
-        <div className="bg-white border border-gray-300 rounded-2xl p-6 md:p-8 xl:p-10 shadow-md dark:bg-gray-800 dark:border-gray-600">
+        <div className="bg-white border border-gray-300 rounded-lg p-6 md:p-8 xl:p-10 dark:bg-secondary dark:border-accent shadow-[0_0_6px_rgba(0,0,0,0.2)]">
           <div className="text-center mb-6">
             <h1 className="text-lg xl:text-xl font-bold text-slate-800 dark:text-gray-100">
               {isRegister ? "Create your account" : "Welcome back"}
@@ -103,7 +101,7 @@ export default function Login() {
               saveRedirectForOAuth();
               dispatch(login());
             }}
-            className="w-full inline-flex items-center justify-center px-4 py-2 xl:py-2.5 text-[13px] xl:text-sm font-medium rounded-xl border border-slate-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-slate-700 dark:text-gray-300 hover:border-cyan-500 transition-all duration-200"
+            className="w-full inline-flex items-center justify-center px-4 py-2 xl:py-2.5 text-[13px] xl:text-sm font-medium rounded-lg border border-slate-300 dark:border-accent bg-white dark:bg-primary text-slate-700 dark:text-gray-300 hover:border-cyan-500"
           >
             <FcGoogle className="w-5 h-5 mr-2" />
             Continue with Google
@@ -126,7 +124,7 @@ export default function Login() {
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <label                 className="block text-[11px] xl:text-xs font-medium text-slate-600 dark:text-gray-300 mb-0.5 xl:mb-1">
+                  <label className="block text-[11px] xl:text-xs font-medium text-slate-600 dark:text-gray-300 mb-0.5 xl:mb-1">
                     Name
                   </label>
                   <div className="relative">
@@ -137,7 +135,7 @@ export default function Login() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full pl-9 pr-3 py-1.5 xl:py-2.5 text-[13px] xl:text-sm border border-slate-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-slate-800 dark:text-gray-100 focus:ring-1 focus:ring-primary focus:border-transparent outline-none transition-all"
+                      className="w-full pl-9 pr-3 py-1.5 xl:py-2.5 text-[13px] xl:text-sm border border-slate-300 dark:border-accent rounded-lg bg-white dark:bg-primary text-slate-800 dark:text-gray-100 focus:ring-1 focus:ring-primary focus:border-transparent outline-none"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -146,29 +144,29 @@ export default function Login() {
             </AnimatePresence>
 
             <div>
-              <label                 className="block text-[11px] xl:text-xs font-medium text-slate-600 dark:text-gray-300 mb-0.5 xl:mb-1">
+              <label className="block text-[11px] xl:text-xs font-medium text-slate-600 dark:text-gray-300 mb-0.5 xl:mb-1">
                 Email
               </label>
               <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-gray-500" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-gray-500" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full pl-9 pr-3 py-1.5 xl:py-2.5 text-[13px] xl:text-sm border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent outline-none transition-all"
+                  className="w-full pl-9 pr-3 py-1.5 xl:py-2.5 text-[13px] xl:text-sm border border-slate-300 dark:border-accent rounded-lg bg-white dark:bg-primary text-slate-800 dark:text-white focus:ring-1 focus:ring-primary focus:border-transparent outline-none"
                   placeholder="Enter your email"
                 />
               </div>
             </div>
 
             <div>
-              <label                 className="block text-[11px] xl:text-xs font-medium text-slate-600 dark:text-gray-300 mb-0.5 xl:mb-1">
+              <label className="block text-[11px] xl:text-xs font-medium text-slate-600 dark:text-gray-300 mb-0.5 xl:mb-1">
                 Password
               </label>
               <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-gray-500" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-gray-500" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -176,7 +174,7 @@ export default function Login() {
                   onChange={handleChange}
                   required
                   minLength={6}
-                  className="w-full pl-9 pr-10 py-1.5 xl:py-2.5 text-[13px] xl:text-sm border border-slate-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-slate-800 dark:text-gray-100 focus:ring-1 focus:ring-primary focus:border-transparent outline-none transition-all"
+                  className="w-full pl-9 pr-10 py-1.5 xl:py-2.5 text-[13px] xl:text-sm border border-slate-300 dark:border-accent rounded-lg bg-white dark:bg-primary text-slate-800 dark:text-gray-100 focus:ring-1 focus:ring-primary focus:border-transparent outline-none"
                   placeholder="Enter your password"
                 />
                 <button
@@ -257,4 +255,3 @@ export default function Login() {
     </div>
   );
 }
-

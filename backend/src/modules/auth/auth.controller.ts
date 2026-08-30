@@ -1,4 +1,4 @@
-import { Response, CookieOptions } from "express";
+import { Response } from "express";
 import { AuthRequest } from "../../shared/types";
 import {
   createUser,
@@ -9,32 +9,11 @@ import {
   verifyRefreshTokenAndGetUserId,
   generateNewAccessToken,
 } from "./auth.service";
-import { env } from "../../shared/config/env";
 import { applyDailyCreditReset } from "../../shared/utils/credits";
 import {
   storeRefreshToken,
   deleteRefreshToken,
-  getRefreshToken,
 } from "../../lib/redis";
-import jwt from "jsonwebtoken";
-
-const cookieOptions = (maxAge?: number): CookieOptions => ({
-  httpOnly: true,
-  secure: env.nodeEnv === "production",
-  sameSite: env.nodeEnv === "production" ? "none" : "lax",
-  path: "/",
-  ...(maxAge ? { maxAge } : {}),
-});
-
-const setAuthCookies = (
-  res: Response,
-  accessToken: string,
-  refreshToken: string,
-) => {
-  res.cookie("accessToken", accessToken, cookieOptions(15 * 60 * 1000));
-
-  res.cookie("refreshToken", refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000));
-};
 
 export const register = async (req: AuthRequest, res: Response) => {
   try {
@@ -61,8 +40,6 @@ export const register = async (req: AuthRequest, res: Response) => {
 
     await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
 
-    setAuthCookies(res, accessToken, refreshToken);
-
     res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -75,6 +52,8 @@ export const register = async (req: AuthRequest, res: Response) => {
           preferences: user.preferences,
           subscription: user.subscription,
         },
+        accessToken,
+        refreshToken,
       },
     });
   } catch (error) {
@@ -137,8 +116,6 @@ export const login = async (req: AuthRequest, res: Response) => {
 
     await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
 
-    setAuthCookies(res, accessToken, refreshToken);
-
     res.json({
       success: true,
       message: "Login successful",
@@ -151,6 +128,8 @@ export const login = async (req: AuthRequest, res: Response) => {
           preferences: user.preferences,
           subscription,
         },
+        accessToken,
+        refreshToken,
       },
     });
   } catch (error) {
@@ -180,7 +159,9 @@ export const getMe = async (req: AuthRequest, res: Response) => {
 
 export const refreshToken = async (req: AuthRequest, res: Response) => {
   try {
-    const refreshTokenValue = req.cookies.refreshToken || req.body.refreshToken;
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : undefined;
+    const refreshTokenValue = bearerToken || req.cookies?.refreshToken || req.body.refreshToken;
 
     if (!refreshTokenValue) {
       return res.status(401).json({
@@ -207,13 +188,13 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
 
     await storeRefreshToken(newRefreshToken, user.id, 7 * 24 * 60 * 60);
 
-    res.cookie("accessToken", newAccessToken, cookieOptions(15 * 60 * 1000));
-
-    res.cookie("refreshToken", newRefreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000));
-
     res.json({
       success: true,
       message: "Token refreshed",
+      data: {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      },
     });
   } catch (error) {
     res.status(401).json({
@@ -225,22 +206,24 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
 
 export const logout = async (req: AuthRequest, res: Response) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : undefined;
+    const refreshToken = bearerToken || req.cookies?.refreshToken || req.body.refreshToken;
     if (refreshToken) {
       await deleteRefreshToken(refreshToken);
     }
 
-    res.clearCookie("accessToken", cookieOptions());
-    res.clearCookie("refreshToken", cookieOptions());
+    // Clear cookies for backward compatibility (old sessions)
+    if (req.cookies?.accessToken || req.cookies?.refreshToken) {
+      res.clearCookie("accessToken", { path: "/" });
+      res.clearCookie("refreshToken", { path: "/" });
+    }
 
     res.json({
       success: true,
       message: "Logged out successfully",
     });
   } catch (error) {
-    res.clearCookie("accessToken", cookieOptions());
-    res.clearCookie("refreshToken", cookieOptions());
-
     res.json({
       success: true,
       message: "Logged out successfully",

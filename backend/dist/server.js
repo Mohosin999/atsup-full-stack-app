@@ -381,17 +381,6 @@ var generateNewAccessToken = (userId, email) => {
 };
 
 // src/modules/auth/auth.controller.ts
-var cookieOptions = (maxAge) => ({
-  httpOnly: true,
-  secure: env.nodeEnv === "production",
-  sameSite: env.nodeEnv === "production" ? "none" : "lax",
-  path: "/",
-  ...maxAge ? { maxAge } : {}
-});
-var setAuthCookies = (res, accessToken, refreshToken2) => {
-  res.cookie("accessToken", accessToken, cookieOptions(15 * 60 * 1e3));
-  res.cookie("refreshToken", refreshToken2, cookieOptions(7 * 24 * 60 * 60 * 1e3));
-};
 var register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -411,7 +400,6 @@ var register = async (req, res) => {
     const user = await createUser({ name, email, password });
     const { accessToken, refreshToken: refreshToken2 } = createTokens(user.id, user.email);
     await storeRefreshToken(refreshToken2, user.id, 7 * 24 * 60 * 60);
-    setAuthCookies(res, accessToken, refreshToken2);
     res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -423,7 +411,9 @@ var register = async (req, res) => {
           picture: user.picture,
           preferences: user.preferences,
           subscription: user.subscription
-        }
+        },
+        accessToken,
+        refreshToken: refreshToken2
       }
     });
   } catch (error) {
@@ -475,7 +465,6 @@ var login = async (req, res) => {
     );
     const { accessToken, refreshToken: refreshToken2 } = createTokens(user.id, user.email);
     await storeRefreshToken(refreshToken2, user.id, 7 * 24 * 60 * 60);
-    setAuthCookies(res, accessToken, refreshToken2);
     res.json({
       success: true,
       message: "Login successful",
@@ -487,7 +476,9 @@ var login = async (req, res) => {
           picture: user.picture,
           preferences: user.preferences,
           subscription
-        }
+        },
+        accessToken,
+        refreshToken: refreshToken2
       }
     });
   } catch (error) {
@@ -514,7 +505,9 @@ var getMe = async (req, res) => {
 };
 var refreshToken = async (req, res) => {
   try {
-    const refreshTokenValue = req.cookies.refreshToken || req.body.refreshToken;
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : void 0;
+    const refreshTokenValue = bearerToken || req.cookies?.refreshToken || req.body.refreshToken;
     if (!refreshTokenValue) {
       return res.status(401).json({
         success: false,
@@ -533,11 +526,13 @@ var refreshToken = async (req, res) => {
     const newAccessToken = generateNewAccessToken(user.id, user.email);
     const { refreshToken: newRefreshToken } = createTokens(user.id, user.email);
     await storeRefreshToken(newRefreshToken, user.id, 7 * 24 * 60 * 60);
-    res.cookie("accessToken", newAccessToken, cookieOptions(15 * 60 * 1e3));
-    res.cookie("refreshToken", newRefreshToken, cookieOptions(7 * 24 * 60 * 60 * 1e3));
     res.json({
       success: true,
-      message: "Token refreshed"
+      message: "Token refreshed",
+      data: {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken
+      }
     });
   } catch (error) {
     res.status(401).json({
@@ -548,19 +543,21 @@ var refreshToken = async (req, res) => {
 };
 var logout = async (req, res) => {
   try {
-    const refreshToken2 = req.cookies.refreshToken;
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : void 0;
+    const refreshToken2 = bearerToken || req.cookies?.refreshToken || req.body.refreshToken;
     if (refreshToken2) {
       await deleteRefreshToken(refreshToken2);
     }
-    res.clearCookie("accessToken", cookieOptions());
-    res.clearCookie("refreshToken", cookieOptions());
+    if (req.cookies?.accessToken || req.cookies?.refreshToken) {
+      res.clearCookie("accessToken", { path: "/" });
+      res.clearCookie("refreshToken", { path: "/" });
+    }
     res.json({
       success: true,
       message: "Logged out successfully"
     });
   } catch (error) {
-    res.clearCookie("accessToken", cookieOptions());
-    res.clearCookie("refreshToken", cookieOptions());
     res.json({
       success: true,
       message: "Logged out successfully"
@@ -597,25 +594,13 @@ router.get(
         email: user.email
       });
       await storeRefreshToken(refreshToken2, user.id, 7 * 24 * 60 * 60);
-      const isProduction = env.nodeEnv === "production";
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? "none" : "lax",
-        path: "/",
-        maxAge: 15 * 60 * 1e3
-      });
-      res.cookie("refreshToken", refreshToken2, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? "none" : "lax",
-        path: "/",
-        maxAge: 7 * 24 * 60 * 60 * 1e3
-      });
-      res.redirect(env.frontendUrl);
+      const redirectUrl = new URL(`${env.frontendUrl}/auth/callback`);
+      redirectUrl.searchParams.set("accessToken", accessToken);
+      redirectUrl.searchParams.set("refreshToken", refreshToken2);
+      res.redirect(redirectUrl.toString());
     } catch (error) {
       console.error("OAuth callback error:", error);
-      res.redirect("/login?error=callback_failed");
+      res.redirect(`${env.frontendUrl}/login?error=callback_failed`);
     }
   }
 );

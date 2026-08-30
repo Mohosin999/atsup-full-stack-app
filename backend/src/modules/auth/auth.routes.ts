@@ -53,28 +53,15 @@ router.get(
 
       await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
 
-      const isProduction = env.nodeEnv === "production";
-
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? "none" : "lax",
-        path: "/",
-        maxAge: 15 * 60 * 1000,
-      });
-
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? "none" : "lax",
-        path: "/",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
-      res.redirect(env.frontendUrl);
+      // Token-based: redirect with tokens in query params (no cookies)
+      // Frontend /auth/callback will save them to localStorage
+      const redirectUrl = new URL(`${env.frontendUrl}/auth/callback`);
+      redirectUrl.searchParams.set("accessToken", accessToken);
+      redirectUrl.searchParams.set("refreshToken", refreshToken);
+      res.redirect(redirectUrl.toString());
     } catch (error) {
       console.error("OAuth callback error:", error);
-      res.redirect("/login?error=callback_failed");
+      res.redirect(`${env.frontendUrl}/login?error=callback_failed`);
     }
   },
 );

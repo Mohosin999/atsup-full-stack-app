@@ -10,7 +10,7 @@ import {
   saveRedirectForOAuth,
   consumeRedirect,
 } from "../utils/authGuard";
-import api from "../api/api";
+import api, { setTokens } from "../api/api";
 
 export default function Login() {
   const dispatch = useAppDispatch();
@@ -41,6 +41,8 @@ export default function Login() {
       const response = await api.post(endpoint, formData);
 
       if (response.data.success) {
+        const { accessToken, refreshToken } = response.data.data || {};
+        if (accessToken && refreshToken) setTokens(accessToken, refreshToken);
         const result = await dispatch(fetchUser());
         const user = result.payload as { role?: string } | null;
         console.log("Login debug - user:", user);

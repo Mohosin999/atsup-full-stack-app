@@ -7,16 +7,33 @@ import { ResumeContent } from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
+export const getAccessToken = () => localStorage.getItem("accessToken");
+export const getRefreshToken = () => localStorage.getItem("refreshToken");
+export const setTokens = (accessToken: string, refreshToken: string) => {
+  localStorage.setItem("accessToken", accessToken);
+  localStorage.setItem("refreshToken", refreshToken);
+};
+export const clearTokens = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+};
+
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
+  withCredentials: false,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => config,
+  (config: InternalAxiosRequestConfig) => {
+    const token = getAccessToken();
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error) => Promise.reject(error),
 );
 
@@ -39,12 +56,33 @@ api.interceptors.response.use(
       !isAuthRequest
     ) {
       originalRequest._retry = true;
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) {
+        clearTokens();
+        localStorage.removeItem("user");
+        const { store } = await import("../store");
+        const { clearUser } = await import("../store/slices/authSlice");
+        store.dispatch(clearUser());
+        return Promise.reject(error);
+      }
       try {
-        await api.post("/auth/refresh");
+        const res = await api.post("/auth/refresh", null, {
+          headers: { Authorization: `Bearer ${refreshToken}` },
+        });
+        const newAccessToken = res.data?.data?.accessToken;
+        const newRefreshToken = res.data?.data?.refreshToken;
+        if (newAccessToken && newRefreshToken) {
+          setTokens(newAccessToken, newRefreshToken);
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        } else if (newAccessToken) {
+          localStorage.setItem("accessToken", newAccessToken);
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        }
         return api(originalRequest);
       } catch (refreshError) {
         // Clear the auth state; PrivateRoute redirects to login only on
         // protected pages, so public pages (e.g. home) stay visible.
+        clearTokens();
         localStorage.removeItem("user");
         const { store } = await import("../store");
         const { clearUser } = await import("../store/slices/authSlice");
@@ -59,7 +97,12 @@ api.interceptors.response.use(
 export const authApi = {
   googleLogin: () => (window.location.href = `${API_URL}/auth/google`),
   getMe: () => api.get("/auth/me"),
-  logout: () => api.post("/auth/logout"),
+  logout: () => {
+    const refreshToken = getRefreshToken();
+    return api.post("/auth/logout", null, {
+      headers: refreshToken ? { Authorization: `Bearer ${refreshToken}` } : {},
+    });
+  },
 };
 
 export const userApi = {

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import api from '../../api/api';
+import api, { setTokens, clearTokens, getRefreshToken } from '../../api/api';
 import { User } from '../../types';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
@@ -35,7 +35,14 @@ export const tokenRefresh = createAsyncThunk<void, void, { rejectValue: string }
   'auth/refreshToken',
   async (_, { rejectWithValue }) => {
     try {
-      await api.post('/auth/refresh');
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) return rejectWithValue('No refresh token');
+      const res = await api.post('/auth/refresh', null, {
+        headers: { Authorization: `Bearer ${refreshToken}` },
+      });
+      const { accessToken, refreshToken: newRefreshToken } = res.data?.data || {};
+      if (accessToken && newRefreshToken) setTokens(accessToken, newRefreshToken);
+      else if (accessToken) localStorage.setItem('accessToken', accessToken);
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to refresh token');
     }
@@ -61,12 +68,16 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      await api.post('/auth/logout');
+      const refreshToken = getRefreshToken();
+      await api.post('/auth/logout', null, {
+        headers: refreshToken ? { Authorization: `Bearer ${refreshToken}` } : {},
+      });
     } catch (error: any) {
       console.error('Logout error:', error);
       return rejectWithValue(error.response?.data?.message || 'Failed to logout');
     } finally {
       localStorage.removeItem('user');
+      clearTokens();
     }
   }
 );
@@ -82,6 +93,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       localStorage.removeItem('user');
+      clearTokens();
     },
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
@@ -123,10 +135,21 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
       })
-      // logoutUser
+      // logoutUser — optimistic: clear instantly on pending, keep cleared on fulfilled/rejected
+      .addCase(logoutUser.pending, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.loading = false;
+      })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.isAuthenticated = false;
+        state.loading = false;
+      })
+      .addCase(logoutUser.rejected, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.loading = false;
       })
       // tokenRefresh
       .addCase(tokenRefresh.rejected, (state) => {

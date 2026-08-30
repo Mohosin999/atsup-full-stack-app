@@ -18,6 +18,7 @@ import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
 import MyReports from "./pages/MyReports";
+import AuthCallback from "./pages/AuthCallback";
 import ReviewModal from "./components/ReviewModal";
 import ReportButton from "./components/support/ReportButton";
 import { useVisitorTracking } from "./hooks/useVisitorTracking";
@@ -150,6 +151,7 @@ function App() {
         />
         <Route path="/my-reports" element={<PrivateRoute><MyReports /></PrivateRoute>} />
         <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 

@@ -142,36 +142,32 @@ export default function ResumeBuilder() {
     }
   }, [id, isNew, navigate]);
 
-  useEffect(() => {
-    if (skipAutosaveRef.current) {
-      skipAutosaveRef.current = false;
+  const handleSave = async () => {
+    if (!dirtyRef.current) {
+      toast.info("No changes to save.");
       return;
     }
-    if (!dirtyRef.current) return;
-    if (!resumeId && !isNew) return;
-
     setSaving(true);
-    const timer = setTimeout(async () => {
-      try {
-        let rid = resumeId;
-        if (!rid) {
-          const res = await resumeApi.createFromContent(content);
-          rid = res.data.data.id;
-          setResumeId(rid);
-          navigate(`/resume-builder/${rid}`, { replace: true });
-        } else {
-          const res = await resumeApi.update(rid, { content });
-          setResumeId(res.data.data?.id || rid);
-        }
-        setSavedAt(new Date().toLocaleTimeString());
-      } catch {
-        toast.error("Failed to save resume.");
-      } finally {
-        setSaving(false);
+    try {
+      let rid = resumeId;
+      if (!rid) {
+        const res = await resumeApi.createFromContent(content);
+        rid = res.data.data.id;
+        setResumeId(rid);
+        navigate(`/resume-builder/${rid}`, { replace: true });
+      } else {
+        const res = await resumeApi.update(rid, { content });
+        setResumeId(res.data.data?.id || rid);
       }
-    }, 800);
-    return () => clearTimeout(timer);
-  }, [content, resumeId, isNew]);
+      dirtyRef.current = false;
+      setSavedAt(new Date().toLocaleTimeString());
+      toast.success("Resume saved successfully.");
+    } catch {
+      toast.error("Failed to save resume.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -536,6 +532,21 @@ export default function ResumeBuilder() {
                   }`}
                 />
               </button>
+            )}
+
+            {/* Manual Save Button */}
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
+              {saving ? "Saving..." : "Save Resume"}
+            </button>
+            {savedAt && !saving && (
+              <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+                Last saved at {savedAt}
+              </p>
             )}
           </div>
 

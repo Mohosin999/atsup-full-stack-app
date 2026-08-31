@@ -78,9 +78,8 @@ export default function Login() {
       </div> */}
 
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
         className="relative z-10 w-full max-w-sm xl:max-w-md"
       >
         {/* Professional card with only the inputs */}

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth";
-
+import { resumeLimiter } from "../../shared/middlewares/middlewareConfig";
 import {
   getAllResumes,
   uploadResume,
@@ -14,7 +14,7 @@ import {
 
 const router = Router();
 
-router.post("/content", authenticate, createResumeFromContent);
+router.post("/content", authenticate, resumeLimiter, createResumeFromContent);
 
 router.delete("/delete-all", authenticate, deleteAllResumes);
 
@@ -28,6 +28,6 @@ router.delete("/:id", authenticate, deleteResume);
 
 router.get("/", authenticate, getAllResumes);
 
-router.post("/", authenticate, uploadResume);
+router.post("/", authenticate, resumeLimiter, uploadResume);
 
 export default router;

@@ -36,11 +36,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.auth.user);
-  const loading = useSelector((state: RootState) => state.auth.loading);
-
-  if (loading) {
-    return <LoadingSpinner fullScreen />;
-  }
 
   return user ? <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/"} /> : <>{children}</>;
 }

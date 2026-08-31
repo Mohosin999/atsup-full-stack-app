@@ -82,6 +82,32 @@ export const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+/** -------------------------------------------------
+ * Strict limiter for AI-heavy ATS scan endpoints
+ ----------------------------------------------------*/
+export const atsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  keyGenerator: getRateLimitKey,
+  store: createRedisStore("rl:ats:"),
+  message: { message: "ATS scan limit reached. Please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+/** -------------------------------------------------
+ * Strict limiter for AI-heavy resume builder endpoints
+ ----------------------------------------------------*/
+export const resumeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  keyGenerator: getRateLimitKey,
+  store: createRedisStore("rl:resume:"),
+  message: { message: "Resume builder limit reached. Please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 export const applyMiddleware = (app: Application): void => {
   app.use(
     /** ----------------------------------------------

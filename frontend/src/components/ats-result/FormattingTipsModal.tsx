@@ -41,13 +41,13 @@ export default function FormattingTipsModal({
             className="bg-white dark:bg-gray-800 shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-gray-100 dark:border-gray-700 bg-green-100">
+            <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-gray-100 dark:border-gray-700 bg-green-100 dark:bg-accent">
               <div className="flex items-center gap-3">
                 <div>
                   <h3 className="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 leading-tight">
                     Formatting Tips
                   </h3>
-                  <p className="text-sm text-gray-600 mt-0.5 dark:text-gray-400">
+                  <p className="text-sm text-gray-600 mt-0.5 dark:text-gray-300">
                     Follow these free tips to make your resume perfectly
                     ATS-friendly.
                   </p>
@@ -55,9 +55,9 @@ export default function FormattingTipsModal({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex-shrink-0"
+                className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex-shrink-0 rounded-full"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 dark:text-gray-200" />
               </button>
             </div>
 
@@ -72,7 +72,7 @@ export default function FormattingTipsModal({
                   {LAYOUT_TIPS.map((tip) => (
                     <li
                       key={tip}
-                      className="flex items-center gap-2.5 text-[13px] lg:text-sm text-gray-600 dark:text-gray-400 leading-snug"
+                      className="flex items-center gap-2.5 text-[13px] lg:text-sm text-gray-600 dark:text-gray-300 leading-snug"
                     >
                       <span className="ml-5 w-1.5 h-1.5 bg-gray-500 flex-shrink-0" />
                       {tip}

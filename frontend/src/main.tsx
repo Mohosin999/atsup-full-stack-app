@@ -26,7 +26,7 @@ const queryClient = new QueryClient({
   },
 });
 
-// Helper: check if access token is expiring soon (within 70s for 2m testing)
+// Helper: check if access token is expiring soon (within 2m for 15m token)
 function isTokenExpiringSoon(): boolean {
   try {
     const token = getAccessToken();
@@ -34,15 +34,15 @@ function isTokenExpiringSoon(): boolean {
     const payload = JSON.parse(atob(token.split(".")[1]));
     if (!payload.exp) return false;
     const expiresAt = payload.exp * 1000;
-    return expiresAt - Date.now() < 70 * 1000;
+    return expiresAt - Date.now() < 2 * 60 * 1000;
   } catch {
     return false;
   }
 }
 
 // ==================================================================
-// Initialize App on first render and refresh token every 1 minute
-// (2m access token -> 1m refresh = 60s buffer for testing)
+// Initialize App on first render and refresh token proactively
+// (15m access token -> refresh when expiring within 2m)
 // ==================================================================
 function InitializeApp() {
   const dispatch: AppDispatch = store.dispatch as AppDispatch;
@@ -79,11 +79,12 @@ function InitializeApp() {
 
     dispatch(fetchUser());
 
-    // Refresh token every 50s (70s buffer before 2m expiry) with throttling
+    // Check every 60s, but only refresh if token expiring within 2m (for 15m token)
     const interval = setInterval(
       () => {
+        if (!isTokenExpiringSoon()) return;
         const lastRefresh = Number(localStorage.getItem("lastRefreshTime") || 0);
-        if (Date.now() - lastRefresh < 30 * 1000) {
+        if (Date.now() - lastRefresh < 60 * 1000) {
           console.log("[refresh] interval throttled, skipping");
           return;
         }
@@ -94,15 +95,15 @@ function InitializeApp() {
           .then(() => console.log("[refresh] interval success"))
           .catch((e) => console.error("[refresh] interval failed:", e));
       },
-      50 * 1000,
+      60 * 1000,
     );
 
     // Proactive refresh when tab becomes visible (handles browser throttling)
-    // Only refresh if token is expiring within 70s and throttled (30s gap)
+    // Only refresh if token is expiring within 2m and throttled (60s gap)
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && isTokenExpiringSoon()) {
         const lastRefresh = Number(localStorage.getItem("lastRefreshTime") || 0);
-        if (Date.now() - lastRefresh < 30 * 1000) {
+        if (Date.now() - lastRefresh < 60 * 1000) {
           console.log("[refresh] visibility throttled, skipping");
           return;
         }

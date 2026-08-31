@@ -580,7 +580,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: "/login?error=auth_failed"
+    failureRedirect: `${env.frontendUrl}/login?error=auth_failed`
   }),
   async (req, res) => {
     try {
@@ -594,7 +594,7 @@ router.get(
         email: user.email
       });
       await storeRefreshToken(refreshToken2, user.id, 7 * 24 * 60 * 60);
-      const redirectUrl = new URL(`${env.frontendUrl}/auth/callback`);
+      const redirectUrl = new URL(`${env.frontendUrl}/`);
       redirectUrl.searchParams.set("accessToken", accessToken);
       redirectUrl.searchParams.set("refreshToken", refreshToken2);
       res.redirect(redirectUrl.toString());

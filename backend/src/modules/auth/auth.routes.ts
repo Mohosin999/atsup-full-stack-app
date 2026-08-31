@@ -35,7 +35,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: "/login?error=auth_failed",
+    failureRedirect: `${env.frontendUrl}/login?error=auth_failed`,
   }),
   async (req: AuthRequest, res: Response) => {
     try {
@@ -53,9 +53,8 @@ router.get(
 
       await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
 
-      // Token-based: redirect with tokens in query params (no cookies)
-      // Frontend /auth/callback will save them to localStorage
-      const redirectUrl = new URL(`${env.frontendUrl}/auth/callback`);
+      // Plan A: redirect directly to / with tokens (skip /auth/callback page to avoid double navbar flash)
+      const redirectUrl = new URL(`${env.frontendUrl}/`);
       redirectUrl.searchParams.set("accessToken", accessToken);
       redirectUrl.searchParams.set("refreshToken", refreshToken);
       res.redirect(redirectUrl.toString());

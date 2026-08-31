@@ -18,7 +18,6 @@ import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
 import MyReports from "./pages/MyReports";
-import AuthCallback from "./pages/AuthCallback";
 import ReviewModal from "./components/ReviewModal";
 import ReportButton from "./components/support/ReportButton";
 import { useVisitorTracking } from "./hooks/useVisitorTracking";
@@ -48,6 +47,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function App() {
   const user = useSelector((state: RootState) => state.auth.user);
+  const loading = useSelector((state: RootState) => state.auth.loading);
   const navigate = useNavigate();
   const [reviewOpen, setReviewOpen] = useState(false);
   const location = useLocation();
@@ -63,11 +63,41 @@ function App() {
     return () => window.removeEventListener("open-review-modal", handleOpen);
   }, []);
 
+  // Handle OAuth error redirected to /?error=xxx (tokens missing/callback_failed)
+  useEffect(() => {
+    if (loading) return;
+    const oauthError = sessionStorage.getItem("oauth_error");
+    if (oauthError) {
+      sessionStorage.removeItem("oauth_error");
+      sessionStorage.removeItem("oauth_pending");
+      if (!user) {
+        navigate(`/login?error=${oauthError}`, { replace: true });
+      }
+    }
+  }, [loading, user, navigate]);
+
   // After a successful login (incl. Google OAuth round-trip), return to the
-  // page the user came from. For email/password & OAuth, stay on home page.
+  // page the user came from. For OAuth via /?accessToken, handle role redirect directly (replaces AuthCallback.tsx:28).
   useEffect(() => {
     if (!user) return;
     console.log("App.tsx - Google OAuth user:", user, "role:", user.role);
+
+    // OAuth pending flag set by InitializeApp when tokens were read from URL on /
+    const isOAuth = sessionStorage.getItem("oauth_pending") === "1";
+    if (isOAuth) {
+      sessionStorage.removeItem("oauth_pending");
+      sessionStorage.removeItem("oauth_error");
+      const redirect = consumeRedirect();
+      if (redirect) {
+        console.log("OAuth redirecting to saved:", redirect);
+        navigate(redirect, { replace: true });
+        return;
+      }
+      console.log("OAuth role-based redirect to:", user.role === "admin" ? "/admin-dashboard" : "/");
+      navigate(user.role === "admin" ? "/admin-dashboard" : "/", { replace: true });
+      return;
+    }
+
     const redirect = consumeRedirect();
     if (redirect) {
       console.log("Redirecting to saved:", redirect);
@@ -76,7 +106,6 @@ function App() {
       console.log("No saved redirect, role-based redirect to:", user.role === "admin" ? "/admin-dashboard" : "/");
       navigate(user.role === "admin" ? "/admin-dashboard" : "/", { replace: true });
     }
-    // If already on "/" after OAuth (backend redirects to frontendUrl), stay on home page
   }, [user, navigate]);
 
   return (
@@ -151,7 +180,6 @@ function App() {
         />
         <Route path="/my-reports" element={<PrivateRoute><MyReports /></PrivateRoute>} />
         <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 

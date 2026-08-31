@@ -9,6 +9,7 @@ import App from "./App";
 import "./index.css";
 import { store, AppDispatch } from "./store";
 import { fetchUser, tokenRefresh } from "./store/slices/authSlice";
+import { setTokens } from "./api/api";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -32,6 +33,35 @@ function InitializeApp() {
   const dispatch: AppDispatch = store.dispatch as AppDispatch;
 
   useEffect(() => {
+    // Plan A: handle OAuth tokens directly on / (skip /auth/callback page)
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get("accessToken");
+    const refreshToken = params.get("refreshToken");
+    const error = params.get("error");
+
+    if (accessToken && refreshToken) {
+      setTokens(accessToken, refreshToken);
+      params.delete("accessToken");
+      params.delete("refreshToken");
+      if (error) params.delete("error");
+      const newSearch = params.toString();
+      const newUrl =
+        window.location.pathname + (newSearch ? `?${newSearch}` : "") + window.location.hash;
+      window.history.replaceState({}, "", newUrl);
+      sessionStorage.setItem("oauth_pending", "1");
+    } else if (error && window.location.pathname === "/") {
+      // OAuth error landed on / (e.g. missing tokens) -> forward to /login via App effect
+      sessionStorage.setItem("oauth_error", error);
+      params.delete("error");
+      params.delete("accessToken");
+      params.delete("refreshToken");
+      const newSearch = params.toString();
+      const newUrl =
+        window.location.pathname + (newSearch ? `?${newSearch}` : "") + window.location.hash;
+      window.history.replaceState({}, "", newUrl);
+    }
+    // If error is on /login (backend failureRedirect), leave it in URL for Login page to handle
+
     dispatch(fetchUser());
 
     const interval = setInterval(

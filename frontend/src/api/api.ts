@@ -26,8 +26,35 @@ const api = axios.create({
   },
 });
 
+// Queue for concurrent 401 handling - prevents multiple refresh calls
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (err: unknown) => void;
+}> = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) prom.reject(error);
+    else prom.resolve(token!);
+  });
+  failedQueue = [];
+};
+
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // Don't overwrite Authorization if caller already set it (e.g., refresh/logout with refreshToken)
+    const hasAuthHeader = !!(
+      config.headers &&
+      (config.headers.Authorization || (config.headers as any).authorization)
+    );
+    if (hasAuthHeader) return config;
+
+    // Refresh/logout must use refreshToken, not expired accessToken
+    if (config.url?.includes("/auth/refresh") || config.url?.includes("/auth/logout")) {
+      return config;
+    }
+
     const token = getAccessToken();
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -55,9 +82,23 @@ api.interceptors.response.use(
       !originalRequest._retry &&
       !isAuthRequest
     ) {
+      if (isRefreshing) {
+        return new Promise<string>((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
+
       const refreshToken = getRefreshToken();
       if (!refreshToken) {
+        isRefreshing = false;
         clearTokens();
         localStorage.removeItem("user");
         const { store } = await import("../store");
@@ -66,20 +107,28 @@ api.interceptors.response.use(
         return Promise.reject(error);
       }
       try {
-        const res = await api.post("/auth/refresh", null, {
+        const res = await api.post("/auth/refresh", {}, {
           headers: { Authorization: `Bearer ${refreshToken}` },
         });
         const newAccessToken = res.data?.data?.accessToken;
         const newRefreshToken = res.data?.data?.refreshToken;
         if (newAccessToken && newRefreshToken) {
           setTokens(newAccessToken, newRefreshToken);
+          console.log("[api] refresh success via interceptor");
+          processQueue(null, newAccessToken);
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         } else if (newAccessToken) {
           localStorage.setItem("accessToken", newAccessToken);
+          console.log("[api] refresh success (access only) via interceptor");
+          processQueue(null, newAccessToken);
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         }
+        isRefreshing = false;
         return api(originalRequest);
-      } catch (refreshError) {
+      } catch (refreshError: any) {
+        console.error("[api] refresh failed:", refreshError.response?.data || refreshError.message);
+        processQueue(refreshError, null);
+        isRefreshing = false;
         // Clear the auth state; PrivateRoute redirects to login only on
         // protected pages, so public pages (e.g. home) stay visible.
         clearTokens();
@@ -99,7 +148,7 @@ export const authApi = {
   getMe: () => api.get("/auth/me"),
   logout: () => {
     const refreshToken = getRefreshToken();
-    return api.post("/auth/logout", null, {
+    return api.post("/auth/logout", {}, {
       headers: refreshToken ? { Authorization: `Bearer ${refreshToken}` } : {},
     });
   },

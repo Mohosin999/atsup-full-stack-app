@@ -13,6 +13,7 @@ import { applyDailyCreditReset } from "../../shared/utils/credits";
 import {
   storeRefreshToken,
   deleteRefreshToken,
+  deleteAllRefreshTokensForUser,
 } from "../../lib/redis";
 
 export const register = async (req: AuthRequest, res: Response) => {
@@ -38,7 +39,8 @@ export const register = async (req: AuthRequest, res: Response) => {
 
     const { accessToken, refreshToken } = createTokens(user.id, user.email);
 
-    await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
+    await deleteAllRefreshTokensForUser(user.id);
+    await storeRefreshToken(refreshToken, user.id, 1 * 24 * 60 * 60);
 
     res.status(201).json({
       success: true,
@@ -114,7 +116,8 @@ export const login = async (req: AuthRequest, res: Response) => {
 
     const { accessToken, refreshToken } = createTokens(user.id, user.email);
 
-    await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
+    await deleteAllRefreshTokensForUser(user.id);
+    await storeRefreshToken(refreshToken, user.id, 1 * 24 * 60 * 60);
 
     res.json({
       success: true,
@@ -181,22 +184,20 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    await deleteRefreshToken(refreshTokenValue);
-
+    // Static refresh token: only issue new access token, keep same refresh token (1d expiry)
+    // Optional: verify token still exists in Redis (for logout invalidation), but don't rotate
     const newAccessToken = generateNewAccessToken(user.id, user.email);
-    const { refreshToken: newRefreshToken } = createTokens(user.id, user.email);
-
-    await storeRefreshToken(newRefreshToken, user.id, 7 * 24 * 60 * 60);
 
     res.json({
       success: true,
       message: "Token refreshed",
       data: {
         accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
+        refreshToken: refreshTokenValue,
       },
     });
   } catch (error) {
+    console.error("[refresh] failed:", error);
     res.status(401).json({
       success: false,
       message: "Invalid refresh token",

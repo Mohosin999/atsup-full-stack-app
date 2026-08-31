@@ -5,7 +5,7 @@ import { authLimiter } from "../../shared/middlewares/middlewareConfig";
 
 import { AuthRequest } from "../../shared/types";
 import { generateAccessToken, generateRefreshToken } from "../../shared/config/jwt";
-import { storeRefreshToken } from "../../lib/redis";
+import { storeRefreshToken, deleteAllRefreshTokensForUser } from "../../lib/redis";
 import {
   register,
   login,
@@ -53,7 +53,8 @@ router.get(
         email: user.email,
       });
 
-      await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
+      await deleteAllRefreshTokensForUser(user.id);
+      await storeRefreshToken(refreshToken, user.id, 1 * 24 * 60 * 60);
 
       // Plan A: redirect directly to / with tokens (skip /auth/callback page to avoid double navbar flash)
       const redirectUrl = new URL(`${env.frontendUrl}/`);

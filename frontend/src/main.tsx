@@ -9,7 +9,7 @@ import App from "./App";
 import "./index.css";
 import { store, AppDispatch } from "./store";
 import { fetchUser, tokenRefresh } from "./store/slices/authSlice";
-import { setTokens } from "./api/api";
+import { getAccessToken, setTokens } from "./api/api";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -26,8 +26,23 @@ const queryClient = new QueryClient({
   },
 });
 
+// Helper: check if access token is expiring soon (within 70s for 2m testing)
+function isTokenExpiringSoon(): boolean {
+  try {
+    const token = getAccessToken();
+    if (!token) return false;
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (!payload.exp) return false;
+    const expiresAt = payload.exp * 1000;
+    return expiresAt - Date.now() < 70 * 1000;
+  } catch {
+    return false;
+  }
+}
+
 // ==================================================================
-// Initialize App on first render and refresh token every 14 minutes
+// Initialize App on first render and refresh token every 1 minute
+// (2m access token -> 1m refresh = 60s buffer for testing)
 // ==================================================================
 function InitializeApp() {
   const dispatch: AppDispatch = store.dispatch as AppDispatch;
@@ -64,14 +79,47 @@ function InitializeApp() {
 
     dispatch(fetchUser());
 
+    // Refresh token every 50s (70s buffer before 2m expiry) with throttling
     const interval = setInterval(
       () => {
-        dispatch(tokenRefresh());
+        const lastRefresh = Number(localStorage.getItem("lastRefreshTime") || 0);
+        if (Date.now() - lastRefresh < 30 * 1000) {
+          console.log("[refresh] interval throttled, skipping");
+          return;
+        }
+        localStorage.setItem("lastRefreshTime", String(Date.now()));
+        console.log("[refresh] interval triggered");
+        dispatch(tokenRefresh())
+          .unwrap()
+          .then(() => console.log("[refresh] interval success"))
+          .catch((e) => console.error("[refresh] interval failed:", e));
       },
-      14 * 60 * 1000,
+      50 * 1000,
     );
 
-    return () => clearInterval(interval);
+    // Proactive refresh when tab becomes visible (handles browser throttling)
+    // Only refresh if token is expiring within 70s and throttled (30s gap)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && isTokenExpiringSoon()) {
+        const lastRefresh = Number(localStorage.getItem("lastRefreshTime") || 0);
+        if (Date.now() - lastRefresh < 30 * 1000) {
+          console.log("[refresh] visibility throttled, skipping");
+          return;
+        }
+        localStorage.setItem("lastRefreshTime", String(Date.now()));
+        console.log("[refresh] visibility triggered");
+        dispatch(tokenRefresh())
+          .unwrap()
+          .then(() => console.log("[refresh] visibility success"))
+          .catch((e) => console.error("[refresh] visibility failed:", e));
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [dispatch]);
 
   return null;

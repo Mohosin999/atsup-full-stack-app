@@ -37,13 +37,19 @@ export const tokenRefresh = createAsyncThunk<void, void, { rejectValue: string }
     try {
       const refreshToken = getRefreshToken();
       if (!refreshToken) return rejectWithValue('No refresh token');
-      const res = await api.post('/auth/refresh', null, {
+      const res = await api.post('/auth/refresh', {}, {
         headers: { Authorization: `Bearer ${refreshToken}` },
       });
       const { accessToken, refreshToken: newRefreshToken } = res.data?.data || {};
-      if (accessToken && newRefreshToken) setTokens(accessToken, newRefreshToken);
-      else if (accessToken) localStorage.setItem('accessToken', accessToken);
+      if (accessToken && newRefreshToken) {
+        setTokens(accessToken, newRefreshToken);
+        console.log("[authSlice] tokenRefresh success");
+      } else if (accessToken) {
+        localStorage.setItem('accessToken', accessToken);
+        console.log("[authSlice] tokenRefresh success (access only)");
+      }
     } catch (error: any) {
+      console.error("[authSlice] tokenRefresh failed:", error.response?.data || error.message);
       return rejectWithValue(error.response?.data?.message || 'Failed to refresh token');
     }
   }
@@ -69,7 +75,7 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
   async (_, { rejectWithValue }) => {
     try {
       const refreshToken = getRefreshToken();
-      await api.post('/auth/logout', null, {
+      await api.post('/auth/logout', {}, {
         headers: refreshToken ? { Authorization: `Bearer ${refreshToken}` } : {},
       });
     } catch (error: any) {

@@ -13,7 +13,7 @@ import ScanHistory from "./pages/ScanHistory";
 import ResumeHistory from "./pages/ResumeHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ResumeDashboard from "./pages/ResumeDashboard";
-import LoadingSpinner from "./components/ui/LoadingSpinner";
+import SkeletonLoader from "./components/ui/SkeletonLoader";
 import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -28,7 +28,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   const loading = useSelector((state: RootState) => state.auth.loading);
 
   if (loading) {
-    return <LoadingSpinner fullScreen />;
+    return <SkeletonLoader />;
   }
 
   return user ? <>{children}</> : <Navigate to="/login" />;

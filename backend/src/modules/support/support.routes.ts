@@ -3,7 +3,7 @@ import multer from "multer";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { authenticate } from "../../shared/middlewares/auth";
-import { generalLimiter } from "../../shared/middlewares/middlewareConfig";
+
 import { getUploadsDir } from "../../shared/config/multer";
 import { env } from "../../shared/config/env";
 import { createTicket, getMyTicketsController } from "./support.controller";
@@ -32,7 +32,7 @@ const router = Router();
 
 router.use(authenticate);
 
-router.post("/", generalLimiter, uploadScreenshot.single("attachment"), createTicket);
-router.get("/mine", generalLimiter, getMyTicketsController);
+router.post("/", uploadScreenshot.single("attachment"), createTicket);
+router.get("/mine", getMyTicketsController);
 
 export default router;

@@ -61,7 +61,7 @@ const createRedisStore = (prefix: string) =>
  ----------------------------------------------------*/
 export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500,
+  max: 300,
   keyGenerator: getRateLimitKey,
   store: createRedisStore("rl:general:"),
   message: { message: "Too many requests, please try again later." },
@@ -72,9 +72,9 @@ export const generalLimiter = rateLimit({
 /** -------------------------------------------------
  * Tight limiter for public auth endpoints
  ----------------------------------------------------*/
-const authLimiter = rateLimit({
+export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 50,
   keyGenerator: (req) => `ip:${getClientIp(req)}`,
   store: createRedisStore("rl:auth:"),
   message: { message: "Too many requests, please try again later." },

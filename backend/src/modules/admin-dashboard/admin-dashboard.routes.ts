@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth";
-import { generalLimiter } from "../../shared/middlewares/middlewareConfig";
+
 import {
   getMetrics,
   getGrowth,
@@ -32,26 +32,26 @@ router.use(authenticate);
 
 router.get("/metrics", getMetrics);
 router.get("/growth", getGrowth);
-router.get("/users", generalLimiter, getUsers);
-router.patch("/users/:id/ban", generalLimiter, toggleBan);
-router.patch("/users/:id", generalLimiter, updateUser);
-router.delete("/users/:id", generalLimiter, deleteUser);
+router.get("/users", getUsers);
+router.patch("/users/:id/ban", toggleBan);
+router.patch("/users/:id", updateUser);
+router.delete("/users/:id", deleteUser);
 router.get("/support", getSupportTickets);
-router.patch("/support/:id", generalLimiter, updateSupportTicket);
-router.delete("/support/:id", generalLimiter, deleteSupportTicket);
+router.patch("/support/:id", updateSupportTicket);
+router.delete("/support/:id", deleteSupportTicket);
 
 router.get("/resumes", getAllResumes);
-router.delete("/resumes/:id", generalLimiter, deleteResume);
-router.delete("/resumes", generalLimiter, deleteAllResumes);
+router.delete("/resumes/:id", deleteResume);
+router.delete("/resumes", deleteAllResumes);
 
 router.get("/ats-scores", getAllAtsScores);
-router.delete("/ats-scores/:id", generalLimiter, deleteAtsScore);
-router.delete("/ats-scores", generalLimiter, deleteAllAtsScores);
+router.delete("/ats-scores/:id", deleteAtsScore);
+router.delete("/ats-scores", deleteAllAtsScores);
 
 router.get("/reviews", getReviews);
-router.delete("/reviews/:id", generalLimiter, deleteReview);
-router.delete("/reviews", generalLimiter, deleteAllReviews);
-router.patch("/reviews/:id/toggle-home", generalLimiter, toggleReviewHome);
+router.delete("/reviews/:id", deleteReview);
+router.delete("/reviews", deleteAllReviews);
+router.patch("/reviews/:id/toggle-home", toggleReviewHome);
 
 router.get("/unread-counts", getUnreadCounts);
 router.patch("/last-seen/support", markSupportSeen);

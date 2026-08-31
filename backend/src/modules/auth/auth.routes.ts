@@ -1,7 +1,8 @@
 import { Router, Response } from "express";
 import passport from "passport";
 import { authenticate } from "../../shared/middlewares/auth";
-import { generalLimiter } from "../../shared/middlewares/middlewareConfig";
+import { authLimiter } from "../../shared/middlewares/middlewareConfig";
+
 import { AuthRequest } from "../../shared/types";
 import { generateAccessToken, generateRefreshToken } from "../../shared/config/jwt";
 import { storeRefreshToken } from "../../lib/redis";
@@ -22,6 +23,7 @@ router.post("/login", login);
 
 router.get(
   "/google",
+  authLimiter,
   passport.authenticate("google", {
     scope: ["profile", "email"],
     session: false,

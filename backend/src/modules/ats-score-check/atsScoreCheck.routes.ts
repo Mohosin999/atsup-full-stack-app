@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate } from "../../shared/middlewares/auth";
-import { generalLimiter } from "../../shared/middlewares/middlewareConfig";
+
 import { upload } from "../../shared/config/multer";
 import {
   parseResume,
@@ -17,13 +17,13 @@ const router = Router();
 
 router.use(authenticate);
 
-router.post("/parse-resume", generalLimiter, upload.single("resume"), parseResume);
-router.post("/parse-jd", generalLimiter, parseJobDescription);
-router.post("/analyze", generalLimiter, analyzeAtsScore);
+router.post("/parse-resume", upload.single("resume"), parseResume);
+router.post("/parse-jd", parseJobDescription);
+router.post("/analyze", analyzeAtsScore);
 router.get("/history", getAtsScores); // TODO: start revision from here
-router.get("/history/:id", generalLimiter, getAtsScore);
-router.delete("/history/:id", generalLimiter, deleteAtsScoreController);
-router.put("/history/:id/rename", generalLimiter, renameAtsScoreController);
-router.delete("/history", generalLimiter, deleteAllAtsScoresController);
+router.get("/history/:id", getAtsScore);
+router.delete("/history/:id", deleteAtsScoreController);
+router.put("/history/:id/rename", renameAtsScoreController);
+router.delete("/history", deleteAllAtsScoresController);
 
 export default router;

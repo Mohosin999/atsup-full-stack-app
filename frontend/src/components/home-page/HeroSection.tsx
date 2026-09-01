@@ -33,9 +33,10 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
 
             {/* Description */}
             <p className="my-8 lg:my-6 xl:my-8 text-base xl:text-lg text-gray-700 dark:text-gray-300 max-w-xl mx-auto lg:mx-0">
-              Analyze your resume against job descriptions and get actionable
-              feedback to improve its ATS compatibility. Build an ATS-friendly
-              resume that helps you stand out to employers.
+              Analyze your resume against software engineering job descriptions
+              and get actionable feedback to improve its ATS compatibility.
+              Build an ATS-friendly resume (PDF only) that helps you stand out
+              to employers.
             </p>
 
             {/* Buttons */}

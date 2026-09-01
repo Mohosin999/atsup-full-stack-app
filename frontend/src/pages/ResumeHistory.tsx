@@ -18,6 +18,7 @@ import Wrapper from "../components/Wrapper";
 import Pagination from "../components/ui/Pagination";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import SkeletonHistory from "@/components/ui/SkeletonHistory";
 
 interface ResumeListItem {
   id: string;
@@ -160,8 +161,8 @@ export default function ResumeHistory() {
 
           {/* Loading */}
           {loading ? (
-            <div className="flex justify-center py-12 md:py-16 lg:py-20">
-              <LoadingSpinner />
+            <div className="flex justify-center">
+              <SkeletonHistory />
             </div>
           ) : (
             <>

@@ -14,7 +14,9 @@ const getGmtDateKey = (d: Date = new Date()): string =>
 
 export const getAiScanStatus = (
   subscription?: AiScanSubscription | null,
+  role?: string | null,
 ): AiScanStatus => {
+  if (role === "admin") return { available: true };
   const today = getGmtDateKey();
   const credits = subscription?.credits ?? 0;
   const lastReset = subscription?.lastAiScanResetDate ?? "";

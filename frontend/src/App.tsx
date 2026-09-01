@@ -1,4 +1,10 @@
-import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
@@ -13,7 +19,7 @@ import ScanHistory from "./pages/ScanHistory";
 import ResumeHistory from "./pages/ResumeHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ResumeDashboard from "./pages/ResumeDashboard";
-import SkeletonLoader from "./components/ui/SkeletonLoader";
+import SkeletonLoader from "./components/ui/SkeletonHistory";
 import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -27,9 +33,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.auth.user);
   const loading = useSelector((state: RootState) => state.auth.loading);
 
-  if (loading) {
-    return <SkeletonLoader />;
-  }
+  // if (loading) {
+  //   return <SkeletonLoader />;
+  // }
 
   return user ? <>{children}</> : <Navigate to="/login" />;
 }
@@ -37,7 +43,11 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const user = useSelector((state: RootState) => state.auth.user);
 
-  return user ? <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/"} /> : <>{children}</>;
+  return user ? (
+    <Navigate to={user.role === "admin" ? "/admin-dashboard" : "/"} />
+  ) : (
+    <>{children}</>
+  );
 }
 
 function App() {
@@ -47,8 +57,15 @@ function App() {
   const [reviewOpen, setReviewOpen] = useState(false);
   const location = useLocation();
 
-  const reviewButtonPages = ["/ats-scan", "/resume-builder", "/scan-history", "/resume-history", "/my-reports"];
-  const showReviewButton = user && reviewButtonPages.some((p) => location.pathname.startsWith(p));
+  const reviewButtonPages = [
+    "/ats-scan",
+    "/resume-builder",
+    "/scan-history",
+    "/resume-history",
+    "/my-reports",
+  ];
+  const showReviewButton =
+    user && reviewButtonPages.some((p) => location.pathname.startsWith(p));
 
   useVisitorTracking();
 
@@ -75,7 +92,6 @@ function App() {
   // page the user came from. For OAuth via /?accessToken, handle role redirect directly (replaces AuthCallback.tsx:28).
   useEffect(() => {
     if (!user) return;
-    console.log("App.tsx - Google OAuth user:", user, "role:", user.role);
 
     // OAuth pending flag set by InitializeApp when tokens were read from URL on /
     const isOAuth = sessionStorage.getItem("oauth_pending") === "1";
@@ -88,8 +104,13 @@ function App() {
         navigate(redirect, { replace: true });
         return;
       }
-      console.log("OAuth role-based redirect to:", user.role === "admin" ? "/admin-dashboard" : "/");
-      navigate(user.role === "admin" ? "/admin-dashboard" : "/", { replace: true });
+      console.log(
+        "OAuth role-based redirect to:",
+        user.role === "admin" ? "/admin-dashboard" : "/",
+      );
+      navigate(user.role === "admin" ? "/admin-dashboard" : "/", {
+        replace: true,
+      });
       return;
     }
 
@@ -98,8 +119,13 @@ function App() {
       console.log("Redirecting to saved:", redirect);
       navigate(redirect, { replace: true });
     } else if (window.location.pathname === "/login") {
-      console.log("No saved redirect, role-based redirect to:", user.role === "admin" ? "/admin-dashboard" : "/");
-      navigate(user.role === "admin" ? "/admin-dashboard" : "/", { replace: true });
+      console.log(
+        "No saved redirect, role-based redirect to:",
+        user.role === "admin" ? "/admin-dashboard" : "/",
+      );
+      navigate(user.role === "admin" ? "/admin-dashboard" : "/", {
+        replace: true,
+      });
     }
   }, [user, navigate]);
 
@@ -124,14 +150,8 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/plans"
-          element={<Plans />}
-        />
-        <Route
-          path="/ats-scan"
-          element={<AtsScore />}
-        />
+        <Route path="/plans" element={<Plans />} />
+        <Route path="/ats-scan" element={<AtsScore />} />
         <Route
           path="/ats-score-history"
           element={<Navigate to="/ats-scan" replace />}
@@ -160,21 +180,26 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/resume-builder"
-          element={<ResumeDashboard />}
-        />
+        <Route path="/resume-builder" element={<ResumeDashboard />} />
 
+        <Route path="/resume-builder/new" element={<ResumeBuilder />} />
+        <Route path="/resume-builder/:id" element={<ResumeBuilder />} />
         <Route
-          path="/resume-builder/new"
-          element={<ResumeBuilder />}
+          path="/my-reports"
+          element={
+            <PrivateRoute>
+              <MyReports />
+            </PrivateRoute>
+          }
         />
         <Route
-          path="/resume-builder/:id"
-          element={<ResumeBuilder />}
+          path="/admin-dashboard"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
         />
-        <Route path="/my-reports" element={<PrivateRoute><MyReports /></PrivateRoute>} />
-        <Route path="/admin-dashboard" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 

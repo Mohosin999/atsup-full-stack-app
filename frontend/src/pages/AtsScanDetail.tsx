@@ -1,13 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  Upload,
-  RefreshCw,
-  X,
-  CheckCircle,
-  FileText,
-} from "lucide-react";
+import { Upload, RefreshCw, X, CheckCircle, FileText } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { atsScoreApi, unlimitedAtsApi } from "../api/api";
 import { AtsScoreHistory, ResumeContent } from "../types";
@@ -17,6 +11,7 @@ import AnalysisProgressModal, {
   PipelineStep,
 } from "../components/ui/AnalysisProgressModal";
 import Wrapper from "../components/Wrapper";
+import SkeletonAtsResult from "@/components/ui/SkeletonAtsResult";
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: "resume", label: "Resume Analysis" },
@@ -37,7 +32,11 @@ export default function AtsScoreDetail() {
   const { id: historyId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
 
-  const { data: result, isLoading: loading, error: queryError } = useQuery<AtsScoreHistory | null>({
+  const {
+    data: result,
+    isLoading: loading,
+    error: queryError,
+  } = useQuery<AtsScoreHistory | null>({
     queryKey: ["ats-report", historyId],
     queryFn: async () => {
       if (!historyId) return null;
@@ -66,7 +65,14 @@ export default function AtsScoreDetail() {
     enabled: !!historyId,
   });
 
-  const error = !historyId ? "No ATS report specified." : queryError ? (queryError as any)?.response?.data?.message || "Failed to load ATS report." : !loading && !result ? "ATS report not found." : "";
+  const error = !historyId
+    ? "No ATS report specified."
+    : queryError
+      ? (queryError as any)?.response?.data?.message ||
+        "Failed to load ATS report."
+      : !loading && !result
+        ? "ATS report not found."
+        : "";
 
   // Rescan modal state
   const [rescanOpen, setRescanOpen] = useState(false);
@@ -165,9 +171,7 @@ export default function AtsScoreDetail() {
       setPipelineOpen(false);
       setRescanning(false);
       toast.error(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to rescan",
+        error.response?.data?.message || error.message || "Failed to rescan",
       );
     }
   };
@@ -189,11 +193,11 @@ export default function AtsScoreDetail() {
 
         {/* Content */}
         {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <LoadingSpinner />
+          <div className="flex items-center justify-center">
+            <SkeletonAtsResult />
           </div>
         ) : error ? (
-            <div className="bg-white rounded-lg p-8 text-center dark:bg-gray-800">
+          <div className="bg-white rounded-lg p-8 text-center dark:bg-gray-800">
             <p className="text-red-600 font-medium mb-4">{error}</p>
             <button
               onClick={() => navigate("/ats-scan")}
@@ -203,7 +207,10 @@ export default function AtsScoreDetail() {
             </button>
           </div>
         ) : result ? (
-          <AtsScoreResult result={result} onRescan={() => setRescanOpen(true)} />
+          <AtsScoreResult
+            result={result}
+            onRescan={() => setRescanOpen(true)}
+          />
         ) : null}
       </Wrapper>
 
@@ -221,9 +228,9 @@ export default function AtsScoreDetail() {
               setJobDescription("");
             }}
           />
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-800">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-800">
             {/* Modal Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <div className="flex items-center gap-2">
                 <RefreshCw className="w-5 h-5 text-cyan-600" />
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
@@ -255,7 +262,7 @@ export default function AtsScoreDetail() {
                     <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center shrink-0">
                       <CheckCircle className="w-6 h-6 text-cyan-500" />
                     </div>
-                      <p className="text-sm font-medium text-gray-800 truncate flex-1 dark:text-gray-100">
+                    <p className="text-sm font-medium text-gray-800 truncate flex-1 dark:text-gray-100">
                       {resumeName}
                     </p>
                     <button
@@ -271,13 +278,13 @@ export default function AtsScoreDetail() {
                 ) : (
                   <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer rounded-lg transition-colors p-6 dark:border-gray-600 dark:bg-gray-800/50 dark:hover:bg-gray-700">
                     <Upload className="w-8 h-8 text-gray-400 mb-2 dark:text-gray-500" />
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       <span className="font-semibold text-cyan-600">
                         Click to upload
                       </span>{" "}
                       or drag and drop
                     </p>
-                      <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
+                    <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
                       PDF only (MAX. 10MB)
                     </p>
                     <input

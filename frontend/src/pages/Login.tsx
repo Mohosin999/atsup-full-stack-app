@@ -70,7 +70,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex md:items-center justify-center px-4 pt-16 lg:pt-20 pb-12">
+    <div className="min-h-screen w-full flex md:items-center justify-center px-4 pt-16 lg:pt-28 2xl:pt-32 pb-12">
       {/* Decorative background */}
       {/* <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-400/20 blur-3xl animate-[pulseSoft_4s_ease-in-out_infinite]" />

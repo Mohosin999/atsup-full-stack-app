@@ -1,13 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  Trash2,
-  Pencil,
-  Check,
-  X,
-  Eye,
-} from "lucide-react";
+import { Trash2, Pencil, Check, X, Eye } from "lucide-react";
 import { toast } from "react-toastify";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { atsScoreApi } from "../api/api";
@@ -17,6 +11,7 @@ import ConfirmModal from "../components/ui/ConfirmModal";
 import Wrapper from "../components/Wrapper";
 import { AtsScoreHistory } from "../types";
 import { useAppSelector } from "@/hooks";
+import SkeletonHistory from "@/components/ui/SkeletonHistory";
 
 export default function ScanHistory() {
   const navigate = useNavigate();
@@ -35,7 +30,10 @@ export default function ScanHistory() {
     queryFn: async () => {
       if (!user) return { data: [], pagination: { totalPages: 1, total: 0 } };
       const res = await atsScoreApi.getHistory(page, 7);
-      return { data: res.data.data || [], pagination: res.data.pagination || { totalPages: 1, total: 0 } };
+      return {
+        data: res.data.data || [],
+        pagination: res.data.pagination || { totalPages: 1, total: 0 },
+      };
     },
     enabled: !!user,
     placeholderData: (prev) => prev,
@@ -63,7 +61,8 @@ export default function ScanHistory() {
   });
 
   const renameMutation = useMutation({
-    mutationFn: ({ id, name }: { id: string; name: string }) => atsScoreApi.rename(id, name),
+    mutationFn: ({ id, name }: { id: string; name: string }) =>
+      atsScoreApi.rename(id, name),
     onSuccess: (_, variables) => {
       queryClient.setQueryData(["ats-history", user?._id, page], (old: any) => {
         if (!old) return old;
@@ -72,7 +71,7 @@ export default function ScanHistory() {
           data: old.data.map((item: AtsScoreHistory) =>
             (item.id || (item as any)._id) === variables.id
               ? { ...item, resumeName: variables.name }
-              : item
+              : item,
           ),
         };
       });
@@ -128,8 +127,9 @@ export default function ScanHistory() {
 
           {/* Loading */}
           {loading ? (
-            <div className="flex justify-center py-12 md:py-16 lg:py-20">
-              <LoadingSpinner />
+            <div className="flex justify-center">
+              {/* <LoadingSpinner /> */}
+              <SkeletonHistory />
             </div>
           ) : (
             <>
@@ -174,13 +174,22 @@ export default function ScanHistory() {
                                   ref={inputRef}
                                   value={editValue}
                                   onChange={(e) => setEditValue(e.target.value)}
-                                  onBlur={() => renameMutation.mutate({ id: item.id, name: editValue.trim() })}
+                                  onBlur={() =>
+                                    renameMutation.mutate({
+                                      id: item.id,
+                                      name: editValue.trim(),
+                                    })
+                                  }
                                   onKeyDown={(e) => {
-                                    if (e.key === "Enter") renameMutation.mutate({ id: item.id, name: editValue.trim() });
+                                    if (e.key === "Enter")
+                                      renameMutation.mutate({
+                                        id: item.id,
+                                        name: editValue.trim(),
+                                      });
                                     if (e.key === "Escape") setEditingId(null);
                                   }}
                                   autoFocus
-                                    className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 dark:text-gray-300 text-sm focus:outline-none dark:border-gray-600"
+                                  className="bg-transparent border border-gray-300 px-2 py-1 text-gray-700 dark:text-gray-300 text-sm focus:outline-none dark:border-gray-600"
                                 />
                                 <span
                                   ref={measureRef}
@@ -188,7 +197,14 @@ export default function ScanHistory() {
                                 >
                                   {editValue}
                                 </span>
-                                <button onClick={() => renameMutation.mutate({ id: item.id, name: editValue.trim() })}>
+                                <button
+                                  onClick={() =>
+                                    renameMutation.mutate({
+                                      id: item.id,
+                                      name: editValue.trim(),
+                                    })
+                                  }
+                                >
                                   <Check className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-green-600" />
                                 </button>
 
@@ -207,7 +223,7 @@ export default function ScanHistory() {
                                     setEditingId(item.id);
                                     setEditValue(item.resumeName);
                                   }}
-                                   className="transition"
+                                  className="transition"
                                 >
                                   <Pencil className="w-3 h-3 lg:w-3.5 lg:h-3.5 text-gray-500 dark:text-gray-400 hover:text-cyan-500" />
                                 </button>
@@ -261,7 +277,7 @@ export default function ScanHistory() {
               </div>
 
               {/* Mobile Layout - visible below md breakpoint */}
-                <div className="bg-white md:hidden border border-gray-300 overflow-hidden divide-y divide-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:divide-gray-700">
+              <div className="bg-white md:hidden border border-gray-300 overflow-hidden divide-y divide-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:divide-gray-700">
                 {history.length === 0 ? (
                   <div className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
                     No Scan History
@@ -277,9 +293,18 @@ export default function ScanHistory() {
                                 ref={inputRef}
                                 value={editValue}
                                 onChange={(e) => setEditValue(e.target.value)}
-                                onBlur={() => renameMutation.mutate({ id: item.id, name: editValue.trim() })}
+                                onBlur={() =>
+                                  renameMutation.mutate({
+                                    id: item.id,
+                                    name: editValue.trim(),
+                                  })
+                                }
                                 onKeyDown={(e) => {
-                                  if (e.key === "Enter") renameMutation.mutate({ id: item.id, name: editValue.trim() });
+                                  if (e.key === "Enter")
+                                    renameMutation.mutate({
+                                      id: item.id,
+                                      name: editValue.trim(),
+                                    });
                                   if (e.key === "Escape") setEditingId(null);
                                 }}
                                 autoFocus
@@ -291,7 +316,14 @@ export default function ScanHistory() {
                               >
                                 {editValue}
                               </span>
-                              <button onClick={() => renameMutation.mutate({ id: item.id, name: editValue.trim() })}>
+                              <button
+                                onClick={() =>
+                                  renameMutation.mutate({
+                                    id: item.id,
+                                    name: editValue.trim(),
+                                  })
+                                }
+                              >
                                 <Check className="w-4 h-4 text-green-600" />
                               </button>
 
@@ -318,7 +350,9 @@ export default function ScanHistory() {
                           )}
 
                           <p className="mt-1.5 text-sm">
-                            <span className="text-gray-500 dark:text-gray-400">Score:</span>{" "}
+                            <span className="text-gray-500 dark:text-gray-400">
+                              Score:
+                            </span>{" "}
                             <span
                               className={`font-semibold ${getScoreColor(
                                 item.overallScore,

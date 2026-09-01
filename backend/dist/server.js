@@ -62,7 +62,7 @@ import dotenv2 from "dotenv";
 
 // src/modules/auth/auth.routes.ts
 import { Router } from "express";
-import passport from "passport";
+import passport3 from "passport";
 
 // src/shared/config/jwt.ts
 import jwt from "jsonwebtoken";
@@ -98,7 +98,7 @@ var generateAccessToken = (payload) => {
 };
 var generateRefreshToken = (payload) => {
   return jwt.sign(payload, env.jwtRefreshSecret, {
-    expiresIn: "7d"
+    expiresIn: "1d"
   });
 };
 var verifyAccessToken = (token) => {
@@ -187,7 +187,14 @@ var applyDailyCreditReset = async (userId, subscription) => {
   const today = getGmtDateKey();
   const updatedSubscription = { ...subscription || {} };
   if ((updatedSubscription.lastAiScanResetDate ?? "") !== today) {
-    updatedSubscription.credits = 5;
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true }
+    });
+    if (dbUser?.role === "admin") {
+      return updatedSubscription;
+    }
+    updatedSubscription.credits = 3;
     updatedSubscription.lastAiScanResetDate = today;
     await prisma.user.update({
       where: { id: userId },
@@ -252,6 +259,85 @@ var authenticate = async (req, res, next) => {
   }
 };
 
+// src/shared/middlewares/middlewareConfig.ts
+import helmet from "helmet";
+import cors from "cors";
+import rateLimit from "express-rate-limit";
+import { RedisStore } from "rate-limit-redis";
+import express from "express";
+import cookieParser from "cookie-parser";
+import passport2 from "passport";
+import path2 from "path";
+
+// src/shared/config/passport.ts
+import passport from "passport";
+import {
+  Strategy as GoogleStrategy
+} from "passport-google-oauth20";
+var configureGoogleStrategy = () => {
+  return new GoogleStrategy(
+    {
+      clientID: env.googleClientId,
+      clientSecret: env.googleClientSecret,
+      callbackURL: env.googleCallbackUrl
+    },
+    async (_accessToken, _refreshToken, profile, done) => {
+      try {
+        let user = await prisma.user.findUnique({
+          where: { googleId: profile.id }
+        });
+        if (!user) {
+          const email = profile.emails?.[0]?.value;
+          if (email) {
+            user = await prisma.user.findUnique({
+              where: { email }
+            });
+            if (user) {
+              await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                  googleId: profile.id,
+                  picture: profile.photos?.[0]?.value
+                }
+              });
+            }
+          }
+          if (!user) {
+            user = await prisma.user.create({
+              data: {
+                email: email || `user_${profile.id}@google.local`,
+                name: profile.displayName,
+                googleId: profile.id,
+                picture: profile.photos?.[0]?.value,
+                subscription: {
+                  plan: "free",
+                  credits: 3
+                }
+              }
+            });
+          }
+        }
+        return done(null, user);
+      } catch (error) {
+        return done(error, void 0);
+      }
+    }
+  );
+};
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id }
+    });
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+});
+
 // src/lib/redis.ts
 import Redis from "ioredis";
 var redis = null;
@@ -288,6 +374,128 @@ async function deleteRefreshToken(token) {
   const redis2 = getRedisClient();
   await redis2.del(`${REFRESH_PREFIX}${token}`);
 }
+async function deleteAllRefreshTokensForUser(userId) {
+  const redis2 = getRedisClient();
+  const keys = await redis2.keys(`${REFRESH_PREFIX}*`);
+  if (keys.length === 0) return;
+  const pipeline = redis2.pipeline();
+  for (const key of keys) {
+    const value = await redis2.get(key);
+    if (value) {
+      try {
+        const parsed = JSON.parse(value);
+        if (parsed.userId === userId) {
+          pipeline.del(key);
+        }
+      } catch {
+      }
+    }
+  }
+  await pipeline.exec();
+}
+
+// src/shared/middlewares/middlewareConfig.ts
+var getClientIp = (req) => {
+  const cfConnectingIp = req.headers["cf-connecting-ip"];
+  if (typeof cfConnectingIp === "string" && cfConnectingIp.trim()) {
+    return cfConnectingIp.trim();
+  }
+  const forwardedFor = req.headers["x-forwarded-for"];
+  if (typeof forwardedFor === "string") {
+    const firstIp = forwardedFor.split(",")[0]?.trim();
+    if (firstIp) {
+      return firstIp;
+    }
+  }
+  return req.ip || req.socket?.remoteAddress || "unknown";
+};
+var getRateLimitKey = (req) => {
+  const userId = req.user?.id;
+  if (userId) {
+    return `user:${userId}`;
+  }
+  return `ip:${getClientIp(req)}`;
+};
+var createRedisStore = (prefix) => new RedisStore({
+  sendCommand: (...args) => getRedisClient().call(args[0], ...args.slice(1)),
+  prefix
+});
+var generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1e3,
+  // 15 minutes
+  max: 300,
+  keyGenerator: getRateLimitKey,
+  store: createRedisStore("rl:general:"),
+  message: { message: "Too many requests, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+var authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1e3,
+  max: 50,
+  keyGenerator: (req) => `ip:${getClientIp(req)}`,
+  store: createRedisStore("rl:auth:"),
+  message: { message: "Too many requests, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+var atsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1e3,
+  max: 15,
+  keyGenerator: getRateLimitKey,
+  store: createRedisStore("rl:ats:"),
+  message: { message: "ATS scan limit reached. Please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+var resumeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1e3,
+  max: 20,
+  keyGenerator: getRateLimitKey,
+  store: createRedisStore("rl:resume:"),
+  message: { message: "Resume builder limit reached. Please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+var applyMiddleware = (app2) => {
+  app2.use(
+    /** ----------------------------------------------
+     * Security Headers (Helmet)
+     * Protects against common web vulnerabilities
+     ------------------------------------------------*/
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" }
+    })
+  );
+  app2.use(
+    cors({
+      origin: (origin, callback) => {
+        const allowedOrigins = [
+          env.frontendUrl,
+          "http://localhost:5173",
+          "http://localhost:4173",
+          "http://localhost:3000"
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      },
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+      allowedHeaders: ["Content-Type", "Authorization"]
+    })
+  );
+  app2.use(express.json({ limit: "10mb" }));
+  app2.use(express.urlencoded({ extended: true, limit: "10mb" }));
+  app2.use(cookieParser());
+  const uploadsDir2 = path2.join(__dirname, "..", "..", "uploads");
+  app2.use("/uploads", express.static(uploadsDir2));
+  passport2.use(configureGoogleStrategy());
+  app2.use("/api/auth/login", authLimiter);
+  app2.use("/api/auth/register", authLimiter);
+};
 
 // src/modules/auth/auth.service.ts
 import bcrypt from "bcryptjs";
@@ -305,7 +513,7 @@ var createUser = async (userData) => {
       },
       subscription: {
         plan: "free",
-        credits: 5
+        credits: 3
       }
     },
     select: {
@@ -399,7 +607,8 @@ var register = async (req, res) => {
     }
     const user = await createUser({ name, email, password });
     const { accessToken, refreshToken: refreshToken2 } = createTokens(user.id, user.email);
-    await storeRefreshToken(refreshToken2, user.id, 7 * 24 * 60 * 60);
+    await deleteAllRefreshTokensForUser(user.id);
+    await storeRefreshToken(refreshToken2, user.id, 1 * 24 * 60 * 60);
     res.status(201).json({
       success: true,
       message: "User registered successfully",
@@ -464,7 +673,8 @@ var login = async (req, res) => {
       user.subscription
     );
     const { accessToken, refreshToken: refreshToken2 } = createTokens(user.id, user.email);
-    await storeRefreshToken(refreshToken2, user.id, 7 * 24 * 60 * 60);
+    await deleteAllRefreshTokensForUser(user.id);
+    await storeRefreshToken(refreshToken2, user.id, 1 * 24 * 60 * 60);
     res.json({
       success: true,
       message: "Login successful",
@@ -522,19 +732,17 @@ var refreshToken = async (req, res) => {
         message: "User not found"
       });
     }
-    await deleteRefreshToken(refreshTokenValue);
     const newAccessToken = generateNewAccessToken(user.id, user.email);
-    const { refreshToken: newRefreshToken } = createTokens(user.id, user.email);
-    await storeRefreshToken(newRefreshToken, user.id, 7 * 24 * 60 * 60);
     res.json({
       success: true,
       message: "Token refreshed",
       data: {
         accessToken: newAccessToken,
-        refreshToken: newRefreshToken
+        refreshToken: refreshTokenValue
       }
     });
   } catch (error) {
+    console.error("[refresh] failed:", error);
     res.status(401).json({
       success: false,
       message: "Invalid refresh token"
@@ -571,14 +779,15 @@ router.post("/register", register);
 router.post("/login", login);
 router.get(
   "/google",
-  passport.authenticate("google", {
+  authLimiter,
+  passport3.authenticate("google", {
     scope: ["profile", "email"],
     session: false
   })
 );
 router.get(
   "/google/callback",
-  passport.authenticate("google", {
+  passport3.authenticate("google", {
     session: false,
     failureRedirect: `${env.frontendUrl}/login?error=auth_failed`
   }),
@@ -593,7 +802,8 @@ router.get(
         userId: user.id,
         email: user.email
       });
-      await storeRefreshToken(refreshToken2, user.id, 7 * 24 * 60 * 60);
+      await deleteAllRefreshTokensForUser(user.id);
+      await storeRefreshToken(refreshToken2, user.id, 1 * 24 * 60 * 60);
       const redirectUrl = new URL(`${env.frontendUrl}/`);
       redirectUrl.searchParams.set("accessToken", accessToken);
       redirectUrl.searchParams.set("refreshToken", refreshToken2);
@@ -611,170 +821,6 @@ var auth_routes_default = router;
 
 // src/modules/users/users.routes.ts
 import { Router as Router2 } from "express";
-
-// src/shared/middlewares/middlewareConfig.ts
-import helmet from "helmet";
-import cors from "cors";
-import rateLimit from "express-rate-limit";
-import { RedisStore } from "rate-limit-redis";
-import express from "express";
-import cookieParser from "cookie-parser";
-import passport3 from "passport";
-import path2 from "path";
-
-// src/shared/config/passport.ts
-import passport2 from "passport";
-import {
-  Strategy as GoogleStrategy
-} from "passport-google-oauth20";
-var configureGoogleStrategy = () => {
-  return new GoogleStrategy(
-    {
-      clientID: env.googleClientId,
-      clientSecret: env.googleClientSecret,
-      callbackURL: env.googleCallbackUrl
-    },
-    async (_accessToken, _refreshToken, profile, done) => {
-      try {
-        let user = await prisma.user.findUnique({
-          where: { googleId: profile.id }
-        });
-        if (!user) {
-          const email = profile.emails?.[0]?.value;
-          if (email) {
-            user = await prisma.user.findUnique({
-              where: { email }
-            });
-            if (user) {
-              await prisma.user.update({
-                where: { id: user.id },
-                data: {
-                  googleId: profile.id,
-                  picture: profile.photos?.[0]?.value
-                }
-              });
-            }
-          }
-          if (!user) {
-            user = await prisma.user.create({
-              data: {
-                email: email || `user_${profile.id}@google.local`,
-                name: profile.displayName,
-                googleId: profile.id,
-                picture: profile.photos?.[0]?.value,
-                subscription: {
-                  plan: "free",
-                  credits: 5
-                }
-              }
-            });
-          }
-        }
-        return done(null, user);
-      } catch (error) {
-        return done(error, void 0);
-      }
-    }
-  );
-};
-passport2.serializeUser((user, done) => {
-  done(null, user.id);
-});
-passport2.deserializeUser(async (id, done) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id }
-    });
-    done(null, user);
-  } catch (error) {
-    done(error, null);
-  }
-});
-
-// src/shared/middlewares/middlewareConfig.ts
-var getClientIp = (req) => {
-  const cfConnectingIp = req.headers["cf-connecting-ip"];
-  if (typeof cfConnectingIp === "string" && cfConnectingIp.trim()) {
-    return cfConnectingIp.trim();
-  }
-  const forwardedFor = req.headers["x-forwarded-for"];
-  if (typeof forwardedFor === "string") {
-    const firstIp = forwardedFor.split(",")[0]?.trim();
-    if (firstIp) {
-      return firstIp;
-    }
-  }
-  return req.ip || req.socket?.remoteAddress || "unknown";
-};
-var getRateLimitKey = (req) => {
-  const userId = req.user?.id;
-  if (userId) {
-    return `user:${userId}`;
-  }
-  return `ip:${getClientIp(req)}`;
-};
-var createRedisStore = (prefix) => new RedisStore({
-  sendCommand: (...args) => getRedisClient().call(args[0], ...args.slice(1)),
-  prefix
-});
-var generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1e3,
-  // 15 minutes
-  max: 500,
-  keyGenerator: getRateLimitKey,
-  store: createRedisStore("rl:general:"),
-  message: { message: "Too many requests, please try again later." },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-var authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1e3,
-  max: 10,
-  keyGenerator: (req) => `ip:${getClientIp(req)}`,
-  store: createRedisStore("rl:auth:"),
-  message: { message: "Too many requests, please try again later." },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-var applyMiddleware = (app2) => {
-  app2.use(
-    /** ----------------------------------------------
-     * Security Headers (Helmet)
-     * Protects against common web vulnerabilities
-     ------------------------------------------------*/
-    helmet({
-      crossOriginResourcePolicy: { policy: "cross-origin" }
-    })
-  );
-  app2.use(
-    cors({
-      origin: (origin, callback) => {
-        const allowedOrigins = [
-          env.frontendUrl,
-          "http://localhost:5173",
-          "http://localhost:4173",
-          "http://localhost:3000"
-        ];
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else {
-          callback(null, false);
-        }
-      },
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-      allowedHeaders: ["Content-Type", "Authorization"]
-    })
-  );
-  app2.use(express.json({ limit: "10mb" }));
-  app2.use(express.urlencoded({ extended: true, limit: "10mb" }));
-  app2.use(cookieParser());
-  const uploadsDir2 = path2.join(__dirname, "..", "..", "uploads");
-  app2.use("/uploads", express.static(uploadsDir2));
-  passport3.use(configureGoogleStrategy());
-  app2.use("/api/auth/login", authLimiter);
-  app2.use("/api/auth/register", authLimiter);
-};
 
 // src/modules/users/users.service.ts
 var getUserProfile = async (userId) => {
@@ -892,9 +938,9 @@ var deleteAccount = async (req, res) => {
 
 // src/modules/users/users.routes.ts
 var router2 = Router2();
-router2.get("/profile", authenticate, generalLimiter, getProfile);
-router2.put("/profile", authenticate, generalLimiter, updateProfile);
-router2.delete("/account", authenticate, generalLimiter, deleteAccount);
+router2.get("/profile", authenticate, getProfile);
+router2.put("/profile", authenticate, updateProfile);
+router2.delete("/account", authenticate, deleteAccount);
 var users_routes_default = router2;
 
 // src/modules/ats-score-check/atsScoreCheck.routes.ts
@@ -2528,6 +2574,21 @@ var analyzeAtsScore = async (req, res) => {
       projects: []
     };
     const finalStructuredJD = structuredJD?.skills ? mapAIToStructuredJD(structuredJD) : structuredJD;
+    const isAdmin = req.user?.role === "admin";
+    if (isAdmin) {
+      const score2 = await createAtsScoreHistory(
+        req.user.id,
+        resumeName || "Untitled Resume",
+        resumeContent,
+        finalStructuredJD || null,
+        aiResearch || null
+      );
+      return res.status(201).json({
+        success: true,
+        data: score2,
+        message: "AI scan completed (admin unlimited)."
+      });
+    }
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
       select: { subscription: true }
@@ -2536,11 +2597,11 @@ var analyzeAtsScore = async (req, res) => {
     const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 5 : credits;
+    const effectiveCredits = lastReset !== today ? 3 : credits;
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: "No AI scan credit available. A new credit will be granted at midnight (GMT).",
+        message: "No AI scan credit available. Daily limit is 3. A new quota will be granted at midnight (GMT).",
         code: "AI_SCAN_UNAVAILABLE"
       });
     }
@@ -2568,11 +2629,11 @@ var analyzeAtsScore = async (req, res) => {
       data: score,
       credits: remainingCredits,
       aiScan: {
-        available: false,
+        available: remainingCredits >= 1,
         credits: remainingCredits,
         lastAiScanResetDate: today
       },
-      message: "AI scan used. A new credit will be available at midnight (GMT)."
+      message: "AI scan used. Remaining today: " + remainingCredits + "/3. New quota at midnight (GMT)."
     });
   } catch (error) {
     console.error("ATS Score analysis error:", error);
@@ -2675,14 +2736,14 @@ var renameAtsScoreController = async (req, res) => {
 // src/modules/ats-score-check/atsScoreCheck.routes.ts
 var router3 = Router3();
 router3.use(authenticate);
-router3.post("/parse-resume", generalLimiter, upload.single("resume"), parseResume2);
-router3.post("/parse-jd", generalLimiter, parseJobDescription2);
-router3.post("/analyze", generalLimiter, analyzeAtsScore);
+router3.post("/parse-resume", atsLimiter, upload.single("resume"), parseResume2);
+router3.post("/parse-jd", atsLimiter, parseJobDescription2);
+router3.post("/analyze", atsLimiter, analyzeAtsScore);
 router3.get("/history", getAtsScores);
-router3.get("/history/:id", generalLimiter, getAtsScore);
-router3.delete("/history/:id", generalLimiter, deleteAtsScoreController);
-router3.put("/history/:id/rename", generalLimiter, renameAtsScoreController);
-router3.delete("/history", generalLimiter, deleteAllAtsScoresController);
+router3.get("/history/:id", getAtsScore);
+router3.delete("/history/:id", deleteAtsScoreController);
+router3.put("/history/:id/rename", renameAtsScoreController);
+router3.delete("/history", deleteAllAtsScoresController);
 var atsScoreCheck_routes_default = router3;
 
 // src/modules/resume-builder/resumeBuilder.routes.ts
@@ -3064,14 +3125,14 @@ var deleteAllResumes = async (req, res) => {
 
 // src/modules/resume-builder/resumeBuilder.routes.ts
 var router4 = Router4();
-router4.post("/content", authenticate, generalLimiter, createResumeFromContent2);
-router4.delete("/delete-all", authenticate, generalLimiter, deleteAllResumes);
-router4.post("/:id/duplicate", authenticate, generalLimiter, duplicateResume);
-router4.get("/:id", authenticate, generalLimiter, getSingleResume);
-router4.put("/:id", authenticate, generalLimiter, updateResume);
-router4.delete("/:id", authenticate, generalLimiter, deleteResume);
-router4.get("/", authenticate, generalLimiter, getAllResumes);
-router4.post("/", authenticate, generalLimiter, uploadResume);
+router4.post("/content", authenticate, resumeLimiter, createResumeFromContent2);
+router4.delete("/delete-all", authenticate, deleteAllResumes);
+router4.post("/:id/duplicate", authenticate, duplicateResume);
+router4.get("/:id", authenticate, getSingleResume);
+router4.put("/:id", authenticate, updateResume);
+router4.delete("/:id", authenticate, deleteResume);
+router4.get("/", authenticate, getAllResumes);
+router4.post("/", authenticate, resumeLimiter, uploadResume);
 var resumeBuilder_routes_default = router4;
 
 // src/modules/unlimited-ats-check/unlimitedAts.routes.ts
@@ -6208,13 +6269,13 @@ var router5 = Router5();
 router5.use(authenticate);
 router5.post(
   "/analyze",
-  generalLimiter,
+  atsLimiter,
   upload.single("resume"),
   analyzeUnlimitedAts
 );
 router5.post(
   "/rescan/:id",
-  generalLimiter,
+  atsLimiter,
   upload.single("resume"),
   rescanUnlimitedAts
 );
@@ -6905,23 +6966,23 @@ var router6 = Router6();
 router6.use(authenticate);
 router6.get("/metrics", getMetrics);
 router6.get("/growth", getGrowth);
-router6.get("/users", generalLimiter, getUsers);
-router6.patch("/users/:id/ban", generalLimiter, toggleBan);
-router6.patch("/users/:id", generalLimiter, updateUser);
-router6.delete("/users/:id", generalLimiter, deleteUser);
+router6.get("/users", getUsers);
+router6.patch("/users/:id/ban", toggleBan);
+router6.patch("/users/:id", updateUser);
+router6.delete("/users/:id", deleteUser);
 router6.get("/support", getSupportTickets);
-router6.patch("/support/:id", generalLimiter, updateSupportTicket);
-router6.delete("/support/:id", generalLimiter, deleteSupportTicket);
+router6.patch("/support/:id", updateSupportTicket);
+router6.delete("/support/:id", deleteSupportTicket);
 router6.get("/resumes", getAllResumes2);
-router6.delete("/resumes/:id", generalLimiter, deleteResume2);
-router6.delete("/resumes", generalLimiter, deleteAllResumes2);
+router6.delete("/resumes/:id", deleteResume2);
+router6.delete("/resumes", deleteAllResumes2);
 router6.get("/ats-scores", getAllAtsScores);
-router6.delete("/ats-scores/:id", generalLimiter, deleteAtsScore);
-router6.delete("/ats-scores", generalLimiter, deleteAllAtsScores);
+router6.delete("/ats-scores/:id", deleteAtsScore);
+router6.delete("/ats-scores", deleteAllAtsScores);
 router6.get("/reviews", getReviews);
-router6.delete("/reviews/:id", generalLimiter, deleteReview);
-router6.delete("/reviews", generalLimiter, deleteAllReviews);
-router6.patch("/reviews/:id/toggle-home", generalLimiter, toggleReviewHome);
+router6.delete("/reviews/:id", deleteReview);
+router6.delete("/reviews", deleteAllReviews);
+router6.patch("/reviews/:id/toggle-home", toggleReviewHome);
 router6.get("/unread-counts", getUnreadCounts);
 router6.patch("/last-seen/support", markSupportSeen);
 router6.patch("/last-seen/reviews", markReviewsSeen);
@@ -7000,8 +7061,8 @@ var uploadScreenshot = multer2({
 });
 var router7 = Router7();
 router7.use(authenticate);
-router7.post("/", generalLimiter, uploadScreenshot.single("attachment"), createTicket);
-router7.get("/mine", generalLimiter, getMyTicketsController);
+router7.post("/", uploadScreenshot.single("attachment"), createTicket);
+router7.get("/mine", getMyTicketsController);
 var support_routes_default = router7;
 
 // src/modules/visitor/visitor.routes.ts
@@ -7149,7 +7210,7 @@ var getHomeReviews = async (req, res) => {
 
 // src/modules/feedback/feedback.routes.ts
 var router9 = Router9();
-router9.post("/", authenticate, generalLimiter, submitFeedback);
+router9.post("/", authenticate, submitFeedback);
 router9.get("/home", getHomeReviews);
 var feedback_routes_default = router9;
 

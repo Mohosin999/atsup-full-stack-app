@@ -183,6 +183,24 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       ? mapAIToStructuredJD(structuredJD)
       : structuredJD;
 
+    const isAdmin = (req.user as any)?.role === "admin";
+
+    // Admin = unlimited AI scans, no credit check/deduction
+    if (isAdmin) {
+      const score = await createAtsScoreHistory(
+        req.user.id,
+        resumeName || "Untitled Resume",
+        resumeContent,
+        finalStructuredJD || null,
+        aiResearch || null,
+      );
+      return res.status(201).json({
+        success: true,
+        data: score,
+        message: "AI scan completed (admin unlimited).",
+      });
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
       select: { subscription: true },
@@ -193,14 +211,13 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
 
-    // Daily credit: every account has exactly 1 credit per day (GMT midnight).
-    const effectiveCredits = lastReset !== today ? 5 : credits;
+    const effectiveCredits = lastReset !== today ? 3 : credits;
 
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
         message:
-          "No AI scan credit available. A new credit will be granted at midnight (GMT).",
+          "No AI scan credit available. Daily limit is 3. A new quota will be granted at midnight (GMT).",
         code: "AI_SCAN_UNAVAILABLE",
       });
     }
@@ -231,12 +248,12 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       data: score,
       credits: remainingCredits,
       aiScan: {
-        available: false,
+        available: remainingCredits >= 1,
         credits: remainingCredits,
         lastAiScanResetDate: today,
       },
       message:
-        "AI scan used. A new credit will be available at midnight (GMT).",
+        "AI scan used. Remaining today: " + remainingCredits + "/3. New quota at midnight (GMT).",
     });
   } catch (error: any) {
     console.error("ATS Score analysis error:", error);

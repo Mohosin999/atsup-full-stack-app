@@ -57,7 +57,7 @@ export default function ResumeScanForm({
 
   const bothFieldsReady = !!resumeFile && jobDescription.trim().length >= 20;
 
-  const aiScan = getAiScanStatus(user?.subscription);
+  const aiScan = getAiScanStatus(user?.subscription, user?.role);
 
   const showMessage = (index: number, delay = 950) =>
     new Promise<void>((resolve) => {

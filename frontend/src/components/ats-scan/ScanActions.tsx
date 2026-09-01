@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/hooks";
 import AiScanButton from "./AiScanButton";
 import ScanButton from "./ScanButton";
 
@@ -20,15 +21,19 @@ export default function ScanActions({
   onAiScan,
   onScan,
 }: ScanActionsProps) {
+  const user = useAppSelector((s) => s.auth.user);
+  const isAdmin = user?.role === "admin";
+
   return (
     <div className="flex flex-wrap items-center justify-end gap-3">
-      {/* FIXME: not yet used in this app */}
-      {/* <AiScanButton
-        onClick={onAiScan}
-        disabled={!aiScanAvailable || aiScanDisabled}
-        noCredit={!aiScanAvailable}
-        loading={aiScanLoading}
-      /> */}
+      {isAdmin && (
+        <AiScanButton
+          onClick={onAiScan}
+          disabled={!aiScanAvailable || aiScanDisabled}
+          noCredit={!aiScanAvailable}
+          loading={aiScanLoading}
+        />
+      )}
       <ScanButton
         onClick={onScan}
         disabled={scanDisabled}

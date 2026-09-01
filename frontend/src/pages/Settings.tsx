@@ -142,7 +142,7 @@ const ThemeSection = ({
           Appearance
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-          Choose how CVCoach looks to you.
+          Choose how ATSUp looks to you.
         </p>
       </div>
       <button

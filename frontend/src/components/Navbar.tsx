@@ -53,7 +53,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-14">
             {/* Left: Logo */}
             <Link to="/" className="flex items-center gap-2 font-mono shrink-0">
-              <img src="/favicon.png" alt="CVCoach" className="w-10 h-8" />
+              <img src="/favicon.png" alt="ATSUp" className="w-10 h-8" />
               <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
                 ATS<span className="text-cyan-500">Up</span>
               </span>

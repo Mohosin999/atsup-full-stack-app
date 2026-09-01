@@ -1,6 +1,6 @@
-# CVCoach - AI-Powered Resume Analysis & Builder Platform (AI)
+# ATSUp - AI-Powered Resume Analysis & Builder Platform (AI)
 
-CVCoach is an AI-powered resume analysis and building platform that helps job seekers optimize their resumes for Applicant Tracking Systems (ATS) and job matching. Users can upload resumes to receive detailed ATS scores, missing keyword identification, and AI-generated improvement recommendations. The platform also features resume-to-job matching with skills gap analysis, a professional resume builder with AI-powered content generation, plus secure authentication, Stripe payment integration for premium features, and a centralized dashboard.
+ATSUp is an AI-powered resume analysis and building platform that helps job seekers optimize their resumes for Applicant Tracking Systems (ATS) and job matching. Users can upload resumes to receive detailed ATS scores, missing keyword identification, and AI-generated improvement recommendations. The platform also features resume-to-job matching with skills gap analysis, a professional resume builder with AI-powered content generation, plus secure authentication, Stripe payment integration for premium features, and a centralized dashboard.
 
 ⚠️─ Important: MONGODB*URI now points to mongodb://mongo:27017/cvcoach (inside Docker network) instead of your Atlas URI. You'll need a .env file OpenCode includes free models  
  with the secrets (GEMINI_API_KEY, JWT_SECRET, STRIPE*\* etc.) for Docker Compose to pick up, or replace the values inline. so you can start immediately.
@@ -9,7 +9,7 @@ CVCoach is an AI-powered resume analysis and building platform that helps job se
 
 ![Tech Stack](https://img.shields.io/badge/Stack-React%20%7C%20Node.js%20%7C%20MongoDB%20%7C%20Gemini%20AI-blue)
 
-![Project Screenshot](./frontend//public/cvcoach.png)
+![Project Screenshot](./frontend//public/atsup.png)
 
 ## 📋 Table of Contents
 
@@ -23,7 +23,7 @@ CVCoach is an AI-powered resume analysis and building platform that helps job se
 
 ## Live Demo
 
-[CVCoach App](https://cvcoach-client.vercel.app/) - Try the live application
+[ATSUp App](https://cvcoach-client.vercel.app/) - Try the live application
 
 ## Features
 

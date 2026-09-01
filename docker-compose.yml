@@ -4,7 +4,7 @@
 #   # ---------- PostgreSQL ----------
 #   postgres:
 #     image: postgres:16-alpine
-#     container_name: cvcoach-postgres
+#     container_name: atsup-postgres
 #     restart: unless-stopped
 #     environment:
 #       POSTGRES_USER: ${ROOT_USERNAME}
@@ -15,12 +15,12 @@
 #     volumes:
 #       - postgres_data:/var/lib/postgresql/data
 #     networks:
-#       - cvcoach-network
+#       - atsup-network
 
 #   # ---------- pgAdmin (Web UI) ----------
 #   pgadmin:
 #     image: dpage/pgadmin4:latest
-#     container_name: cvcoach-pgadmin
+#     container_name: atsup-pgadmin
 #     restart: unless-stopped
 #     ports:
 #       - "8081:80"
@@ -30,12 +30,12 @@
 #     depends_on:
 #       - postgres
 #     networks:
-#       - cvcoach-network
+#       - atsup-network
 
 #   # ---------- Backend ----------
 #   backend:
 #     build: ./backend
-#     container_name: cvcoach-backend
+#     container_name: atsup-backend
 #     restart: unless-stopped
 #     ports:
 #       - "5000:5000"
@@ -46,12 +46,12 @@
 #     depends_on:
 #       - postgres
 #     networks:
-#       - cvcoach-network
+#       - atsup-network
 
 #   # ---------- Frontend ----------
 #   frontend:
 #     build: ./frontend
-#     container_name: cvcoach-frontend
+#     container_name: atsup-frontend
 #     restart: unless-stopped
 #     ports:
 #       - "3000:3000"
@@ -63,7 +63,7 @@
 #       - cvcoach-network
 
 # networks:
-#   cvcoach-network:
+#   atsup-network:
 #     driver: bridge
 
 # volumes:

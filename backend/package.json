@@ -1,7 +1,7 @@
 {
-  "name": "cvcoach-backend",
+  "name": "atsup-backend",
   "version": "1.0.0",
-  "description": "CVCoach is provides direction to correct your cv",
+  "description": "ATSUp is provides direction to correct your cv",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {

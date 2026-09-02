@@ -52,7 +52,8 @@ export default function ResumeDashboard() {
             <p className="text-sm text-gray-600 mb-6 flex-1 dark:text-gray-400">
               Start building your resume with our easy-to-use resume builder.
               Every section is movable and editable, so you can customize it to
-              your preferences. After completion, save and download your resume.
+              your preferences. You don't need to save, it will be saved
+              automatically.
             </p>
             <button
               onClick={() =>

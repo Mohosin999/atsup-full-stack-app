@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { Download, Sparkles, ChevronDown } from "lucide-react";
+import { Download, ChevronDown } from "lucide-react";
 import { toast } from "react-toastify";
 import {
   DndContext,
@@ -84,6 +84,21 @@ export default function ResumeBuilder() {
   const initializedRef = useRef(false);
   const skipAutosaveRef = useRef(false);
   const dirtyRef = useRef(false);
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const resumeIdRef = useRef<string | null>(null);
+  const contentRef = useRef<ResumeContent>(defaultContent());
+  const savingRef = useRef(false);
+
+  // keep refs in sync with state for debounce closure
+  useEffect(() => {
+    resumeIdRef.current = resumeId;
+  }, [resumeId]);
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+  useEffect(() => {
+    savingRef.current = saving;
+  }, [saving]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -142,32 +157,62 @@ export default function ResumeBuilder() {
     }
   }, [id, isNew, navigate]);
 
-  const handleSave = async () => {
-    if (!dirtyRef.current) {
-      toast.info("No changes to save.");
+  // Debounce auto-save: 3s idle after last content change
+  useEffect(() => {
+    // skip initial load where we just populated content from DB
+    if (skipAutosaveRef.current) {
+      skipAutosaveRef.current = false;
+      dirtyRef.current = false;
       return;
     }
-    setSaving(true);
-    try {
-      let rid = resumeId;
-      if (!rid) {
-        const res = await resumeApi.createFromContent(content);
-        rid = res.data.data.id;
-        setResumeId(rid);
-        navigate(`/resume-builder/${rid}`, { replace: true });
-      } else {
-        const res = await resumeApi.update(rid, { content });
-        setResumeId(res.data.data?.id || rid);
+    if (!user) return;
+    if (!dirtyRef.current) return;
+
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+
+    autoSaveTimerRef.current = setTimeout(async () => {
+      if (!dirtyRef.current) return;
+      if (savingRef.current) return;
+      const currentContent = contentRef.current;
+      const currentResumeId = resumeIdRef.current;
+      setSaving(true);
+      savingRef.current = true;
+      try {
+        let rid = currentResumeId;
+        if (!rid) {
+          const res = await resumeApi.createFromContent(currentContent);
+          rid = res.data.data.id;
+          resumeIdRef.current = rid;
+          setResumeId(rid);
+          navigate(`/resume-builder/${rid}`, { replace: true });
+        } else {
+          const res = await resumeApi.update(rid, { content: currentContent });
+          const returnedId = res.data.data?.id || rid;
+          resumeIdRef.current = returnedId;
+          setResumeId(returnedId);
+        }
+        dirtyRef.current = false;
+        setSavedAt(new Date().toLocaleTimeString());
+      } catch {
+        toast.error("Failed to auto-save resume.");
+      } finally {
+        setSaving(false);
+        savingRef.current = false;
       }
-      dirtyRef.current = false;
-      setSavedAt(new Date().toLocaleTimeString());
-      toast.success("Resume saved successfully.");
-    } catch {
-      toast.error("Failed to save resume.");
-    } finally {
-      setSaving(false);
-    }
-  };
+    }, 3000);
+
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content, user, navigate]);
+
+  // flush pending save on unmount if still dirty
+  useEffect(() => {
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, []);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -442,21 +487,27 @@ export default function ResumeBuilder() {
             </p>
           </div>
 
-          {/* Save and Reset */}
+          {/* Auto-save status + Download */}
           <div className="flex items-center gap-3">
             <span className="text-xs text-gray-500 flex items-center gap-1.5 dark:text-gray-400">
               <span
                 className={`w-2 h-2 rounded-full ${
-                  saving ? "bg-amber-400 animate-pulse" : "bg-cyan-500"
+                  saving
+                    ? "bg-amber-400 animate-pulse"
+                    : dirtyRef.current
+                      ? "bg-amber-400"
+                      : "bg-cyan-500"
                 }`}
               />
               {saving
                 ? "Saving..."
                 : savedAt
-                  ? `Saved at ${savedAt}`
+                  ? `Auto-saved at ${savedAt}`
                   : resumeId
                     ? "Saved"
-                    : ""}
+                    : dirtyRef.current
+                      ? "Unsaved changes"
+                      : "Not saved yet"}
             </span>
             <button
               onClick={handleDownload}
@@ -534,18 +585,14 @@ export default function ResumeBuilder() {
               </button>
             )}
 
-            {/* Manual Save Button */}
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={saving}
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
-            >
-              {saving ? "Saving..." : "Save Resume"}
-            </button>
+            {saving && (
+              <p className="text-xs text-center text-amber-600 dark:text-amber-400 animate-pulse">
+                Saving...
+              </p>
+            )}
             {savedAt && !saving && (
               <p className="text-xs text-center text-gray-500 dark:text-gray-400">
-                Last saved at {savedAt}
+                Auto-saved at {savedAt}
               </p>
             )}
           </div>

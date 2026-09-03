@@ -108,11 +108,11 @@ export const calculateLocalMatchScore = (
     suggestions.push(
       "Add a dedicated skills section with at least 5 technical skills.",
     );
-  if (measurable.count < 5)
+  if (measurable.count < 3)
     suggestions.push(
-      `Add at least ${5 - measurable.count} more measurable results.`,
+      `Add at least ${3 - measurable.count} more measurable results.`,
     );
-  if (actionVerbs.count < 5)
+  if (actionVerbs.count < 3)
     suggestions.push(
       "Use strong action verbs in your experience bullet points (e.g. built, launched, optimized).",
     );
@@ -262,10 +262,10 @@ export const calculateLocalMatchScore = (
         count: measurable.count,
         found: measurable.found,
         feedback:
-          measurable.count >= 5
+          measurable.count >= 3
             ? `${measurable.count} measurable results found.`
             : measurable.count > 0
-              ? `${measurable.count} of 5+ recommended measurable results found.`
+              ? `${measurable.count} of 3+ recommended measurable results found.`
               : "No measurable results found.",
       },
       actionVerbs: {
@@ -273,10 +273,10 @@ export const calculateLocalMatchScore = (
         count: actionVerbs.count,
         found: actionVerbs.found,
         feedback:
-          actionVerbs.count >= 5
+          actionVerbs.count >= 3
             ? `${actionVerbs.count} action verbs found in experience bullets.`
             : actionVerbs.count > 0
-              ? `${actionVerbs.count} of 5+ recommended action verbs found.`
+              ? `${actionVerbs.count} of 3+ recommended action verbs found.`
               : "No strong action verbs found in experience bullets.",
       },
     },

@@ -202,7 +202,7 @@ export const countMeasurableResults = (resume: ResumeContent) => {
 };
 
 export const measurableResultsScore = (count: number): number =>
-  count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
+  count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
 
 const countActionVerbs = (resume: ResumeContent) => {
   const found = Array.isArray(resume.actionVerbs) ? resume.actionVerbs : [];
@@ -210,7 +210,7 @@ const countActionVerbs = (resume: ResumeContent) => {
 };
 
 const actionVerbsScore = (count: number): number =>
-  count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
+  count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
 
 export const summaryScore = (summaryWords: number): number =>
   summaryWords >= 30 && summaryWords <= 80

@@ -28,7 +28,7 @@ export default function ScanActions({
     <div className="flex flex-wrap items-center justify-end gap-3">
       <div className="flex items-center gap-2">
         <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-          {credits}/3 credits
+          {credits}/20 credits
         </span>
         <AiScanButton
           onClick={onAiScan}

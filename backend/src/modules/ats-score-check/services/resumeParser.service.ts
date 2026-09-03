@@ -13,7 +13,7 @@ export const parseResume = async (
   const fileBuffer = fs.readFileSync(filePath);
   const fileBase64 = fileBuffer.toString("base64");
 
-  fs.unlinkSync(filePath);
+  // Keep PDF file for resume-builder download — do not delete
 
   let aiResearch = null;
   try {

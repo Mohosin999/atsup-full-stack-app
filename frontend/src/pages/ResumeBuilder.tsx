@@ -127,6 +127,51 @@ export default function ResumeBuilder() {
     dirtyRef.current = true;
   };
 
+  const mapFixedToBuilder = (fc: any): ResumeContent => {
+    const exp = (fc.experience || []).map((e: any) => ({
+      company: e.company || "",
+      title: e.role || e.title || "",
+      location: e.location || "",
+      startDate: e.startDate || "",
+      endDate: e.endDate || "",
+      current: !e.endDate,
+      highlights: e.responsibilities || e.highlights || [],
+    }));
+    const edu = (fc.education || []).map((e: any) => ({
+      institution: (e as any).institution || e.field || "",
+      degree: e.degree || "",
+      areaOfStudy: e.field || (e as any).areaOfStudy || "",
+      startDate: e.startDate || "",
+      endDate: e.endDate || "",
+      gpa: (e as any).gpa || "",
+    }));
+    const cats: SkillCategory[] = [];
+    if (fc.skills) {
+      if ((fc.skills.hardSkills || []).length) cats.push({ name: "Technical Skills", skills: [...fc.skills.hardSkills] });
+      if ((fc.skills.softSkills || []).length) cats.push({ name: "Soft Skills", skills: [...fc.skills.softSkills] });
+    } else if (Array.isArray(fc.skillCategories) && fc.skillCategories.length) {
+      cats.push(...fc.skillCategories);
+    }
+    const projects = (fc.projects || []).map((p: any) => ({
+      name: p.name || "",
+      highlights: p.description || p.highlights || [],
+      startDate: p.startDate || "",
+      endDate: p.endDate || "",
+      current: !p.endDate,
+      links: p.links || {},
+    }));
+    return {
+      ...defaultContent(),
+      personalInfo: fc.personalInfo || {},
+      summary: fc.summary || "",
+      experience: exp,
+      education: edu,
+      skills: [],
+      skillCategories: cats,
+      projects,
+    };
+  };
+
   useEffect(() => {
     if (initializedRef.current) return;
     initializedRef.current = true;
@@ -134,6 +179,16 @@ export default function ResumeBuilder() {
     if (!user) {
       setLoading(false);
       goToLogin(navigate, isNew ? "/resume-builder/new" : `/resume-builder/${id}`);
+      return;
+    }
+
+    const fixedContent = (location.state as any)?.fixedContent;
+    if (isNew && fixedContent) {
+      const mapped = mapFixedToBuilder(fixedContent);
+      setContent(mapped);
+      dirtyRef.current = true;
+      setLoading(false);
+      navigate(location.pathname, { replace: true, state: {} });
       return;
     }
 

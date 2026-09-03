@@ -14,6 +14,7 @@ import {
   deleteAllAtsScoreHistory,
   renameAtsScoreHistory,
 } from "./services/history.service";
+import { fixResumeContent } from "../../shared/ai/gemini/fixResume";
 
 const parseAddress = (
   raw: string,
@@ -111,7 +112,7 @@ export const parseResume = async (req: AuthRequest, res: Response) => {
 
       return res.status(200).json({
         success: true,
-        data: result,
+        data: { ...result, originalPdf: req.file.filename },
       });
     } catch (parseError: any) {
       if (req.file && require("fs").existsSync(req.file.path)) {
@@ -161,7 +162,7 @@ export const parseJobDescription = async (req: AuthRequest, res: Response) => {
 
 export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
   try {
-    const { resumeName, jobDescription, structuredJD, aiResearch } = req.body;
+    const { resumeName, jobDescription, structuredJD, aiResearch, originalPdf } = req.body;
 
     if (!aiResearch) {
       return res.status(400).json({
@@ -178,6 +179,7 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       skills: { hardSkills: [], softSkills: [] },
       projects: [],
     };
+    if (originalPdf) (resumeContent as any).originalPdf = originalPdf;
 
     const finalStructuredJD = structuredJD?.skills
       ? mapAIToStructuredJD(structuredJD)
@@ -211,13 +213,13 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
 
-    const effectiveCredits = lastReset !== today ? 3 : credits;
+    const effectiveCredits = lastReset !== today ? 20 : credits;
 
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
         message:
-          "No AI scan credit available. Daily limit is 3. A new quota will be granted at midnight (GMT).",
+          "No AI scan credit available. Daily limit is 20. A new quota will be granted at midnight (GMT).",
         code: "AI_SCAN_UNAVAILABLE",
       });
     }
@@ -253,7 +255,7 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
         lastAiScanResetDate: today,
       },
       message:
-        "AI scan used. Remaining today: " + remainingCredits + "/3. New quota at midnight (GMT).",
+        "AI scan used. Remaining today: " + remainingCredits + "/20. New quota at midnight (GMT).",
     });
   } catch (error: any) {
     console.error("ATS Score analysis error:", error);
@@ -262,6 +264,64 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       success: false,
       message: error.message || "Failed to analyze ATS score",
     });
+  }
+};
+
+// ─── Fix Resume ──────────────────────────────────────────────────────────────
+
+export const fixResume = async (req: AuthRequest, res: Response) => {
+  try {
+    const { resumeContent, failed, suggestions } = req.body;
+    if (!resumeContent) {
+      return res.status(400).json({ success: false, message: "resumeContent is required" });
+    }
+
+    const isAdmin = (req.user as any)?.role === "admin";
+    if (!isAdmin) {
+      const user = await prisma.user.findUnique({ where: { id: req.user.id }, select: { subscription: true } });
+      const subscription = (user?.subscription as any) || {};
+      const today = new Date().toISOString().slice(0, 10);
+      const lastReset = subscription?.lastAiScanResetDate ?? "";
+      const credits = subscription?.credits ?? 0;
+      const effectiveCredits = lastReset !== today ? 20 : credits;
+      if (effectiveCredits < 1) {
+        return res.status(403).json({
+          success: false,
+          message: "No AI credit available. Daily limit is 20. New quota at midnight (GMT).",
+          code: "AI_SCAN_UNAVAILABLE",
+        });
+      }
+      const fixed = await fixResumeContent(resumeContent, {
+        hardSkills: failed?.hardSkills || [],
+        softSkills: failed?.softSkills || [],
+        summary: !!failed?.summary,
+        actionVerbs: !!failed?.actionVerbs,
+        measurable: !!failed?.measurable,
+      }, Array.isArray(suggestions) ? suggestions : []);
+      const remainingCredits = effectiveCredits - 1;
+      await prisma.user.update({
+        where: { id: req.user.id },
+        data: { subscription: { ...subscription, credits: remainingCredits, lastAiScanResetDate: today } },
+      });
+      return res.json({
+        success: true,
+        data: fixed,
+        credits: remainingCredits,
+        aiScan: { available: remainingCredits >= 1, credits: remainingCredits, lastAiScanResetDate: today },
+      });
+    }
+
+    const fixed = await fixResumeContent(resumeContent, {
+      hardSkills: failed?.hardSkills || [],
+      softSkills: failed?.softSkills || [],
+      summary: !!failed?.summary,
+      actionVerbs: !!failed?.actionVerbs,
+      measurable: !!failed?.measurable,
+    }, Array.isArray(suggestions) ? suggestions : []);
+    return res.json({ success: true, data: fixed, message: "Fixed (admin unlimited)." });
+  } catch (error: any) {
+    console.error("Fix resume error:", error);
+    return res.status(500).json({ success: false, message: error.message || "Failed to fix resume" });
   }
 };
 

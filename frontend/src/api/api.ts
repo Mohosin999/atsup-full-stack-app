@@ -193,6 +193,7 @@ export const atsScoreApi = {
     aiResearch?: any;
     jobDescription?: string;
     structuredJD?: any;
+    originalPdf?: string;
   }) => api.post("/ats-score/analyze", data),
   getHistory: (page = 1, limit = 3) =>
     api.get(`/ats-score/history?page=${page}&limit=${limit}`),
@@ -201,6 +202,8 @@ export const atsScoreApi = {
   rename: (id: string, resumeName: string) =>
     api.put(`/ats-score/history/${id}/rename`, { resumeName }),
   deleteAll: () => api.delete("/ats-score/history"),
+  fixResume: (data: { resumeContent: any; failed: any; suggestions?: string[] }) =>
+    api.post("/ats-score/fix-resume", data),
 };
 
 // Unlimited ATS check — no AI credits, no LLM (dictionary-based).

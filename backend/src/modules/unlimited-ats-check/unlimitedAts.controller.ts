@@ -59,7 +59,7 @@ export const analyzeUnlimitedAts = async (
         } as any,
         atsFriendliness: score.atsFriendliness,
         suggestions: score.suggestions,
-        resumeContent: result.resumeContent as any,
+        resumeContent: { ...(result.resumeContent as any), originalPdf: req.file.filename } as any,
       },
     });
 
@@ -77,9 +77,7 @@ export const analyzeUnlimitedAts = async (
       message: error.message || "Failed to analyze resume",
     });
   } finally {
-    if (filePath && fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    // Keep PDF file — do not delete
   }
 };
 
@@ -162,8 +160,6 @@ export const rescanUnlimitedAts = async (req: AuthRequest, res: Response) => {
       message: error.message || "Failed to rescan resume",
     });
   } finally {
-    if (filePath && fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    // Keep PDF file — do not delete
   }
 };

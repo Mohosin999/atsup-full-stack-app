@@ -183,6 +183,7 @@ export default function ResumeScanForm({
       formData.append("resume", resumeFile as File);
       const parseResponse = await atsScoreApi.parseResume(formData);
       const aiResearch = parseResponse.data.data?.aiResearch;
+      const originalPdf = parseResponse.data.data?.originalPdf;
       if (!aiResearch) {
         throw new Error("AI returned no resume data");
       }
@@ -208,7 +209,8 @@ export default function ResumeScanForm({
         aiResearch,
         jobDescription: jobDescription.trim(),
         structuredJD,
-      });
+        originalPdf,
+      } as any);
 
       if (response.data.aiScan?.lastAiScanResetDate) {
         dispatch(

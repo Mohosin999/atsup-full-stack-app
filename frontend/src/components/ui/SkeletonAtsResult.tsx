@@ -27,7 +27,7 @@ export default function SkeletonAtsResult() {
             <div className="relative flex h-[180px] w-[180px] items-center justify-center rounded-full border-[16px] border-gray-200 dark:border-[#514965]">
               <PulseBlock className="absolute -top-[16px] left-1/2 h-[16px] w-[70px] -translate-x-1/2 rounded-full" />
 
-              <PulseBlock className="h-12 w-20 rounded-md" />
+              <PulseBlock className="h-12 w-12 rounded-full" />
             </div>
           </div>
 

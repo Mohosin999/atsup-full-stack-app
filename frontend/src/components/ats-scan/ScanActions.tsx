@@ -22,18 +22,21 @@ export default function ScanActions({
   onScan,
 }: ScanActionsProps) {
   const user = useAppSelector((s) => s.auth.user);
-  const isAdmin = user?.role === "admin";
+  const credits = user?.subscription?.credits ?? 0;
 
   return (
     <div className="flex flex-wrap items-center justify-end gap-3">
-      {isAdmin && (
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+          {credits}/3 credits
+        </span>
         <AiScanButton
           onClick={onAiScan}
           disabled={!aiScanAvailable || aiScanDisabled}
           noCredit={!aiScanAvailable}
           loading={aiScanLoading}
         />
-      )}
+      </div>
       <ScanButton
         onClick={onScan}
         disabled={scanDisabled}

@@ -51,7 +51,7 @@ export default function AtsScorePage() {
           </h1>
           <p className="text-sm xl:text-base text-gray-600 text-center max-w-xl xl:max-w-2xl mx-auto dark:text-gray-400">
             Analyze your resume for ATS (Applicant Tracking System)
-            compatibility. You can use this service unlimited, no credits used
+            compatibility. Get 3 free AI scans daily for deeper analysis.
           </p>
         </div>
 

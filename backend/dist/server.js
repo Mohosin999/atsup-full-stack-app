@@ -194,7 +194,7 @@ var applyDailyCreditReset = async (userId, subscription) => {
     if (dbUser?.role === "admin") {
       return updatedSubscription;
     }
-    updatedSubscription.credits = 3;
+    updatedSubscription.credits = 20;
     updatedSubscription.lastAiScanResetDate = today;
     await prisma.user.update({
       where: { id: userId },
@@ -311,7 +311,7 @@ var configureGoogleStrategy = () => {
                 picture: profile.photos?.[0]?.value,
                 subscription: {
                   plan: "free",
-                  credits: 3
+                  credits: 20
                 }
               }
             });
@@ -513,7 +513,7 @@ var createUser = async (userData) => {
       },
       subscription: {
         plan: "free",
-        credits: 3
+        credits: 20
       }
     },
     select: {
@@ -782,7 +782,8 @@ router.get(
   authLimiter,
   passport3.authenticate("google", {
     scope: ["profile", "email"],
-    session: false
+    session: false,
+    prompt: "select_account"
   })
 );
 router.get(
@@ -1018,6 +1019,30 @@ import { GoogleGenAI } from "@google/genai";
 var genAI = new GoogleGenAI({ apiKey: env.geminiApiKey });
 var GEMINI_MODEL = "gemini-3.1-flash-lite";
 
+// src/shared/ai/gemini/geminiErrors.ts
+import { ApiError } from "@google/genai";
+var AiQuotaError = class extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "AiQuotaError";
+  }
+};
+var isGeminiQuotaError = (error) => {
+  if (error instanceof ApiError) {
+    return error.status === 429 || error.status === 403;
+  }
+  const err = error;
+  const msg = String(err?.message ?? error ?? "").toLowerCase();
+  return msg.includes("quota") || msg.includes("rate limit") || msg.includes("resource_exhausted") || msg.includes("429") || msg.includes("403");
+};
+var throwIfQuotaError = (error) => {
+  if (isGeminiQuotaError(error)) {
+    throw new AiQuotaError(
+      "AI service quota exceeded. Please try again tomorrow."
+    );
+  }
+};
+
 // src/shared/ai/gemini/pdfResumeResearch.ts
 var RESEARCH_PROMPT = `
 You are an expert AI resume researcher. Your task is to analyze the provided resume VERY carefully and extract all information from it accurately.
@@ -1124,13 +1149,6 @@ JSON STRUCTURE:
 `;
 var researchResume = async (resumeText, fileBase64, mimeType) => {
   const parts = [];
-  const textPart = `${RESEARCH_PROMPT}
-
-FULL RESUME CONTENT:
-${resumeText}
-
-Research this resume thoroughly and return ONLY the valid JSON structure specified above.
-`;
   if (fileBase64 && mimeType) {
     parts.push({
       inlineData: {
@@ -1138,8 +1156,17 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
         data: fileBase64
       }
     });
+    parts.push({ text: RESEARCH_PROMPT });
+  } else {
+    const textPart = `${RESEARCH_PROMPT}
+
+FULL RESUME CONTENT:
+${resumeText}
+
+Research this resume thoroughly and return ONLY the valid JSON structure specified above.
+`;
+    parts.push({ text: textPart });
   }
-  parts.push({ text: textPart });
   try {
     const result = await genAI.models.generateContent({
       model: GEMINI_MODEL,
@@ -1154,6 +1181,7 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
     return normalizeResearchResult(raw2);
   } catch (error) {
     console.error("Resume research error:", error);
+    throwIfQuotaError(error);
     throw new Error("Failed to research resume");
   }
 };
@@ -1238,7 +1266,6 @@ var parseResume = async (filePath, originalName, mimetype) => {
   const parsed = await parseResumeFile(filePath, mimetype);
   const fileBuffer = fs3.readFileSync(filePath);
   const fileBase64 = fileBuffer.toString("base64");
-  fs3.unlinkSync(filePath);
   let aiResearch = null;
   try {
     aiResearch = await researchResume(parsed.text, fileBase64, mimetype);
@@ -1311,6 +1338,7 @@ Research this job description thoroughly and return ONLY the valid JSON structur
     return normalizeJDResearchResult(raw2);
   } catch (error) {
     console.error("Job description research error:", error);
+    throwIfQuotaError(error);
     throw new Error("Failed to research job description");
   }
 };
@@ -1552,12 +1580,12 @@ var countMeasurableResults = (resume) => {
   const found = Array.isArray(resume.measurableResults) ? resume.measurableResults : [];
   return { count: found.length, found: found.slice(0, 5) };
 };
-var measurableResultsScore = (count) => count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
+var measurableResultsScore = (count) => count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
 var countActionVerbs = (resume) => {
   const found = Array.isArray(resume.actionVerbs) ? resume.actionVerbs : [];
   return { count: found.length, found: found.slice(0, 5) };
 };
-var actionVerbsScore = (count) => count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
+var actionVerbsScore = (count) => count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
 var summaryScore = (summaryWords) => summaryWords >= 30 && summaryWords <= 80 ? 100 : summaryWords >= 80 ? 60 : summaryWords >= 10 ? 40 : summaryWords > 0 ? 20 : 0;
 var collectResumeDates = (resume) => {
   const dates = [];
@@ -1915,9 +1943,9 @@ var buildJobLevelSubgroup = (jd, resumeYears) => {
 var buildMeasurableSubgroup = (measurable) => {
   const score = measurableResultsScore(measurable.count);
   const status = score >= 60 ? "passed" : "failed";
-  const detail = measurable.count >= 5 ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!` : measurable.count > 0 ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.` : "We couldn't find any measurable results in experience section. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
+  const detail = measurable.count >= 3 ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!` : measurable.count > 0 ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 3 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.` : "We couldn't find any measurable results in experience section. Use at least 3 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
   const checks = [
-    { label: "Measurable results (5+)", status, detail, weight: 20 }
+    { label: "Measurable results (3+)", status, detail, weight: 20 }
   ];
   return {
     key: "measurableResults",
@@ -1931,8 +1959,8 @@ var buildMeasurableSubgroup = (measurable) => {
 var buildActionVerbsSubgroup = (actionVerbs) => {
   const score = actionVerbsScore(actionVerbs.count);
   const status = score >= 60 ? "passed" : "failed";
-  const detail = actionVerbs.count >= 5 ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in experience section, which is great!` : actionVerbs.count > 0 ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) to stand out.` : "We couldn't find any action verbs in experience section. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) in your resume's experience section to stand out.";
-  const checks = [{ label: "Action verbs (5+)", status, detail, weight: 20 }];
+  const detail = actionVerbs.count >= 3 ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in experience section, which is great!` : actionVerbs.count > 0 ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 3 action verbs (e.g. Developed, Implemented, Managed etc) to stand out.` : "We couldn't find any action verbs in experience section. Use at least 3 action verbs (e.g. Developed, Implemented, Managed etc) in your resume's experience section to stand out.";
+  const checks = [{ label: "Action verbs (3+)", status, detail, weight: 20 }];
   return {
     key: "actionVerbs",
     title: "Action Verbs",
@@ -2202,11 +2230,11 @@ var calculateLocalMatchScore = (resume, structuredJD) => {
     suggestions.push(
       "Add a dedicated skills section with at least 5 technical skills."
     );
-  if (measurable.count < 5)
+  if (measurable.count < 3)
     suggestions.push(
-      `Add at least ${5 - measurable.count} more measurable results.`
+      `Add at least ${3 - measurable.count} more measurable results.`
     );
-  if (actionVerbs.count < 5)
+  if (actionVerbs.count < 3)
     suggestions.push(
       "Use strong action verbs in your experience bullet points (e.g. built, launched, optimized)."
     );
@@ -2285,13 +2313,13 @@ var calculateLocalMatchScore = (resume, structuredJD) => {
         score: measurableResultsScore(measurable.count),
         count: measurable.count,
         found: measurable.found,
-        feedback: measurable.count >= 5 ? `${measurable.count} measurable results found.` : measurable.count > 0 ? `${measurable.count} of 5+ recommended measurable results found.` : "No measurable results found."
+        feedback: measurable.count >= 3 ? `${measurable.count} measurable results found.` : measurable.count > 0 ? `${measurable.count} of 3+ recommended measurable results found.` : "No measurable results found."
       },
       actionVerbs: {
         score: actionVerbsScore(actionVerbs.count),
         count: actionVerbs.count,
         found: actionVerbs.found,
-        feedback: actionVerbs.count >= 5 ? `${actionVerbs.count} action verbs found in experience bullets.` : actionVerbs.count > 0 ? `${actionVerbs.count} of 5+ recommended action verbs found.` : "No strong action verbs found in experience bullets."
+        feedback: actionVerbs.count >= 3 ? `${actionVerbs.count} action verbs found in experience bullets.` : actionVerbs.count > 0 ? `${actionVerbs.count} of 3+ recommended action verbs found.` : "No strong action verbs found in experience bullets."
       }
     },
     atsFriendliness,
@@ -2435,6 +2463,93 @@ var rescanAtsScoreHistory = async (userId, historyId, resumeName, resumeContent,
   });
 };
 
+// src/shared/ai/gemini/fixResume.ts
+var FIX_PROMPT = `You are a human resume writer. Fix ONLY failed checks. Keep human tone, not AI tone. Touch only needed fields. No placeholder like "Your Name". Return ONLY JSON.
+
+RULES:
+- personalInfo: Keep exact fullName/jobTitle/contact. NEVER "Your Name". Empty -> "".
+- skills: ADD missing ONLY to skills.{hardSkills,softSkills}. No generic "Continuous Learning". Keep human-like, concise.
+- summary: If failed.summary, write 30-60 word human summary from experience/skills. Natural tone, varied sentence.
+- experience.responsibilities: Max 3-4 bullets/role, strongest only. Start with PAST-TENSE verb (Developed NOT Develop). Measurable ONLY if plausible. Write like human wrote, not AI \u2014 short, active, no buzzword stuffing. Only rewrite bullets that need actionVerbs/measurable fix; keep good bullets unchanged.
+- Preserve JSON, no markdown.
+
+INPUT: {resumeContent, failed:{hardSkills:[], softSkills:[], summary:bool, actionVerbs:bool, measurable:bool}, suggestions:[]}
+Use failed+suggestions together.
+OUTPUT: ResumeContent {personalInfo, summary, experience:[{role,company,startDate,endDate,responsibilities:[]}], education:[{degree,field,education_level,startDate,endDate}], skills:{hardSkills:[],softSkills:[]}, projects:[{name,description[],startDate,endDate}]}`;
+var fixResumeContent = async (resumeContent, failed, suggestions = []) => {
+  const input = JSON.stringify({ resumeContent, failed, suggestions });
+  const prompt = `${FIX_PROMPT}
+
+INPUT:
+${input}
+
+Return ONLY fixed ResumeContent JSON.`;
+  let result;
+  try {
+    result = await genAI.models.generateContent({
+      model: GEMINI_MODEL,
+      contents: [{ role: "user", parts: [{ text: prompt }] }]
+    });
+  } catch (error) {
+    throwIfQuotaError(error);
+    throw error;
+  }
+  const text = result.text ?? "";
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error("Invalid AI response");
+  const raw2 = JSON.parse(jsonMatch[0]);
+  const str = (v) => typeof v === "string" ? v : v == null ? "" : String(v);
+  const arr = (v) => Array.isArray(v) ? v : [];
+  const isPlaceholder = (v) => /your name|john doe|example/i.test(v);
+  const keepName = (rawName, orig) => {
+    const r = str(rawName);
+    if (!r || isPlaceholder(r)) return str(orig);
+    return r;
+  };
+  return {
+    personalInfo: {
+      fullName: keepName(raw2?.personalInfo?.fullName, resumeContent.personalInfo?.fullName),
+      jobTitle: str(raw2?.personalInfo?.jobTitle ?? resumeContent.personalInfo?.jobTitle),
+      contact: raw2?.personalInfo?.contact ?? resumeContent.personalInfo?.contact
+    },
+    summary: str(raw2?.summary ?? resumeContent.summary),
+    experience: arr(raw2?.experience?.length ? raw2.experience : resumeContent.experience).map((e) => ({
+      role: str(e?.role),
+      company: str(e?.company),
+      startDate: str(e?.startDate),
+      endDate: str(e?.endDate),
+      responsibilities: arr(e?.responsibilities).map((r) => str(r)).filter(Boolean).slice(0, 4)
+    })),
+    education: arr(raw2?.education?.length ? raw2.education : resumeContent.education).map((e) => ({
+      degree: str(e?.degree),
+      field: str(e?.field),
+      education_level: str(e?.education_level),
+      startDate: str(e?.startDate),
+      endDate: str(e?.endDate)
+    })),
+    skills: {
+      hardSkills: arr(raw2?.skills?.hardSkills?.length ? raw2.skills.hardSkills : resumeContent.skills?.hardSkills).map((s) => str(s)).filter(Boolean),
+      softSkills: arr(raw2?.skills?.softSkills?.length ? raw2.skills.softSkills : resumeContent.skills?.softSkills).map((s) => str(s)).filter(Boolean)
+    },
+    projects: arr(raw2?.projects ?? resumeContent?.projects).map((p) => ({
+      name: str(p?.name),
+      description: arr(p?.description).map((d) => str(d)),
+      startDate: str(p?.startDate),
+      endDate: str(p?.endDate)
+    })),
+    yearsOfExperience: resumeContent?.yearsOfExperience,
+    measurableResults: resumeContent?.measurableResults,
+    actionVerbs: resumeContent?.actionVerbs,
+    wordCount: resumeContent?.wordCount,
+    educationSection: resumeContent?.educationSection,
+    experienceSection: resumeContent?.experienceSection,
+    workHistory: resumeContent?.workHistory,
+    dateFormatting: resumeContent?.dateFormatting,
+    layout: resumeContent?.layout,
+    fontCheck: resumeContent?.fontCheck
+  };
+};
+
 // src/modules/ats-score-check/atsScoreCheck.controller.ts
 var parseAddress = (raw2) => {
   if (!raw2) return void 0;
@@ -2518,7 +2633,7 @@ var parseResume2 = async (req, res) => {
       );
       return res.status(200).json({
         success: true,
-        data: result
+        data: { ...result, originalPdf: req.file.filename }
       });
     } catch (parseError) {
       if (req.file && __require("fs").existsSync(req.file.path)) {
@@ -2528,6 +2643,13 @@ var parseResume2 = async (req, res) => {
     }
   } catch (error) {
     console.error("Resume parse error:", error);
+    if (error instanceof AiQuotaError) {
+      return res.status(429).json({
+        success: false,
+        message: error.message,
+        code: "AI_QUOTA_EXCEEDED"
+      });
+    }
     return res.status(500).json({
       success: false,
       message: error.message || "Failed to parse resume"
@@ -2550,6 +2672,13 @@ var parseJobDescription2 = async (req, res) => {
     });
   } catch (error) {
     console.error("Job description parse error:", error);
+    if (error instanceof AiQuotaError) {
+      return res.status(429).json({
+        success: false,
+        message: error.message,
+        code: "AI_QUOTA_EXCEEDED"
+      });
+    }
     res.status(500).json({
       success: false,
       message: error.message || "Failed to parse job description"
@@ -2558,7 +2687,7 @@ var parseJobDescription2 = async (req, res) => {
 };
 var analyzeAtsScore = async (req, res) => {
   try {
-    const { resumeName, jobDescription, structuredJD, aiResearch } = req.body;
+    const { resumeName, jobDescription, structuredJD, aiResearch, originalPdf } = req.body;
     if (!aiResearch) {
       return res.status(400).json({
         success: false,
@@ -2573,6 +2702,7 @@ var analyzeAtsScore = async (req, res) => {
       skills: { hardSkills: [], softSkills: [] },
       projects: []
     };
+    if (originalPdf) resumeContent.originalPdf = originalPdf;
     const finalStructuredJD = structuredJD?.skills ? mapAIToStructuredJD(structuredJD) : structuredJD;
     const isAdmin = req.user?.role === "admin";
     if (isAdmin) {
@@ -2597,11 +2727,11 @@ var analyzeAtsScore = async (req, res) => {
     const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 3 : credits;
+    const effectiveCredits = lastReset !== today ? 20 : credits;
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: "No AI scan credit available. Daily limit is 3. A new quota will be granted at midnight (GMT).",
+        message: "No AI scan credit available. Daily limit is 20. A new quota will be granted at midnight (GMT).",
         code: "AI_SCAN_UNAVAILABLE"
       });
     }
@@ -2633,7 +2763,7 @@ var analyzeAtsScore = async (req, res) => {
         credits: remainingCredits,
         lastAiScanResetDate: today
       },
-      message: "AI scan used. Remaining today: " + remainingCredits + "/3. New quota at midnight (GMT)."
+      message: "AI scan used. Remaining today: " + remainingCredits + "/20. New quota at midnight (GMT)."
     });
   } catch (error) {
     console.error("ATS Score analysis error:", error);
@@ -2642,6 +2772,66 @@ var analyzeAtsScore = async (req, res) => {
       success: false,
       message: error.message || "Failed to analyze ATS score"
     });
+  }
+};
+var fixResume = async (req, res) => {
+  try {
+    const { resumeContent, failed, suggestions } = req.body;
+    if (!resumeContent) {
+      return res.status(400).json({ success: false, message: "resumeContent is required" });
+    }
+    const isAdmin = req.user?.role === "admin";
+    if (!isAdmin) {
+      const user = await prisma.user.findUnique({ where: { id: req.user.id }, select: { subscription: true } });
+      const subscription = user?.subscription || {};
+      const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+      const lastReset = subscription?.lastAiScanResetDate ?? "";
+      const credits = subscription?.credits ?? 0;
+      const effectiveCredits = lastReset !== today ? 20 : credits;
+      if (effectiveCredits < 1) {
+        return res.status(403).json({
+          success: false,
+          message: "No AI credit available. Daily limit is 20. New quota at midnight (GMT).",
+          code: "AI_SCAN_UNAVAILABLE"
+        });
+      }
+      const fixed2 = await fixResumeContent(resumeContent, {
+        hardSkills: failed?.hardSkills || [],
+        softSkills: failed?.softSkills || [],
+        summary: !!failed?.summary,
+        actionVerbs: !!failed?.actionVerbs,
+        measurable: !!failed?.measurable
+      }, Array.isArray(suggestions) ? suggestions : []);
+      const remainingCredits = effectiveCredits - 1;
+      await prisma.user.update({
+        where: { id: req.user.id },
+        data: { subscription: { ...subscription, credits: remainingCredits, lastAiScanResetDate: today } }
+      });
+      return res.json({
+        success: true,
+        data: fixed2,
+        credits: remainingCredits,
+        aiScan: { available: remainingCredits >= 1, credits: remainingCredits, lastAiScanResetDate: today }
+      });
+    }
+    const fixed = await fixResumeContent(resumeContent, {
+      hardSkills: failed?.hardSkills || [],
+      softSkills: failed?.softSkills || [],
+      summary: !!failed?.summary,
+      actionVerbs: !!failed?.actionVerbs,
+      measurable: !!failed?.measurable
+    }, Array.isArray(suggestions) ? suggestions : []);
+    return res.json({ success: true, data: fixed, message: "Fixed (admin unlimited)." });
+  } catch (error) {
+    console.error("Fix resume error:", error);
+    if (error instanceof AiQuotaError) {
+      return res.status(429).json({
+        success: false,
+        message: error.message,
+        code: "AI_QUOTA_EXCEEDED"
+      });
+    }
+    return res.status(500).json({ success: false, message: error.message || "Failed to fix resume" });
   }
 };
 var getAtsScores = async (req, res) => {
@@ -2739,6 +2929,7 @@ router3.use(authenticate);
 router3.post("/parse-resume", atsLimiter, upload.single("resume"), parseResume2);
 router3.post("/parse-jd", atsLimiter, parseJobDescription2);
 router3.post("/analyze", atsLimiter, analyzeAtsScore);
+router3.post("/fix-resume", atsLimiter, fixResume);
 router3.get("/history", getAtsScores);
 router3.get("/history/:id", getAtsScore);
 router3.delete("/history/:id", deleteAtsScoreController);
@@ -3137,9 +3328,6 @@ var resumeBuilder_routes_default = router4;
 
 // src/modules/unlimited-ats-check/unlimitedAts.routes.ts
 import { Router as Router5 } from "express";
-
-// src/modules/unlimited-ats-check/unlimitedAts.controller.ts
-import fs5 from "fs";
 
 // src/modules/unlimited-ats-check/unlimitedAts.service.ts
 init_resume_parser();
@@ -6176,7 +6364,7 @@ var analyzeUnlimitedAts = async (req, res) => {
         },
         atsFriendliness: score.atsFriendliness,
         suggestions: score.suggestions,
-        resumeContent: result.resumeContent
+        resumeContent: { ...result.resumeContent, originalPdf: req.file.filename }
       }
     });
     res.status(200).json({
@@ -6193,9 +6381,6 @@ var analyzeUnlimitedAts = async (req, res) => {
       message: error.message || "Failed to analyze resume"
     });
   } finally {
-    if (filePath && fs5.existsSync(filePath)) {
-      fs5.unlinkSync(filePath);
-    }
   }
 };
 var rescanUnlimitedAts = async (req, res) => {
@@ -6258,9 +6443,6 @@ var rescanUnlimitedAts = async (req, res) => {
       message: error.message || "Failed to rescan resume"
     });
   } finally {
-    if (filePath && fs5.existsSync(filePath)) {
-      fs5.unlinkSync(filePath);
-    }
   }
 };
 

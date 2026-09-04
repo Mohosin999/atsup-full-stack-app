@@ -213,14 +213,6 @@ export const researchResume = async (
 ): Promise<AIResumeResearchResult> => {
   const parts: any[] = [];
 
-  const textPart = `${RESEARCH_PROMPT}
-
-FULL RESUME CONTENT:
-${resumeText}
-
-Research this resume thoroughly and return ONLY the valid JSON structure specified above.
-`;
-
   if (fileBase64 && mimeType) {
     parts.push({
       inlineData: {
@@ -228,9 +220,18 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
         data: fileBase64,
       },
     });
-  }
+    // PDF pathale parsed.text double jabe tai skip — sudhu PDF + prompt pathano hocche (~900 token save)
+    parts.push({ text: RESEARCH_PROMPT });
+  } else {
+    const textPart = `${RESEARCH_PROMPT}
 
-  parts.push({ text: textPart });
+FULL RESUME CONTENT:
+${resumeText}
+
+Research this resume thoroughly and return ONLY the valid JSON structure specified above.
+`;
+    parts.push({ text: textPart });
+  }
 
   try {
     const result = await genAI.models.generateContent({

@@ -1,5 +1,6 @@
 import { genAI, GEMINI_MODEL } from "../../config/gemini";
 import { normalizeHardSkills } from "../../skills/skillNormalizer";
+import { throwIfQuotaError } from "./geminiErrors";
 
 export interface AIJobResearchResult {
   jobTitle: string;
@@ -83,6 +84,7 @@ Research this job description thoroughly and return ONLY the valid JSON structur
     return normalizeJDResearchResult(raw);
   } catch (error) {
     console.error("Job description research error:", error);
+    throwIfQuotaError(error);
     throw new Error("Failed to research job description");
   }
 };

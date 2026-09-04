@@ -77,6 +77,23 @@ export default function Navbar() {
 
             {/* Right: Auth / Profile */}
             <div className="flex items-center gap-3 md:gap-4 xl:gap-5 shrink-0">
+              {user && user.role !== "admin" && (() => {
+                const today = new Date().toISOString().slice(0, 10);
+                const credits = user.subscription?.credits ?? 0;
+                const lastReset = user.subscription?.lastAiScanResetDate ?? "";
+                const effectiveCredits = lastReset !== today ? 20 : credits;
+                const exhausted = effectiveCredits < 1;
+
+                return (
+                  <div className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
+                    exhausted
+                      ? "bg-red-500/10 text-red-500"
+                      : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+                  }`}>
+                    {exhausted ? "0 credits — wait for next day" : `${effectiveCredits}/20 credits`}
+                  </div>
+                );
+              })()}
               <ThemeToggle />
               {user ? (
                 <ProfileMenu

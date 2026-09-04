@@ -1,5 +1,6 @@
 import { genAI, GEMINI_MODEL } from "../../config/gemini";
 import { normalizeHardSkills } from "../../skills/skillNormalizer";
+import { throwIfQuotaError } from "./geminiErrors";
 
 export interface AIResumeResearchResult {
   personal_info: {
@@ -248,6 +249,7 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
     return normalizeResearchResult(raw);
   } catch (error) {
     console.error("Resume research error:", error);
+    throwIfQuotaError(error);
     throw new Error("Failed to research resume");
   }
 };

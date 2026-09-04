@@ -96,6 +96,23 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
           >
             Pricing
           </Link>
+          {user && user.role !== "admin" && (() => {
+            const today = new Date().toISOString().slice(0, 10);
+            const credits = user.subscription?.credits ?? 0;
+            const lastReset = user.subscription?.lastAiScanResetDate ?? "";
+            const effectiveCredits = lastReset !== today ? 20 : credits;
+            const exhausted = effectiveCredits < 1;
+
+            return (
+              <div className={`px-3 py-2 text-xs font-medium ${
+                exhausted
+                  ? "text-red-500"
+                  : "text-cyan-600 dark:text-cyan-400"
+              }`}>
+                {exhausted ? "0 credits — wait for next day" : `${effectiveCredits}/20 credits`}
+              </div>
+            );
+          })()}
         </div>
 
       </div>

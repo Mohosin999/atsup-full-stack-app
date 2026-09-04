@@ -1,5 +1,6 @@
 import { genAI, GEMINI_MODEL } from "../../config/gemini";
 import { ResumeContent } from "../../types";
+import { throwIfQuotaError } from "./geminiErrors";
 
 const FIX_PROMPT = `You are a human resume writer. Fix ONLY failed checks. Keep human tone, not AI tone. Touch only needed fields. No placeholder like "Your Name". Return ONLY JSON.
 
@@ -28,10 +29,16 @@ export const fixResumeContent = async (
   const input = JSON.stringify({ resumeContent, failed, suggestions });
   const prompt = `${FIX_PROMPT}\n\nINPUT:\n${input}\n\nReturn ONLY fixed ResumeContent JSON.`;
 
-  const result = await genAI.models.generateContent({
-    model: GEMINI_MODEL,
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-  });
+  let result;
+  try {
+    result = await genAI.models.generateContent({
+      model: GEMINI_MODEL,
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    });
+  } catch (error) {
+    throwIfQuotaError(error);
+    throw error;
+  }
 
   const text = result.text ?? "";
   const jsonMatch = text.match(/\{[\s\S]*\}/);

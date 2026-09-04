@@ -15,6 +15,7 @@ import {
   renameAtsScoreHistory,
 } from "./services/history.service";
 import { fixResumeContent } from "../../shared/ai/gemini/fixResume";
+import { AiQuotaError } from "../../shared/ai/gemini/geminiErrors";
 
 const parseAddress = (
   raw: string,
@@ -122,6 +123,13 @@ export const parseResume = async (req: AuthRequest, res: Response) => {
     }
   } catch (error: any) {
     console.error("Resume parse error:", error);
+    if (error instanceof AiQuotaError) {
+      return res.status(429).json({
+        success: false,
+        message: error.message,
+        code: "AI_QUOTA_EXCEEDED",
+      });
+    }
     return res.status(500).json({
       success: false,
       message: error.message || "Failed to parse resume",
@@ -151,6 +159,13 @@ export const parseJobDescription = async (req: AuthRequest, res: Response) => {
     });
   } catch (error: any) {
     console.error("Job description parse error:", error);
+    if (error instanceof AiQuotaError) {
+      return res.status(429).json({
+        success: false,
+        message: error.message,
+        code: "AI_QUOTA_EXCEEDED",
+      });
+    }
     res.status(500).json({
       success: false,
       message: error.message || "Failed to parse job description",
@@ -321,6 +336,13 @@ export const fixResume = async (req: AuthRequest, res: Response) => {
     return res.json({ success: true, data: fixed, message: "Fixed (admin unlimited)." });
   } catch (error: any) {
     console.error("Fix resume error:", error);
+    if (error instanceof AiQuotaError) {
+      return res.status(429).json({
+        success: false,
+        message: error.message,
+        code: "AI_QUOTA_EXCEEDED",
+      });
+    }
     return res.status(500).json({ success: false, message: error.message || "Failed to fix resume" });
   }
 };

@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/hooks";
 import AiScanButton from "./AiScanButton";
 import ScanButton from "./ScanButton";
 
@@ -21,22 +20,14 @@ export default function ScanActions({
   onAiScan,
   onScan,
 }: ScanActionsProps) {
-  const user = useAppSelector((s) => s.auth.user);
-  const credits = user?.subscription?.credits ?? 0;
-
   return (
     <div className="flex flex-wrap items-center justify-end gap-3">
-      <div className="flex items-center gap-2">
-        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-          {credits}/20 credits
-        </span>
-        <AiScanButton
-          onClick={onAiScan}
-          disabled={!aiScanAvailable || aiScanDisabled}
-          noCredit={!aiScanAvailable}
-          loading={aiScanLoading}
-        />
-      </div>
+      <AiScanButton
+        onClick={onAiScan}
+        disabled={!aiScanAvailable || aiScanDisabled}
+        noCredit={!aiScanAvailable}
+        loading={aiScanLoading}
+      />
       <ScanButton
         onClick={onScan}
         disabled={scanDisabled}

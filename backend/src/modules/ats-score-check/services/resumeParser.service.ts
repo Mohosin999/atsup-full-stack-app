@@ -17,7 +17,7 @@ export const parseResume = async (
 
   let aiResearch = null;
   try {
-    aiResearch = await researchResume(parsed.text, fileBase64, mimetype);
+    aiResearch = await researchResume(parsed.text, fileBase64, mimetype, fileBuffer);
   } catch (aiError: any) {
     console.error("AI research failed, falling back to parsed data:", aiError);
   }

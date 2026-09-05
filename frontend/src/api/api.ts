@@ -195,6 +195,15 @@ export const atsScoreApi = {
     structuredJD?: any;
     originalPdf?: string;
   }) => api.post("/ats-score/analyze", data),
+  rescan: (
+    id: string,
+    data: {
+      resumeName: string;
+      aiResearch?: any;
+      structuredJD?: any;
+      originalPdf?: string;
+    },
+  ) => api.post(`/ats-score/rescan/${id}`, data),
   getHistory: (page = 1, limit = 3) =>
     api.get(`/ats-score/history?page=${page}&limit=${limit}`),
   getById: (id: string) => api.get(`/ats-score/history/${id}`),
@@ -204,18 +213,6 @@ export const atsScoreApi = {
   deleteAll: () => api.delete("/ats-score/history"),
   fixResume: (data: { resumeContent: any; failed: any; suggestions?: string[] }) =>
     api.post("/ats-score/fix-resume", data),
-};
-
-// Unlimited ATS check — no AI credits, no LLM (dictionary-based).
-export const unlimitedAtsApi = {
-  analyze: (formData: FormData) =>
-    api.post("/unlimited-ats-check/analyze", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
-  rescan: (historyId: string, formData: FormData) =>
-    api.post(`/unlimited-ats-check/rescan/${historyId}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
 };
 
 // Support / problem reporting

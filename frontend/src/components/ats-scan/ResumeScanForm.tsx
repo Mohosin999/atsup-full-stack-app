@@ -2,12 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { CheckCircle, X, Upload } from "lucide-react";
-import { atsScoreApi, unlimitedAtsApi } from "../../api/api";
+import { atsScoreApi } from "../../api/api";
 import AnalysisProgressModal, {
   PipelineStep,
 } from "../ui/AnalysisProgressModal";
-import ScanActions from "./ScanActions";
-import { AtsScoreHistory, ResumeContent } from "../../types";
+import AiScanButton from "./AiScanButton";
 import { getAiScanStatus } from "../../utils/aiScan";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setUserAiScanState } from "@/store/slices/authSlice";
@@ -84,83 +83,6 @@ export default function ResumeScanForm({
       return false;
     }
     return true;
-  };
-
-  const handleScan = async () => {
-    if (!(await validate())) return;
-
-    setPipelineOpen(true);
-    setAnalyzing(true);
-    setActiveStep(0);
-    setCompletedSteps([]);
-    setCurrentMessage(PIPELINE_MESSAGES[0]);
-
-    try {
-      setCurrentMessage(PIPELINE_MESSAGES[0]);
-      const formData = new FormData();
-      formData.append("resume", resumeFile as File);
-      formData.append("resumeName", resumeName);
-      formData.append("jobDescription", jobDescription.trim());
-      const response = await unlimitedAtsApi.analyze(formData);
-
-      const data = response.data.data;
-      const score = data?.score;
-      if (!score) {
-        throw new Error("AI returned no ATS score");
-      }
-
-      await showMessage(1);
-      setCompletedSteps(["resume"]);
-      setActiveStep(1);
-
-      await showMessage(2);
-      setCompletedSteps(["resume", "jd"]);
-      setActiveStep(2);
-
-      setCurrentMessage(PIPELINE_MESSAGES[2]);
-      await showMessage(3, 1200);
-      setCompletedSteps(["resume", "jd", "ats"]);
-
-      setPipelineOpen(false);
-      setAnalyzing(false);
-
-      if (data.history?.id) {
-        navigate(`/ats-scan/${data.history.id}`);
-        return;
-      }
-
-      const analysisResult: AtsScoreHistory = {
-        id: "",
-        _id: "",
-        userId: "",
-        title: `${resumeName} — ATS Report`,
-        resumeName,
-        overallScore: score.overallScore,
-        sectionScores: {
-          ...score.sectionScores,
-          categories: score.categories,
-          matchBreakdown: score.matchBreakdown,
-        },
-        atsFriendliness: score.atsFriendliness,
-        suggestions: score.suggestions,
-        resumeContent: (data.resume || {}) as ResumeContent,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      setPipelineOpen(false);
-      setAnalyzing(false);
-      navigate("/ats-scan", { state: { result: analysisResult } });
-    } catch (error: any) {
-      console.error("Analysis error:", error);
-      setPipelineOpen(false);
-      setAnalyzing(false);
-      toast.error(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to analyze resume",
-      );
-    }
   };
 
   const handleAiScan = async () => {
@@ -339,17 +261,14 @@ export default function ResumeScanForm({
       </div>
 
       {/* ===============================================================
-          * Button & Progress bar
-         ================================================================*/}
+           * Button
+          ================================================================*/}
       <div className="mt-3 flex justify-end">
-        <ScanActions
-          aiScanAvailable={aiScan.available}
-          aiScanDisabled={!bothFieldsReady || analyzing}
-          aiScanLoading={analyzing}
-          scanDisabled={!bothFieldsReady || analyzing}
-          scanLoading={analyzing}
-          onAiScan={handleAiScan}
-          onScan={handleScan}
+        <AiScanButton
+          onClick={handleAiScan}
+          disabled={!aiScan.available || !bothFieldsReady || analyzing}
+          noCredit={!aiScan.available}
+          loading={analyzing}
         />
       </div>
 

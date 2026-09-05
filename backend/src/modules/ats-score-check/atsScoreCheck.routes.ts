@@ -7,6 +7,7 @@ import {
   parseResume,
   parseJobDescription,
   analyzeAtsScore,
+  rescanAtsScore,
   fixResume,
   getAtsScores,
   getAtsScore,
@@ -22,6 +23,7 @@ router.use(authenticate);
 router.post("/parse-resume", atsLimiter, upload.single("resume"), parseResume);
 router.post("/parse-jd", atsLimiter, parseJobDescription);
 router.post("/analyze", atsLimiter, analyzeAtsScore);
+router.post("/rescan/:id", atsLimiter, rescanAtsScore);
 router.post("/fix-resume", atsLimiter, fixResume);
 router.get("/history", getAtsScores); // TODO: start revision from here
 router.get("/history/:id", getAtsScore);

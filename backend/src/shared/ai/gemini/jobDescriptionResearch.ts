@@ -1,6 +1,7 @@
 import { genAI, GEMINI_MODEL } from "../../config/gemini";
 import { normalizeHardSkills } from "../../skills/skillNormalizer";
 import { throwIfQuotaError } from "./geminiErrors";
+import { hashJD, buildJDKey, getCache, setCache } from "../cache/aiCache";
 
 export interface AIJobResearchResult {
   jobTitle: string;
@@ -60,6 +61,14 @@ JSON STRUCTURE:
 export const researchJobDescription = async (
   jdText: string,
 ): Promise<AIJobResearchResult> => {
+  const hash = hashJD(jdText);
+  const key = buildJDKey(hash);
+  const cached = await getCache<AIJobResearchResult>(key);
+  if (cached) {
+    console.log(`[cache] jd hit ${key}`);
+    return cached;
+  }
+
   const textPart = `${JD_RESEARCH_PROMPT}
 
 FULL JOB DESCRIPTION:
@@ -81,7 +90,10 @@ Research this job description thoroughly and return ONLY the valid JSON structur
     }
 
     const raw = JSON.parse(jsonMatch[0]);
-    return normalizeJDResearchResult(raw);
+    const normalized = normalizeJDResearchResult(raw);
+    await setCache(key, normalized);
+    console.log(`[cache] jd set ${key}`);
+    return normalized;
   } catch (error) {
     console.error("Job description research error:", error);
     throwIfQuotaError(error);

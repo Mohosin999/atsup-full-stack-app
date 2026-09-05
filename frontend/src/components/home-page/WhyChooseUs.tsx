@@ -22,9 +22,9 @@ export default function WhyChooseUs({ features }: WhyChooseUsProps) {
             <span className="text-cyan-500">Up</span>?
           </h2>
           <p className="mt-3 text-sm md:text-base text-gray-700 dark:text-gray-300 max-w-lg md:max-w-xl xl:max-w-3xl 2xl:max-w-4xl mx-auto">
-            There are many ATS-checking tools available in the market, but we're
-            giving you free, unlimited access to some of our features — so you
-            can optimize your resume without any limits.
+            There are many ATS-checking tools available in the market, but we
+            give you AI-powered, accurate analysis — so you can optimize your
+            resume with confidence.
           </p>
         </div>
 

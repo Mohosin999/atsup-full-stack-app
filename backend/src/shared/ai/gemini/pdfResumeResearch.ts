@@ -1,6 +1,7 @@
 import { genAI, GEMINI_MODEL } from "../../config/gemini";
 import { normalizeHardSkills } from "../../skills/skillNormalizer";
 import { throwIfQuotaError } from "./geminiErrors";
+import { hashBuffer, buildResumeKey, getCache, setCache } from "../cache/aiCache";
 
 export interface AIResumeResearchResult {
   personal_info: {
@@ -210,7 +211,19 @@ export const researchResume = async (
   resumeText: string,
   fileBase64?: string,
   mimeType?: string,
+  fileBuffer?: Buffer,
 ): Promise<AIResumeResearchResult> => {
+  // 1. Cache check (PDF buffer thakle)
+  if (fileBuffer && fileBase64 && mimeType) {
+    const hash = hashBuffer(fileBuffer);
+    const key = buildResumeKey(hash);
+    const cached = await getCache<AIResumeResearchResult>(key);
+    if (cached) {
+      console.log(`[cache] resume hit ${key}`);
+      return cached;
+    }
+  }
+
   const parts: any[] = [];
 
   if (fileBase64 && mimeType) {
@@ -247,7 +260,17 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
     }
 
     const raw = JSON.parse(jsonMatch[0]);
-    return normalizeResearchResult(raw);
+    const normalized = normalizeResearchResult(raw);
+
+    // 2. Cache set
+    if (fileBuffer) {
+      const hash = hashBuffer(fileBuffer);
+      const key = buildResumeKey(hash);
+      await setCache(key, normalized);
+      console.log(`[cache] resume set ${key}`);
+    }
+
+    return normalized;
   } catch (error) {
     console.error("Resume research error:", error);
     throwIfQuotaError(error);

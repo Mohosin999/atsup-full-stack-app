@@ -14,6 +14,8 @@ interface EnvConfig {
   geminiApiKey: string;
   frontendUrl: string;
   maxFileSize: number;
+  promptVersion: string;
+  aiCacheTtl: number;
 }
 
 const getEnvNumber = (key: string, defaultValue: number): number => {
@@ -35,4 +37,6 @@ export const env: EnvConfig = {
   geminiApiKey: process.env.GEMINI_API_KEY || '',
   frontendUrl: process.env.FRONTEND_URL || '',
   maxFileSize: getEnvNumber('MAX_FILE_SIZE', 10 * 1024 * 1024),
+  promptVersion: process.env.PROMPT_VERSION || 'v1',
+  aiCacheTtl: getEnvNumber('AI_CACHE_TTL', 7 * 24 * 60 * 60),
 };

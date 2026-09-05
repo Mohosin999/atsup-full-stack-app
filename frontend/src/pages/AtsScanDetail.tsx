@@ -1,17 +1,17 @@
 import { useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Upload, RefreshCw, X, CheckCircle, FileText } from "lucide-react";
+import { Upload, RefreshCw, X, CheckCircle } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { atsScoreApi, unlimitedAtsApi } from "../api/api";
+import { atsScoreApi } from "../api/api";
 import { AtsScoreHistory, ResumeContent } from "../types";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
 import AtsScoreResult from "../components/ats-result/AtsScoreResult";
-import AnalysisProgressModal, {
-  PipelineStep,
-} from "../components/ui/AnalysisProgressModal";
+import AnalysisProgressModal, { PipelineStep } from "../components/ui/AnalysisProgressModal";
 import Wrapper from "../components/Wrapper";
 import SkeletonAtsResult from "@/components/ui/SkeletonAtsResult";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { setUserAiScanState } from "@/store/slices/authSlice";
+import { getAiScanStatus } from "../utils/aiScan";
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: "resume", label: "Resume Analysis" },
@@ -31,6 +31,9 @@ export default function AtsScoreDetail() {
   const navigate = useNavigate();
   const { id: historyId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((s) => s.auth.user);
+  const aiScan = getAiScanStatus(user?.subscription, user?.role);
 
   const {
     data: result,
@@ -68,13 +71,12 @@ export default function AtsScoreDetail() {
   const error = !historyId
     ? "No ATS report specified."
     : queryError
-      ? (queryError as any)?.response?.data?.message ||
-        "Failed to load ATS report."
+      ? (queryError as any)?.response?.data?.message || "Failed to load ATS report."
       : !loading && !result
         ? "ATS report not found."
         : "";
 
-  // Rescan modal state
+  // Rescan modal state — AI based, 1 credit
   const [rescanOpen, setRescanOpen] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeName, setResumeName] = useState("");
@@ -98,12 +100,14 @@ export default function AtsScoreDetail() {
       return;
     }
     if (jobDescription.trim().length < 20) {
-      toast.error(
-        "Job description is too short. Please provide at least 20 characters.",
-      );
+      toast.error("Job description is too short. Please provide at least 20 characters.");
       return;
     }
     if (!historyId) return;
+    if (!aiScan.available) {
+      toast.error("No credit available, wait for next day");
+      return;
+    }
 
     setRescanOpen(false);
     setPipelineOpen(true);
@@ -113,25 +117,45 @@ export default function AtsScoreDetail() {
     setCurrentMessage(PIPELINE_MESSAGES[0]);
 
     try {
+      setCurrentMessage(PIPELINE_MESSAGES[0]);
       const formData = new FormData();
       formData.append("resume", resumeFile);
-      formData.append("resumeName", resumeName || resumeFile.name);
-      formData.append("jobDescription", jobDescription.trim());
+      const parseResponse = await atsScoreApi.parseResume(formData);
+      const aiResearch = parseResponse.data.data?.aiResearch;
+      const originalPdf = parseResponse.data.data?.originalPdf;
+      if (!aiResearch) throw new Error("AI returned no resume data");
 
-      await showMessage(0);
+      await showMessage(1);
       setCompletedSteps(["resume"]);
       setActiveStep(1);
 
-      await showMessage(1);
+      setCurrentMessage(PIPELINE_MESSAGES[1]);
+      const jdResponse = await atsScoreApi.parseJD(jobDescription.trim());
+      const structuredJD = jdResponse.data.data;
+      if (!structuredJD) throw new Error("AI returned no job description data");
+
+      await showMessage(2);
       setCompletedSteps(["resume", "jd"]);
       setActiveStep(2);
 
-      await showMessage(2);
+      setCurrentMessage(PIPELINE_MESSAGES[2]);
+      const response = await atsScoreApi.rescan(historyId, {
+        resumeName: resumeName || resumeFile.name,
+        aiResearch,
+        structuredJD,
+        originalPdf,
+      } as any);
 
-      const response = await unlimitedAtsApi.rescan(historyId, formData);
-
-      const data = response.data.data;
-      const history = data?.history;
+      // update credits like main scan
+      const aiScanData = (response.data as any)?.aiScan;
+      if (aiScanData?.lastAiScanResetDate) {
+        dispatch(
+          setUserAiScanState({
+            credits: aiScanData.credits ?? 0,
+            lastAiScanResetDate: aiScanData.lastAiScanResetDate,
+          }),
+        );
+      }
 
       await showMessage(3, 1200);
       setCompletedSteps(["resume", "jd", "ats"]);
@@ -139,6 +163,7 @@ export default function AtsScoreDetail() {
       setPipelineOpen(false);
       setRescanning(false);
 
+      const history = (response.data as any)?.data;
       if (history) {
         const updated: AtsScoreHistory = {
           id: history.id,
@@ -165,14 +190,12 @@ export default function AtsScoreDetail() {
       setResumeFile(null);
       setResumeName("");
       setJobDescription("");
-      toast.success("Rescan completed successfully");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error: any) {
       console.error("Rescan error:", error);
       setPipelineOpen(false);
       setRescanning(false);
-      toast.error(
-        error.response?.data?.message || error.message || "Failed to rescan",
-      );
+      toast.error(error.response?.data?.message || error.message || "Failed to rescan");
     }
   };
 
@@ -207,16 +230,11 @@ export default function AtsScoreDetail() {
             </button>
           </div>
         ) : result ? (
-          <AtsScoreResult
-            result={result}
-            onRescan={() => setRescanOpen(true)}
-          />
+          <AtsScoreResult result={result} onRescan={() => setRescanOpen(true)} />
         ) : null}
       </Wrapper>
 
-      {/* ============================================================
-          Rescan Modal
-      ============================================================ */}
+      {/* Rescan Modal — AI, 1 credit */}
       {rescanOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
@@ -229,13 +247,10 @@ export default function AtsScoreDetail() {
             }}
           />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-800">
-            {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <div className="flex items-center gap-2">
                 <RefreshCw className="w-5 h-5 text-cyan-600" />
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                  Rescan Resume
-                </h2>
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Rescan Resume (AI — 1 credit)</h2>
               </div>
               <button
                 onClick={() => {
@@ -250,27 +265,21 @@ export default function AtsScoreDetail() {
               </button>
             </div>
 
-            {/* Modal Body */}
             <div className="p-6 space-y-6">
-              {/* Upload Resume */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                  Upload Resume (PDF)
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">Upload Resume (PDF)</label>
                 {resumeFile ? (
-                  <div className="relative flex items-center gap-3 p-3 border-2 border-cyan-400 bg-cyan-50 rounded-lg">
-                    <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center shrink-0">
-                      <CheckCircle className="w-6 h-6 text-cyan-500" />
+                  <div className="relative flex items-center gap-3 p-3 border-2 border-cyan-400 bg-cyan-50 dark:bg-cyan-900/30 dark:border-cyan-700 rounded-lg">
+                    <div className="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/50 flex items-center justify-center shrink-0">
+                      <CheckCircle className="w-6 h-6 text-cyan-500 dark:text-cyan-400" />
                     </div>
-                    <p className="text-sm font-medium text-gray-800 truncate flex-1 dark:text-gray-100">
-                      {resumeName}
-                    </p>
+                    <p className="text-sm font-medium text-gray-800 truncate flex-1 dark:text-gray-100">{resumeName}</p>
                     <button
                       onClick={() => {
                         setResumeFile(null);
                         setResumeName("");
                       }}
-                      className="text-xs text-red-500 hover:text-red-600 font-medium"
+                      className="text-xs text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-medium"
                     >
                       Remove
                     </button>
@@ -279,14 +288,9 @@ export default function AtsScoreDetail() {
                   <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer rounded-lg transition-colors p-6 dark:border-gray-600 dark:bg-gray-800/50 dark:hover:bg-gray-700">
                     <Upload className="w-8 h-8 text-gray-400 mb-2 dark:text-gray-500" />
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      <span className="font-semibold text-cyan-600">
-                        Click to upload
-                      </span>{" "}
-                      or drag and drop
+                      <span className="font-semibold text-cyan-600">Click to upload</span> or drag and drop
                     </p>
-                    <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
-                      PDF only (MAX. 10MB)
-                    </p>
+                    <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">PDF only (MAX. 10MB)</p>
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -304,11 +308,8 @@ export default function AtsScoreDetail() {
                 )}
               </div>
 
-              {/* Job Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                  Job Description
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">Job Description</label>
                 <textarea
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
@@ -316,11 +317,13 @@ export default function AtsScoreDetail() {
                   rows={8}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none dark:bg-gray-800/50 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
                 />
+                {!aiScan.available && (
+                  <p className="mt-2 text-xs text-red-500">No credit available — wait for next day (20/day limit)</p>
+                )}
               </div>
             </div>
 
-            {/* Modal Footer */}
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100">
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 dark:border-gray-700">
               <button
                 onClick={() => {
                   setRescanOpen(false);
@@ -334,20 +337,17 @@ export default function AtsScoreDetail() {
               </button>
               <button
                 onClick={handleRescan}
-                disabled={
-                  !resumeFile || jobDescription.trim().length < 20 || rescanning
-                }
+                disabled={!resumeFile || jobDescription.trim().length < 20 || rescanning || !aiScan.available}
                 className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
               >
                 <RefreshCw className="w-4 h-4" />
-                Rescan
+                Rescan (1 credit)
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Pipeline Progress Modal */}
       <AnalysisProgressModal
         isOpen={pipelineOpen}
         steps={PIPELINE_STEPS}

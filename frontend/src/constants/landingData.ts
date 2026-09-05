@@ -38,9 +38,9 @@ export const steps = [
 export const allFeatures = [
   {
     icon: Infinity,
-    title: "Unlimited Free Checks",
+    title: "AI-Powered ATS Checks",
     description:
-      "Get unlimited ATS checks on core features for free — scan as many times as you want with no credits. Premium will unlock unlimited access to all advanced features.",
+      "Get accurate ATS compatibility checks powered by Gemini AI — with detailed scores and actionable suggestions to improve your resume.",
   },
   {
     icon: Layers,

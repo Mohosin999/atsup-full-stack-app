@@ -81,7 +81,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
       {/* Left side - Title with border on xl screens */}
       <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200/60 dark:border-gray-700/60 xl:border-b-0 xl:border-r xl:w-64 xl:flex-shrink-0 xl:px-6 xl:py-4">
         <div className="min-w-0">
-            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 leading-tight">
+          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 leading-tight">
             {subgroup.title}
           </h4>
         </div>
@@ -246,10 +246,10 @@ const FormattingLock: React.FC<{ onShowTips: () => void }> = ({
 
       {/* Overlay text on top of blur */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 py-6">
-          <p className="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 leading-tight mb-1.5">
+        <p className="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 leading-tight mb-1.5">
           Unavailable for Free
         </p>
-          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 max-w-md">
+        <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 max-w-md">
           This section only works with AI scans. Get free tips to make your
           resume formatting perfect.
         </p>
@@ -327,12 +327,12 @@ const ReviewCard: React.FC<{
             <h3 className="font-semibold text-gray-800 dark:text-gray-100 leading-tight">
               {category.title}
             </h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{category.summary}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {category.summary}
+            </p>
           </div>
         </div>
-        {/* <span className={`text-sm font-bold ${getScoreColor(category.score)}`}>
-          {category.score}%
-        </span> */}
+        <span className={`text-xs text-gray-700 dark:text-gray-400 font-bold`}>{category.score}%</span>
       </div>
 
       {isFormattingCategory(category.key) && !hasFormattingData ? (

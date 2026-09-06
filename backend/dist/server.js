@@ -1637,10 +1637,89 @@ var educationScore = (resume, jdEducation) => {
 };
 var parseYearsOfExperience = (raw2) => {
   if (raw2 == null || raw2 === "") return 0;
-  if (typeof raw2 === "number") return isNaN(raw2) ? 0 : raw2;
-  const matches = String(raw2).match(/\d+/g);
-  if (!matches) return 0;
-  return Math.max(...matches.map(Number));
+  if (typeof raw2 === "number") return isNaN(raw2) ? 0 : Math.round(raw2 * 10) / 10;
+  const str = String(raw2).toLowerCase().trim();
+  if (!str) return 0;
+  let totalYears = 0;
+  let foundUnit = false;
+  const yearRe = /(\d+(?:\.\d+)?)\s*(?:years?|yrs?)\b/g;
+  let m;
+  while ((m = yearRe.exec(str)) !== null) {
+    totalYears += parseFloat(m[1]);
+    foundUnit = true;
+  }
+  const monthRe = /(\d+(?:\.\d+)?)\s*(?:months?|mos?)\b/g;
+  while ((m = monthRe.exec(str)) !== null) {
+    totalYears += parseFloat(m[1]) / 12;
+    foundUnit = true;
+  }
+  if (foundUnit) return Math.round(totalYears * 10) / 10;
+  const nums = str.match(/\d+(?:\.\d+)?/g);
+  if (!nums) return 0;
+  return Math.max(...nums.map(Number));
+};
+var computeYearsFromExperienceDates = (resume) => {
+  if (!resume.experience?.length) return 0;
+  const MONTH_MAP = {
+    jan: 0,
+    january: 0,
+    feb: 1,
+    february: 1,
+    mar: 2,
+    march: 2,
+    apr: 3,
+    april: 3,
+    may: 4,
+    jun: 5,
+    june: 5,
+    jul: 6,
+    july: 6,
+    aug: 7,
+    august: 7,
+    sep: 8,
+    sept: 8,
+    september: 8,
+    oct: 9,
+    october: 9,
+    nov: 10,
+    november: 10,
+    dec: 11,
+    december: 11
+  };
+  const parseDate = (raw2) => {
+    const s = raw2.trim().toLowerCase();
+    if (!s || /^(present|current|now|ongoing|till date)$/.test(s)) return /* @__PURE__ */ new Date();
+    const native = new Date(raw2);
+    if (!isNaN(native.getTime()) && /\d{4}/.test(raw2)) return native;
+    const mmmY = s.match(/^([a-z]+)\s+(\d{4})$/);
+    if (mmmY) {
+      const mon = MONTH_MAP[mmmY[1]];
+      const yr = parseInt(mmmY[2], 10);
+      if (mon !== void 0 && !isNaN(yr)) return new Date(yr, mon, 1);
+    }
+    const mmY = s.match(/^(\d{1,2})[\/\-](\d{4})$/);
+    if (mmY) {
+      const mon = parseInt(mmY[1], 10) - 1;
+      const yr = parseInt(mmY[2], 10);
+      if (mon >= 0 && mon < 12) return new Date(yr, mon, 1);
+    }
+    return null;
+  };
+  let totalMonths = 0;
+  for (const exp of resume.experience) {
+    const start = exp.startDate ? parseDate(exp.startDate) : null;
+    const end = exp.endDate ? parseDate(exp.endDate) : /* @__PURE__ */ new Date();
+    if (!start || !end || isNaN(start.getTime()) || isNaN(end.getTime())) continue;
+    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    if (months > 0 && months < 600) totalMonths += months;
+  }
+  if (totalMonths <= 0) return 0;
+  return Math.round(totalMonths / 12 * 10) / 10;
+};
+var getResumeYears = (resume) => {
+  const parsed = parseYearsOfExperience(resume.yearsOfExperience);
+  if (parsed > 0) return parsed;
+  return computeYearsFromExperienceDates(resume);
 };
 var countMeasurableResults = (resume) => {
   const found = Array.isArray(resume.measurableResults) ? resume.measurableResults : [];
@@ -2244,7 +2323,7 @@ var calculateLocalMatchScore = (resume, structuredJD) => {
   const jd = structuredJD || null;
   const resumeText = toResumeText(resume);
   const resumeHardSkills = resume.skills.hardSkills?.length ? resume.skills.hardSkills : [];
-  const resumeYears = parseYearsOfExperience(resume.yearsOfExperience);
+  const resumeYears = getResumeYears(resume);
   const measurable = countMeasurableResults(resume);
   const actionVerbs = countActionVerbs(resume);
   const suggestions = [];
@@ -2530,20 +2609,82 @@ var rescanAtsScoreHistory = async (userId, historyId, resumeName, resumeContent,
 };
 
 // src/shared/ai/gemini/fixResume.ts
-var FIX_PROMPT = `You are a human resume writer. Fix ONLY failed checks. Keep human tone, not AI tone. Touch only needed fields. No placeholder like "Your Name". Return ONLY JSON.
+var FIX_PROMPT = `You are a senior human resume writer. Fix ONLY items listed in failedChecks / failed. Preserve all passed checks untouched. Human tone, concise, no AI buzzwords. No placeholder like "Your Name". Return ONLY JSON.
 
 RULES:
-- personalInfo: Keep exact fullName/jobTitle/contact. NEVER "Your Name". Empty -> "".
-- skills: ADD missing ONLY to skills.{hardSkills,softSkills}. No generic "Continuous Learning". Keep human-like, concise.
-- summary: If failed.summary, write 30-60 word human summary from experience/skills. Natural tone, varied sentence.
-- experience.responsibilities: Max 3-4 bullets/role, strongest only. Start with PAST-TENSE verb (Developed NOT Develop). Measurable ONLY if plausible. Write like human wrote, not AI \u2014 short, active, no buzzword stuffing. Only rewrite bullets that need actionVerbs/measurable fix; keep good bullets unchanged.
-- Preserve JSON, no markdown.
+- personalInfo: Keep exact fullName. jobTitle: only update if failedChecks contains Job title mismatch else keep. NEVER "Your Name". Empty -> "".
+- skills.hardSkills: ADD every missing hardSkills. Canonical single names, no duplicates, no phrase. Keep existing.
+- skills.softSkills: ADD missing softSkills ONLY (max 5). No generic fillers.
+- DISTRIBUTION (critical human-like):
+  * hardSkills -> must appear in 2 places: 1) skills.hardSkills list 2) woven into 1-2 experience/project bullets where contextually relevant with strong past-tense action verb + plausible measurable (%/$/time) e.g. "Built REST API with Node.js reducing latency 30%". Do NOT stuff all skills in one bullet.
+  * softSkills -> NEVER as standalone list dump. Weave naturally into summary (1-2 words) and experience bullets e.g. "Led team of 5", "Collaborated cross-functionally". Keep human.
+- summary: If summary failed OR softSkills missing, rewrite 30-60 word natural summary from experience+skills, varied sentences, weave 1-2 softSkills.
+- experience.responsibilities: Max 3-4 bullets/role, strongest only. Start with PAST-TENSE verb (Developed NOT Develop). Keep good bullets unchanged, only rewrite bullets needing actionVerbs/measurable or to weave hard/soft skills. Short, active, no buzzword stuffing.
+- searchability/formatting: If failedChecks contains Email/Phone/Address missing -> keep personalInfo.contact as is if already present else leave ""; Date formatting failed -> normalize dates to "MMM YYYY - MMM YYYY/Present". Layout/font/table/image checks are TEMPLATE fixes -> IGNORE, do not try to fix via text.
+- Preserve JSON structure, no markdown.
 
-INPUT: {resumeContent, failed:{hardSkills:[], softSkills:[], summary:bool, actionVerbs:bool, measurable:bool}, suggestions:[]}
-Use failed+suggestions together.
+INPUT: {resumeContentCompact, failed:{hardSkills:[],softSkills:[],summary:bool,actionVerbs:bool,measurable:bool}, failedChecks:[{category,label,detail}], suggestions:[]}
+Use failed + failedChecks + suggestions together. failedChecks is authoritative for what to fix.
 OUTPUT: ResumeContent {personalInfo, summary, experience:[{role,company,startDate,endDate,responsibilities:[]}], education:[{degree,field,education_level,startDate,endDate}], skills:{hardSkills:[],softSkills:[]}, projects:[{name,description[],startDate,endDate}]}`;
-var fixResumeContent = async (resumeContent, failed, suggestions = []) => {
-  const input = JSON.stringify({ resumeContent, failed, suggestions });
+function compactResume(resumeContent) {
+  return {
+    personalInfo: {
+      fullName: resumeContent.personalInfo?.fullName || "",
+      jobTitle: resumeContent.personalInfo?.jobTitle || "",
+      contact: resumeContent.personalInfo?.contact || {}
+    },
+    summary: resumeContent.summary || "",
+    experience: (resumeContent.experience || []).slice(0, 5).map((e) => ({
+      role: e.role || "",
+      company: e.company || "",
+      startDate: e.startDate || "",
+      endDate: e.endDate || "",
+      responsibilities: (e.responsibilities || []).slice(0, 4)
+    })),
+    education: (resumeContent.education || []).slice(0, 3).map((e) => ({
+      degree: e.degree || "",
+      field: e.field || "",
+      education_level: e.education_level || "",
+      startDate: e.startDate || "",
+      endDate: e.endDate || ""
+    })),
+    skills: {
+      hardSkills: (resumeContent.skills?.hardSkills || []).slice(0, 20),
+      softSkills: (resumeContent.skills?.softSkills || []).slice(0, 10)
+    },
+    projects: (resumeContent.projects || []).slice(0, 3).map((p) => ({
+      name: p.name || "",
+      description: (p.description || []).slice(0, 3),
+      startDate: p.startDate || "",
+      endDate: p.endDate || ""
+    }))
+  };
+}
+var fixResumeContent = async (resumeContent, failed, suggestions = [], failedChecks = []) => {
+  if (Array.isArray(suggestions) && suggestions.length > 0 && typeof suggestions[0] === "object") {
+    failedChecks = suggestions;
+    suggestions = [];
+  }
+  const compact = compactResume(resumeContent);
+  const trimmedSuggestions = (suggestions || []).slice(0, 8);
+  const trimmedFailed = {
+    hardSkills: (failed?.hardSkills || []).slice(0, 10),
+    softSkills: (failed?.softSkills || []).slice(0, 6),
+    summary: !!failed?.summary,
+    actionVerbs: !!failed?.actionVerbs,
+    measurable: !!failed?.measurable
+  };
+  const trimmedChecks = (failedChecks || []).slice(0, 12).map((c) => ({
+    category: c.category,
+    label: c.label,
+    detail: c.detail
+  }));
+  const input = JSON.stringify({
+    resumeContentCompact: compact,
+    failed: trimmedFailed,
+    failedChecks: trimmedChecks,
+    suggestions: trimmedSuggestions
+  });
   const prompt = `${FIX_PROMPT}
 
 INPUT:
@@ -2572,7 +2713,7 @@ Return ONLY fixed ResumeContent JSON.`;
     if (!r || isPlaceholder(r)) return str(orig);
     return r;
   };
-  return {
+  const fixed = {
     personalInfo: {
       fullName: keepName(raw2?.personalInfo?.fullName, resumeContent.personalInfo?.fullName),
       jobTitle: str(raw2?.personalInfo?.jobTitle ?? resumeContent.personalInfo?.jobTitle),
@@ -2614,6 +2755,15 @@ Return ONLY fixed ResumeContent JSON.`;
     layout: resumeContent?.layout,
     fontCheck: resumeContent?.fontCheck
   };
+  const missingHard = trimmedFailed.hardSkills.filter(
+    (s) => !fixed.skills.hardSkills.some((x) => x.toLowerCase() === s.toLowerCase())
+  );
+  if (missingHard.length) fixed.skills.hardSkills = [...fixed.skills.hardSkills, ...missingHard].slice(0, 25);
+  const missingSoft = trimmedFailed.softSkills.filter(
+    (s) => !fixed.skills.softSkills.some((x) => x.toLowerCase() === s.toLowerCase())
+  );
+  if (missingSoft.length) fixed.skills.softSkills = [...fixed.skills.softSkills, ...missingSoft].slice(0, 15);
+  return fixed;
 };
 
 // src/modules/ats-score-check/atsScoreCheck.controller.ts
@@ -2945,10 +3095,19 @@ var rescanAtsScore = async (req, res) => {
 };
 var fixResume = async (req, res) => {
   try {
-    const { resumeContent, failed, suggestions } = req.body;
+    const { resumeContent, failed, suggestions, failedChecks } = req.body;
     if (!resumeContent) {
       return res.status(400).json({ success: false, message: "resumeContent is required" });
     }
+    const normalizedFailed = {
+      hardSkills: failed?.hardSkills || [],
+      softSkills: failed?.softSkills || [],
+      summary: !!failed?.summary,
+      actionVerbs: !!failed?.actionVerbs,
+      measurable: !!failed?.measurable
+    };
+    const normalizedSuggestions = Array.isArray(suggestions) ? suggestions : [];
+    const normalizedFailedChecks = Array.isArray(failedChecks) ? failedChecks : [];
     const isAdmin = req.user?.role === "admin";
     if (!isAdmin) {
       const user = await prisma.user.findUnique({ where: { id: req.user.id }, select: { subscription: true } });
@@ -2964,13 +3123,7 @@ var fixResume = async (req, res) => {
           code: "AI_SCAN_UNAVAILABLE"
         });
       }
-      const fixed2 = await fixResumeContent(resumeContent, {
-        hardSkills: failed?.hardSkills || [],
-        softSkills: failed?.softSkills || [],
-        summary: !!failed?.summary,
-        actionVerbs: !!failed?.actionVerbs,
-        measurable: !!failed?.measurable
-      }, Array.isArray(suggestions) ? suggestions : []);
+      const fixed2 = await fixResumeContent(resumeContent, normalizedFailed, normalizedSuggestions, normalizedFailedChecks);
       const remainingCredits = effectiveCredits - 1;
       await prisma.user.update({
         where: { id: req.user.id },
@@ -2983,13 +3136,7 @@ var fixResume = async (req, res) => {
         aiScan: { available: remainingCredits >= 1, credits: remainingCredits, lastAiScanResetDate: today }
       });
     }
-    const fixed = await fixResumeContent(resumeContent, {
-      hardSkills: failed?.hardSkills || [],
-      softSkills: failed?.softSkills || [],
-      summary: !!failed?.summary,
-      actionVerbs: !!failed?.actionVerbs,
-      measurable: !!failed?.measurable
-    }, Array.isArray(suggestions) ? suggestions : []);
+    const fixed = await fixResumeContent(resumeContent, normalizedFailed, normalizedSuggestions, normalizedFailedChecks);
     return res.json({ success: true, data: fixed, message: "Fixed (admin unlimited)." });
   } catch (error) {
     console.error("Fix resume error:", error);

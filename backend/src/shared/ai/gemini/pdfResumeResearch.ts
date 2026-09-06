@@ -113,8 +113,8 @@ RESEARCH THE FOLLOWING DETAILS:
    - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
 6. Projects (name, description as bullet points, startDate, endDate)
  7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
- 8. measurableResults: array of strings — every experience bullet that contains a quantified/measurable outcome (a number with a unit such as %, time, money, scale, or a metric word like revenue, conversion, latency). Return [] if none.
- 9. actionVerbs: array of strings — the distinct strong action verbs found at the start of experience bullets (e.g. "led", "built", "optimized", "launched"). Return [] if none.
+ 8. measurableResults: array of strings — every experience bullet that contains a measurable impacts. More focus on experience section and less focus on projects section. Return [] if none.
+ 9. actionVerbs: array of strings — the distinct strong action verbs found at the start of experience bullets (e.g. "led", "built", "optimized", "launched"). ore focus on experience section and less focus on projects section. Return [] if none.
  10. wordCount: total number of words in the resume.
 10. educationSection: true if an education section exists.
 11. experienceSection: true if an experience/work section exists.

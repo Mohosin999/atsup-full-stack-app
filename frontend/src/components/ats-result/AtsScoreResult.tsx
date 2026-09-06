@@ -44,9 +44,28 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
   const hasFixable = !!categories && (
     (categories.hardSkills?.missing?.length ?? 0) > 0 ||
     (categories.softSkills?.missing?.length ?? 0) > 0 ||
+    categories.searchability?.checks?.some((c) => c.status === "failed") ||
+    categories.formatting?.checks?.some((c) => c.status === "failed") ||
     categories.recruiterTips?.subgroups?.some((s) => s.checks.some((c) => c.status === "failed")) ||
     categories.recruiterTips?.checks?.some((c) => c.status === "failed")
   );
+
+  const buildFailedChecks = () => {
+    if (!categories) return [] as Array<{ category: string; label: string; detail: string; status: string }>;
+    const out: Array<{ category: string; label: string; detail: string; status: string }> = [];
+    const pushFrom = (catKey: string, checks?: Array<{ label: string; detail: string; status: string; weight?: number }>) => {
+      (checks || []).forEach((c) => {
+        if (c.status === "failed") out.push({ category: catKey, label: c.label, detail: c.detail, status: c.status });
+      });
+    };
+    pushFrom("searchability", categories.searchability?.checks);
+    pushFrom("hardSkills", categories.hardSkills?.checks);
+    pushFrom("softSkills", categories.softSkills?.checks);
+    pushFrom("recruiterTips", categories.recruiterTips?.checks);
+    (categories.recruiterTips?.subgroups || []).forEach((s) => pushFrom("recruiterTips", s.checks));
+    pushFrom("formatting", categories.formatting?.checks);
+    return out.slice(0, 12);
+  };
 
   const handleFix = async () => {
     if (!categories) return;
@@ -69,10 +88,12 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
       const needSummary = rtFailed.some((c) => c.label.toLowerCase().includes("summary") && c.status === "failed");
       const needActionVerbs = rtFailed.some((c) => c.label.toLowerCase().includes("action verb") && c.status === "failed");
       const needMeasurable = rtFailed.some((c) => c.label.toLowerCase().includes("measurable") && c.status === "failed");
+      const failedChecks = buildFailedChecks();
 
       const res = await atsScoreApi.fixResume({
         resumeContent: result.resumeContent,
         failed: { hardSkills: hardMissing, softSkills: softMissing, summary: needSummary, actionVerbs: needActionVerbs, measurable: needMeasurable },
+        failedChecks,
         suggestions: result.suggestions || [],
       } as any);
 

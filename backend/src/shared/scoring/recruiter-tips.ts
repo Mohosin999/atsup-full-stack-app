@@ -83,17 +83,17 @@ const buildMeasurableSubgroup = (measurable: {
   count: number;
 }): CategorySubgroup => {
   const score = measurableResultsScore(measurable.count);
-  const status: CheckStatus = score >= 60 ? "passed" : "failed";
+  const status: CheckStatus = measurable.count >= 5 ? "passed" : "failed";
 
   const detail =
-    measurable.count >= 3
+    measurable.count >= 5
       ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!`
       : measurable.count > 0
-        ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 3 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.`
-        : "We couldn't find any measurable results in experience section. Use at least 3 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
+        ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.`
+        : "We couldn't find any measurable results in experience section. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
 
   const checks = [
-    { label: "Measurable results (3+)", status, detail, weight: 20 },
+    { label: "Measurable results (5+)", status, detail, weight: 20 },
   ];
 
   return {
@@ -112,16 +112,16 @@ const buildActionVerbsSubgroup = (actionVerbs: {
   count: number;
 }): CategorySubgroup => {
   const score = actionVerbsScore(actionVerbs.count);
-  const status: CheckStatus = score >= 60 ? "passed" : "failed";
+  const status: CheckStatus = actionVerbs.count >= 5 ? "passed" : "failed";
 
   const detail =
-    actionVerbs.count >= 3
+    actionVerbs.count >= 5
       ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in experience section, which is great!`
       : actionVerbs.count > 0
-        ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 3 action verbs (e.g. Developed, Implemented, Managed etc) to stand out.`
-        : "We couldn't find any action verbs in experience section. Use at least 3 action verbs (e.g. Developed, Implemented, Managed etc) in your resume's experience section to stand out.";
+        ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) to stand out.`
+        : "We couldn't find any action verbs in experience section. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) in your resume's experience section to stand out.";
 
-  const checks = [{ label: "Action verbs (3+)", status, detail, weight: 20 }];
+  const checks = [{ label: "Action verbs (5+)", status, detail, weight: 20 }];
 
   return {
     key: "actionVerbs",

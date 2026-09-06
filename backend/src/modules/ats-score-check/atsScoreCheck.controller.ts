@@ -411,10 +411,20 @@ export const rescanAtsScore = async (req: AuthRequest, res: Response) => {
 
 export const fixResume = async (req: AuthRequest, res: Response) => {
   try {
-    const { resumeContent, failed, suggestions } = req.body;
+    const { resumeContent, failed, suggestions, failedChecks } = req.body;
     if (!resumeContent) {
       return res.status(400).json({ success: false, message: "resumeContent is required" });
     }
+
+    const normalizedFailed = {
+      hardSkills: failed?.hardSkills || [],
+      softSkills: failed?.softSkills || [],
+      summary: !!failed?.summary,
+      actionVerbs: !!failed?.actionVerbs,
+      measurable: !!failed?.measurable,
+    };
+    const normalizedSuggestions = Array.isArray(suggestions) ? suggestions : [];
+    const normalizedFailedChecks = Array.isArray(failedChecks) ? failedChecks : [];
 
     const isAdmin = (req.user as any)?.role === "admin";
     if (!isAdmin) {
@@ -431,13 +441,7 @@ export const fixResume = async (req: AuthRequest, res: Response) => {
           code: "AI_SCAN_UNAVAILABLE",
         });
       }
-      const fixed = await fixResumeContent(resumeContent, {
-        hardSkills: failed?.hardSkills || [],
-        softSkills: failed?.softSkills || [],
-        summary: !!failed?.summary,
-        actionVerbs: !!failed?.actionVerbs,
-        measurable: !!failed?.measurable,
-      }, Array.isArray(suggestions) ? suggestions : []);
+      const fixed = await fixResumeContent(resumeContent, normalizedFailed, normalizedSuggestions, normalizedFailedChecks);
       const remainingCredits = effectiveCredits - 1;
       await prisma.user.update({
         where: { id: req.user.id },
@@ -451,13 +455,7 @@ export const fixResume = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const fixed = await fixResumeContent(resumeContent, {
-      hardSkills: failed?.hardSkills || [],
-      softSkills: failed?.softSkills || [],
-      summary: !!failed?.summary,
-      actionVerbs: !!failed?.actionVerbs,
-      measurable: !!failed?.measurable,
-    }, Array.isArray(suggestions) ? suggestions : []);
+    const fixed = await fixResumeContent(resumeContent, normalizedFailed, normalizedSuggestions, normalizedFailedChecks);
     return res.json({ success: true, data: fixed, message: "Fixed (admin unlimited)." });
   } catch (error: any) {
     console.error("Fix resume error:", error);

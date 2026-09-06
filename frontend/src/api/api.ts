@@ -211,7 +211,7 @@ export const atsScoreApi = {
   rename: (id: string, resumeName: string) =>
     api.put(`/ats-score/history/${id}/rename`, { resumeName }),
   deleteAll: () => api.delete("/ats-score/history"),
-  fixResume: (data: { resumeContent: any; failed: any; suggestions?: string[] }) =>
+  fixResume: (data: { resumeContent: any; failed: any; suggestions?: string[]; failedChecks?: Array<{ category: string; label: string; detail: string; status?: string }> }) =>
     api.post("/ats-score/fix-resume", data),
 };
 

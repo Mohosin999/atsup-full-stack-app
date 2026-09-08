@@ -1097,8 +1097,8 @@ RESEARCH THE FOLLOWING DETAILS:
    - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
 6. Projects (name, description as bullet points, startDate, endDate)
  7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
- 8. measurableResults: array of strings \u2014 every experience bullet that contains a quantified/measurable outcome (a number with a unit such as %, time, money, scale, or a metric word like revenue, conversion, latency). Return [] if none.
- 9. actionVerbs: array of strings \u2014 the distinct strong action verbs found at the start of experience bullets (e.g. "led", "built", "optimized", "launched"). Return [] if none.
+ 8. measurableResults: array of strings \u2014 every experience bullet that contains a measurable impacts. More focus on experience section and less focus on projects section. Return [] if none.
+ 9. actionVerbs: array of strings \u2014 the distinct strong action verbs found at the start of experience bullets (e.g. "led", "built", "optimized", "launched"). ore focus on experience section and less focus on projects section. Return [] if none.
  10. wordCount: total number of words in the resume.
 10. educationSection: true if an education section exists.
 11. experienceSection: true if an experience/work section exists.
@@ -1725,12 +1725,12 @@ var countMeasurableResults = (resume) => {
   const found = Array.isArray(resume.measurableResults) ? resume.measurableResults : [];
   return { count: found.length, found: found.slice(0, 5) };
 };
-var measurableResultsScore = (count) => count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
+var measurableResultsScore = (count) => count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
 var countActionVerbs = (resume) => {
   const found = Array.isArray(resume.actionVerbs) ? resume.actionVerbs : [];
   return { count: found.length, found: found.slice(0, 5) };
 };
-var actionVerbsScore = (count) => count >= 3 ? 100 : count === 2 ? 80 : count === 1 ? 60 : 0;
+var actionVerbsScore = (count) => count >= 5 ? 100 : count === 4 ? 80 : count === 3 ? 60 : count === 2 ? 40 : count === 1 ? 20 : 0;
 var summaryScore = (summaryWords) => summaryWords >= 30 && summaryWords <= 80 ? 100 : summaryWords >= 80 ? 60 : summaryWords >= 10 ? 40 : summaryWords > 0 ? 20 : 0;
 var collectResumeDates = (resume) => {
   const dates = [];
@@ -2087,10 +2087,10 @@ var buildJobLevelSubgroup = (jd, resumeYears) => {
 };
 var buildMeasurableSubgroup = (measurable) => {
   const score = measurableResultsScore(measurable.count);
-  const status = score >= 60 ? "passed" : "failed";
-  const detail = measurable.count >= 3 ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!` : measurable.count > 0 ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 3 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.` : "We couldn't find any measurable results in experience section. Use at least 3 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
+  const status = measurable.count >= 5 ? "passed" : "failed";
+  const detail = measurable.count >= 5 ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!` : measurable.count > 0 ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.` : "We couldn't find any measurable results in experience section. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
   const checks = [
-    { label: "Measurable results (3+)", status, detail, weight: 20 }
+    { label: "Measurable results (5+)", status, detail, weight: 20 }
   ];
   return {
     key: "measurableResults",
@@ -2103,9 +2103,9 @@ var buildMeasurableSubgroup = (measurable) => {
 };
 var buildActionVerbsSubgroup = (actionVerbs) => {
   const score = actionVerbsScore(actionVerbs.count);
-  const status = score >= 60 ? "passed" : "failed";
-  const detail = actionVerbs.count >= 3 ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in experience section, which is great!` : actionVerbs.count > 0 ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 3 action verbs (e.g. Developed, Implemented, Managed etc) to stand out.` : "We couldn't find any action verbs in experience section. Use at least 3 action verbs (e.g. Developed, Implemented, Managed etc) in your resume's experience section to stand out.";
-  const checks = [{ label: "Action verbs (3+)", status, detail, weight: 20 }];
+  const status = actionVerbs.count >= 5 ? "passed" : "failed";
+  const detail = actionVerbs.count >= 5 ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in experience section, which is great!` : actionVerbs.count > 0 ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) to stand out.` : "We couldn't find any action verbs in experience section. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) in your resume's experience section to stand out.";
+  const checks = [{ label: "Action verbs (5+)", status, detail, weight: 20 }];
   return {
     key: "actionVerbs",
     title: "Action Verbs",
@@ -2375,11 +2375,11 @@ var calculateLocalMatchScore = (resume, structuredJD) => {
     suggestions.push(
       "Add a dedicated skills section with at least 5 technical skills."
     );
-  if (measurable.count < 3)
+  if (measurable.count < 5)
     suggestions.push(
-      `Add at least ${3 - measurable.count} more measurable results.`
+      `Add at least ${5 - measurable.count} more measurable results.`
     );
-  if (actionVerbs.count < 3)
+  if (actionVerbs.count < 5)
     suggestions.push(
       "Use strong action verbs in your experience bullet points (e.g. built, launched, optimized)."
     );
@@ -2458,13 +2458,13 @@ var calculateLocalMatchScore = (resume, structuredJD) => {
         score: measurableResultsScore(measurable.count),
         count: measurable.count,
         found: measurable.found,
-        feedback: measurable.count >= 3 ? `${measurable.count} measurable results found.` : measurable.count > 0 ? `${measurable.count} of 3+ recommended measurable results found.` : "No measurable results found."
+        feedback: measurable.count >= 5 ? `${measurable.count} measurable results found.` : measurable.count > 0 ? `${measurable.count} of 5 recommended measurable results found.` : "No measurable results found."
       },
       actionVerbs: {
         score: actionVerbsScore(actionVerbs.count),
         count: actionVerbs.count,
         found: actionVerbs.found,
-        feedback: actionVerbs.count >= 3 ? `${actionVerbs.count} action verbs found in experience bullets.` : actionVerbs.count > 0 ? `${actionVerbs.count} of 3+ recommended action verbs found.` : "No strong action verbs found in experience bullets."
+        feedback: actionVerbs.count >= 5 ? `${actionVerbs.count} action verbs found in experience bullets.` : actionVerbs.count > 0 ? `${actionVerbs.count} of 5 recommended action verbs found.` : "No strong action verbs found in experience bullets."
       }
     },
     atsFriendliness,
@@ -2606,164 +2606,6 @@ var rescanAtsScoreHistory = async (userId, historyId, resumeName, resumeContent,
       resumeContent
     }
   });
-};
-
-// src/shared/ai/gemini/fixResume.ts
-var FIX_PROMPT = `You are a senior human resume writer. Fix ONLY items listed in failedChecks / failed. Preserve all passed checks untouched. Human tone, concise, no AI buzzwords. No placeholder like "Your Name". Return ONLY JSON.
-
-RULES:
-- personalInfo: Keep exact fullName. jobTitle: only update if failedChecks contains Job title mismatch else keep. NEVER "Your Name". Empty -> "".
-- skills.hardSkills: ADD every missing hardSkills. Canonical single names, no duplicates, no phrase. Keep existing.
-- skills.softSkills: ADD missing softSkills ONLY (max 5). No generic fillers.
-- DISTRIBUTION (critical human-like):
-  * hardSkills -> must appear in 2 places: 1) skills.hardSkills list 2) woven into 1-2 experience/project bullets where contextually relevant with strong past-tense action verb + plausible measurable (%/$/time) e.g. "Built REST API with Node.js reducing latency 30%". Do NOT stuff all skills in one bullet.
-  * softSkills -> NEVER as standalone list dump. Weave naturally into summary (1-2 words) and experience bullets e.g. "Led team of 5", "Collaborated cross-functionally". Keep human.
-- summary: If summary failed OR softSkills missing, rewrite 30-60 word natural summary from experience+skills, varied sentences, weave 1-2 softSkills.
-- experience.responsibilities: Max 3-4 bullets/role, strongest only. Start with PAST-TENSE verb (Developed NOT Develop). Keep good bullets unchanged, only rewrite bullets needing actionVerbs/measurable or to weave hard/soft skills. Short, active, no buzzword stuffing.
-- searchability/formatting: If failedChecks contains Email/Phone/Address missing -> keep personalInfo.contact as is if already present else leave ""; Date formatting failed -> normalize dates to "MMM YYYY - MMM YYYY/Present". Layout/font/table/image checks are TEMPLATE fixes -> IGNORE, do not try to fix via text.
-- Preserve JSON structure, no markdown.
-
-INPUT: {resumeContentCompact, failed:{hardSkills:[],softSkills:[],summary:bool,actionVerbs:bool,measurable:bool}, failedChecks:[{category,label,detail}], suggestions:[]}
-Use failed + failedChecks + suggestions together. failedChecks is authoritative for what to fix.
-OUTPUT: ResumeContent {personalInfo, summary, experience:[{role,company,startDate,endDate,responsibilities:[]}], education:[{degree,field,education_level,startDate,endDate}], skills:{hardSkills:[],softSkills:[]}, projects:[{name,description[],startDate,endDate}]}`;
-function compactResume(resumeContent) {
-  return {
-    personalInfo: {
-      fullName: resumeContent.personalInfo?.fullName || "",
-      jobTitle: resumeContent.personalInfo?.jobTitle || "",
-      contact: resumeContent.personalInfo?.contact || {}
-    },
-    summary: resumeContent.summary || "",
-    experience: (resumeContent.experience || []).slice(0, 5).map((e) => ({
-      role: e.role || "",
-      company: e.company || "",
-      startDate: e.startDate || "",
-      endDate: e.endDate || "",
-      responsibilities: (e.responsibilities || []).slice(0, 4)
-    })),
-    education: (resumeContent.education || []).slice(0, 3).map((e) => ({
-      degree: e.degree || "",
-      field: e.field || "",
-      education_level: e.education_level || "",
-      startDate: e.startDate || "",
-      endDate: e.endDate || ""
-    })),
-    skills: {
-      hardSkills: (resumeContent.skills?.hardSkills || []).slice(0, 20),
-      softSkills: (resumeContent.skills?.softSkills || []).slice(0, 10)
-    },
-    projects: (resumeContent.projects || []).slice(0, 3).map((p) => ({
-      name: p.name || "",
-      description: (p.description || []).slice(0, 3),
-      startDate: p.startDate || "",
-      endDate: p.endDate || ""
-    }))
-  };
-}
-var fixResumeContent = async (resumeContent, failed, suggestions = [], failedChecks = []) => {
-  if (Array.isArray(suggestions) && suggestions.length > 0 && typeof suggestions[0] === "object") {
-    failedChecks = suggestions;
-    suggestions = [];
-  }
-  const compact = compactResume(resumeContent);
-  const trimmedSuggestions = (suggestions || []).slice(0, 8);
-  const trimmedFailed = {
-    hardSkills: (failed?.hardSkills || []).slice(0, 10),
-    softSkills: (failed?.softSkills || []).slice(0, 6),
-    summary: !!failed?.summary,
-    actionVerbs: !!failed?.actionVerbs,
-    measurable: !!failed?.measurable
-  };
-  const trimmedChecks = (failedChecks || []).slice(0, 12).map((c) => ({
-    category: c.category,
-    label: c.label,
-    detail: c.detail
-  }));
-  const input = JSON.stringify({
-    resumeContentCompact: compact,
-    failed: trimmedFailed,
-    failedChecks: trimmedChecks,
-    suggestions: trimmedSuggestions
-  });
-  const prompt = `${FIX_PROMPT}
-
-INPUT:
-${input}
-
-Return ONLY fixed ResumeContent JSON.`;
-  let result;
-  try {
-    result = await genAI.models.generateContent({
-      model: GEMINI_MODEL,
-      contents: [{ role: "user", parts: [{ text: prompt }] }]
-    });
-  } catch (error) {
-    throwIfQuotaError(error);
-    throw error;
-  }
-  const text = result.text ?? "";
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error("Invalid AI response");
-  const raw2 = JSON.parse(jsonMatch[0]);
-  const str = (v) => typeof v === "string" ? v : v == null ? "" : String(v);
-  const arr = (v) => Array.isArray(v) ? v : [];
-  const isPlaceholder = (v) => /your name|john doe|example/i.test(v);
-  const keepName = (rawName, orig) => {
-    const r = str(rawName);
-    if (!r || isPlaceholder(r)) return str(orig);
-    return r;
-  };
-  const fixed = {
-    personalInfo: {
-      fullName: keepName(raw2?.personalInfo?.fullName, resumeContent.personalInfo?.fullName),
-      jobTitle: str(raw2?.personalInfo?.jobTitle ?? resumeContent.personalInfo?.jobTitle),
-      contact: raw2?.personalInfo?.contact ?? resumeContent.personalInfo?.contact
-    },
-    summary: str(raw2?.summary ?? resumeContent.summary),
-    experience: arr(raw2?.experience?.length ? raw2.experience : resumeContent.experience).map((e) => ({
-      role: str(e?.role),
-      company: str(e?.company),
-      startDate: str(e?.startDate),
-      endDate: str(e?.endDate),
-      responsibilities: arr(e?.responsibilities).map((r) => str(r)).filter(Boolean).slice(0, 4)
-    })),
-    education: arr(raw2?.education?.length ? raw2.education : resumeContent.education).map((e) => ({
-      degree: str(e?.degree),
-      field: str(e?.field),
-      education_level: str(e?.education_level),
-      startDate: str(e?.startDate),
-      endDate: str(e?.endDate)
-    })),
-    skills: {
-      hardSkills: arr(raw2?.skills?.hardSkills?.length ? raw2.skills.hardSkills : resumeContent.skills?.hardSkills).map((s) => str(s)).filter(Boolean),
-      softSkills: arr(raw2?.skills?.softSkills?.length ? raw2.skills.softSkills : resumeContent.skills?.softSkills).map((s) => str(s)).filter(Boolean)
-    },
-    projects: arr(raw2?.projects ?? resumeContent?.projects).map((p) => ({
-      name: str(p?.name),
-      description: arr(p?.description).map((d) => str(d)),
-      startDate: str(p?.startDate),
-      endDate: str(p?.endDate)
-    })),
-    yearsOfExperience: resumeContent?.yearsOfExperience,
-    measurableResults: resumeContent?.measurableResults,
-    actionVerbs: resumeContent?.actionVerbs,
-    wordCount: resumeContent?.wordCount,
-    educationSection: resumeContent?.educationSection,
-    experienceSection: resumeContent?.experienceSection,
-    workHistory: resumeContent?.workHistory,
-    dateFormatting: resumeContent?.dateFormatting,
-    layout: resumeContent?.layout,
-    fontCheck: resumeContent?.fontCheck
-  };
-  const missingHard = trimmedFailed.hardSkills.filter(
-    (s) => !fixed.skills.hardSkills.some((x) => x.toLowerCase() === s.toLowerCase())
-  );
-  if (missingHard.length) fixed.skills.hardSkills = [...fixed.skills.hardSkills, ...missingHard].slice(0, 25);
-  const missingSoft = trimmedFailed.softSkills.filter(
-    (s) => !fixed.skills.softSkills.some((x) => x.toLowerCase() === s.toLowerCase())
-  );
-  if (missingSoft.length) fixed.skills.softSkills = [...fixed.skills.softSkills, ...missingSoft].slice(0, 15);
-  return fixed;
 };
 
 // src/modules/ats-score-check/atsScoreCheck.controller.ts
@@ -3093,63 +2935,6 @@ var rescanAtsScore = async (req, res) => {
     res.status(status).json({ success: false, message: error.message || "Failed to rescan ATS score" });
   }
 };
-var fixResume = async (req, res) => {
-  try {
-    const { resumeContent, failed, suggestions, failedChecks } = req.body;
-    if (!resumeContent) {
-      return res.status(400).json({ success: false, message: "resumeContent is required" });
-    }
-    const normalizedFailed = {
-      hardSkills: failed?.hardSkills || [],
-      softSkills: failed?.softSkills || [],
-      summary: !!failed?.summary,
-      actionVerbs: !!failed?.actionVerbs,
-      measurable: !!failed?.measurable
-    };
-    const normalizedSuggestions = Array.isArray(suggestions) ? suggestions : [];
-    const normalizedFailedChecks = Array.isArray(failedChecks) ? failedChecks : [];
-    const isAdmin = req.user?.role === "admin";
-    if (!isAdmin) {
-      const user = await prisma.user.findUnique({ where: { id: req.user.id }, select: { subscription: true } });
-      const subscription = user?.subscription || {};
-      const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-      const lastReset = subscription?.lastAiScanResetDate ?? "";
-      const credits = subscription?.credits ?? 0;
-      const effectiveCredits = lastReset !== today ? 20 : credits;
-      if (effectiveCredits < 1) {
-        return res.status(403).json({
-          success: false,
-          message: "No AI credit available. Daily limit is 20. New quota at midnight (GMT).",
-          code: "AI_SCAN_UNAVAILABLE"
-        });
-      }
-      const fixed2 = await fixResumeContent(resumeContent, normalizedFailed, normalizedSuggestions, normalizedFailedChecks);
-      const remainingCredits = effectiveCredits - 1;
-      await prisma.user.update({
-        where: { id: req.user.id },
-        data: { subscription: { ...subscription, credits: remainingCredits, lastAiScanResetDate: today } }
-      });
-      return res.json({
-        success: true,
-        data: fixed2,
-        credits: remainingCredits,
-        aiScan: { available: remainingCredits >= 1, credits: remainingCredits, lastAiScanResetDate: today }
-      });
-    }
-    const fixed = await fixResumeContent(resumeContent, normalizedFailed, normalizedSuggestions, normalizedFailedChecks);
-    return res.json({ success: true, data: fixed, message: "Fixed (admin unlimited)." });
-  } catch (error) {
-    console.error("Fix resume error:", error);
-    if (error instanceof AiQuotaError) {
-      return res.status(429).json({
-        success: false,
-        message: error.message,
-        code: "AI_QUOTA_EXCEEDED"
-      });
-    }
-    return res.status(500).json({ success: false, message: error.message || "Failed to fix resume" });
-  }
-};
 var getAtsScores = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -3246,7 +3031,6 @@ router3.post("/parse-resume", atsLimiter, upload.single("resume"), parseResume2)
 router3.post("/parse-jd", atsLimiter, parseJobDescription2);
 router3.post("/analyze", atsLimiter, analyzeAtsScore);
 router3.post("/rescan/:id", atsLimiter, rescanAtsScore);
-router3.post("/fix-resume", atsLimiter, fixResume);
 router3.get("/history", getAtsScores);
 router3.get("/history/:id", getAtsScore);
 router3.delete("/history/:id", deleteAtsScoreController);

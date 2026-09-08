@@ -1,19 +1,11 @@
 import { motion } from "framer-motion";
-import { ReactNode, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { Wrench } from "lucide-react";
+import { ReactNode } from "react";
 import { AtsScoreHistory } from "../../types";
 import ScoreCard from "../ui/ScoreCard";
 import SectionScoreCard from "../SectionScoreCard";
 import SuggestionList from "../SuggestionList";
-import JobMatchBreakdown from "../JobMatchBreakdown";
 import CategoryChecklist from "./CategoryChecklist";
 import ReviewCard from "./ReviewCard";
-import { atsScoreApi } from "../../api/api";
-import { useAppDispatch } from "@/hooks";
-import { setUserAiScanState } from "@/store/slices/authSlice";
-import AnalysisProgressModal, { PipelineStep } from "../ui/AnalysisProgressModal";
 
 interface AtsScoreResultProps {
   result: AtsScoreHistory;
@@ -21,103 +13,12 @@ interface AtsScoreResultProps {
   onRescan?: () => void;
 }
 
-const FIX_STEPS: PipelineStep[] = [
-  { id: "analyze", label: "Analyzing failed checks" },
-  { id: "fix", label: "AI fixing resume" },
-  { id: "ready", label: "Preparing builder" },
-];
-const FIX_MESSAGES = ["Analyzing failed checks...", "AI fixing resume...", "Preparing builder...", "Ready!"];
-
 export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps) {
   const hasFormattingData = !!(
     result.resumeContent?.layout && result.resumeContent?.fontCheck
   );
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const [fixing, setFixing] = useState(false);
-  const [fixOpen, setFixOpen] = useState(false);
-  const [fixStep, setFixStep] = useState(0);
-  const [fixCompleted, setFixCompleted] = useState<string[]>([]);
-  const [fixMsg, setFixMsg] = useState(FIX_MESSAGES[0]);
 
   const categories = result.sectionScores.categories;
-  const hasFixable = !!categories && (
-    (categories.hardSkills?.missing?.length ?? 0) > 0 ||
-    (categories.softSkills?.missing?.length ?? 0) > 0 ||
-    categories.searchability?.checks?.some((c) => c.status === "failed") ||
-    categories.formatting?.checks?.some((c) => c.status === "failed") ||
-    categories.recruiterTips?.subgroups?.some((s) => s.checks.some((c) => c.status === "failed")) ||
-    categories.recruiterTips?.checks?.some((c) => c.status === "failed")
-  );
-
-  const buildFailedChecks = () => {
-    if (!categories) return [] as Array<{ category: string; label: string; detail: string; status: string }>;
-    const out: Array<{ category: string; label: string; detail: string; status: string }> = [];
-    const pushFrom = (catKey: string, checks?: Array<{ label: string; detail: string; status: string; weight?: number }>) => {
-      (checks || []).forEach((c) => {
-        if (c.status === "failed") out.push({ category: catKey, label: c.label, detail: c.detail, status: c.status });
-      });
-    };
-    pushFrom("searchability", categories.searchability?.checks);
-    pushFrom("hardSkills", categories.hardSkills?.checks);
-    pushFrom("softSkills", categories.softSkills?.checks);
-    pushFrom("recruiterTips", categories.recruiterTips?.checks);
-    (categories.recruiterTips?.subgroups || []).forEach((s) => pushFrom("recruiterTips", s.checks));
-    pushFrom("formatting", categories.formatting?.checks);
-    return out.slice(0, 12);
-  };
-
-  const handleFix = async () => {
-    if (!categories) return;
-    setFixing(true);
-    setFixOpen(true);
-    setFixStep(0);
-    setFixCompleted([]);
-    setFixMsg(FIX_MESSAGES[0]);
-    try {
-      setFixMsg(FIX_MESSAGES[0]);
-      await new Promise((r) => setTimeout(r, 600));
-      setFixCompleted(["analyze"]);
-      setFixStep(1);
-      setFixMsg(FIX_MESSAGES[1]);
-
-      const hardMissing = categories.hardSkills?.missing || [];
-      const softMissing = categories.softSkills?.missing || [];
-      const rt = categories.recruiterTips;
-      const rtFailed = (rt?.subgroups || []).flatMap((s) => s.checks).concat(rt?.checks || []);
-      const needSummary = rtFailed.some((c) => c.label.toLowerCase().includes("summary") && c.status === "failed");
-      const needActionVerbs = rtFailed.some((c) => c.label.toLowerCase().includes("action verb") && c.status === "failed");
-      const needMeasurable = rtFailed.some((c) => c.label.toLowerCase().includes("measurable") && c.status === "failed");
-      const failedChecks = buildFailedChecks();
-
-      const res = await atsScoreApi.fixResume({
-        resumeContent: result.resumeContent,
-        failed: { hardSkills: hardMissing, softSkills: softMissing, summary: needSummary, actionVerbs: needActionVerbs, measurable: needMeasurable },
-        failedChecks,
-        suggestions: result.suggestions || [],
-      } as any);
-
-      if (res.data?.aiScan) {
-        dispatch(setUserAiScanState({ credits: res.data.aiScan.credits ?? 0, lastAiScanResetDate: res.data.aiScan.lastAiScanResetDate }));
-      } else if (res.data?.credits !== undefined) {
-        dispatch(setUserAiScanState({ credits: res.data.credits, lastAiScanResetDate: new Date().toISOString().slice(0, 10) }));
-      }
-
-      setFixCompleted(["analyze", "fix"]);
-      setFixStep(2);
-      setFixMsg(FIX_MESSAGES[2]);
-      await new Promise((r) => setTimeout(r, 400));
-      setFixCompleted(["analyze", "fix", "ready"]);
-      setFixMsg(FIX_MESSAGES[3]);
-      setFixOpen(false);
-      setFixing(false);
-      navigate("/resume-builder/new", { state: { fixedContent: res.data.data } });
-    } catch (e: any) {
-      setFixOpen(false);
-      setFixing(false);
-      toast.error(e.response?.data?.message || e.message || "Failed to fix resume");
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -169,18 +70,6 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
                 suggestions={result.suggestions}
                 title="Suggested Improvements"
               />
-              {hasFixable && (
-                <div className="mt-4 flex justify-end">
-                  <button
-                    onClick={handleFix}
-                    disabled={fixing}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 rounded-lg"
-                  >
-                    <Wrench className="w-4 h-4" />
-                    {fixing ? "Fixing..." : "Fix All Issues with AI (1 credit)"}
-                  </button>
-                </div>
-              )}
             </motion.div>
           </div>
         </div>
@@ -291,7 +180,6 @@ export default function AtsScoreResult({ result, onRescan }: AtsScoreResultProps
           </motion.div>
         </div>
       )}
-      <AnalysisProgressModal isOpen={fixOpen} steps={FIX_STEPS} activeStep={fixStep} completedSteps={fixCompleted} currentMessage={fixMsg} />
     </div>
   );
 }

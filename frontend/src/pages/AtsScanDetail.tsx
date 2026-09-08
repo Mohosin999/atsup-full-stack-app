@@ -88,6 +88,22 @@ export default function AtsScoreDetail() {
   const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Background pre-parse: rescan modal-এ PDF select হলেই resume LLM parse শুরু (invisible)
+  const rescanPreparseRef = useRef<{ key: string; promise: Promise<any> } | null>(
+    null,
+  );
+  const rescanFileKey = (f: File) => `${f.name}|${f.size}|${f.lastModified}`;
+  const startRescanBackgroundParse = (file: File) => {
+    if (!user) return;
+    const key = rescanFileKey(file);
+    if (rescanPreparseRef.current?.key === key) return;
+    const fd = new FormData();
+    fd.append("resume", file);
+    const promise = atsScoreApi.parseResume(fd);
+    promise.catch(() => {});
+    rescanPreparseRef.current = { key, promise };
+  };
+
   const showMessage = (index: number, delay = 950) =>
     new Promise<void>((resolve) => {
       setCurrentMessage(PIPELINE_MESSAGES[index]);
@@ -118,9 +134,34 @@ export default function AtsScoreDetail() {
 
     try {
       setCurrentMessage(PIPELINE_MESSAGES[0]);
-      const formData = new FormData();
-      formData.append("resume", resumeFile);
-      const parseResponse = await atsScoreApi.parseResume(formData);
+      const rKey = rescanFileKey(resumeFile);
+      let resumePromise: Promise<any>;
+      if (rescanPreparseRef.current?.key === rKey) {
+        resumePromise = rescanPreparseRef.current.promise;
+      } else {
+        const formData = new FormData();
+        formData.append("resume", resumeFile);
+        resumePromise = atsScoreApi.parseResume(formData);
+        rescanPreparseRef.current = { key: rKey, promise: resumePromise };
+      }
+      let parseResponse: any;
+      let jdResponse: any;
+      try {
+        [parseResponse, jdResponse] = await Promise.all([
+          resumePromise,
+          atsScoreApi.parseJD(jobDescription.trim()),
+        ]);
+      } catch (err: any) {
+        const formData = new FormData();
+        formData.append("resume", resumeFile);
+        resumePromise = atsScoreApi.parseResume(formData);
+        rescanPreparseRef.current = { key: rKey, promise: resumePromise };
+        resumePromise.catch(() => {});
+        [parseResponse, jdResponse] = await Promise.all([
+          resumePromise,
+          atsScoreApi.parseJD(jobDescription.trim()),
+        ]);
+      }
       const aiResearch = parseResponse.data.data?.aiResearch;
       const originalPdf = parseResponse.data.data?.originalPdf;
       if (!aiResearch) throw new Error("AI returned no resume data");
@@ -130,7 +171,6 @@ export default function AtsScoreDetail() {
       setActiveStep(1);
 
       setCurrentMessage(PIPELINE_MESSAGES[1]);
-      const jdResponse = await atsScoreApi.parseJD(jobDescription.trim());
       const structuredJD = jdResponse.data.data;
       if (!structuredJD) throw new Error("AI returned no job description data");
 
@@ -244,6 +284,7 @@ export default function AtsScoreDetail() {
               setResumeFile(null);
               setResumeName("");
               setJobDescription("");
+              rescanPreparseRef.current = null;
             }}
           />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-800">
@@ -258,6 +299,7 @@ export default function AtsScoreDetail() {
                   setResumeFile(null);
                   setResumeName("");
                   setJobDescription("");
+                  rescanPreparseRef.current = null;
                 }}
                 className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-700"
               >
@@ -278,6 +320,7 @@ export default function AtsScoreDetail() {
                       onClick={() => {
                         setResumeFile(null);
                         setResumeName("");
+                        rescanPreparseRef.current = null;
                       }}
                       className="text-xs text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-medium"
                     >
@@ -301,6 +344,7 @@ export default function AtsScoreDetail() {
                         if (file) {
                           setResumeFile(file);
                           setResumeName(file.name);
+                          startRescanBackgroundParse(file);
                         }
                       }}
                     />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { CheckCircle, X, Upload } from "lucide-react";
@@ -54,6 +54,24 @@ export default function ResumeScanForm({
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
 
+  // Background pre-parse: PDF select হলেই resume LLM parse শুরু (invisible).
+  // Click-এর সময় ongoing/done promise reuse হয়, JD parallel-এ join করে।
+  const preparseRef = useRef<{ key: string; promise: Promise<any> } | null>(
+    null,
+  );
+  const fileKey = (f: File) => `${f.name}|${f.size}|${f.lastModified}`;
+  const startBackgroundResumeParse = (file: File) => {
+    if (!user) return;
+    const key = fileKey(file);
+    if (preparseRef.current?.key === key) return;
+    const fd = new FormData();
+    fd.append("resume", file);
+    const promise = atsScoreApi.parseResume(fd);
+    // avoid unhandled rejection if user never clicks scan
+    promise.catch(() => {});
+    preparseRef.current = { key, promise };
+  };
+
   const bothFieldsReady = !!resumeFile && jobDescription.trim().length >= 20;
 
   const aiScan = getAiScanStatus(user?.subscription, user?.role);
@@ -101,9 +119,40 @@ export default function ResumeScanForm({
 
     try {
       setCurrentMessage(PIPELINE_MESSAGES[0]);
-      const formData = new FormData();
-      formData.append("resume", resumeFile as File);
-      const parseResponse = await atsScoreApi.parseResume(formData);
+      const key = resumeFile ? fileKey(resumeFile as File) : "";
+      let resumePromise: Promise<any>;
+      if (preparseRef.current?.key === key) {
+        // background parse already running/done — reuse it
+        resumePromise = preparseRef.current.promise;
+      } else {
+        const formData = new FormData();
+        formData.append("resume", resumeFile as File);
+        resumePromise = atsScoreApi.parseResume(formData);
+        preparseRef.current = { key, promise: resumePromise };
+      }
+      let parseResponse: any;
+      let jdResponse: any;
+      try {
+        [parseResponse, jdResponse] = await Promise.all([
+          resumePromise,
+          atsScoreApi.parseJD(jobDescription.trim()),
+        ]);
+      } catch (err: any) {
+        // background parse failed (e.g. expired) — retry once fresh
+        if (preparseRef.current?.key === key) {
+          const formData = new FormData();
+          formData.append("resume", resumeFile as File);
+          resumePromise = atsScoreApi.parseResume(formData);
+          preparseRef.current = { key, promise: resumePromise };
+          resumePromise.catch(() => {});
+          [parseResponse, jdResponse] = await Promise.all([
+            resumePromise,
+            atsScoreApi.parseJD(jobDescription.trim()),
+          ]);
+        } else {
+          throw err;
+        }
+      }
       const aiResearch = parseResponse.data.data?.aiResearch;
       const originalPdf = parseResponse.data.data?.originalPdf;
       if (!aiResearch) {
@@ -115,7 +164,6 @@ export default function ResumeScanForm({
       setActiveStep(1);
 
       setCurrentMessage(PIPELINE_MESSAGES[1]);
-      const jdResponse = await atsScoreApi.parseJD(jobDescription.trim());
       const structuredJD = jdResponse.data.data;
       if (!structuredJD) {
         throw new Error("AI returned no job description data");
@@ -195,6 +243,7 @@ export default function ResumeScanForm({
                 onClick={() => {
                   setResumeFile(null);
                   setResumeName("");
+                  preparseRef.current = null;
                 }}
                 className="absolute bottom-2 right-2 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-800 hover:bg-red-50 hover:text-red-600 hover:border-red-300 rounded-lg"
               >
@@ -221,6 +270,7 @@ export default function ResumeScanForm({
                   if (file) {
                     setResumeFile(file);
                     setResumeName(file.name);
+                    startBackgroundResumeParse(file);
                   }
                 }}
               />

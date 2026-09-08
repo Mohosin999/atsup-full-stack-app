@@ -16,7 +16,6 @@ import {
   rescanAtsScoreHistory,
 } from "./services/history.service";
 import { calculateAtsScore } from "./services/scoring.service";
-import { fixResumeContent } from "../../shared/ai/gemini/fixResume";
 import { AiQuotaError } from "../../shared/ai/gemini/geminiErrors";
 
 const parseAddress = (
@@ -404,69 +403,6 @@ export const rescanAtsScore = async (req: AuthRequest, res: Response) => {
     }
     const status = error.message?.includes("not found") ? 404 : error.message?.includes("Insufficient credits") ? 403 : 500;
     res.status(status).json({ success: false, message: error.message || "Failed to rescan ATS score" });
-  }
-};
-
-// ─── Fix Resume ──────────────────────────────────────────────────────────────
-
-export const fixResume = async (req: AuthRequest, res: Response) => {
-  try {
-    const { resumeContent, failed, suggestions, failedChecks } = req.body;
-    if (!resumeContent) {
-      return res.status(400).json({ success: false, message: "resumeContent is required" });
-    }
-
-    const normalizedFailed = {
-      hardSkills: failed?.hardSkills || [],
-      softSkills: failed?.softSkills || [],
-      summary: !!failed?.summary,
-      actionVerbs: !!failed?.actionVerbs,
-      measurable: !!failed?.measurable,
-    };
-    const normalizedSuggestions = Array.isArray(suggestions) ? suggestions : [];
-    const normalizedFailedChecks = Array.isArray(failedChecks) ? failedChecks : [];
-
-    const isAdmin = (req.user as any)?.role === "admin";
-    if (!isAdmin) {
-      const user = await prisma.user.findUnique({ where: { id: req.user.id }, select: { subscription: true } });
-      const subscription = (user?.subscription as any) || {};
-      const today = new Date().toISOString().slice(0, 10);
-      const lastReset = subscription?.lastAiScanResetDate ?? "";
-      const credits = subscription?.credits ?? 0;
-      const effectiveCredits = lastReset !== today ? 20 : credits;
-      if (effectiveCredits < 1) {
-        return res.status(403).json({
-          success: false,
-          message: "No AI credit available. Daily limit is 20. New quota at midnight (GMT).",
-          code: "AI_SCAN_UNAVAILABLE",
-        });
-      }
-      const fixed = await fixResumeContent(resumeContent, normalizedFailed, normalizedSuggestions, normalizedFailedChecks);
-      const remainingCredits = effectiveCredits - 1;
-      await prisma.user.update({
-        where: { id: req.user.id },
-        data: { subscription: { ...subscription, credits: remainingCredits, lastAiScanResetDate: today } },
-      });
-      return res.json({
-        success: true,
-        data: fixed,
-        credits: remainingCredits,
-        aiScan: { available: remainingCredits >= 1, credits: remainingCredits, lastAiScanResetDate: today },
-      });
-    }
-
-    const fixed = await fixResumeContent(resumeContent, normalizedFailed, normalizedSuggestions, normalizedFailedChecks);
-    return res.json({ success: true, data: fixed, message: "Fixed (admin unlimited)." });
-  } catch (error: any) {
-    console.error("Fix resume error:", error);
-    if (error instanceof AiQuotaError) {
-      return res.status(429).json({
-        success: false,
-        message: error.message,
-        code: "AI_QUOTA_EXCEEDED",
-      });
-    }
-    return res.status(500).json({ success: false, message: error.message || "Failed to fix resume" });
   }
 };
 

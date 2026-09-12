@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Upload, RefreshCw, X, CheckCircle } from "lucide-react";
@@ -87,6 +87,37 @@ export default function AtsScoreDetail() {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const STEP_MILESTONES = [90, 100];
+  const [displayProgress, setDisplayProgress] = useState(0);
+  const progressRef = useRef(0);
+  const targetRef = useRef(90);
+
+  useEffect(() => {
+    const done = completedSteps.length;
+    const newTarget = done < STEP_MILESTONES.length ? STEP_MILESTONES[done] : 100;
+    targetRef.current = newTarget;
+    if (progressRef.current < newTarget) {
+      progressRef.current = newTarget;
+      setDisplayProgress(newTarget);
+    }
+  }, [completedSteps.length]);
+
+  useEffect(() => {
+    if (!pipelineOpen) {
+      setDisplayProgress(0);
+      progressRef.current = 0;
+      targetRef.current = 90;
+      return;
+    }
+    const id = setInterval(() => {
+      if (progressRef.current < targetRef.current) {
+        const next = Math.min(progressRef.current + 3, targetRef.current);
+        progressRef.current = next;
+        setDisplayProgress(next);
+      }
+    }, 500);
+    return () => clearInterval(id);
+  }, [pipelineOpen]);
 
   // Background pre-parse: rescan modal-এ PDF select হলেই resume LLM parse শুরু (invisible)
   const rescanPreparseRef = useRef<{ key: string; promise: Promise<any> } | null>(
@@ -131,6 +162,9 @@ export default function AtsScoreDetail() {
     setActiveStep(0);
     setCompletedSteps([]);
     setCurrentMessage(PIPELINE_MESSAGES[0]);
+    setDisplayProgress(0);
+    progressRef.current = 0;
+    targetRef.current = 90;
 
     try {
       setCurrentMessage(PIPELINE_MESSAGES[0]);
@@ -398,6 +432,7 @@ export default function AtsScoreDetail() {
         activeStep={activeStep}
         completedSteps={completedSteps}
         currentMessage={currentMessage}
+        simProgress={displayProgress}
       />
     </div>
   );

@@ -9,15 +9,20 @@ export interface AiScanSubscription {
   lastAiScanResetDate?: string | null;
 }
 
-const getGmtDateKey = (d: Date = new Date()): string =>
-  d.toISOString().slice(0, 10);
+const getBangladeshCreditDateKey = (d: Date = new Date()): string => {
+  const dhakaMs = d.getTime() + 6 * 60 * 60 * 1000;
+  const dhaka = new Date(dhakaMs);
+  const hour = dhaka.getUTCHours();
+  if (hour < 16) dhaka.setUTCDate(dhaka.getUTCDate() - 1);
+  return dhaka.toISOString().slice(0, 10);
+};
 
 export const getAiScanStatus = (
   subscription?: AiScanSubscription | null,
   role?: string | null,
 ): AiScanStatus => {
   if (role === "admin") return { available: true };
-  const today = getGmtDateKey();
+  const today = getBangladeshCreditDateKey();
   const credits = subscription?.credits ?? 0;
   const lastReset = subscription?.lastAiScanResetDate ?? "";
 

@@ -18,6 +18,17 @@ import {
 import { calculateAtsScore } from "./services/scoring.service";
 import { AiQuotaError } from "../../shared/ai/gemini/geminiErrors";
 
+const getBangladeshCreditDateKey = (): string => {
+  const now = new Date();
+  const dhakaMs = now.getTime() + 6 * 60 * 60 * 1000;
+  const dhaka = new Date(dhakaMs);
+  const hour = dhaka.getUTCHours();
+  if (hour < 16) {
+    dhaka.setUTCDate(dhaka.getUTCDate() - 1);
+  }
+  return dhaka.toISOString().slice(0, 10);
+};
+
 const parseAddress = (
   raw: string,
 ): { city?: string; state?: string } | undefined => {
@@ -225,17 +236,16 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
     });
 
     const subscription = (user?.subscription as any) || {};
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getBangladeshCreditDateKey();
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
 
-    const effectiveCredits = lastReset !== today ? 20 : credits;
+    const effectiveCredits = lastReset !== today ? 3 : credits;
 
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message:
-          "No AI scan credit available. Daily limit is 20. A new quota will be granted at midnight (GMT).",
+        message: "Daily limit is 3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
         code: "AI_SCAN_UNAVAILABLE",
       });
     }
@@ -271,7 +281,7 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
         lastAiScanResetDate: today,
       },
       message:
-        "AI scan used. Remaining today: " + remainingCredits + "/20. New quota at midnight (GMT).",
+        "AI scan used. Remaining today: " + remainingCredits + "/3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
     });
   } catch (error: any) {
     console.error("ATS Score analysis error:", error);
@@ -347,15 +357,15 @@ export const rescanAtsScore = async (req: AuthRequest, res: Response) => {
       select: { subscription: true },
     });
     const subscription = (user?.subscription as any) || {};
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getBangladeshCreditDateKey();
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 20 : credits;
+    const effectiveCredits = lastReset !== today ? 3 : credits;
 
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: "No AI scan credit available. Daily limit is 20. A new quota will be granted at midnight (GMT).",
+        message: "Daily limit is 3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
         code: "AI_SCAN_UNAVAILABLE",
       });
     }
@@ -394,7 +404,7 @@ export const rescanAtsScore = async (req: AuthRequest, res: Response) => {
         credits: remainingCredits,
         lastAiScanResetDate: today,
       },
-      message: "AI rescan used. Remaining today: " + remainingCredits + "/20.",
+      message: "AI rescan used. Remaining today: " + remainingCredits + "/3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
     });
   } catch (error: any) {
     console.error("ATS rescan error:", error);

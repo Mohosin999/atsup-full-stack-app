@@ -185,9 +185,18 @@ var adapter = new PrismaNeon({ connectionString });
 var prisma = new PrismaClient({ adapter });
 
 // src/shared/utils/credits.ts
-var getGmtDateKey = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+var getBangladeshCreditDateKey = () => {
+  const now = /* @__PURE__ */ new Date();
+  const dhakaMs = now.getTime() + 6 * 60 * 60 * 1e3;
+  const dhaka = new Date(dhakaMs);
+  const hour = dhaka.getUTCHours();
+  if (hour < 16) {
+    dhaka.setUTCDate(dhaka.getUTCDate() - 1);
+  }
+  return dhaka.toISOString().slice(0, 10);
+};
 var applyDailyCreditReset = async (userId, subscription) => {
-  const today = getGmtDateKey();
+  const today = getBangladeshCreditDateKey();
   const updatedSubscription = { ...subscription || {} };
   if ((updatedSubscription.lastAiScanResetDate ?? "") !== today) {
     const dbUser = await prisma.user.findUnique({
@@ -197,7 +206,7 @@ var applyDailyCreditReset = async (userId, subscription) => {
     if (dbUser?.role === "admin") {
       return updatedSubscription;
     }
-    updatedSubscription.credits = 20;
+    updatedSubscription.credits = 3;
     updatedSubscription.lastAiScanResetDate = today;
     await prisma.user.update({
       where: { id: userId },
@@ -314,7 +323,7 @@ var configureGoogleStrategy = () => {
                 picture: profile.photos?.[0]?.value,
                 subscription: {
                   plan: "free",
-                  credits: 20
+                  credits: 3
                 }
               }
             });
@@ -516,7 +525,7 @@ var createUser = async (userData) => {
       },
       subscription: {
         plan: "free",
-        credits: 20
+        credits: 3
       }
     },
     select: {
@@ -1045,7 +1054,7 @@ var throwIfQuotaError = (error) => {
 };
 
 // src/shared/config/gemini.ts
-var GEMINI_MODEL = "gemini-3.1-flash-lite";
+var GEMINI_MODEL = "gemini-2.5-flash";
 var keys = [env.geminiApiKey, env.geminiApiKeySecondary].filter(
   Boolean
 );
@@ -1066,9 +1075,7 @@ async function generateContentWithFailover(params) {
       console.warn(`[gemini] key ${keyIndex} quota exceeded`);
     }
   }
-  throw new Error(
-    "AI service quota exceeded. Please try again tomorrow."
-  );
+  throw new Error("AI service quota exceeded. Please try again tomorrow.");
 }
 
 // src/shared/ai/cache/aiCache.ts
@@ -2635,6 +2642,16 @@ var rescanAtsScoreHistory = async (userId, historyId, resumeName, resumeContent,
 };
 
 // src/modules/ats-score-check/atsScoreCheck.controller.ts
+var getBangladeshCreditDateKey2 = () => {
+  const now = /* @__PURE__ */ new Date();
+  const dhakaMs = now.getTime() + 6 * 60 * 60 * 1e3;
+  const dhaka = new Date(dhakaMs);
+  const hour = dhaka.getUTCHours();
+  if (hour < 16) {
+    dhaka.setUTCDate(dhaka.getUTCDate() - 1);
+  }
+  return dhaka.toISOString().slice(0, 10);
+};
 var parseAddress = (raw2) => {
   if (!raw2) return void 0;
   const parts = raw2.split(/[,•\-]/).map((p) => p.trim()).filter(Boolean);
@@ -2808,14 +2825,14 @@ var analyzeAtsScore = async (req, res) => {
       select: { subscription: true }
     });
     const subscription = user?.subscription || {};
-    const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    const today = getBangladeshCreditDateKey2();
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 20 : credits;
+    const effectiveCredits = lastReset !== today ? 3 : credits;
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: "No AI scan credit available. Daily limit is 20. A new quota will be granted at midnight (GMT).",
+        message: "Daily limit is 3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
         code: "AI_SCAN_UNAVAILABLE"
       });
     }
@@ -2847,7 +2864,7 @@ var analyzeAtsScore = async (req, res) => {
         credits: remainingCredits,
         lastAiScanResetDate: today
       },
-      message: "AI scan used. Remaining today: " + remainingCredits + "/20. New quota at midnight (GMT)."
+      message: "AI scan used. Remaining today: " + remainingCredits + "/3. New quota at 4 PM BST (Asia/Dhaka, UTC+6)."
     });
   } catch (error) {
     console.error("ATS Score analysis error:", error);
@@ -2907,14 +2924,14 @@ var rescanAtsScore = async (req, res) => {
       select: { subscription: true }
     });
     const subscription = user?.subscription || {};
-    const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    const today = getBangladeshCreditDateKey2();
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 20 : credits;
+    const effectiveCredits = lastReset !== today ? 3 : credits;
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: "No AI scan credit available. Daily limit is 20. A new quota will be granted at midnight (GMT).",
+        message: "Daily limit is 3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
         code: "AI_SCAN_UNAVAILABLE"
       });
     }
@@ -2950,7 +2967,7 @@ var rescanAtsScore = async (req, res) => {
         credits: remainingCredits,
         lastAiScanResetDate: today
       },
-      message: "AI rescan used. Remaining today: " + remainingCredits + "/20."
+      message: "AI rescan used. Remaining today: " + remainingCredits + "/3. New quota at 4 PM BST (Asia/Dhaka, UTC+6)."
     });
   } catch (error) {
     console.error("ATS rescan error:", error);

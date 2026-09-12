@@ -21,7 +21,7 @@ export default function AiScanButton({
         disabled={disabled}
         loading={loading}
       >
-        {loading ? "Analyzing..." : "AI Scan"}
+        {loading ? "Analyzing..." : "Scan Now"}
       </Button>
 
       {noCredit && (

@@ -53,10 +53,10 @@ export default function ResumeScanForm({
   const [activeStep, setActiveStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
-  const STEP_MILESTONES = [33, 70, 100];
+  const STEP_MILESTONES = [90, 100];
   const [displayProgress, setDisplayProgress] = useState(0);
   const progressRef = useRef(0);
-  const targetRef = useRef(33);
+  const targetRef = useRef(90);
 
   useEffect(() => {
     const done = completedSteps.length;
@@ -72,7 +72,7 @@ export default function ResumeScanForm({
     if (!pipelineOpen) {
       setDisplayProgress(0);
       progressRef.current = 0;
-      targetRef.current = 33;
+      targetRef.current = 90;
       return;
     }
     const id = setInterval(() => {
@@ -149,7 +149,7 @@ export default function ResumeScanForm({
     setCurrentMessage(PIPELINE_MESSAGES[0]);
     setDisplayProgress(0);
     progressRef.current = 0;
-    targetRef.current = 33;
+    targetRef.current = 90;
 
     try {
       setCurrentMessage(PIPELINE_MESSAGES[0]);

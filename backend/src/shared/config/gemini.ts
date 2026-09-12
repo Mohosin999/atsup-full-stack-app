@@ -3,11 +3,11 @@ import { env } from "./env";
 import { isGeminiQuotaError } from "../ai/gemini/geminiErrors";
 
 // export const genAI = new GoogleGenAI({ apiKey: env.geminiApiKey });
-// export const GEMINI_MODEL = "gemini-2.5-flash";
-export const GEMINI_MODEL = "gemini-3.1-flash-lite";
+export const GEMINI_MODEL = "gemini-2.5-flash";
+// export const GEMINI_MODEL = "gemini-3.1-flash-lite";
 
 const keys = [env.geminiApiKey, env.geminiApiKeySecondary].filter(
-  Boolean
+  Boolean,
 ) as string[];
 
 let activeIndex = 0;
@@ -33,7 +33,5 @@ export async function generateContentWithFailover(params: {
     }
   }
 
-  throw new Error(
-    "AI service quota exceeded. Please try again tomorrow."
-  );
+  throw new Error("AI service quota exceeded. Please try again tomorrow.");
 }

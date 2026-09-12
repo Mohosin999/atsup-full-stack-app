@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import api from "../api/api";
 
 function generateFingerprint(): string {
-  const stored = localStorage.getItem("atsup_fp");
+  const stored = localStorage.getItem("cvscan_fp");
   if (stored) return stored;
 
   const components = [
@@ -24,7 +24,7 @@ function generateFingerprint(): string {
   }
 
   const fp = "fp_" + Math.abs(hash).toString(36);
-  localStorage.setItem("atsup_fp", fp);
+  localStorage.setItem("cvscan_fp", fp);
   return fp;
 }
 

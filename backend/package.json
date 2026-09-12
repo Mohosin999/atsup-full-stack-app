@@ -1,7 +1,7 @@
 {
-  "name": "atsup-backend",
+  "name": "cvscan-backend",
   "version": "1.0.0",
-  "description": "ATSUp is provides direction to correct your cv",
+  "description": "CVScan is provides direction to correct your cv",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {

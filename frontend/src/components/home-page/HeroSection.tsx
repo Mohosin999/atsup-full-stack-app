@@ -9,7 +9,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ user, onLogout }: HeroSectionProps) {
   return (
-    <section className="pt-10 md:pt-14 lg:pt-6 xl:pt-16 2xl:pt-20 pb-0 md:pb-4 lg:pb-0 xl:pb-10 2xl:pb-16 text-center lg:text-start">
+    <section className="pt-10 md:pt-14 lg:pt-6 xl:pt-20 2xl:pt-24 pb-0 md:pb-4 lg:pb-0 xl:pb-10 2xl:pb-16 text-center lg:text-start">
       <Wrapper>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-10 items-center">
           {/* Left Content - 2/3 */}

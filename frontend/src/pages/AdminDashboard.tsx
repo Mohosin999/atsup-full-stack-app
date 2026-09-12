@@ -308,9 +308,9 @@ const AdminDashboard: React.FC = () => {
                   <div className="p-4 xl:p-6 text-center border-b border-white/30 xl:border-r xl:border-b-0">
                     <h3 className="text-xs font-medium flex items-center justify-center">
                       Total Visitors
-                      <span className="relative flex h-2 w-2 ml-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full bg-cyan-400 opacity-75" />
-                        <span className="relative inline-flex h-2 w-2 bg-cyan-500" />
+                      <span className="relative flex h-2 w-2 ml-2 ">
+                        <span className="animate-ping absolute inline-flex h-full w-full bg-cyan-400 opacity-75 rounded-full" />
+                        <span className="relative inline-flex h-2 w-2 bg-cyan-500 rounded-full" />
                       </span>
                     </h3>
                     <p className="text-2xl lg:text-3xl font-bold mt-2">

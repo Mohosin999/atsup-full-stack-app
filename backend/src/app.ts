@@ -15,13 +15,13 @@ app.set("trust proxy", 1);
 applyMiddleware(app);
 
 app.get("/", (_req: Request, res: Response) => {
-  res.send("ATSUp - Welcome to the API");
+  res.send("CVScan - Welcome to the API");
 });
 
 app.get("/health", (_req: Request, res: Response) => {
   res.json({
     status: "OK",
-    message: "ATSUp is healthy",
+    message: "CVScan is healthy",
   });
 });
 

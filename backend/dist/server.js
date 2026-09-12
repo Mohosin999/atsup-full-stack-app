@@ -86,8 +86,9 @@ var env = {
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
   googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL || "",
   geminiApiKey: process.env.GEMINI_API_KEY || "",
+  geminiApiKeySecondary: process.env.GEMINI_API_KEY_SECONDARY || "",
   frontendUrl: process.env.FRONTEND_URL || "",
-  maxFileSize: getEnvNumber("MAX_FILE_SIZE", 10 * 1024 * 1024),
+  maxFileSize: getEnvNumber("MAX_FILE_SIZE", 5 * 1024 * 1024),
   promptVersion: process.env.PROMPT_VERSION || "v1",
   aiCacheTtl: getEnvNumber("AI_CACHE_TTL", 7 * 24 * 60 * 60)
 };
@@ -378,10 +379,10 @@ async function deleteRefreshToken(token) {
 }
 async function deleteAllRefreshTokensForUser(userId) {
   const redis2 = getRedisClient();
-  const keys = await redis2.keys(`${REFRESH_PREFIX}*`);
-  if (keys.length === 0) return;
+  const keys2 = await redis2.keys(`${REFRESH_PREFIX}*`);
+  if (keys2.length === 0) return;
   const pipeline = redis2.pipeline();
-  for (const key of keys) {
+  for (const key of keys2) {
     const value = await redis2.get(key);
     if (value) {
       try {
@@ -1018,8 +1019,6 @@ import fs3 from "fs";
 
 // src/shared/config/gemini.ts
 import { GoogleGenAI } from "@google/genai";
-var genAI = new GoogleGenAI({ apiKey: env.geminiApiKey });
-var GEMINI_MODEL = "gemini-2.5-flash";
 
 // src/shared/ai/gemini/geminiErrors.ts
 import { ApiError } from "@google/genai";
@@ -1044,6 +1043,33 @@ var throwIfQuotaError = (error) => {
     );
   }
 };
+
+// src/shared/config/gemini.ts
+var GEMINI_MODEL = "gemini-3.1-flash-lite";
+var keys = [env.geminiApiKey, env.geminiApiKeySecondary].filter(
+  Boolean
+);
+var activeIndex = 0;
+function getClient(index) {
+  return new GoogleGenAI({ apiKey: keys[index] });
+}
+async function generateContentWithFailover(params) {
+  for (let attempt = 0; attempt < keys.length + 1; attempt++) {
+    const keyIndex = (activeIndex + attempt) % keys.length;
+    try {
+      const client = getClient(keyIndex);
+      const result = await client.models.generateContent(params);
+      activeIndex = keyIndex;
+      return result;
+    } catch (error) {
+      if (!isGeminiQuotaError(error)) throw error;
+      console.warn(`[gemini] key ${keyIndex} quota exceeded`);
+    }
+  }
+  throw new Error(
+    "AI service quota exceeded. Please try again tomorrow."
+  );
+}
 
 // src/shared/ai/cache/aiCache.ts
 import crypto from "crypto";
@@ -1217,7 +1243,7 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
     parts.push({ text: textPart });
   }
   try {
-    const result = await genAI.models.generateContent({
+    const result = await generateContentWithFailover({
       model: GEMINI_MODEL,
       contents: [{ role: "user", parts }]
     });
@@ -1388,7 +1414,7 @@ ${jdText}
 Research this job description thoroughly and return ONLY the valid JSON structure specified above.
 `;
   try {
-    const result = await genAI.models.generateContent({
+    const result = await generateContentWithFailover({
       model: GEMINI_MODEL,
       contents: [{ role: "user", parts: [{ text: textPart }] }]
     });
@@ -3027,10 +3053,10 @@ var renameAtsScoreController = async (req, res) => {
 // src/modules/ats-score-check/atsScoreCheck.routes.ts
 var router3 = Router3();
 router3.use(authenticate);
-router3.post("/parse-resume", atsLimiter, upload.single("resume"), parseResume2);
-router3.post("/parse-jd", atsLimiter, parseJobDescription2);
-router3.post("/analyze", atsLimiter, analyzeAtsScore);
-router3.post("/rescan/:id", atsLimiter, rescanAtsScore);
+router3.post("/parse-resume", upload.single("resume"), parseResume2);
+router3.post("/parse-jd", parseJobDescription2);
+router3.post("/analyze", analyzeAtsScore);
+router3.post("/rescan/:id", rescanAtsScore);
 router3.get("/history", getAtsScores);
 router3.get("/history/:id", getAtsScore);
 router3.delete("/history/:id", deleteAtsScoreController);
@@ -3450,28 +3476,28 @@ var toGmt6HourKey = (date) => new Date(date.getTime() + TZ_OFFSET_MS).toISOStrin
 var toGmt6DayKey = (date) => new Date(date.getTime() + TZ_OFFSET_MS).toISOString().slice(0, 10);
 var fromGmt6 = (year, month, day, hour = 0) => new Date(Date.UTC(year, month, day, hour) - TZ_OFFSET_MS);
 var buildBuckets = (start, end, hourly) => {
-  const keys = [];
+  const keys2 = [];
   const labels = [];
   const cursor = new Date(start);
   while (cursor < end) {
     if (hourly) {
       const key = toGmt6HourKey(cursor);
-      keys.push(key);
+      keys2.push(key);
       labels.push(`${key.slice(11)}:00`);
       cursor.setUTCHours(cursor.getUTCHours() + 1);
     } else {
       const key = toGmt6DayKey(cursor);
-      keys.push(key);
+      keys2.push(key);
       labels.push(`${key.slice(8)}/${key.slice(5, 7)}`);
       cursor.setUTCDate(cursor.getUTCDate() + 1);
     }
   }
-  return { keys, labels };
+  return { keys: keys2, labels };
 };
 var fetchSeries = async (model, dateField, start, end, hourly) => {
-  const { keys, labels } = buildBuckets(start, end, hourly);
+  const { keys: keys2, labels } = buildBuckets(start, end, hourly);
   const counts = {};
-  keys.forEach((k) => counts[k] = 0);
+  keys2.forEach((k) => counts[k] = 0);
   const records = await prisma[model].findMany({
     where: {
       [dateField]: { gte: start, lt: end }
@@ -3483,7 +3509,7 @@ var fetchSeries = async (model, dateField, start, end, hourly) => {
     const key = hourly ? toGmt6HourKey(t) : toGmt6DayKey(t);
     if (counts[key] !== void 0) counts[key]++;
   });
-  return { labels, values: keys.map((k) => counts[k]) };
+  return { labels, values: keys2.map((k) => counts[k]) };
 };
 var sum = (values) => values.reduce((a, b) => a + b, 0);
 var getWindow = (period) => {

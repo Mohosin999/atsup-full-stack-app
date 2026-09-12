@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { CheckCircle, X, Upload } from "lucide-react";
@@ -53,6 +53,37 @@ export default function ResumeScanForm({
   const [activeStep, setActiveStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
+  const STEP_MILESTONES = [33, 70, 100];
+  const [displayProgress, setDisplayProgress] = useState(0);
+  const progressRef = useRef(0);
+  const targetRef = useRef(33);
+
+  useEffect(() => {
+    const done = completedSteps.length;
+    const newTarget = done < STEP_MILESTONES.length ? STEP_MILESTONES[done] : 100;
+    targetRef.current = newTarget;
+    if (progressRef.current < newTarget) {
+      progressRef.current = newTarget;
+      setDisplayProgress(newTarget);
+    }
+  }, [completedSteps.length]);
+
+  useEffect(() => {
+    if (!pipelineOpen) {
+      setDisplayProgress(0);
+      progressRef.current = 0;
+      targetRef.current = 33;
+      return;
+    }
+    const id = setInterval(() => {
+      if (progressRef.current < targetRef.current) {
+        const next = Math.min(progressRef.current + 3, targetRef.current);
+        progressRef.current = next;
+        setDisplayProgress(next);
+      }
+    }, 500);
+    return () => clearInterval(id);
+  }, [pipelineOpen]);
 
   // Background pre-parse: PDF select হলেই resume LLM parse শুরু (invisible).
   // Click-এর সময় ongoing/done promise reuse হয়, JD parallel-এ join করে।
@@ -76,7 +107,7 @@ export default function ResumeScanForm({
 
   const aiScan = getAiScanStatus(user?.subscription, user?.role);
 
-  const showMessage = (index: number, delay = 950) =>
+  const showMessage = (index: number, delay = 150) =>
     new Promise<void>((resolve) => {
       setCurrentMessage(PIPELINE_MESSAGES[index]);
       window.setTimeout(resolve, delay);
@@ -116,6 +147,9 @@ export default function ResumeScanForm({
     setActiveStep(0);
     setCompletedSteps([]);
     setCurrentMessage(PIPELINE_MESSAGES[0]);
+    setDisplayProgress(0);
+    progressRef.current = 0;
+    targetRef.current = 33;
 
     try {
       setCurrentMessage(PIPELINE_MESSAGES[0]);
@@ -191,7 +225,7 @@ export default function ResumeScanForm({
         );
       }
 
-      await showMessage(3, 1200);
+      await showMessage(3, 600);
       setCompletedSteps(["resume", "jd", "ats"]);
 
       setPipelineOpen(false);
@@ -259,7 +293,7 @@ export default function ResumeScanForm({
                 and drop
               </p>
               <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
-                PDF only (MAX. 10MB)
+                PDF only (MAX. 5MB)
               </p>
               <input
                 type="file"
@@ -268,6 +302,11 @@ export default function ResumeScanForm({
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                      toast.error("File too large. Maximum size is 5MB.");
+                      e.target.value = "";
+                      return;
+                    }
                     setResumeFile(file);
                     setResumeName(file.name);
                     startBackgroundResumeParse(file);
@@ -328,6 +367,7 @@ export default function ResumeScanForm({
         activeStep={activeStep}
         completedSteps={completedSteps}
         currentMessage={currentMessage}
+        simProgress={displayProgress}
       />
     </>
   );

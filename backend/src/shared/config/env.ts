@@ -36,7 +36,7 @@ export const env: EnvConfig = {
   googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL || '',
   geminiApiKey: process.env.GEMINI_API_KEY || '',
   frontendUrl: process.env.FRONTEND_URL || '',
-  maxFileSize: getEnvNumber('MAX_FILE_SIZE', 10 * 1024 * 1024),
+  maxFileSize: getEnvNumber('MAX_FILE_SIZE', 5 * 1024 * 1024),
   promptVersion: process.env.PROMPT_VERSION || 'v1',
   aiCacheTtl: getEnvNumber('AI_CACHE_TTL', 7 * 24 * 60 * 60),
 };

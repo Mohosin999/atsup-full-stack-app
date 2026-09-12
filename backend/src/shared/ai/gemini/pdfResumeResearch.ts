@@ -1,4 +1,4 @@
-import { genAI, GEMINI_MODEL } from "../../config/gemini";
+import { GEMINI_MODEL, generateContentWithFailover } from "../../config/gemini";
 import { normalizeHardSkills } from "../../skills/skillNormalizer";
 import { throwIfQuotaError } from "./geminiErrors";
 import { hashBuffer, buildResumeKey, getCache, setCache } from "../cache/aiCache";
@@ -247,7 +247,7 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
   }
 
   try {
-    const result = await genAI.models.generateContent({
+    const result = await generateContentWithFailover({
       model: GEMINI_MODEL,
       contents: [{ role: "user", parts }],
     });

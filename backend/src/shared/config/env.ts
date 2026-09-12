@@ -12,6 +12,7 @@ interface EnvConfig {
   googleClientSecret: string;
   googleCallbackUrl: string;
   geminiApiKey: string;
+  geminiApiKeySecondary: string;
   frontendUrl: string;
   maxFileSize: number;
   promptVersion: string;
@@ -35,6 +36,7 @@ export const env: EnvConfig = {
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
   googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL || '',
   geminiApiKey: process.env.GEMINI_API_KEY || '',
+  geminiApiKeySecondary: process.env.GEMINI_API_KEY_SECONDARY || '',
   frontendUrl: process.env.FRONTEND_URL || '',
   maxFileSize: getEnvNumber('MAX_FILE_SIZE', 5 * 1024 * 1024),
   promptVersion: process.env.PROMPT_VERSION || 'v1',

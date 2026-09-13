@@ -1051,7 +1051,7 @@ var throwIfQuotaError = (error) => {
 };
 
 // src/shared/config/gemini.ts
-var GEMINI_MODEL = "gemini-2.5-flash";
+var GEMINI_MODEL = "gemini-3.1-flash-lite";
 var keys = [env.geminiApiKey, env.geminiApiKeySecondary].filter(
   Boolean
 );
@@ -1115,7 +1115,7 @@ async function setCache(key, value, ttlSec = DEFAULT_TTL) {
 
 // src/shared/ai/gemini/pdfResumeResearch.ts
 var RESEARCH_PROMPT = `
-You are an expert AI resume researcher. Your task is to analyze the provided resume VERY carefully and extract all information from it accurately.
+You are an expert AI resume researcher. Analyze the provided resume VERY carefully and extract all information accurately.
 
 RESEARCH THE FOLLOWING DETAILS:
 1. Personal info (full name, job title, contact: address, email, phone)
@@ -1123,24 +1123,24 @@ RESEARCH THE FOLLOWING DETAILS:
 3. Work experience (role, company, startDate, endDate, responsibilities as bullet points)
 4. Education (degree, field of study, education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's"), startDate, endDate)
 5. Skills:
-   - hardSkills: ONLY technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, DevOps tools, software, technologies, APIs, etc.) - return ONLY the keyword names
-   - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
+   - hardSkills: All technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, tools, APIs, architectures, and professional practices such as RESTful APIs, GraphQL, Microservices, CI/CD, Agile, TDD, Unit Testing, Debugging, DevOps, Kanban, etc.)
+   - softSkills: Genuine interpersonal/behavioral skills only that are explicitly present in the resume (Communication, Leadership, Teamwork, Collaboration, Mentoring, Time Management, Problem-Solving, Adaptability, etc.). Do NOT include any technical skills or technologies.
 6. Projects (name, description as bullet points, startDate, endDate)
- 7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
- 8. measurableResults: array of strings \u2014 every experience bullet that contains a measurable impacts. More focus on experience section and less focus on projects section. Return [] if none.
- 9. actionVerbs: array of strings \u2014 the distinct strong action verbs found at the start of experience bullets (e.g. "led", "built", "optimized", "launched"). ore focus on experience section and less focus on projects section. Return [] if none.
- 10. wordCount: total number of words in the resume.
-10. educationSection: true if an education section exists.
-11. experienceSection: true if an experience/work section exists.
-12. workHistory: true if there is AT LEAST ONE work experience entry.
-13. dateFormatting: true if dates use "MM/YY or MM/YYYY or Month YYYY" format (e.g. 03/19, 03/2019, Mar 2019 or March 2019). false otherwise.
-14. layout: analyze the given PDF very carefully and answer the following questions correctly:
+7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
+8. measurableResults: array of strings \u2014 IDENTIFY ALL measurable impact/results from BOTH the entire experience section AND the entire projects section. Extract every distinct measurable impact/result phrase, including numbers, percentages, time saved, monetary values, scale/volume metrics, efficiency improvements, performance improvements, reductions, increases, growth, etc. Do not return full bullet points. If one bullet contains multiple measurable impacts, extract all of them separately. Do not limit the count. Return [] if no measurable impact is found.
+9. actionVerbs: array of strings \u2014 EXTRACT EVERY DISTINCT action verb appearing at the START of bullets across BOTH the entire experience section AND the entire projects section. Only extract the first meaningful action verb of each bullet. Collect all unique starting action verbs from both sections. Return [] if none.
+10. wordCount: total number of words in the resume.
+11. educationSection: true if an education section exists.
+12. experienceSection: true if an experience/work section exists.
+13. workHistory: true if there is AT LEAST ONE work experience entry.
+14. dateFormatting: true if dates use "MM/YY or MM/YYYY or Month YYYY" format (e.g. 03/19, 03/2019, Mar 2019 or March 2019). false otherwise.
+15. layout: analyze the given PDF very carefully and answer the following questions correctly:
     - isSingleColumn: true if the resume uses a single column layout
     - hasTables: true if tables are used in the layout
     - hasImages: true if images/photos are present
     - hasIcons: true if icons/graphics are present
     - hasMultiColumn: true if the resume uses a multi-column layout
-16. fontCheck: analyze the given PDF very carefully and answer the following questions correctly. I must need these answer correctly:
+16. fontCheck: analyze the given PDF very carefully and answer the following questions correctly:
     - isStandardFont: true if a standard/ATS-friendly font is used (Arial, Calibri, Times New Roman, Helvetica, Georgia, Verdana, etc.)
     - fontName: the primary font name of resume text.
     - isReadableSize: true if the font size is readable (typically 10-12pt body text)
@@ -1148,8 +1148,11 @@ RESEARCH THE FOLLOWING DETAILS:
 STRICT RULES:
 - NO field is required. If a piece of information is NOT present in the resume, set it to empty: "" for strings, [] for arrays, false for booleans.
 - Do NOT invent or hallucinate information. Only extract what is actually present in the resume.
-- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" \u2192 "React"; "Node.js", "NodeJS", "Node" \u2192 "Node.js"; "JavaScript", "JS" \u2192 "JavaScript"; "Next.js", "NextJS" \u2192 "Next.js"). NEVER list two different spellings of the same skill as separate entries.
-- Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
+- hardSkills and softSkills must contain pure single keyword names only \u2014 never phrases or descriptions.
+- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants (e.g. "React", "React.js", "ReactJS" \u2192 "React"; "Node.js", "NodeJS", "Node" \u2192 "Node.js"; "JavaScript", "JS" \u2192 "JavaScript").
+- Methodology/practice terms (Agile, Scrum, CI/CD, DevOps, TDD, Debugging, Testing, etc.) always go into hardSkills, never softSkills.
+- Deduplicate case-insensitively.
+- When two skills have very similar meaning, prefer the most common/canonical wording.
 - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
 
 JSON STRUCTURE:
@@ -1160,7 +1163,7 @@ JSON STRUCTURE:
     "contact": {
       "address": "",
       "email": "",
-      "phone": "",
+      "phone": ""
     }
   },
   "summary": "",
@@ -1179,7 +1182,7 @@ JSON STRUCTURE:
       "field": "",
       "education_level": "",
       "startDate": "",
-      "endDate": "",
+      "endDate": ""
     }
   ],
   "skills": {
@@ -1191,9 +1194,8 @@ JSON STRUCTURE:
       "name": "",
       "description": [""],
       "startDate": "",
-      "endDate": "",
+      "endDate": ""
     }
-  ]
   ],
   "yearsOfExperience": "",
   "measurableResults": [],
@@ -1213,7 +1215,7 @@ JSON STRUCTURE:
   "fontCheck": {
     "isStandardFont": false,
     "fontName": "",
-    "isReadableSize": false,
+    "isReadableSize": false
   }
 }
 `;
@@ -1272,77 +1274,77 @@ Research this resume thoroughly and return ONLY the valid JSON structure specifi
   }
 };
 var normalizeResearchResult = (raw2) => {
-  const str = (v, fallback = "") => {
+  const str2 = (v, fallback = "") => {
     if (typeof v === "string") return v;
     if (v == null) return fallback;
     return String(v);
   };
-  const bool = (v, fallback = false) => {
+  const bool2 = (v, fallback = false) => {
     if (typeof v === "boolean") return v;
     if (v == null) return fallback;
     return Boolean(v);
   };
-  const arr = (v) => {
+  const arr2 = (v) => {
     if (Array.isArray(v)) return v;
     return [];
   };
   return {
     personal_info: {
-      fullName: str(raw2?.personal_info?.fullName),
-      jobTitle: str(raw2?.personal_info?.jobTitle),
+      fullName: str2(raw2?.personal_info?.fullName),
+      jobTitle: str2(raw2?.personal_info?.jobTitle),
       contact: {
-        address: str(raw2?.personal_info?.contact?.address),
-        email: str(raw2?.personal_info?.contact?.email),
-        phone: str(raw2?.personal_info?.contact?.phone)
+        address: str2(raw2?.personal_info?.contact?.address),
+        email: str2(raw2?.personal_info?.contact?.email),
+        phone: str2(raw2?.personal_info?.contact?.phone)
       }
     },
-    summary: str(raw2?.summary),
-    experience: arr(raw2?.experience).map((exp) => ({
-      role: str(exp?.role),
-      company: str(exp?.company),
-      startDate: str(exp?.startDate),
-      endDate: str(exp?.endDate),
-      responsibilities: arr(exp?.responsibilities).map((v) => str(v))
+    summary: str2(raw2?.summary),
+    experience: arr2(raw2?.experience).map((exp) => ({
+      role: str2(exp?.role),
+      company: str2(exp?.company),
+      startDate: str2(exp?.startDate),
+      endDate: str2(exp?.endDate),
+      responsibilities: arr2(exp?.responsibilities).map((v) => str2(v))
     })),
-    education: arr(raw2?.education).map((edu) => ({
-      degree: str(edu?.degree),
-      field: str(edu?.field),
-      education_level: str(edu?.education_level),
-      startDate: str(edu?.startDate),
-      endDate: str(edu?.endDate)
+    education: arr2(raw2?.education).map((edu) => ({
+      degree: str2(edu?.degree),
+      field: str2(edu?.field),
+      education_level: str2(edu?.education_level),
+      startDate: str2(edu?.startDate),
+      endDate: str2(edu?.endDate)
     })),
     skills: {
       // hardSkills: normalizeHardSkills(
       //   arr(raw?.skills?.hardSkills).map((v: any) => str(v)),
       // ),
-      hardSkills: arr(raw2?.skills?.hardSkills).map((v) => str(v)),
-      softSkills: arr(raw2?.skills?.softSkills).map((v) => str(v))
+      hardSkills: arr2(raw2?.skills?.hardSkills).map((v) => str2(v)),
+      softSkills: arr2(raw2?.skills?.softSkills).map((v) => str2(v))
     },
-    projects: arr(raw2?.projects).map((proj) => ({
-      name: str(proj?.name),
-      description: arr(proj?.description).map((v) => str(v)),
-      startDate: str(proj?.startDate),
-      endDate: str(proj?.endDate)
+    projects: arr2(raw2?.projects).map((proj) => ({
+      name: str2(proj?.name),
+      description: arr2(proj?.description).map((v) => str2(v)),
+      startDate: str2(proj?.startDate),
+      endDate: str2(proj?.endDate)
     })),
-    yearsOfExperience: str(raw2?.yearsOfExperience),
-    measurableResults: arr(raw2?.measurableResults).map((v) => str(v)),
-    actionVerbs: arr(raw2?.actionVerbs).map((v) => str(v)),
-    wordCount: str(raw2?.wordCount),
-    educationSection: bool(raw2?.educationSection),
-    experienceSection: bool(raw2?.experienceSection),
-    workHistory: bool(raw2?.workHistory),
-    dateFormatting: bool(raw2?.dateFormatting),
+    yearsOfExperience: str2(raw2?.yearsOfExperience),
+    measurableResults: arr2(raw2?.measurableResults).map((v) => str2(v)),
+    actionVerbs: arr2(raw2?.actionVerbs).map((v) => str2(v)),
+    wordCount: str2(raw2?.wordCount),
+    educationSection: bool2(raw2?.educationSection),
+    experienceSection: bool2(raw2?.experienceSection),
+    workHistory: bool2(raw2?.workHistory),
+    dateFormatting: bool2(raw2?.dateFormatting),
     layout: {
-      isSingleColumn: bool(raw2?.layout?.isSingleColumn, true),
-      hasTables: bool(raw2?.layout?.hasTables),
-      hasImages: bool(raw2?.layout?.hasImages),
-      hasIcons: bool(raw2?.layout?.hasIcons),
-      hasMultiColumn: bool(raw2?.layout?.hasMultiColumn)
+      isSingleColumn: bool2(raw2?.layout?.isSingleColumn, true),
+      hasTables: bool2(raw2?.layout?.hasTables),
+      hasImages: bool2(raw2?.layout?.hasImages),
+      hasIcons: bool2(raw2?.layout?.hasIcons),
+      hasMultiColumn: bool2(raw2?.layout?.hasMultiColumn)
     },
     fontCheck: {
-      isStandardFont: bool(raw2?.fontCheck?.isStandardFont, true),
-      fontName: str(raw2?.fontCheck?.fontName),
-      isReadableSize: bool(raw2?.fontCheck?.isReadableSize, true)
+      isStandardFont: bool2(raw2?.fontCheck?.isStandardFont, true),
+      fontName: str2(raw2?.fontCheck?.fontName),
+      isReadableSize: bool2(raw2?.fontCheck?.isReadableSize, true)
     }
   };
 };
@@ -1375,16 +1377,21 @@ RESEARCH THE FOLLOWING DETAILS:
    - field: The field of study (e.g. "Computer Science", "Engineering")
    - education_level: The education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's")
 3. skills:
-   - hardSkills: ONLY technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, DevOps tools, software, technologies, APIs, etc.) - return ONLY the keyword names
-   - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
+   - hardSkills: All technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, tools, APIs, architectures, and professional practices such as RESTful APIs, GraphQL, Microservices, CI/CD, Agile, TDD, Unit Testing, Debugging, DevOps, Kanban, etc.)
+   - softSkills: Genuine interpersonal/behavioral skills only. Include both:
+     (a) skills explicitly named in the job description, and
+     (b) skills clearly implied by responsibilities (e.g. "mentor junior engineers" \u2192 Mentoring, "collaborate across teams" \u2192 Teamwork/Collaboration, "manage multiple deadlines" \u2192 Time Management, "present to stakeholders" \u2192 Communication)
 4. yearsOfExperience: Total years of experience required (e.g. "3-5 years", "5+ years", "2 years")
 
 STRICT RULES:
 - NO field is required. If a piece of information is NOT present in the job description, set it to empty: "" for strings, [] for arrays.
-- Do NOT invent or hallucinate information. Only extract what is actually present.
-- hardSkills must ONLY contain pure keyword names, never descriptions or phrases.
-- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" \u2192 "React"; "Node.js", "NodeJS", "Node" \u2192 "Node.js"; "JavaScript", "JS" \u2192 "JavaScript"; "Next.js", "NextJS" \u2192 "Next.js"). NEVER list two different spellings of the same skill as separate entries.
-- Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
+- Do NOT invent or hallucinate information. Only extract what is actually present or clearly implied.
+- hardSkills must ONLY contain pure single keyword names, never descriptions or phrases.
+- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants (e.g. "React", "React.js", "ReactJS" \u2192 "React"; "Node.js", "NodeJS", "Node" \u2192 "Node.js"; "JavaScript", "JS" \u2192 "JavaScript").
+- Each hardSkills and softSkills entry must be a single clean skill name \u2014 never "X and Y" or comma lists.
+- Deduplicate case-insensitively.
+- When two skills have very similar meaning, prefer the exact wording used in the job description.
+- Methodology/practice terms (Agile, Scrum, CI/CD, DevOps, TDD, Debugging, Testing, etc.) always go into hardSkills, never softSkills.
 - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
 
 JSON STRUCTURE:
@@ -1439,30 +1446,30 @@ Research this job description thoroughly and return ONLY the valid JSON structur
   }
 };
 var normalizeJDResearchResult = (raw2) => {
-  const str = (v, fallback = "") => {
+  const str2 = (v, fallback = "") => {
     if (typeof v === "string") return v;
     if (v == null) return fallback;
     return String(v);
   };
-  const arr = (v) => {
+  const arr2 = (v) => {
     if (Array.isArray(v)) return v;
     return [];
   };
   return {
-    jobTitle: str(raw2?.jobTitle),
+    jobTitle: str2(raw2?.jobTitle),
     education: {
-      degree: str(raw2?.education?.degree),
-      field: str(raw2?.education?.field),
-      education_level: str(raw2?.education?.education_level)
+      degree: str2(raw2?.education?.degree),
+      field: str2(raw2?.education?.field),
+      education_level: str2(raw2?.education?.education_level)
     },
     skills: {
       // hardSkills: normalizeHardSkills(
       //   arr(raw?.skills?.hardSkills).map((v: any) => str(v)),
       // ),
-      hardSkills: arr(raw2?.skills?.hardSkills).map((v) => str(v)),
-      softSkills: arr(raw2?.skills?.softSkills).map((v) => str(v))
+      hardSkills: arr2(raw2?.skills?.hardSkills).map((v) => str2(v)),
+      softSkills: arr2(raw2?.skills?.softSkills).map((v) => str2(v))
     },
-    yearsOfExperience: str(raw2?.yearsOfExperience)
+    yearsOfExperience: str2(raw2?.yearsOfExperience)
   };
 };
 
@@ -1668,23 +1675,23 @@ var educationScore = (resume, jdEducation) => {
 var parseYearsOfExperience = (raw2) => {
   if (raw2 == null || raw2 === "") return 0;
   if (typeof raw2 === "number") return isNaN(raw2) ? 0 : Math.round(raw2 * 10) / 10;
-  const str = String(raw2).toLowerCase().trim();
-  if (!str) return 0;
+  const str2 = String(raw2).toLowerCase().trim();
+  if (!str2) return 0;
   let totalYears = 0;
   let foundUnit = false;
   const yearRe = /(\d+(?:\.\d+)?)\s*(?:years?|yrs?)\b/g;
   let m;
-  while ((m = yearRe.exec(str)) !== null) {
+  while ((m = yearRe.exec(str2)) !== null) {
     totalYears += parseFloat(m[1]);
     foundUnit = true;
   }
   const monthRe = /(\d+(?:\.\d+)?)\s*(?:months?|mos?)\b/g;
-  while ((m = monthRe.exec(str)) !== null) {
+  while ((m = monthRe.exec(str2)) !== null) {
     totalYears += parseFloat(m[1]) / 12;
     foundUnit = true;
   }
   if (foundUnit) return Math.round(totalYears * 10) / 10;
-  const nums = str.match(/\d+(?:\.\d+)?/g);
+  const nums = str2.match(/\d+(?:\.\d+)?/g);
   if (!nums) return 0;
   return Math.max(...nums.map(Number));
 };
@@ -2085,7 +2092,7 @@ var buildSummarySubgroup = (resume) => {
     key: "summary",
     title: "Summary",
     score,
-    weight: 20,
+    weight: 15,
     summary: detail,
     checks
   };
@@ -2118,7 +2125,7 @@ var buildJobLevelSubgroup = (jd, resumeYears) => {
 var buildMeasurableSubgroup = (measurable) => {
   const score = measurableResultsScore(measurable.count);
   const status = measurable.count >= 5 ? "passed" : "failed";
-  const detail = measurable.count >= 5 ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!` : measurable.count > 0 ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.` : "We couldn't find any measurable results in experience section. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
+  const detail = measurable.count >= 5 ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume, which is great!` : measurable.count > 0 ? `We found ${measurable.count} measurable results in your resume but it could be better. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.` : "We couldn't find any measurable results in your resume. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.";
   const checks = [
     { label: "Measurable results (5+)", status, detail, weight: 20 }
   ];
@@ -2126,7 +2133,7 @@ var buildMeasurableSubgroup = (measurable) => {
     key: "measurableResults",
     title: "Measurable Results",
     score,
-    weight: 20,
+    weight: 30,
     summary: detail,
     checks
   };
@@ -2134,13 +2141,13 @@ var buildMeasurableSubgroup = (measurable) => {
 var buildActionVerbsSubgroup = (actionVerbs) => {
   const score = actionVerbsScore(actionVerbs.count);
   const status = actionVerbs.count >= 5 ? "passed" : "failed";
-  const detail = actionVerbs.count >= 5 ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in experience section, which is great!` : actionVerbs.count > 0 ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) to stand out.` : "We couldn't find any action verbs in experience section. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) in your resume's experience section to stand out.";
+  const detail = actionVerbs.count >= 5 ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in your resume, which is great!` : actionVerbs.count > 0 ? `We found ${actionVerbs.count} action verbs in your resume but it could be better. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) at the start to stand out.` : "We couldn't find any action verbs in your resume. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) at the start to stand out.";
   const checks = [{ label: "Action verbs (5+)", status, detail, weight: 20 }];
   return {
     key: "actionVerbs",
     title: "Action Verbs",
     score,
-    weight: 20,
+    weight: 15,
     summary: detail,
     checks
   };
@@ -3289,26 +3296,58 @@ import fs5 from "fs";
 // src/shared/ai/gemini/resumeRewriter.ts
 import crypto2 from "crypto";
 var REWRITE_RESUME_PROMPT = `
-You are an expert resume writer. Your task is to rewrite the provided resume based on the job description to make it ATS-optimized and tailored to the job.
+You are an expert resume writer. Rewrite the provided resume to be ATS-optimized and tailored to the job description. Keep every piece of information 100% truthful. Never invent experience, skills, metrics, or qualifications.
 
 INPUTS:
-1. ORIGINAL RESUME TEXT: The text content of the user's resume
-2. JOB DESCRIPTION: The target job description
+1. ORIGINAL RESUME TEXT
+2. JOB DESCRIPTION
 
-INSTRUCTIONS:
-- Rewrite the resume to better match the job description while keeping all information truthful
-- Do NOT invent or hallucinate any experience, skills, or qualifications
-- Only reword and reframe existing information to highlight relevance to the job description
-- Use the exact same structure and sections as the original resume
-- Output must be valid JSON matching the exact structure below
-- Experience: 2-3 bullet points per role maximum
-- Bullets: Start with strong action verbs + measurable impact (use numbers, dollar amounts, time saved, scale, rankings - NOT just percentages)
-- Skills: Extract and prioritize relevant skills from the job description (max 10-12)
-- Summary: 2-3 lines max, tailored to the job description requirements
-- Never invent experience; only reword/reframe existing content
-- Prioritize job description keywords for ATS optimization
-- If information is missing in the original resume, leave the field blank or empty array
-- Return ONLY valid JSON matching the structure below. No markdown, no extra text, no explanations.
+CORE RULES:
+- Only reword and reframe existing information to better match the job description.
+- Use the exact same structure and sections as the original resume.
+- Output ONLY valid JSON matching the structure below. No markdown, no explanations.
+- Experience & Projects: maximum 3 bullet points per role/project.
+- Every highlight must be exactly ONE single concise sentence, maximun 85 characters (no multi-sentence bullets, no line breaks).
+
+JOB TITLE RULE:
+- personalInfo.jobTitle = the exact or near-exact target role title from the JOB DESCRIPTION.
+- Only fall back to the candidate\u2019s current title if the job description has no clear title.
+
+SUMMARY RULES:
+- Maximum 3 lines.
+- Qualitative positioning statement only (who the candidate is + top strengths for this role and top achievements).
+- Never include numbers, percentages, dollar amounts, or any metrics.
+- Naturally weave in important keywords from the job description (technical terms, domain terms, soft-skill phrases) while keeping the tone natural and professional.
+
+BULLET / HIGHLIGHT RULES:
+- Start every bullet with a strong action verb.
+- Mix quantified and qualitative impact.
+- Quantified metrics (numbers, %, $, x, time, scale, counts) are allowed ONLY when they are genuinely supported by the original resume. Never fabricate numbers.
+- Across the "experience" and "projects" sections COMBINED, there must be AT LEAST 5 highlights that contain a genuine quantifiable result. Give higher priority to putting measurable impact in the Experience section.
+- If the original resume has very few metrics, still try hard to surface any countable facts (team size, features shipped, users, releases, etc.) truthfully. Only keep a bullet purely qualitative when no real number can be extracted.
+- Naturally include relevant keywords from the job description in the bullets when they fit the existing content.
+
+SKILLS RULES (STRICT):
+- Create EXACTLY 2 categories:
+  1. "Technical Skills"
+  2. "Soft Skills"
+- Technical Skills = programming languages, frameworks, libraries, databases, cloud platforms, tools, APIs, architectures, and professional practices (examples: RESTful APIs, GraphQL, Microservices, CI/CD, Agile, TDD, Unit Testing, Debugging, DevOps, etc.).
+- Soft Skills = genuine interpersonal/behavioral traits (Communication, Leadership, Teamwork, Collaboration, Mentoring, Time Management, Problem-Solving, etc.).
+- Every skill must be a single clean keyword (no phrases like "React and Node").
+- Canonicalize variants (React.js \u2192 React, Node.js \u2192 Node.js).
+- Deduplicate case-insensitively.
+
+SKILL GROUNDING:
+- Technical Skills: Only include a skill if it appears in the original resume OR is required by the job description AND is supported by something the candidate actually did.
+- Soft Skills: Take the UNION of (a) every soft skill from the original resume + (b) every soft skill required or clearly implied by the job description. Deduplicate case-insensitively. When two skills have very similar meaning, keep the exact wording from the job description.
+
+ATS KEYWORD COVERAGE:
+- Extract all hard/technical keywords and soft-skill keywords from the job description.
+- Place them in the correct skillCategories bucket when supported by the resume.
+- Also weave important keywords naturally into the Summary and Experience/Project bullets (without inventing new claims).
+
+SECTION TITLE RULES:
+- Use simple standard titles (Summary, Experience, Skills, Education, Projects, etc.) unless the original resume used a different custom title.
 
 JSON STRUCTURE:
 {
@@ -3319,15 +3358,8 @@ JSON STRUCTURE:
       "email": "",
       "phone": "",
       "linkedIn": "",
-      "address": {
-        "city": "",
-        "state": ""
-      },
-      "socialLinks": {
-        "github": "",
-        "portfolio": "",
-        "website": ""
-      }
+      "address": { "city": "", "state": "" },
+      "socialLinks": { "github": "", "portfolio": "", "website": "" }
     }
   },
   "summary": "",
@@ -3339,8 +3371,7 @@ JSON STRUCTURE:
       "startDate": "",
       "endDate": "",
       "current": false,
-      "highlights": [""],
-      "measurableImpacts": [""]
+      "highlights": [""]
     }
   ],
   "projects": [
@@ -3350,19 +3381,11 @@ JSON STRUCTURE:
       "startDate": "",
       "endDate": "",
       "current": false,
-      "links": {
-        "live": "",
-        "caseStudy": ""
-      },
-      "technologies": [""]
+      "links": { "live": "", "caseStudy": "" }
     }
   ],
   "achievements": [
-    {
-      "title": "",
-      "date": "",
-      "description": ""
-    }
+    { "title": "", "date": "", "description": "" }
   ],
   "education": [
     {
@@ -3374,22 +3397,12 @@ JSON STRUCTURE:
       "gpa": ""
     }
   ],
-  "skills": [""],
   "skillCategories": [
-    {
-      "name": "",
-      "skills": [""]
-    }
+    { "name": "Technical Skills", "skills": [""] },
+    { "name": "Soft Skills", "skills": [""] }
   ],
-  "hardSkills": [""],
-  "softSkills": [""],
-  "keywords": [""],
   "certifications": [
-    {
-      "name": "",
-      "issuer": "",
-      "date": ""
-    }
+    { "name": "", "issuer": "", "date": "" }
   ],
   "sectionTitles": {
     "summary": "",
@@ -3416,15 +3429,79 @@ JSON STRUCTURE:
   }
 }
 
-STRICT RULES:
-- NO field is required. If a piece of information is NOT present or applicable, set it to empty: "" for strings, [] for arrays, false for booleans.
-- Do NOT invent or hallucinate information. Only extract and reword what is actually present in the resume.
-- hardSkills must ONLY contain pure technical keyword names (programming languages, frameworks, etc.)
-- softSkills must ONLY contain non-technical interpersonal skills
-- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge spelling variants.
-- Each hardSkills/softSkills entry must be a single skill name - never phrases.
-- The output must be valid JSON and nothing else.
+FINAL RULES:
+- If information is missing, leave the field empty ("" or []).
+- Never invent or hallucinate anything.
+- skillCategories must contain exactly the two named entries.
+- Return ONLY the JSON object.
 `;
+var SKILL_AUDIT_PROMPT = `
+You are auditing a resume's skill list for accuracy against two source documents: the candidate's ORIGINAL RESUME and the TARGET JOB DESCRIPTION.
+
+You will be given a DRAFT skill list (already split into Technical Skills and Soft Skills). Correct it using these rules:
+
+TECHNICAL SKILLS RULES:
+- Keep a technical skill ONLY if it is explicitly present in the ORIGINAL RESUME, OR explicitly required in the JOB DESCRIPTION AND genuinely supported by something the candidate did in the ORIGINAL RESUME.
+- REMOVE any technical skill from the draft that fails this check (no basis in either source).
+- ADD any technical skill that IS genuinely present in the original resume or genuinely supported+required as above, but is MISSING from the draft list. This commonly happens due to wording/canonicalization differences - e.g. resume says "Node" and job description says "Node.js": the final list should include "Node.js". Another example: resume mentions "REST APIs" and job description says "RESTful services" - these are the same skill, include it once, canonicalized.
+- Canonicalize to exactly one clean name per technology (merge spelling variants like React/React.js -> React).
+- When two skills have very similar meaning, prefer the exact wording used in the JOB DESCRIPTION.
+- Never invent a technical skill with zero basis in either source.
+
+SOFT SKILLS RULES:
+- Keep every soft skill that is explicitly stated in the ORIGINAL RESUME's own skills list or text.
+- Keep every soft skill required or implied by the JOB DESCRIPTION - directly (explicitly named, e.g. "strong communication skills") or indirectly (implied by a described responsibility, e.g. "mentor junior engineers" implies Mentoring, "collaborate across teams" implies Teamwork/Collaboration, "manage multiple deadlines" implies Time Management, "present to stakeholders" implies Communication).
+- ADD any soft skill missing from the draft that meets either of the above two conditions (check the actual job description text carefully for direct and indirect signals).
+- REMOVE any soft skill in the draft that has ZERO basis in either the original resume or the job description (direct or indirect) - this is fabrication and must be removed.
+- When two soft skills have very similar meaning, prefer the exact wording used in the JOB DESCRIPTION.
+- If genuinely no soft skills apply after this check, return an empty array - do not pad with generic skills.
+
+GENERAL RULES:
+- Deduplicate case-insensitively. A skill cannot appear in both Technical Skills and Soft Skills - if ambiguous, methodology/practice terms (Agile Debugging, Testing, CI/CD, DevOps, Kanban, TDD, etc.) always belong in Technical Skills, never Soft Skills.
+- Each entry must be a single clean skill name - never a comma list or a phrase combining two skills.
+- Return ONLY valid JSON, no markdown, no explanation, no preamble, in exactly this shape:
+{"technicalSkills": ["..."], "softSkills": ["..."]}
+`;
+var auditSkillCategories = async (draftTechnical, draftSoft, resumeText, jobDescription) => {
+  try {
+    const textPart = `${SKILL_AUDIT_PROMPT}
+
+ORIGINAL RESUME:
+${resumeText}
+
+JOB DESCRIPTION:
+${jobDescription}
+
+DRAFT TECHNICAL SKILLS:
+${JSON.stringify(draftTechnical)}
+
+DRAFT SOFT SKILLS:
+${JSON.stringify(draftSoft)}
+
+Return ONLY the corrected JSON.
+`;
+    const result = await generateContentWithFailover({
+      model: GEMINI_MODEL,
+      contents: [{ role: "user", parts: [{ text: textPart }] }]
+    });
+    const text = result.text ?? "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.warn(
+        "[skill-audit] No JSON found in audit response, keeping draft skills"
+      );
+      return null;
+    }
+    const parsed = JSON.parse(jsonMatch[0]);
+    return {
+      technicalSkills: Array.isArray(parsed?.technicalSkills) ? parsed.technicalSkills.map((s) => String(s)) : [],
+      softSkills: Array.isArray(parsed?.softSkills) ? parsed.softSkills.map((s) => String(s)) : []
+    };
+  } catch (error) {
+    console.error("[skill-audit] Failed, falling back to draft skills:", error);
+    return null;
+  }
+};
 var rewriteResumeWithAI = async (resumeText, jobDescription) => {
   const hash = crypto2.createHash("sha256").update(resumeText + "||" + jobDescription).digest("hex");
   const key = `rewrite_${hash}`;
@@ -3456,7 +3533,19 @@ Rewrite the resume based on the job description and return ONLY the valid JSON s
       throw new Error("Invalid response format from AI");
     }
     const raw2 = JSON.parse(jsonMatch[0]);
-    const normalized = normalizeRewrittenResume(raw2);
+    const draft = buildDraftSkillCategories(raw2);
+    const audited = await auditSkillCategories(
+      draft.technical,
+      draft.soft,
+      resumeText,
+      jobDescription
+    );
+    const finalSkills = reconcileAuditedSkills(draft, audited);
+    const normalized = normalizeRewrittenResume(
+      raw2,
+      jobDescription,
+      finalSkills
+    );
     await setCache(key, normalized);
     console.log(`[cache] resume rewrite set ${key}`);
     return normalized;
@@ -3466,28 +3555,167 @@ Rewrite the resume based on the job description and return ONLY the valid JSON s
     throw new Error("Failed to rewrite resume with AI");
   }
 };
-var normalizeRewrittenResume = (raw2) => {
-  const str = (v, fallback = "") => {
-    if (typeof v === "string") return v;
-    if (v == null) return fallback;
-    return String(v);
-  };
-  const bool = (v, fallback = false) => {
-    if (typeof v === "boolean") return v;
-    if (v == null) return fallback;
-    return Boolean(v);
-  };
-  const arr = (v) => {
-    if (Array.isArray(v)) return v;
-    return [];
-  };
-  const safeObject = (v) => {
-    return v && typeof v === "object" ? v : {};
-  };
-  return {
+var str = (v, fallback = "") => {
+  if (typeof v === "string") return v;
+  if (v == null) return fallback;
+  return String(v);
+};
+var bool = (v, fallback = false) => {
+  if (typeof v === "boolean") return v;
+  if (v == null) return fallback;
+  return Boolean(v);
+};
+var arr = (v) => Array.isArray(v) ? v : [];
+var safeObject = (v) => v && typeof v === "object" ? v : {};
+var dedupSkills = (list) => {
+  const seen = /* @__PURE__ */ new Set();
+  const out = [];
+  for (const s of list) {
+    const t = (s ?? "").trim();
+    if (!t) continue;
+    const key = t.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(t);
+  }
+  return out;
+};
+var NON_SOFT_SKILL_TERMS = /* @__PURE__ */ new Set([
+  "agile",
+  "scrum",
+  "kanban",
+  "waterfall",
+  "tdd",
+  "test driven development",
+  "ci/cd",
+  "cicd",
+  "devops",
+  "debugging",
+  "testing",
+  "unit testing",
+  "pair programming",
+  "code review",
+  "sprint planning"
+]);
+var reclassifyAndDedup = (technical, soft) => {
+  const misplaced = soft.filter(
+    (s) => NON_SOFT_SKILL_TERMS.has(s.toLowerCase())
+  );
+  let cleanedSoft = soft.filter(
+    (s) => !NON_SOFT_SKILL_TERMS.has(s.toLowerCase())
+  );
+  let cleanedTechnical = misplaced.length ? dedupSkills([...technical, ...misplaced]) : dedupSkills(technical);
+  const softLower = new Set(cleanedSoft.map((s) => s.toLowerCase()));
+  cleanedTechnical = cleanedTechnical.filter(
+    (s) => !softLower.has(s.toLowerCase())
+  );
+  cleanedSoft = dedupSkills(cleanedSoft);
+  return { technical: cleanedTechnical, soft: cleanedSoft };
+};
+var buildDraftSkillCategories = (raw2) => {
+  const legacyHard = dedupSkills(arr(raw2?.hardSkills).map((v) => str(v)));
+  const legacySoft = dedupSkills(arr(raw2?.softSkills).map((v) => str(v)));
+  const legacyFlat = dedupSkills(arr(raw2?.skills).map((v) => str(v)));
+  const rawCategories = arr(
+    raw2?.skillCategories
+  ).map((cat) => ({
+    name: str(cat?.name).trim(),
+    skills: dedupSkills(arr(cat?.skills).map((v) => str(v)))
+  })).filter((c) => c.name && c.skills.length > 0);
+  const extraSkills = rawCategories.filter(
+    (c) => !["technical skills", "soft skills"].includes(c.name.toLowerCase())
+  ).flatMap((c) => c.skills);
+  let technical = rawCategories.find((c) => c.name.toLowerCase() === "technical skills")?.skills ?? [];
+  let soft = rawCategories.find((c) => c.name.toLowerCase() === "soft skills")?.skills ?? [];
+  if (!technical.length) {
+    technical = legacyHard.length ? legacyHard : extraSkills.length ? dedupSkills(extraSkills) : legacyFlat;
+  } else if (extraSkills.length) {
+    technical = dedupSkills([...technical, ...extraSkills]);
+  }
+  if (!soft.length) {
+    soft = legacySoft;
+  }
+  return reclassifyAndDedup(technical, soft);
+};
+var reconcileAuditedSkills = (draft, audited) => {
+  if (!audited) return draft;
+  const technical = dedupSkills(audited.technicalSkills);
+  const soft = dedupSkills(audited.softSkills);
+  return reclassifyAndDedup(technical, soft);
+};
+var INVENTED_SKILLS_TITLE_PATTERN = /(&|and)\s*(competencies|expertise|proficienc)/i;
+var sanitizeSummary = (summary) => {
+  if (!summary) return summary;
+  const cleaned = summary.replace(/\b\d+(\.\d+)?\s*%/g, "").replace(/\$\s?\d+(\.\d+)?\s?[kKmMbB]?\b/g, "").replace(/\b\d+(\.\d+)?x\b/gi, "").replace(
+    /\b\d+(\.\d+)?\s*(hours?|hrs?|users?|customers?|clients?|projects?|team members?)\b/gi,
+    ""
+  ).replace(/\s{2,}/g, " ").replace(/\s+([.,])/g, "$1").replace(/\(\s*\)/g, "").trim();
+  return cleaned;
+};
+var sanitizeHighlight = (text) => {
+  if (!text) return text;
+  return text.replace(/\r\n|\r|\n/g, " ").replace(/\s{2,}/g, " ").trim();
+};
+var extractJobTitleFromJD = (jobDescription) => {
+  if (!jobDescription) return "";
+  const labeledPatterns = [
+    /job\s*title\s*[:\-]\s*(.+)/i,
+    /position\s*(title)?\s*[:\-]\s*(.+)/i,
+    /role\s*[:\-]\s*(.+)/i
+  ];
+  for (const pattern of labeledPatterns) {
+    const match = jobDescription.match(pattern);
+    if (match) {
+      const captured = match[match.length - 1];
+      const cleaned = captured.split("\n")[0].trim();
+      if (cleaned && cleaned.length <= 80) return cleaned;
+    }
+  }
+  const phrasePatterns = [
+    /(?:hiring|seeking|looking for)\s+(?:an?\s+)?([A-Z][A-Za-z0-9+/#.\- ]{2,60}?)(?:\.|,|\n|to\s|who\s)/,
+    /(?:we are|we're)\s+(?:an?\s+)?.*?(?:hiring|seeking)\s+(?:an?\s+)?([A-Z][A-Za-z0-9+/#.\- ]{2,60}?)(?:\.|,|\n)/
+  ];
+  for (const pattern of phrasePatterns) {
+    const match = jobDescription.match(pattern);
+    if (match?.[1]) {
+      const cleaned = match[1].trim();
+      if (cleaned) return cleaned;
+    }
+  }
+  const firstLine = jobDescription.split("\n").map((l) => l.trim()).find((l) => l.length > 0);
+  if (firstLine && firstLine.length <= 60 && !/job description/i.test(firstLine)) {
+    return firstLine;
+  }
+  return "";
+};
+var countMeasurableImpactBullets = (resume) => {
+  const metricPattern = /\d/;
+  const allHighlights = [
+    ...resume.experience.flatMap((e) => e.highlights),
+    ...(resume.projects ?? []).flatMap((p) => p.highlights)
+  ];
+  return allHighlights.filter((h) => metricPattern.test(h)).length;
+};
+var normalizeRewrittenResume = (raw2, jobDescription = "", finalSkills = {
+  technical: [],
+  soft: []
+}) => {
+  const finalCategories = [];
+  if (finalSkills.technical.length > 0 || finalSkills.soft.length > 0) {
+    finalCategories.push({
+      name: "Technical Skills",
+      skills: finalSkills.technical
+    });
+    finalCategories.push({ name: "Soft Skills", skills: finalSkills.soft });
+  }
+  const rawSkillsTitle = str(raw2?.sectionTitles?.skills).trim();
+  const skillsTitle = !rawSkillsTitle || INVENTED_SKILLS_TITLE_PATTERN.test(rawSkillsTitle) ? "Skills" : rawSkillsTitle;
+  const aiJobTitle = str(raw2?.personalInfo?.jobTitle).trim();
+  const finalJobTitle = aiJobTitle || extractJobTitleFromJD(jobDescription);
+  const result = {
     personalInfo: {
       fullName: str(raw2?.personalInfo?.fullName),
-      jobTitle: str(raw2?.personalInfo?.jobTitle),
+      jobTitle: finalJobTitle,
       contact: safeObject(raw2?.personalInfo?.contact) ?? {
         email: str(raw2?.personalInfo?.contact?.email),
         phone: str(raw2?.personalInfo?.contact?.phone),
@@ -3503,7 +3731,7 @@ var normalizeRewrittenResume = (raw2) => {
         }
       }
     },
-    summary: str(raw2?.summary),
+    summary: sanitizeSummary(str(raw2?.summary)),
     experience: arr(raw2?.experience).map((exp) => ({
       company: str(exp?.company),
       title: str(exp?.title),
@@ -3511,20 +3739,22 @@ var normalizeRewrittenResume = (raw2) => {
       startDate: str(exp?.startDate),
       endDate: str(exp?.endDate),
       current: bool(exp?.current),
-      highlights: arr(exp?.highlights).map((v) => str(v)),
-      measurableImpacts: arr(exp?.measurableImpacts).map((v) => str(v))
+      highlights: arr(exp?.highlights).map(
+        (v) => sanitizeHighlight(str(v))
+      )
     })),
     projects: arr(raw2?.projects).map((proj) => ({
       name: str(proj?.name),
-      highlights: arr(proj?.highlights).map((v) => str(v)),
+      highlights: arr(proj?.highlights).map(
+        (v) => sanitizeHighlight(str(v))
+      ),
       startDate: str(proj?.startDate),
       endDate: str(proj?.endDate),
       current: bool(proj?.current),
       links: safeObject(proj?.links) ?? {
         live: str(proj?.links?.live),
         caseStudy: str(proj?.links?.caseStudy)
-      },
-      technologies: arr(proj?.technologies).map((v) => str(v))
+      }
     })),
     achievements: arr(raw2?.achievements).map((ach) => ({
       title: str(ach?.title),
@@ -3539,29 +3769,32 @@ var normalizeRewrittenResume = (raw2) => {
       endDate: str(edu?.endDate),
       gpa: str(edu?.gpa)
     })),
-    skills: arr(raw2?.skills).map((v) => str(v)),
-    skillCategories: arr(raw2?.skillCategories).map((cat) => ({
-      name: str(cat?.name),
-      skills: arr(cat?.skills).map((v) => str(v))
-    })),
-    hardSkills: arr(raw2?.hardSkills).map((v) => str(v)),
-    softSkills: arr(raw2?.softSkills).map((v) => str(v)),
-    keywords: arr(raw2?.keywords).map((v) => str(v)),
+    skillCategories: finalCategories,
     certifications: arr(raw2?.certifications).map((cert) => ({
       name: str(cert?.name),
       issuer: str(cert?.issuer),
       date: str(cert?.date)
     })),
-    sectionTitles: safeObject(raw2?.sectionTitles) ?? {
+    sectionTitles: {
       summary: str(raw2?.sectionTitles?.summary),
       experience: str(raw2?.sectionTitles?.experience),
-      skills: str(raw2?.sectionTitles?.skills),
+      skills: skillsTitle,
       education: str(raw2?.sectionTitles?.education),
       projects: str(raw2?.sectionTitles?.projects),
       achievements: str(raw2?.sectionTitles?.achievements),
       certifications: str(raw2?.sectionTitles?.certifications)
     },
-    sectionOrder: arr(raw2?.sectionOrder),
+    sectionOrder: arr(raw2?.sectionOrder).filter(
+      (k) => [
+        "summary",
+        "experience",
+        "skills",
+        "education",
+        "projects",
+        "achievements",
+        "certifications"
+      ].includes(k)
+    ),
     layout: safeObject(raw2?.layout) ?? {
       isSingleColumn: bool(raw2?.layout?.isSingleColumn, true),
       hasTables: bool(raw2?.layout?.hasTables),
@@ -3576,6 +3809,13 @@ var normalizeRewrittenResume = (raw2) => {
       hasMixedFonts: bool(raw2?.fontCheck?.hasMixedFonts)
     }
   };
+  const measurableCount = countMeasurableImpactBullets(result);
+  if (measurableCount < 5) {
+    console.warn(
+      `[resume-rewrite] Only ${measurableCount} measurable-impact bullets found across experience+projects (minimum required: 5)`
+    );
+  }
+  return result;
 };
 
 // src/modules/resume-builder/resumeBuilder.controller.ts

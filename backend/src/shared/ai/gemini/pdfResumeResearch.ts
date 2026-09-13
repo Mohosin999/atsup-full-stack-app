@@ -105,8 +105,111 @@ export const RESUME_RESEARCH_TEMPLATE: AIResumeResearchResult = {
   },
 };
 
+// const RESEARCH_PROMPT = `
+// You are an expert AI resume researcher. Your task is to analyze the provided resume VERY carefully and extract all information from it accurately.
+
+// RESEARCH THE FOLLOWING DETAILS:
+// 1. Personal info (full name, job title, contact: address, email, phone)
+// 2. Professional summary
+// 3. Work experience (role, company, startDate, endDate, responsibilities as bullet points)
+// 4. Education (degree, field of study, education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's"), startDate, endDate)
+// 5. Skills:
+//    - hardSkills: technical skills and keywords
+//    - softSkills: ONLY non-technical skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
+// 6. Projects (name, description as bullet points, startDate, endDate)
+// 7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
+// 8. measurableResults: array of strings — IDENTIFY ALL measurable impact/results from BOTH the entire experience section AND the entire projects section. Extract every distinct measurable impact/result phrase, including numbers, percentages, time saved, monetary values, scale/volume metrics, efficiency improvements, performance improvements, reductions, increases, growth, etc. Do not return full bullet points. If one bullet contains multiple measurable impacts, extract all of them separately. Do not limit the count. Return [] if no measurable impact is found.
+// 9. actionVerbs: array of strings — EXTRACT EVERY DISTINCT action verb appearing at the START of bullets across BOTH the entire experience section AND the entire projects section. Only extract the first meaningful action verb of each bullet. Collect all unique starting action verbs from both sections. Return [] if none.
+// 10. wordCount: total number of words in the resume.
+// 11. educationSection: true if an education section exists.
+// 12. experienceSection: true if an experience/work section exists.
+// 13. workHistory: true if there is AT LEAST ONE work experience entry.
+// 14. dateFormatting: true if dates use "MM/YY or MM/YYYY or Month YYYY" format (e.g. 03/19, 03/2019, Mar 2019 or March 2019). false otherwise.
+// 15. layout: analyze the given PDF very carefully and answer the following questions correctly:
+//     - isSingleColumn: true if the resume uses a single column layout
+//     - hasTables: true if tables are used in the layout
+//     - hasImages: true if images/photos are present
+//     - hasIcons: true if icons/graphics are present
+//     - hasMultiColumn: true if the resume uses a multi-column layout
+// 16. fontCheck: analyze the given PDF very carefully and answer the following questions correctly. I must need these answer correctly:
+//     - isStandardFont: true if a standard/ATS-friendly font is used (Arial, Calibri, Times New Roman, Helvetica, Georgia, Verdana, etc.)
+//     - fontName: the primary font name of resume text.
+//     - isReadableSize: true if the font size is readable (typically 10-12pt body text)
+
+// STRICT RULES:
+// - NO field is required. If a piece of information is NOT present in the resume, set it to empty: "" for strings, [] for arrays, false for booleans.
+// - Do NOT invent or hallucinate information. Only extract what is actually present in the resume.
+// - CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript"; "Next.js", "NextJS" → "Next.js"). NEVER list two different spellings of the same skill as separate entries.
+// - Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
+// - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
+
+// JSON STRUCTURE:
+// {
+//   "personal_info": {
+//     "fullName": "",
+//     "jobTitle": "",
+//     "contact": {
+//       "address": "",
+//       "email": "",
+//       "phone": ""
+//     }
+//   },
+//   "summary": "",
+//   "experience": [
+//     {
+//       "role": "",
+//       "company": "",
+//       "startDate": "",
+//       "endDate": "",
+//       "responsibilities": [""]
+//     }
+//   ],
+//   "education": [
+//     {
+//       "degree": "",
+//       "field": "",
+//       "education_level": "",
+//       "startDate": "",
+//       "endDate": ""
+//     }
+//   ],
+//   "skills": {
+//     "hardSkills": [""],
+//     "softSkills": [""]
+//   },
+//   "projects": [
+//     {
+//       "name": "",
+//       "description": [""],
+//       "startDate": "",
+//       "endDate": ""
+//     }
+//   ],
+//   "yearsOfExperience": "",
+//   "measurableResults": [],
+//   "actionVerbs": [],
+//   "wordCount": "",
+//   "educationSection": false,
+//   "experienceSection": false,
+//   "workHistory": false,
+//   "dateFormatting": false,
+//   "layout": {
+//     "isSingleColumn": false,
+//     "hasTables": false,
+//     "hasImages": false,
+//     "hasIcons": false,
+//     "hasMultiColumn": false
+//   },
+//   "fontCheck": {
+//     "isStandardFont": false,
+//     "fontName": "",
+//     "isReadableSize": false
+//   }
+// }
+// `;
+
 const RESEARCH_PROMPT = `
-You are an expert AI resume researcher. Your task is to analyze the provided resume VERY carefully and extract all information from it accurately.
+You are an expert AI resume researcher. Analyze the provided resume VERY carefully and extract all information accurately.
 
 RESEARCH THE FOLLOWING DETAILS:
 1. Personal info (full name, job title, contact: address, email, phone)
@@ -114,8 +217,8 @@ RESEARCH THE FOLLOWING DETAILS:
 3. Work experience (role, company, startDate, endDate, responsibilities as bullet points)
 4. Education (degree, field of study, education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's"), startDate, endDate)
 5. Skills:
-   - hardSkills: technical skills and keywords
-   - softSkills: ONLY non-technical skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
+   - hardSkills: All technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, tools, APIs, architectures, and professional practices such as RESTful APIs, GraphQL, Microservices, CI/CD, Agile, TDD, Unit Testing, Debugging, DevOps, Kanban, etc.)
+   - softSkills: Genuine interpersonal/behavioral skills only that are explicitly present in the resume (Communication, Leadership, Teamwork, Collaboration, Mentoring, Time Management, Problem-Solving, Adaptability, etc.). Do NOT include any technical skills or technologies.
 6. Projects (name, description as bullet points, startDate, endDate)
 7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
 8. measurableResults: array of strings — IDENTIFY ALL measurable impact/results from BOTH the entire experience section AND the entire projects section. Extract every distinct measurable impact/result phrase, including numbers, percentages, time saved, monetary values, scale/volume metrics, efficiency improvements, performance improvements, reductions, increases, growth, etc. Do not return full bullet points. If one bullet contains multiple measurable impacts, extract all of them separately. Do not limit the count. Return [] if no measurable impact is found.
@@ -131,7 +234,7 @@ RESEARCH THE FOLLOWING DETAILS:
     - hasImages: true if images/photos are present
     - hasIcons: true if icons/graphics are present
     - hasMultiColumn: true if the resume uses a multi-column layout
-16. fontCheck: analyze the given PDF very carefully and answer the following questions correctly. I must need these answer correctly:
+16. fontCheck: analyze the given PDF very carefully and answer the following questions correctly:
     - isStandardFont: true if a standard/ATS-friendly font is used (Arial, Calibri, Times New Roman, Helvetica, Georgia, Verdana, etc.)
     - fontName: the primary font name of resume text.
     - isReadableSize: true if the font size is readable (typically 10-12pt body text)
@@ -139,8 +242,11 @@ RESEARCH THE FOLLOWING DETAILS:
 STRICT RULES:
 - NO field is required. If a piece of information is NOT present in the resume, set it to empty: "" for strings, [] for arrays, false for booleans.
 - Do NOT invent or hallucinate information. Only extract what is actually present in the resume.
-- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript"; "Next.js", "NextJS" → "Next.js"). NEVER list two different spellings of the same skill as separate entries.
-- Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
+- hardSkills and softSkills must contain pure single keyword names only — never phrases or descriptions.
+- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants (e.g. "React", "React.js", "ReactJS" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript").
+- Methodology/practice terms (Agile, Scrum, CI/CD, DevOps, TDD, Debugging, Testing, etc.) always go into hardSkills, never softSkills.
+- Deduplicate case-insensitively.
+- When two skills have very similar meaning, prefer the most common/canonical wording.
 - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
 
 JSON STRUCTURE:
@@ -207,110 +313,6 @@ JSON STRUCTURE:
   }
 }
 `;
-
-// const RESEARCH_PROMPT = `
-// You are an expert AI resume researcher. Your task is to analyze the provided resume VERY carefully and extract all information from it accurately.
-
-// RESEARCH THE FOLLOWING DETAILS:
-// 1. Personal info (full name, job title, contact: address, email, phone)
-// 2. Professional summary
-// 3. Work experience (role, company, startDate, endDate, responsibilities as bullet points)
-// 4. Education (degree, field of study, education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's"), startDate, endDate)
-// 5. Skills:
-//    - hardSkills: ONLY technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, DevOps tools, software, technologies, APIs, etc.) - return ONLY the keyword names
-//    - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
-// 6. Projects (name, description as bullet points, startDate, endDate)
-//  7. yearsOfExperience: total years of professional work experience (e.g. "5 years" or "5+ years")
-//  8. measurableResults: array of strings — every experience bullet that contains a measurable impacts. More focus on experience section and less focus on projects section. Return [] if none.
-//  9. actionVerbs: array of strings — the distinct strong action verbs found at the start of experience bullets (e.g. "led", "built", "optimized", "launched"). ore focus on experience section and less focus on projects section. Return [] if none.
-//  10. wordCount: total number of words in the resume.
-// 10. educationSection: true if an education section exists.
-// 11. experienceSection: true if an experience/work section exists.
-// 12. workHistory: true if there is AT LEAST ONE work experience entry.
-// 13. dateFormatting: true if dates use "MM/YY or MM/YYYY or Month YYYY" format (e.g. 03/19, 03/2019, Mar 2019 or March 2019). false otherwise.
-// 14. layout: analyze the given PDF very carefully and answer the following questions correctly:
-//     - isSingleColumn: true if the resume uses a single column layout
-//     - hasTables: true if tables are used in the layout
-//     - hasImages: true if images/photos are present
-//     - hasIcons: true if icons/graphics are present
-//     - hasMultiColumn: true if the resume uses a multi-column layout
-// 16. fontCheck: analyze the given PDF very carefully and answer the following questions correctly. I must need these answer correctly:
-//     - isStandardFont: true if a standard/ATS-friendly font is used (Arial, Calibri, Times New Roman, Helvetica, Georgia, Verdana, etc.)
-//     - fontName: the primary font name of resume text.
-//     - isReadableSize: true if the font size is readable (typically 10-12pt body text)
-
-// STRICT RULES:
-// - NO field is required. If a piece of information is NOT present in the resume, set it to empty: "" for strings, [] for arrays, false for booleans.
-// - Do NOT invent or hallucinate information. Only extract what is actually present in the resume.
-// - CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript"; "Next.js", "NextJS" → "Next.js"). NEVER list two different spellings of the same skill as separate entries.
-// - Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
-// - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
-
-// JSON STRUCTURE:
-// {
-//   "personal_info": {
-//     "fullName": "",
-//     "jobTitle": "",
-//     "contact": {
-//       "address": "",
-//       "email": "",
-//       "phone": "",
-//     }
-//   },
-//   "summary": "",
-//   "experience": [
-//     {
-//       "role": "",
-//       "company": "",
-//       "startDate": "",
-//       "endDate": "",
-//       "responsibilities": [""]
-//     }
-//   ],
-//   "education": [
-//     {
-//       "degree": "",
-//       "field": "",
-//       "education_level": "",
-//       "startDate": "",
-//       "endDate": "",
-//     }
-//   ],
-//   "skills": {
-//     "hardSkills": [""],
-//     "softSkills": [""]
-//   },
-//   "projects": [
-//     {
-//       "name": "",
-//       "description": [""],
-//       "startDate": "",
-//       "endDate": "",
-//     }
-//   ]
-//   ],
-//   "yearsOfExperience": "",
-//   "measurableResults": [],
-//   "actionVerbs": [],
-//   "wordCount": "",
-//   "educationSection": false,
-//   "experienceSection": false,
-//   "workHistory": false,
-//   "dateFormatting": false,
-//   "layout": {
-//     "isSingleColumn": false,
-//     "hasTables": false,
-//     "hasImages": false,
-//     "hasIcons": false,
-//     "hasMultiColumn": false
-//   },
-//   "fontCheck": {
-//     "isStandardFont": false,
-//     "fontName": "",
-//     "isReadableSize": false,
-//   }
-// }
-// `;
 
 /** --------------------------------------------------------------
  * Resume research result

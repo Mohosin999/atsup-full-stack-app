@@ -17,6 +17,44 @@ export interface AIJobResearchResult {
   yearsOfExperience: string;
 }
 
+// const JD_RESEARCH_PROMPT = `
+// You are an expert AI job description researcher. Analyze the provided job description VERY carefully and extract all information accurately.
+
+// RESEARCH THE FOLLOWING DETAILS:
+// 1. jobTitle: The job title/position being offered (e.g. "Senior Software Engineer", "Data Analyst")
+// 2. education: Required education background:
+//    - degree: The specific degree name (e.g. "Bachelor of Science", "Bachelor's")
+//    - field: The field of study (e.g. "Computer Science", "Engineering")
+//    - education_level: The education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's")
+// 3. skills:
+//    - hardSkills: technical skills and keywords
+//    - softSkills: ONLY non-technical skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
+// 4. yearsOfExperience: Total years of experience required (e.g. "3-5 years", "5+ years", "2 years")
+
+// STRICT RULES:
+// - NO field is required. If a piece of information is NOT present in the job description, set it to empty: "" for strings, [] for arrays.
+// - Do NOT invent or hallucinate information. Only extract what is actually present.
+// - hardSkills must ONLY contain pure keyword names, never descriptions or phrases.
+// - CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript"; "Next.js", "NextJS" → "Next.js"). NEVER list two different spellings of the same skill as separate entries.
+// - Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
+// - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
+
+// JSON STRUCTURE:
+// {
+//   "jobTitle": "",
+//   "education": {
+//     "degree": "",
+//     "field": "",
+//     "education_level": ""
+//   },
+//   "skills": {
+//     "hardSkills": [""],
+//     "softSkills": [""]
+//   },
+//   "yearsOfExperience": ""
+// }
+// `;
+
 const JD_RESEARCH_PROMPT = `
 You are an expert AI job description researcher. Analyze the provided job description VERY carefully and extract all information accurately.
 
@@ -27,16 +65,21 @@ RESEARCH THE FOLLOWING DETAILS:
    - field: The field of study (e.g. "Computer Science", "Engineering")
    - education_level: The education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's")
 3. skills:
-   - hardSkills: technical skills and keywords
-   - softSkills: ONLY non-technical skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
+   - hardSkills: All technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, tools, APIs, architectures, and professional practices such as RESTful APIs, GraphQL, Microservices, CI/CD, Agile, TDD, Unit Testing, Debugging, DevOps, Kanban, etc.)
+   - softSkills: Genuine interpersonal/behavioral skills only. Include both:
+     (a) skills explicitly named in the job description, and
+     (b) skills clearly implied by responsibilities (e.g. "mentor junior engineers" → Mentoring, "collaborate across teams" → Teamwork/Collaboration, "manage multiple deadlines" → Time Management, "present to stakeholders" → Communication)
 4. yearsOfExperience: Total years of experience required (e.g. "3-5 years", "5+ years", "2 years")
 
 STRICT RULES:
 - NO field is required. If a piece of information is NOT present in the job description, set it to empty: "" for strings, [] for arrays.
-- Do NOT invent or hallucinate information. Only extract what is actually present.
-- hardSkills must ONLY contain pure keyword names, never descriptions or phrases.
-- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants of the same skill into a single name (e.g. "React", "React.js", "ReactJS", "react js" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript"; "Next.js", "NextJS" → "Next.js"). NEVER list two different spellings of the same skill as separate entries.
-- Each hardSkills entry must be a single skill name - never phrases like "X and Y" or "X, Y".
+- Do NOT invent or hallucinate information. Only extract what is actually present or clearly implied.
+- hardSkills must ONLY contain pure single keyword names, never descriptions or phrases.
+- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge all spelling variants (e.g. "React", "React.js", "ReactJS" → "React"; "Node.js", "NodeJS", "Node" → "Node.js"; "JavaScript", "JS" → "JavaScript").
+- Each hardSkills and softSkills entry must be a single clean skill name — never "X and Y" or comma lists.
+- Deduplicate case-insensitively.
+- When two skills have very similar meaning, prefer the exact wording used in the job description.
+- Methodology/practice terms (Agile, Scrum, CI/CD, DevOps, TDD, Debugging, Testing, etc.) always go into hardSkills, never softSkills.
 - Return ONLY valid JSON matching the exact structure below. No markdown, no extra text, no explanations.
 
 JSON STRUCTURE:

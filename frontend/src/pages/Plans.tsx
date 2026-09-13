@@ -18,42 +18,37 @@ const plans: Plan[] = [
     id: "free",
     name: "Free",
     price: 0,
-    credits: 100,
+    credits: 3,
     features: [
-      "100 Resume Analyses",
-      "Basic AI Suggestions",
-      "PDF Export",
-      "Email Support",
+      "3 free credits per day",
+      "Use for ATS check and resume build",
+      "AI-powered scan",
+      "PDF export",
     ],
   },
   {
     id: "pro",
     name: "Pro",
-    price: 19,
-    credits: 500,
+    price: 5,
+    credits: 15,
     features: [
-      "500 Resume Analyses",
-      "Priority Processing",
-      "Advanced AI Insights",
-      "All Export Formats",
-      "Priority Support",
-      "Custom Templates",
+      "15 Free Credits per Day",
+      "Use for ATS Check or Resume Build",
+      "AI-powered Scan",
+      "PDF export",
     ],
     popular: true,
   },
   {
     id: "enterprise",
     name: "Enterprise",
-    price: 49,
-    credits: 1500,
+    price: 10,
+    credits: 35,
     features: [
-      "Unlimited Analyses",
-      "Real-time Processing",
-      "Full AI Suite",
-      "API Access",
-      "24/7 Support",
-      "Team Management",
-      "Custom Branding",
+      "35 Free Credits per Day",
+      "Use for ATS Check or Resume Build",
+      "Advanced AI-powered Scan",
+      "PDF export",
     ],
   },
 ];
@@ -96,12 +91,12 @@ export default function Plans() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`relative bg-white dark:bg-gray-800 rounded-2xl shadow-[0_0_6px_rgba(0,0,0,0.2)] overflow-hidden ${
+              className={`relative bg-white dark:bg-secondary rounded-2xl shadow-[0_0_6px_rgba(0,0,0,0.2)] overflow-hidden ${
                 plan.popular ? "ring-2 ring-primary" : ""
               }`}
             >
               {plan.popular && (
-                <div className="absolute top-0 left-0 right-0 bg-primary text-white text-center py-1 text-sm font-medium">
+                <div className="absolute top-0 left-0 right-0 bg-secondary dark:bg-accent text-white text-center py-1 text-sm font-medium">
                   Most Popular
                 </div>
               )}

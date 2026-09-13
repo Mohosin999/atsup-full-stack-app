@@ -133,7 +133,10 @@ export default function ResumeBuilder() {
 
     if (!user) {
       setLoading(false);
-      goToLogin(navigate, isNew ? "/resume-builder/new" : `/resume-builder/${id}`);
+      goToLogin(
+        navigate,
+        isNew ? "/resume-builder/new" : `/resume-builder/${id}`,
+      );
       return;
     }
 
@@ -227,7 +230,9 @@ export default function ResumeBuilder() {
   };
 
   // ---- updaters ----
-  const markContentDirty = (patch: Partial<ResumeContent> | ((prev: ResumeContent) => ResumeContent)) => {
+  const markContentDirty = (
+    patch: Partial<ResumeContent> | ((prev: ResumeContent) => ResumeContent),
+  ) => {
     dirtyRef.current = true;
     if (typeof patch === "function") {
       setContent(patch);
@@ -482,7 +487,7 @@ export default function ResumeBuilder() {
             <h1 className="text-base font-semibold text-gray-800 dark:text-gray-100">
               ATS Resume Builder
             </h1>
-              <p className="text-xs text-gray-600 dark:text-gray-400">
+            <p className="text-xs mt-1 text-gray-600 dark:text-gray-400">
               ATS-friendly layout — no images, emojis, tables or underlines.
             </p>
           </div>

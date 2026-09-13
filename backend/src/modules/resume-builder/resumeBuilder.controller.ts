@@ -12,6 +12,7 @@ import {
 } from "./subservices/resumes.service";
 import { upload, uploadErrorHandler } from "../../shared/config/multer";
 import fs from "fs";
+import { rewriteResumeWithAI as aiRewriteResume } from "../../shared/ai/gemini";
 
 export const getAllResumes = async (req: AuthRequest, res: Response) => {
   try {
@@ -195,6 +196,43 @@ export const duplicateResume = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+ 
+export const rewriteResumeWithAI = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  try {
+    const { resumeText, jobDescription } = req.body;
+    
+    if (!resumeText || !jobDescription) {
+      return res.status(400).json({
+        success: false,
+        message: "Resume text and job description are required",
+      });
+    }
+    
+    // Rewrite the resume using AI
+    const rewrittenContent = await aiRewriteResume(resumeText, jobDescription);
+    
+    // Create the resume in the database
+    const result = await createResumeFromContentService(req.user.id, rewrittenContent);
+    
+    res.status(201).json({
+      success: true,
+      data: {
+        id: result.resume.id,
+        // Optionally return the rewritten content for preview
+        content: rewrittenContent,
+      },
+    });
+  } catch (error: any) {
+    console.error("Error in rewriteResumeWithAI:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to rewrite resume with AI",
+    });
+  }
+};
 
 export const deleteAllResumes = async (req: AuthRequest, res: Response) => {
   try {
@@ -212,3 +250,47 @@ export const deleteAllResumes = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+
+export const parseResumePdf = [
+  upload.single("resume"),
+  uploadErrorHandler,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: "No file uploaded",
+        });
+      }
+
+      const { parseResumeFile } = await import("../../shared/resume-parser");
+      const parsed = await parseResumeFile(req.file.path, req.file.mimetype);
+
+      // Cleanup temp file
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+
+      if (!parsed.text || !parsed.text.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: "No extractable text found in PDF. Please upload a text-based PDF.",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: { text: parsed.text },
+      });
+    } catch (error: any) {
+      if (req.file?.path && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      console.error("Resume parse error:", error);
+      return res.status(500).json({
+        success: false,
+        message: error.message || "Failed to extract text from PDF",
+      });
+    }
+  },
+];

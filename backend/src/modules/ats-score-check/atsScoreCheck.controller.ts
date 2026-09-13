@@ -1,4 +1,5 @@
 import { Response } from "express";
+import fs from "fs";
 import { AuthRequest, ResumeContent } from "../../shared/types";
 import { prisma } from "../../lib/prisma";
 import { parseResume as parseResumeService } from "./services/resumeParser.service";
@@ -128,8 +129,8 @@ export const parseResume = async (req: AuthRequest, res: Response) => {
         data: { ...result, originalPdf: req.file.filename },
       });
     } catch (parseError: any) {
-      if (req.file && require("fs").existsSync(req.file.path)) {
-        require("fs").unlinkSync(req.file.path);
+      if (req.file && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
       }
       throw parseError;
     }

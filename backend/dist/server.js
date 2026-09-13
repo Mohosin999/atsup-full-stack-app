@@ -1,11 +1,5 @@
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
-  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
-}) : x)(function(x) {
-  if (typeof require !== "undefined") return require.apply(this, arguments);
-  throw Error('Dynamic require of "' + x + '" is not supported');
-});
 var __esm = (fn, res, err) => function __init() {
   if (err) throw err[0];
   try {
@@ -1021,6 +1015,9 @@ var uploadErrorHandler = (err, _req, res, next) => {
   }
   next();
 };
+
+// src/modules/ats-score-check/atsScoreCheck.controller.ts
+import fs4 from "fs";
 
 // src/modules/ats-score-check/services/resumeParser.service.ts
 init_resume_parser();
@@ -2737,8 +2734,8 @@ var parseResume2 = async (req, res) => {
         data: { ...result, originalPdf: req.file.filename }
       });
     } catch (parseError) {
-      if (req.file && __require("fs").existsSync(req.file.path)) {
-        __require("fs").unlinkSync(req.file.path);
+      if (req.file && fs4.existsSync(req.file.path)) {
+        fs4.unlinkSync(req.file.path);
       }
       throw parseError;
     }
@@ -3287,7 +3284,301 @@ var deleteAllResumesByUser = async (userId) => {
 };
 
 // src/modules/resume-builder/resumeBuilder.controller.ts
-import fs4 from "fs";
+import fs5 from "fs";
+
+// src/shared/ai/gemini/resumeRewriter.ts
+import crypto2 from "crypto";
+var REWRITE_RESUME_PROMPT = `
+You are an expert resume writer. Your task is to rewrite the provided resume based on the job description to make it ATS-optimized and tailored to the job.
+
+INPUTS:
+1. ORIGINAL RESUME TEXT: The text content of the user's resume
+2. JOB DESCRIPTION: The target job description
+
+INSTRUCTIONS:
+- Rewrite the resume to better match the job description while keeping all information truthful
+- Do NOT invent or hallucinate any experience, skills, or qualifications
+- Only reword and reframe existing information to highlight relevance to the job description
+- Use the exact same structure and sections as the original resume
+- Output must be valid JSON matching the exact structure below
+- Experience: 2-3 bullet points per role maximum
+- Bullets: Start with strong action verbs + measurable impact (use numbers, dollar amounts, time saved, scale, rankings - NOT just percentages)
+- Skills: Extract and prioritize relevant skills from the job description (max 10-12)
+- Summary: 2-3 lines max, tailored to the job description requirements
+- Never invent experience; only reword/reframe existing content
+- Prioritize job description keywords for ATS optimization
+- If information is missing in the original resume, leave the field blank or empty array
+- Return ONLY valid JSON matching the structure below. No markdown, no extra text, no explanations.
+
+JSON STRUCTURE:
+{
+  "personalInfo": {
+    "fullName": "",
+    "jobTitle": "",
+    "contact": {
+      "email": "",
+      "phone": "",
+      "linkedIn": "",
+      "address": {
+        "city": "",
+        "state": ""
+      },
+      "socialLinks": {
+        "github": "",
+        "portfolio": "",
+        "website": ""
+      }
+    }
+  },
+  "summary": "",
+  "experience": [
+    {
+      "company": "",
+      "title": "",
+      "location": "",
+      "startDate": "",
+      "endDate": "",
+      "current": false,
+      "highlights": [""],
+      "measurableImpacts": [""]
+    }
+  ],
+  "projects": [
+    {
+      "name": "",
+      "highlights": [""],
+      "startDate": "",
+      "endDate": "",
+      "current": false,
+      "links": {
+        "live": "",
+        "caseStudy": ""
+      },
+      "technologies": [""]
+    }
+  ],
+  "achievements": [
+    {
+      "title": "",
+      "date": "",
+      "description": ""
+    }
+  ],
+  "education": [
+    {
+      "institution": "",
+      "degree": "",
+      "areaOfStudy": "",
+      "startDate": "",
+      "endDate": "",
+      "gpa": ""
+    }
+  ],
+  "skills": [""],
+  "skillCategories": [
+    {
+      "name": "",
+      "skills": [""]
+    }
+  ],
+  "hardSkills": [""],
+  "softSkills": [""],
+  "keywords": [""],
+  "certifications": [
+    {
+      "name": "",
+      "issuer": "",
+      "date": ""
+    }
+  ],
+  "sectionTitles": {
+    "summary": "",
+    "experience": "",
+    "skills": "",
+    "education": "",
+    "projects": "",
+    "achievements": "",
+    "certifications": ""
+  },
+  "sectionOrder": ["personalInfo", "summary", "experience", "skills", "education", "projects", "achievements", "certifications"],
+  "layout": {
+    "isSingleColumn": true,
+    "hasTables": false,
+    "hasImages": false,
+    "hasIcons": false,
+    "hasMultiColumn": false
+  },
+  "fontCheck": {
+    "isStandardFont": true,
+    "fontName": "",
+    "isReadableSize": true,
+    "hasMixedFonts": false
+  }
+}
+
+STRICT RULES:
+- NO field is required. If a piece of information is NOT present or applicable, set it to empty: "" for strings, [] for arrays, false for booleans.
+- Do NOT invent or hallucinate information. Only extract and reword what is actually present in the resume.
+- hardSkills must ONLY contain pure technical keyword names (programming languages, frameworks, etc.)
+- softSkills must ONLY contain non-technical interpersonal skills
+- CANONICALIZE hardSkills: for each distinct technology/framework/library/tool, return EXACTLY ONE canonical keyword. Merge spelling variants.
+- Each hardSkills/softSkills entry must be a single skill name - never phrases.
+- The output must be valid JSON and nothing else.
+`;
+var rewriteResumeWithAI = async (resumeText, jobDescription) => {
+  const hash = crypto2.createHash("sha256").update(resumeText + "||" + jobDescription).digest("hex");
+  const key = `rewrite_${hash}`;
+  const cached = await getCache(key);
+  if (cached) {
+    console.log(`[cache] resume rewrite hit ${key}`);
+    return cached;
+  }
+  const parts = [];
+  const textPart = `${REWRITE_RESUME_PROMPT}
+
+ORIGINAL RESUME TEXT:
+${resumeText}
+
+JOB DESCRIPTION:
+${jobDescription}
+
+Rewrite the resume based on the job description and return ONLY the valid JSON structure specified above.
+`;
+  parts.push({ text: textPart });
+  try {
+    const result = await generateContentWithFailover({
+      model: GEMINI_MODEL,
+      contents: [{ role: "user", parts }]
+    });
+    const text = result.text ?? "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error("Invalid response format from AI");
+    }
+    const raw2 = JSON.parse(jsonMatch[0]);
+    const normalized = normalizeRewrittenResume(raw2);
+    await setCache(key, normalized);
+    console.log(`[cache] resume rewrite set ${key}`);
+    return normalized;
+  } catch (error) {
+    console.error("Resume rewrite error:", error);
+    throwIfQuotaError(error);
+    throw new Error("Failed to rewrite resume with AI");
+  }
+};
+var normalizeRewrittenResume = (raw2) => {
+  const str = (v, fallback = "") => {
+    if (typeof v === "string") return v;
+    if (v == null) return fallback;
+    return String(v);
+  };
+  const bool = (v, fallback = false) => {
+    if (typeof v === "boolean") return v;
+    if (v == null) return fallback;
+    return Boolean(v);
+  };
+  const arr = (v) => {
+    if (Array.isArray(v)) return v;
+    return [];
+  };
+  const safeObject = (v) => {
+    return v && typeof v === "object" ? v : {};
+  };
+  return {
+    personalInfo: {
+      fullName: str(raw2?.personalInfo?.fullName),
+      jobTitle: str(raw2?.personalInfo?.jobTitle),
+      contact: safeObject(raw2?.personalInfo?.contact) ?? {
+        email: str(raw2?.personalInfo?.contact?.email),
+        phone: str(raw2?.personalInfo?.contact?.phone),
+        linkedIn: str(raw2?.personalInfo?.contact?.linkedIn),
+        address: safeObject(raw2?.personalInfo?.contact?.address) ?? {
+          city: str(raw2?.personalInfo?.contact?.address?.city),
+          state: str(raw2?.personalInfo?.contact?.address?.state)
+        },
+        socialLinks: safeObject(raw2?.personalInfo?.contact?.socialLinks) ?? {
+          github: str(raw2?.personalInfo?.contact?.socialLinks?.github),
+          portfolio: str(raw2?.personalInfo?.contact?.socialLinks?.portfolio),
+          website: str(raw2?.personalInfo?.contact?.socialLinks?.website)
+        }
+      }
+    },
+    summary: str(raw2?.summary),
+    experience: arr(raw2?.experience).map((exp) => ({
+      company: str(exp?.company),
+      title: str(exp?.title),
+      location: str(exp?.location),
+      startDate: str(exp?.startDate),
+      endDate: str(exp?.endDate),
+      current: bool(exp?.current),
+      highlights: arr(exp?.highlights).map((v) => str(v)),
+      measurableImpacts: arr(exp?.measurableImpacts).map((v) => str(v))
+    })),
+    projects: arr(raw2?.projects).map((proj) => ({
+      name: str(proj?.name),
+      highlights: arr(proj?.highlights).map((v) => str(v)),
+      startDate: str(proj?.startDate),
+      endDate: str(proj?.endDate),
+      current: bool(proj?.current),
+      links: safeObject(proj?.links) ?? {
+        live: str(proj?.links?.live),
+        caseStudy: str(proj?.links?.caseStudy)
+      },
+      technologies: arr(proj?.technologies).map((v) => str(v))
+    })),
+    achievements: arr(raw2?.achievements).map((ach) => ({
+      title: str(ach?.title),
+      date: str(ach?.date),
+      description: str(ach?.description)
+    })),
+    education: arr(raw2?.education).map((edu) => ({
+      institution: str(edu?.institution),
+      degree: str(edu?.degree),
+      areaOfStudy: str(edu?.areaOfStudy),
+      startDate: str(edu?.startDate),
+      endDate: str(edu?.endDate),
+      gpa: str(edu?.gpa)
+    })),
+    skills: arr(raw2?.skills).map((v) => str(v)),
+    skillCategories: arr(raw2?.skillCategories).map((cat) => ({
+      name: str(cat?.name),
+      skills: arr(cat?.skills).map((v) => str(v))
+    })),
+    hardSkills: arr(raw2?.hardSkills).map((v) => str(v)),
+    softSkills: arr(raw2?.softSkills).map((v) => str(v)),
+    keywords: arr(raw2?.keywords).map((v) => str(v)),
+    certifications: arr(raw2?.certifications).map((cert) => ({
+      name: str(cert?.name),
+      issuer: str(cert?.issuer),
+      date: str(cert?.date)
+    })),
+    sectionTitles: safeObject(raw2?.sectionTitles) ?? {
+      summary: str(raw2?.sectionTitles?.summary),
+      experience: str(raw2?.sectionTitles?.experience),
+      skills: str(raw2?.sectionTitles?.skills),
+      education: str(raw2?.sectionTitles?.education),
+      projects: str(raw2?.sectionTitles?.projects),
+      achievements: str(raw2?.sectionTitles?.achievements),
+      certifications: str(raw2?.sectionTitles?.certifications)
+    },
+    sectionOrder: arr(raw2?.sectionOrder),
+    layout: safeObject(raw2?.layout) ?? {
+      isSingleColumn: bool(raw2?.layout?.isSingleColumn, true),
+      hasTables: bool(raw2?.layout?.hasTables),
+      hasImages: bool(raw2?.layout?.hasImages),
+      hasIcons: bool(raw2?.layout?.hasIcons),
+      hasMultiColumn: bool(raw2?.layout?.hasMultiColumn)
+    },
+    fontCheck: safeObject(raw2?.fontCheck) ?? {
+      isStandardFont: bool(raw2?.fontCheck?.isStandardFont, true),
+      fontName: str(raw2?.fontCheck?.fontName),
+      isReadableSize: bool(raw2?.fontCheck?.isReadableSize, true),
+      hasMixedFonts: bool(raw2?.fontCheck?.hasMixedFonts)
+    }
+  };
+};
+
+// src/modules/resume-builder/resumeBuilder.controller.ts
 var getAllResumes = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -3327,8 +3618,8 @@ var uploadResume = [
         data: resume
       });
     } catch (error) {
-      if (req.file?.path && fs4.existsSync(req.file.path)) {
-        fs4.unlinkSync(req.file.path);
+      if (req.file?.path && fs5.existsSync(req.file.path)) {
+        fs5.unlinkSync(req.file.path);
       }
       res.status(500).json({
         success: false,
@@ -3442,6 +3733,33 @@ var duplicateResume = async (req, res) => {
     });
   }
 };
+var rewriteResumeWithAI2 = async (req, res) => {
+  try {
+    const { resumeText, jobDescription } = req.body;
+    if (!resumeText || !jobDescription) {
+      return res.status(400).json({
+        success: false,
+        message: "Resume text and job description are required"
+      });
+    }
+    const rewrittenContent = await rewriteResumeWithAI(resumeText, jobDescription);
+    const result = await createResumeFromContent(req.user.id, rewrittenContent);
+    res.status(201).json({
+      success: true,
+      data: {
+        id: result.resume.id,
+        // Optionally return the rewritten content for preview
+        content: rewrittenContent
+      }
+    });
+  } catch (error) {
+    console.error("Error in rewriteResumeWithAI:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to rewrite resume with AI"
+    });
+  }
+};
 var deleteAllResumes = async (req, res) => {
   try {
     const result = await deleteAllResumesByUser(req.user.id);
@@ -3457,17 +3775,57 @@ var deleteAllResumes = async (req, res) => {
     });
   }
 };
+var parseResumePdf = [
+  upload.single("resume"),
+  uploadErrorHandler,
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: "No file uploaded"
+        });
+      }
+      const { parseResumeFile: parseResumeFile2 } = await Promise.resolve().then(() => (init_resume_parser(), resume_parser_exports));
+      const parsed = await parseResumeFile2(req.file.path, req.file.mimetype);
+      if (fs5.existsSync(req.file.path)) {
+        fs5.unlinkSync(req.file.path);
+      }
+      if (!parsed.text || !parsed.text.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: "No extractable text found in PDF. Please upload a text-based PDF."
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        data: { text: parsed.text }
+      });
+    } catch (error) {
+      if (req.file?.path && fs5.existsSync(req.file.path)) {
+        fs5.unlinkSync(req.file.path);
+      }
+      console.error("Resume parse error:", error);
+      return res.status(500).json({
+        success: false,
+        message: error.message || "Failed to extract text from PDF"
+      });
+    }
+  }
+];
 
 // src/modules/resume-builder/resumeBuilder.routes.ts
 var router4 = Router4();
 router4.post("/content", authenticate, resumeLimiter, createResumeFromContent2);
 router4.delete("/delete-all", authenticate, deleteAllResumes);
+router4.post("/parse", authenticate, resumeLimiter, ...parseResumePdf);
 router4.post("/:id/duplicate", authenticate, duplicateResume);
 router4.get("/:id", authenticate, getSingleResume);
 router4.put("/:id", authenticate, updateResume);
 router4.delete("/:id", authenticate, deleteResume);
 router4.get("/", authenticate, getAllResumes);
 router4.post("/", authenticate, resumeLimiter, uploadResume);
+router4.post("/ai-rewrite", authenticate, resumeLimiter, rewriteResumeWithAI2);
 var resumeBuilder_routes_default = router4;
 
 // src/modules/admin-dashboard/admin-dashboard.routes.ts

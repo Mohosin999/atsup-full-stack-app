@@ -27,8 +27,8 @@ RESEARCH THE FOLLOWING DETAILS:
    - field: The field of study (e.g. "Computer Science", "Engineering")
    - education_level: The education level (e.g. "Bachelor's", "Master's", "PhD", "Associate's")
 3. skills:
-   - hardSkills: ONLY technical skills and keywords (programming languages, frameworks, libraries, databases, cloud platforms, DevOps tools, software, technologies, APIs, etc.) - return ONLY the keyword names
-   - softSkills: ONLY non-technical interpersonal and professional skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
+   - hardSkills: technical skills and keywords
+   - softSkills: ONLY non-technical skills (communication, leadership, teamwork, problem-solving, time management, adaptability, etc.) - DO NOT include any technical skills or technologies
 4. yearsOfExperience: Total years of experience required (e.g. "3-5 years", "5+ years", "2 years")
 
 STRICT RULES:
@@ -105,7 +105,6 @@ Research this job description thoroughly and return ONLY the valid JSON structur
  * Normalize job description result
  ----------------------------------------------------------------*/
 const normalizeJDResearchResult = (raw: any): AIJobResearchResult => {
-
   const str = (v: any, fallback = "") => {
     if (typeof v === "string") return v;
     if (v == null) return fallback;

@@ -487,11 +487,22 @@ const SECTION_BUILDERS: Record<SectionKey, (c: ResumeContent) => string> = {
 };
 
 export const buildAtsResumeMarkup = (content: ResumeContent): string => {
-  const order =
+  const rawOrder =
     content.sectionOrder && content.sectionOrder.length
       ? content.sectionOrder
       : [...SECTION_KEYS];
-  const body = order.map((key) => SECTION_BUILDERS[key](content)).join("");
+  // Filter out invalid keys like "personalInfo" that AI sometimes returns
+  const order = rawOrder.filter(
+    (k): k is SectionKey => (SECTION_KEYS as readonly string[]).includes(k) && k in SECTION_BUILDERS,
+  );
+  const body = order.map((key) => {
+      const builder = SECTION_BUILDERS[key];
+      if (typeof builder !== 'function') {
+        console.error(`Invalid section builder for key: ${key}`, builder);
+        return "";
+      }
+      return builder(content) ?? "";
+    }).join("");
   return `${buildPersonalInfo(content)}${body}`;
 };
 

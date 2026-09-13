@@ -68,41 +68,39 @@ export default function ResumeDashboard() {
             </button>
           </motion.div>
 
-          {/* ========================================================
-            * Upload resume and rewrite with AI (upcoming)
-          ==========================================================*/}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white border-2 border-dashed border-gray-300 p-4 md:p-6 xl:p-8 flex flex-col items-start group relative rounded-lg dark:bg-gray-800 dark:border-gray-600"
-          >
-            <div className="w-12 h-12 bg-violet-500/10 border border-violet-500/30 flex items-center justify-center mb-4">
-              <UploadCloud className="w-6 h-6 text-violet-500" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">
-              Upload resume and rewrite with AI
-            </h3>
-            <p className="text-sm text-gray-600 mb-6 flex-1 dark:text-gray-400">
-              Upload your existing resume along with a job description, and our
-              AI will rewrite and optimize your resume to match the role,
-              improve ATS compatibility, and strengthen the sections that matter
-              most.
-            </p>
-            <div className="w-full relative group/upload">
-              <button
-                disabled
-                title="Coming soon"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-gray-100 text-gray-400 cursor-not-allowed font-semibold dark:bg-gray-700 dark:text-gray-500"
-              >
-                <UploadCloud className="w-5 h-5" />
-                Upload Resume
-              </button>
-              <span className="pointer-events-none absolute -top-3 right-4 opacity-0 group-hover/upload:opacity-100 transition-opacity bg-gray-900 text-white text-xs font-medium px-2.5 py-1">
-                Upcoming
-              </span>
-            </div>
-          </motion.div>
+{/* ========================================================
+             * Upload resume and rewrite with AI
+           ==========================================================*/}
+           <motion.div
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.1 }}
+             className="bg-white border-2 border-dashed border-gray-300 p-4 md:p-6 xl:p-8 flex flex-col items-start group relative rounded-lg dark:bg-gray-800 dark:border-gray-600"
+           >
+             <div className="w-12 h-12 bg-violet-500/10 border border-violet-500/30 flex items-center justify-center mb-4">
+               <UploadCloud className="w-6 h-6 text-violet-500" />
+             </div>
+             <h3 className="text-xl font-bold text-gray-800 mb-2 dark:text-gray-100">
+               Upload resume and rewrite with AI
+             </h3>
+             <p className="text-sm text-gray-600 mb-6 flex-1 dark:text-gray-400">
+               Upload your existing resume along with a job description, and our
+               AI will rewrite and optimize your resume to match the role,
+               improve ATS compatibility, and strengthen the sections that matter
+               most.
+             </p>
+             <button
+               onClick={() =>
+                 user
+                   ? navigate("/resume-builder/upload")
+                   : goToLogin(navigate, "/resume-builder")
+               }
+               className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-violet-500 hover:bg-violet-500/90 text-white font-semibold transition-all"
+             >
+               <UploadCloud className="w-5 h-5" />
+               Upload Resume
+             </button>
+           </motion.div>
         </div>
       </Wrapper>
     </div>

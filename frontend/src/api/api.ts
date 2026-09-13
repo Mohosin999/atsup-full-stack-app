@@ -173,6 +173,12 @@ export const resumeApi = {
     api.post("/resumes", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  parsePdf: (formData: FormData) =>
+    api.post("/resumes/parse", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  aiRewrite: (resumeText: string, jobDescription: string) =>
+    api.post("/resumes/ai-rewrite", { resumeText, jobDescription }),
   createFromContent: (content: ResumeContent) =>
     api.post("/resumes/content", { content }),
   update: (id: string, data: any) => api.put(`/resumes/${id}`, data),

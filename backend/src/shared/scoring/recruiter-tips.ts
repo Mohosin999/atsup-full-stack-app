@@ -12,7 +12,7 @@ import {
 } from "./utils";
 
 // ============================================================
-// Summary
+// Summary - 15
 // ============================================================
 const buildSummarySubgroup = (resume: ResumeContent): CategorySubgroup => {
   const summaryWords = (resume.summary || "")
@@ -34,14 +34,14 @@ const buildSummarySubgroup = (resume: ResumeContent): CategorySubgroup => {
     key: "summary",
     title: "Summary",
     score,
-    weight: 20,
+    weight: 15,
     summary: detail,
     checks,
   };
 };
 
 // ============================================================
-// Job Level match - years (2+ years of experience)
+// Job Level match - 20
 // ============================================================
 const buildJobLevelSubgroup = (
   jd: StructuredJD | null,
@@ -77,7 +77,7 @@ const buildJobLevelSubgroup = (
 };
 
 // ============================================================
-// Measurable results
+// Measurable results - 30
 // ============================================================
 const buildMeasurableSubgroup = (measurable: {
   count: number;
@@ -87,10 +87,10 @@ const buildMeasurableSubgroup = (measurable: {
 
   const detail =
     measurable.count >= 5
-      ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in experience section, which is great!`
+      ? `We found ${measurable.count} measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume, which is great!`
       : measurable.count > 0
-        ? `We found ${measurable.count} measurable results in experience section but it could be better. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.`
-        : "We couldn't find any measurable results in experience section. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) in your resume's experience section to stand out.";
+        ? `We found ${measurable.count} measurable results in your resume but it could be better. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.`
+        : "We couldn't find any measurable results in your resume. Use at least 5 measurable results (e.g. generated $100K in sales, managed 15 team members, increased efficiency by 25% etc) to stand out.";
 
   const checks = [
     { label: "Measurable results (5+)", status, detail, weight: 20 },
@@ -100,13 +100,13 @@ const buildMeasurableSubgroup = (measurable: {
     key: "measurableResults",
     title: "Measurable Results",
     score,
-    weight: 20,
+    weight: 30,
     summary: detail,
     checks,
   };
 };
 // ============================================================
-// Action verbs
+// Action verbs - 15
 // ============================================================
 const buildActionVerbsSubgroup = (actionVerbs: {
   count: number;
@@ -116,10 +116,10 @@ const buildActionVerbsSubgroup = (actionVerbs: {
 
   const detail =
     actionVerbs.count >= 5
-      ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in experience section, which is great!`
+      ? `We found ${actionVerbs.count} action verbs (e.g. Developed, Implemented, Managed etc) in your resume, which is great!`
       : actionVerbs.count > 0
-        ? `We found ${actionVerbs.count} action verbs in experience section but it could be better. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) to stand out.`
-        : "We couldn't find any action verbs in experience section. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) in your resume's experience section to stand out.";
+        ? `We found ${actionVerbs.count} action verbs in your resume but it could be better. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) at the start to stand out.`
+        : "We couldn't find any action verbs in your resume. Use at least 5 action verbs (e.g. Developed, Implemented, Managed etc) at the start to stand out.";
 
   const checks = [{ label: "Action verbs (5+)", status, detail, weight: 20 }];
 
@@ -127,14 +127,14 @@ const buildActionVerbsSubgroup = (actionVerbs: {
     key: "actionVerbs",
     title: "Action Verbs",
     score,
-    weight: 20,
+    weight: 15,
     summary: detail,
     checks,
   };
 };
 
 // ============================================================
-// Word count
+// Word count - 20
 // ============================================================
 const countResumeWords = (resume: ResumeContent): number => {
   if (resume.wordCount) return Number(resume.wordCount) || 0;

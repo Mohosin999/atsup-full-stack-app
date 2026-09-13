@@ -19,6 +19,7 @@ import ScanHistory from "./pages/ScanHistory";
 import ResumeHistory from "./pages/ResumeHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import ResumeDashboard from "./pages/ResumeDashboard";
+import ResumeUpload from "./pages/ResumeUpload";
 import SkeletonLoader from "./components/ui/SkeletonHistory";
 import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
@@ -180,10 +181,18 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/resume-builder" element={<ResumeDashboard />} />
-
+<Route path="/resume-builder" element={<ResumeDashboard />} />
+        
         <Route path="/resume-builder/new" element={<ResumeBuilder />} />
         <Route path="/resume-builder/:id" element={<ResumeBuilder />} />
+        <Route
+          path="/resume-builder/upload"
+          element={
+            <PrivateRoute>
+              <ResumeUpload />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/my-reports"
           element={

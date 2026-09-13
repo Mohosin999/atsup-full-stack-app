@@ -343,12 +343,12 @@ export default function ResumeScanForm({
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="Paste the job description here..."
-              className="flex-1 min-h-[280px] w-full bg-gray-100 dark:bg-primary border border-gray-300 dark:border-accent rounded-lg p-4 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none resize-none"
+              className="flex-1 min-h-[280px] w-full text-sm bg-gray-100 dark:bg-primary border border-gray-300 dark:border-accent rounded-lg p-4 text-gray-700 dark:text-gray-300 placeholder-gray-400 focus:outline-none resize-none"
             />
           </div>
         </div>
       </div>
-
+      
       {/* ===============================================================
            * Button
           ================================================================*/}

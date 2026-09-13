@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import { resumeApi } from "../api/api";
 import Wrapper from "@/components/Wrapper";
 import { CheckCircle, X, Upload } from "lucide-react";
+import RewriteProgressModal from "@/components/ui/RewriteProgressModal";
+
+const REWRITE_STEPS = [
+  { id: "parse", label: "Reading" },
+  { id: "analyze", label: "Matching" },
+  { id: "rewrite", label: "Writing" },
+];
+
+const REWRITE_MESSAGES = [
+  "Reading your experience...",
+  "Matching job keywords...",
+  "Writing new summary...",
+  "Rewriting bullet points...",
+  "Polishing final draft...",
+];
 
 export default function ResumeUpload() {
   const navigate = useNavigate();
@@ -13,6 +28,13 @@ export default function ResumeUpload() {
   const [isExtracting, setIsExtracting] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pipelineOpen, setPipelineOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+  const [currentMessage, setCurrentMessage] = useState(REWRITE_MESSAGES[0]);
+  const [displayProgress, setDisplayProgress] = useState(0);
+  const progressRef = useRef(0);
+  const targetRef = useRef(0);
 
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
@@ -51,6 +73,23 @@ export default function ResumeUpload() {
     accept: { "application/pdf": [".pdf"] },
   });
 
+  useEffect(() => {
+    if (!pipelineOpen) {
+      setDisplayProgress(0);
+      progressRef.current = 0;
+      targetRef.current = 0;
+      return;
+    }
+    const id = setInterval(() => {
+      if (progressRef.current < targetRef.current) {
+        const next = Math.min(progressRef.current + 3, targetRef.current);
+        progressRef.current = next;
+        setDisplayProgress(next);
+      }
+    }, 500);
+    return () => clearInterval(id);
+  }, [pipelineOpen]);
+
   const handleRewrite = async () => {
     if (!resumeText.trim()) {
       toast.error("Please upload a resume PDF first");
@@ -63,19 +102,47 @@ export default function ResumeUpload() {
 
     setIsRewriting(true);
     setError(null);
+    setPipelineOpen(true);
+    setActiveStep(0);
+    setCompletedSteps([]);
+    setCurrentMessage(REWRITE_MESSAGES[0]);
+    setDisplayProgress(0);
+    progressRef.current = 0;
+    targetRef.current = 90;
+
+    let msgIdx = 0;
+    const msgTimer = setInterval(() => {
+      msgIdx = Math.min(msgIdx + 1, REWRITE_MESSAGES.length - 1);
+      setCurrentMessage(REWRITE_MESSAGES[msgIdx]);
+      const stepIdx = Math.min(msgIdx, REWRITE_STEPS.length - 1);
+      setActiveStep(stepIdx);
+      setCompletedSteps(REWRITE_STEPS.slice(0, msgIdx).map((s) => s.id));
+    }, 2500);
+
     try {
       const response = await resumeApi.aiRewrite(resumeText, jobDescription);
       const data = response.data?.data;
 
-      // Backend already creates resume and returns id (no need for second create)
       const newResumeId = data?.id;
       if (!newResumeId) {
         throw new Error("Invalid response from AI service");
       }
 
-      navigate(`/resume-builder/${newResumeId}`);
+      clearInterval(msgTimer);
+      setActiveStep(REWRITE_STEPS.length - 1);
+      setCompletedSteps(REWRITE_STEPS.map((s) => s.id));
+      setCurrentMessage(REWRITE_MESSAGES[REWRITE_MESSAGES.length - 1]);
+      targetRef.current = 100;
+      setDisplayProgress(100);
+
+      setTimeout(() => {
+        setPipelineOpen(false);
+        navigate(`/resume-builder/${newResumeId}`);
+      }, 800);
     } catch (err: any) {
+      clearInterval(msgTimer);
       console.error(err);
+      setPipelineOpen(false);
       const msg =
         err.response?.data?.message ||
         err.message ||
@@ -188,7 +255,7 @@ export default function ResumeUpload() {
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the job description here..."
-                  className="flex-1 min-h-[280px] w-full bg-gray-100 dark:bg-primary border border-gray-300 dark:border-accent rounded-lg p-4 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none resize-none"
+                  className="flex-1 min-h-[280px] w-full text-sm bg-gray-100 dark:bg-primary border border-gray-300 dark:border-accent rounded-lg p-4 text-gray-700 dark:text-gray-300 placeholder-gray-400 focus:outline-none resize-none"
                 />
               </div>
             </div>
@@ -198,13 +265,22 @@ export default function ResumeUpload() {
             <button
               onClick={handleRewrite}
               disabled={isRewriting || !resumeText || !jobDescription}
-              className="px-6 py-3 text-sm font-semibold bg-violet-500 hover:bg-violet-600 text-white rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 text-sm font-semibold bg-violet-600 hover:bg-violet-700 text-white rounded-lg"
             >
               {isRewriting ? "Rewriting..." : "Rewrite with AI"}
             </button>
           </div>
         </div>
       </Wrapper>
+
+      <RewriteProgressModal
+        isOpen={pipelineOpen}
+        steps={REWRITE_STEPS}
+        activeStep={activeStep}
+        completedSteps={completedSteps}
+        currentMessage={currentMessage}
+        simProgress={displayProgress}
+      />
     </div>
   );
 }

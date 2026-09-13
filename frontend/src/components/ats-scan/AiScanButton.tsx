@@ -1,4 +1,4 @@
-import Button from "../ui/Button";
+import { Loader2 } from "lucide-react";
 
 interface AiScanButtonProps {
   disabled?: boolean;
@@ -15,14 +15,14 @@ export default function AiScanButton({
 }: AiScanButtonProps) {
   return (
     <div className="relative inline-flex group">
-      <Button
-        variant="primary"
+      <button
         onClick={onClick}
-        disabled={disabled}
-        loading={loading}
+        disabled={disabled || loading}
+        className="inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 text-sm font-semibold bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg"
       >
+        {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
         {loading ? "Analyzing..." : "Scan Now"}
-      </Button>
+      </button>
 
       {noCredit && (
         <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block whitespace-nowrap z-10">

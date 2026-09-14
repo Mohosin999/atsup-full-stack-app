@@ -56,6 +56,51 @@ export const allFeatures = [
   },
 ];
 
+export const staticReviews = [
+  {
+    id: "static-1",
+    name: "Rahim Ahmed",
+    role: "Software Engineer",
+    content: "CVScan helped me boost my ATS score from 42% to 89%. Got 3 interview calls within a week. The category breakdown is super clear!",
+    rating: 5,
+  },
+  {
+    id: "static-2",
+    name: "Fatima Khan",
+    role: "Frontend Developer",
+    content: "The AI rewrite is amazing — it kept my real experience but added the right keywords. No fake stuff, just better framing.",
+    rating: 5,
+  },
+  {
+    id: "static-3",
+    name: "Tanvir Hasan",
+    role: "Backend Developer",
+    content: "Builder auto-saves every 2 seconds and the PDF is 100% ATS friendly. Way better than Canva-style templates that ATS can't read.",
+    rating: 5,
+  },
+  {
+    id: "static-4",
+    name: "Nusrat Jahan",
+    role: "Product Designer",
+    content: "7 free scans daily is generous. I tested 4 versions of my resume and the suggestions were spot on. Landed my dream job!",
+    rating: 4,
+  },
+  {
+    id: "static-5",
+    name: "Arif Chowdhury",
+    role: "DevOps Engineer",
+    content: "Deterministic scoring, not black-box AI. I know exactly why I got 68% and what to fix. Transparency is what I needed.",
+    rating: 5,
+  },
+  {
+    id: "static-6",
+    name: "Sadia Islam",
+    role: "Data Analyst",
+    content: "Background pre-parse makes scan feel instant. Upload, paste JD, done. Fastest ATS checker I've used.",
+    rating: 4,
+  },
+];
+
 // Steps for analysis
 export const analysisSteps = [
   {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppDispatch } from "../hooks/redux";
 import { logoutUser } from "../store/slices/authSlice";
 import ConfirmModal from "../components/ui/ConfirmModal";
-import { allFeatures } from "../constants/landingData";
+import { allFeatures, staticReviews } from "../constants/landingData";
 import HeroSection from "../components/home-page/HeroSection";
 import FeatureShowcase from "../components/home-page/FeatureShowcase";
 import StatsBar from "../components/home-page/StatsBar";
@@ -32,7 +32,14 @@ export default function HomePage() {
     },
   });
 
-  const displayTestimonials = homeReviews && homeReviews.length > 0 ? homeReviews : [];
+  // Static 6 always show; approved reviews replace one-by-one from start
+  const approved = homeReviews || [];
+  const displayTestimonials =
+    approved.length === 0
+      ? staticReviews
+      : approved.length >= 6
+        ? approved.slice(0, 6)
+        : [...approved, ...staticReviews.slice(approved.length)].slice(0, 6);
 
   const handleLogout = async () => {
     setShowLogoutConfirm(false);

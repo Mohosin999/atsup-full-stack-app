@@ -25,59 +25,35 @@ export type AggregateVisitor = {
 }
 
 export type VisitorMinAggregateOutputType = {
-  id: string | null
   fingerprint: string | null
   ipAddress: string | null
-  userAgent: string | null
-  lastVisitAt: Date | null
-  createdAt: Date | null
 }
 
 export type VisitorMaxAggregateOutputType = {
-  id: string | null
   fingerprint: string | null
   ipAddress: string | null
-  userAgent: string | null
-  lastVisitAt: Date | null
-  createdAt: Date | null
 }
 
 export type VisitorCountAggregateOutputType = {
-  id: number
   fingerprint: number
   ipAddress: number
-  userAgent: number
-  lastVisitAt: number
-  createdAt: number
   _all: number
 }
 
 
 export type VisitorMinAggregateInputType = {
-  id?: true
   fingerprint?: true
   ipAddress?: true
-  userAgent?: true
-  lastVisitAt?: true
-  createdAt?: true
 }
 
 export type VisitorMaxAggregateInputType = {
-  id?: true
   fingerprint?: true
   ipAddress?: true
-  userAgent?: true
-  lastVisitAt?: true
-  createdAt?: true
 }
 
 export type VisitorCountAggregateInputType = {
-  id?: true
   fingerprint?: true
   ipAddress?: true
-  userAgent?: true
-  lastVisitAt?: true
-  createdAt?: true
   _all?: true
 }
 
@@ -154,12 +130,8 @@ export type VisitorGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 export type VisitorGroupByOutputType = {
-  id: string
   fingerprint: string
   ipAddress: string | null
-  userAgent: string | null
-  lastVisitAt: Date
-  createdAt: Date
   _count: VisitorCountAggregateOutputType | null
   _min: VisitorMinAggregateOutputType | null
   _max: VisitorMaxAggregateOutputType | null
@@ -184,42 +156,26 @@ export type VisitorWhereInput = {
   AND?: Prisma.VisitorWhereInput | Prisma.VisitorWhereInput[]
   OR?: Prisma.VisitorWhereInput[]
   NOT?: Prisma.VisitorWhereInput | Prisma.VisitorWhereInput[]
-  id?: Prisma.StringFilter<"Visitor"> | string
   fingerprint?: Prisma.StringFilter<"Visitor"> | string
   ipAddress?: Prisma.StringNullableFilter<"Visitor"> | string | null
-  userAgent?: Prisma.StringNullableFilter<"Visitor"> | string | null
-  lastVisitAt?: Prisma.DateTimeFilter<"Visitor"> | Date | string
-  createdAt?: Prisma.DateTimeFilter<"Visitor"> | Date | string
 }
 
 export type VisitorOrderByWithRelationInput = {
-  id?: Prisma.SortOrder
   fingerprint?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
-  userAgent?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastVisitAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
 }
 
 export type VisitorWhereUniqueInput = Prisma.AtLeast<{
-  id?: string
   fingerprint?: string
   AND?: Prisma.VisitorWhereInput | Prisma.VisitorWhereInput[]
   OR?: Prisma.VisitorWhereInput[]
   NOT?: Prisma.VisitorWhereInput | Prisma.VisitorWhereInput[]
   ipAddress?: Prisma.StringNullableFilter<"Visitor"> | string | null
-  userAgent?: Prisma.StringNullableFilter<"Visitor"> | string | null
-  lastVisitAt?: Prisma.DateTimeFilter<"Visitor"> | Date | string
-  createdAt?: Prisma.DateTimeFilter<"Visitor"> | Date | string
-}, "id" | "fingerprint">
+}, "fingerprint">
 
 export type VisitorOrderByWithAggregationInput = {
-  id?: Prisma.SortOrder
   fingerprint?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
-  userAgent?: Prisma.SortOrderInput | Prisma.SortOrder
-  lastVisitAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
   _count?: Prisma.VisitorCountOrderByAggregateInput
   _max?: Prisma.VisitorMaxOrderByAggregateInput
   _min?: Prisma.VisitorMinOrderByAggregateInput
@@ -229,154 +185,90 @@ export type VisitorScalarWhereWithAggregatesInput = {
   AND?: Prisma.VisitorScalarWhereWithAggregatesInput | Prisma.VisitorScalarWhereWithAggregatesInput[]
   OR?: Prisma.VisitorScalarWhereWithAggregatesInput[]
   NOT?: Prisma.VisitorScalarWhereWithAggregatesInput | Prisma.VisitorScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"Visitor"> | string
   fingerprint?: Prisma.StringWithAggregatesFilter<"Visitor"> | string
   ipAddress?: Prisma.StringNullableWithAggregatesFilter<"Visitor"> | string | null
-  userAgent?: Prisma.StringNullableWithAggregatesFilter<"Visitor"> | string | null
-  lastVisitAt?: Prisma.DateTimeWithAggregatesFilter<"Visitor"> | Date | string
-  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Visitor"> | Date | string
 }
 
 export type VisitorCreateInput = {
-  id?: string
   fingerprint: string
   ipAddress?: string | null
-  userAgent?: string | null
-  lastVisitAt?: Date | string
-  createdAt?: Date | string
 }
 
 export type VisitorUncheckedCreateInput = {
-  id?: string
   fingerprint: string
   ipAddress?: string | null
-  userAgent?: string | null
-  lastVisitAt?: Date | string
-  createdAt?: Date | string
 }
 
 export type VisitorUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   fingerprint?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastVisitAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type VisitorUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   fingerprint?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastVisitAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type VisitorCreateManyInput = {
-  id?: string
   fingerprint: string
   ipAddress?: string | null
-  userAgent?: string | null
-  lastVisitAt?: Date | string
-  createdAt?: Date | string
 }
 
 export type VisitorUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   fingerprint?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastVisitAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type VisitorUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   fingerprint?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  lastVisitAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type VisitorCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   fingerprint?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
-  userAgent?: Prisma.SortOrder
-  lastVisitAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
 }
 
 export type VisitorMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   fingerprint?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
-  userAgent?: Prisma.SortOrder
-  lastVisitAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
 }
 
 export type VisitorMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   fingerprint?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
-  userAgent?: Prisma.SortOrder
-  lastVisitAt?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
 }
 
 
 
 export type VisitorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
   fingerprint?: boolean
   ipAddress?: boolean
-  userAgent?: boolean
-  lastVisitAt?: boolean
-  createdAt?: boolean
 }, ExtArgs["result"]["visitor"]>
 
 export type VisitorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
   fingerprint?: boolean
   ipAddress?: boolean
-  userAgent?: boolean
-  lastVisitAt?: boolean
-  createdAt?: boolean
 }, ExtArgs["result"]["visitor"]>
 
 export type VisitorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
   fingerprint?: boolean
   ipAddress?: boolean
-  userAgent?: boolean
-  lastVisitAt?: boolean
-  createdAt?: boolean
 }, ExtArgs["result"]["visitor"]>
 
 export type VisitorSelectScalar = {
-  id?: boolean
   fingerprint?: boolean
   ipAddress?: boolean
-  userAgent?: boolean
-  lastVisitAt?: boolean
-  createdAt?: boolean
 }
 
-export type VisitorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fingerprint" | "ipAddress" | "userAgent" | "lastVisitAt" | "createdAt", ExtArgs["result"]["visitor"]>
+export type VisitorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"fingerprint" | "ipAddress", ExtArgs["result"]["visitor"]>
 
 export type $VisitorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Visitor"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: string
     fingerprint: string
     ipAddress: string | null
-    userAgent: string | null
-    lastVisitAt: Date
-    createdAt: Date
   }, ExtArgs["result"]["visitor"]>
   composites: {}
 }
@@ -460,8 +352,8 @@ export interface VisitorDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    * // Get first 10 Visitors
    * const visitors = await prisma.visitor.findMany({ take: 10 })
    * 
-   * // Only select the `id`
-   * const visitorWithIdOnly = await prisma.visitor.findMany({ select: { id: true } })
+   * // Only select the `fingerprint`
+   * const visitorWithFingerprintOnly = await prisma.visitor.findMany({ select: { fingerprint: true } })
    * 
    */
   findMany<T extends VisitorFindManyArgs>(args?: Prisma.SelectSubset<T, VisitorFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VisitorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -505,9 +397,9 @@ export interface VisitorDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    *   ]
    * })
    * 
-   * // Create many Visitors and only return the `id`
-   * const visitorWithIdOnly = await prisma.visitor.createManyAndReturn({
-   *   select: { id: true },
+   * // Create many Visitors and only return the `fingerprint`
+   * const visitorWithFingerprintOnly = await prisma.visitor.createManyAndReturn({
+   *   select: { fingerprint: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -596,9 +488,9 @@ export interface VisitorDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    *   ]
    * })
    * 
-   * // Update zero or more Visitors and only return the `id`
-   * const visitorWithIdOnly = await prisma.visitor.updateManyAndReturn({
-   *   select: { id: true },
+   * // Update zero or more Visitors and only return the `fingerprint`
+   * const visitorWithFingerprintOnly = await prisma.visitor.updateManyAndReturn({
+   *   select: { fingerprint: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -800,12 +692,8 @@ export interface Prisma__VisitorClient<T, Null = never, ExtArgs extends runtime.
  * Fields of the Visitor model
  */
 export interface VisitorFieldRefs {
-  readonly id: Prisma.FieldRef<"Visitor", 'String'>
   readonly fingerprint: Prisma.FieldRef<"Visitor", 'String'>
   readonly ipAddress: Prisma.FieldRef<"Visitor", 'String'>
-  readonly userAgent: Prisma.FieldRef<"Visitor", 'String'>
-  readonly lastVisitAt: Prisma.FieldRef<"Visitor", 'DateTime'>
-  readonly createdAt: Prisma.FieldRef<"Visitor", 'DateTime'>
 }
     
 

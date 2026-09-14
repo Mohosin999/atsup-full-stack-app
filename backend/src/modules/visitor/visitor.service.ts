@@ -1,24 +1,16 @@
 import { prisma } from "../../lib/prisma";
 
-export const trackVisitor = async (
-  fingerprint: string,
-  ipAddress?: string,
-  userAgent?: string
-) => {
+export const trackVisitor = async (fingerprint: string, ipAddress?: string) => {
   const existing = await prisma.visitor.findUnique({
     where: { fingerprint },
   });
 
   if (existing) {
-    await prisma.visitor.update({
-      where: { fingerprint },
-      data: { lastVisitAt: new Date(), ipAddress, userAgent },
-    });
     return { isNew: false };
   }
 
   await prisma.visitor.create({
-    data: { fingerprint, ipAddress, userAgent },
+    data: { fingerprint, ipAddress },
   });
 
   await prisma.siteStats.upsert({

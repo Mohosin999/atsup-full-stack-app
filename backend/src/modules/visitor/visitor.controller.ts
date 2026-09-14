@@ -14,9 +14,8 @@ export const track = async (req: Request, res: Response) => {
       (req.headers["x-forwarded-for"] as string)?.split(",")[0] ||
       req.ip ||
       "";
-    const userAgent = req.headers["user-agent"] || "";
 
-    await trackVisitor(fingerprint, ipAddress, userAgent);
+    await trackVisitor(fingerprint, ipAddress);
     const totalVisitors = await getTotalUniqueVisitors();
 
     res.json({

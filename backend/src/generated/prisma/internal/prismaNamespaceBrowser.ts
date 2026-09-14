@@ -240,12 +240,8 @@ export type FeedbackScalarFieldEnum = (typeof FeedbackScalarFieldEnum)[keyof typ
 
 
 export const VisitorScalarFieldEnum = {
-  id: 'id',
   fingerprint: 'fingerprint',
-  ipAddress: 'ipAddress',
-  userAgent: 'userAgent',
-  lastVisitAt: 'lastVisitAt',
-  createdAt: 'createdAt'
+  ipAddress: 'ipAddress'
 } as const
 
 export type VisitorScalarFieldEnum = (typeof VisitorScalarFieldEnum)[keyof typeof VisitorScalarFieldEnum]

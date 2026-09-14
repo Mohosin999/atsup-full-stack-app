@@ -199,15 +199,9 @@ model Feedback {
 }
 
 model Visitor {
-  id            String   @id @default(cuid())
-  fingerprint   String
-  ipAddress     String?
-  userAgent     String?
-  lastVisitAt   DateTime @default(now())
-  createdAt     DateTime @default(now())
+  fingerprint String  @id
+  ipAddress   String?
 
-  @@unique([fingerprint])
-  @@index([lastVisitAt])
   @@map("visitors")
 }
 

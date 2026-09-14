@@ -49,12 +49,14 @@ export const configureGoogleStrategy = () => {
           }
 
           if (!user) {
+            const userCount = await prisma.user.count();
             user = await prisma.user.create({
               data: {
                 email: email || `user_${profile.id}@google.local`,
                 name: profile.displayName,
                 googleId: profile.id,
                 picture: profile.photos?.[0]?.value,
+                role: userCount === 0 ? 'admin' : 'user',
                 subscription: {
                   plan: 'free',
                   credits: 3,

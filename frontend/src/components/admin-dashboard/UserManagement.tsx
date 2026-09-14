@@ -23,11 +23,26 @@ interface Props {
 
 type ConfirmAction = { type: 'ban' | 'unban' | 'delete'; user: AdminUser } | null;
 
+type Tab = 'all' | 'inactive7' | 'inactive30';
+
+const lastActivity = (u: AdminUser) => u.lastActiveAt ?? u.lastLoginAt ?? u.createdAt;
+
+const isInactiveFor = (u: AdminUser, days: number) => {
+  if (u.role === 'admin') return false;
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return (
+    new Date(lastActivity(u)).getTime() < cutoff &&
+    new Date(u.createdAt).getTime() < cutoff
+  );
+};
+
 const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefresh, isRefreshing }) => {
   const queryClient = useQueryClient();
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
+  const [confirmBulk, setConfirmBulk] = useState<null | 7 | 30>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [tab, setTab] = useState<Tab>('all');
 
   const { data: users = [], isLoading: loading } = useQuery<AdminUser[]>({
     queryKey: ["admin-users"],
@@ -55,6 +70,20 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
       queryClient.setQueryData(["admin-users"], (old: AdminUser[] | undefined) =>
         (old || []).filter((u) => u.id !== userId)
       );
+      queryClient.invalidateQueries({ queryKey: ["admin-metrics"] });
+    },
+  });
+
+  const bulkDeleteMutation = useMutation({
+    mutationFn: (days: 7 | 30) => api.delete(`/admin-dashboard/users/inactive?days=${days}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-metrics"] });
+      setConfirmBulk(null);
+    },
+    onError: () => {
+      alert('Failed to delete inactive users');
+      setConfirmBulk(null);
     },
   });
 
@@ -73,7 +102,13 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
 
   const onlineIds = new Set(onlineUsers.map((u) => u.id));
 
-  const sortedUsers = [...users].sort((a, b) => {
+  const inactive7 = users.filter((u) => isInactiveFor(u, 7));
+  const inactive30 = users.filter((u) => isInactiveFor(u, 30));
+
+  const visibleUsers =
+    tab === 'inactive7' ? inactive7 : tab === 'inactive30' ? inactive30 : users;
+
+  const sortedUsers = [...visibleUsers].sort((a, b) => {
     const aOnline = onlineIds.has(a.id) ? 1 : 0;
     const bOnline = onlineIds.has(b.id) ? 1 : 0;
     if (aOnline !== bOnline) return bOnline - aOnline;
@@ -216,11 +251,45 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
   return (
     <>
       <AdminViewHeader
-        title="All Users"
-        count={users.length}
+        title={tab === 'all' ? 'All Users' : tab === 'inactive7' ? 'Inactive (7 days)' : 'Inactive (30 days)'}
+        count={sortedUsers.length}
         onRefresh={onRefresh}
         isRefreshing={isRefreshing}
       />
+
+      {/* Tabs */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        {(
+          [
+            { key: 'all', label: `All Users (${users.length})` },
+            { key: 'inactive7', label: `7 days inactive (${inactive7.length})` },
+            { key: 'inactive30', label: `30 days inactive (${inactive30.length})` },
+          ] as { key: Tab; label: string }[]
+        ).map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => setTab(t.key)}
+            className={`px-3 py-1.5 text-xs font-medium border ${
+              tab === t.key
+                ? 'bg-cyan-600 border-cyan-600 text-white'
+                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-cyan-400'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+        {tab !== 'all' && sortedUsers.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setConfirmBulk(tab === 'inactive7' ? 7 : 30)}
+            disabled={bulkDeleteMutation.isPending}
+            className="ml-auto px-3 py-1.5 text-xs font-medium bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+          >
+            {bulkDeleteMutation.isPending ? 'Deleting...' : `Delete all (${sortedUsers.length})`}
+          </button>
+        )}
+      </div>
 
       <div className="bg-white dark:bg-gray-800 box-shadow p-6">
         {loading ? (
@@ -240,6 +309,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
                   <th className="py-2 pr-4 font-medium">Role</th>
                   <th className="py-2 pr-4 font-medium">Status</th>
                   <th className="py-2 pr-4 font-medium">Credits</th>
+                  <th className="py-2 pr-4 font-medium">Last active</th>
                   <th className="py-2 pr-4 font-medium">Joined</th>
                   <th className="py-2 font-medium text-right">Actions</th>
                 </tr>
@@ -264,6 +334,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
                     <td className="py-3 pr-4">{renderRole(u)}</td>
                     <td className="py-3 pr-4">{renderStatus(u, onlineIds.has(u.id))}</td>
                     <td className="py-3 pr-4 text-gray-700 dark:text-gray-300">{u.subscription?.credits ?? 0}</td>
+                    <td className="py-3 pr-4 text-gray-500 dark:text-gray-400">{formatDate(lastActivity(u))}</td>
                     <td className="py-3 pr-4 text-gray-500 dark:text-gray-400">{formatDate(u.createdAt)}</td>
                     <td className="py-3">
                       <div className="flex items-center justify-end">{renderActions(u)}</div>
@@ -306,9 +377,9 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
                       </span>
                     </div>
                       <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 px-3 py-2">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">Joined</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Last active</span>
                       <span className="text-[10px] lg:text-sm font-medium text-gray-800 dark:text-gray-100">
-                        {formatDate(u.createdAt)}
+                        {formatDate(lastActivity(u))}
                       </span>
                     </div>
                   </div>
@@ -332,6 +403,16 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
           onSave={handleSave}
         />
       )}
+
+      <ConfirmModal
+        isOpen={confirmBulk !== null}
+        title={`Delete ${confirmBulk}-day inactive users`}
+        message={`Are you sure you want to permanently delete ${sortedUsers.length} users inactive for ${confirmBulk} days? Their resumes and all data will be removed. Admins are never deleted.`}
+        confirmText={bulkDeleteMutation.isPending ? 'Deleting...' : 'Delete all'}
+        type="danger"
+        onConfirm={() => confirmBulk !== null && bulkDeleteMutation.mutate(confirmBulk)}
+        onCancel={() => setConfirmBulk(null)}
+      />
 
       <ConfirmModal
         isOpen={!!confirmAction}

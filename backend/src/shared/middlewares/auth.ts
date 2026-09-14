@@ -59,6 +59,15 @@ export const authenticate = async (
       });
     }
 
+    // Throttled activity tracking (1h gap) — powers DAU/WAU + inactive cleanup.
+    // Fire-and-forget so it never slows down the request.
+    const lastActive = user.lastActiveAt ? new Date(user.lastActiveAt).getTime() : 0;
+    if (Date.now() - lastActive > 60 * 60 * 1000) {
+      void prisma.user
+        .update({ where: { id: user.id }, data: { lastActiveAt: new Date() } })
+        .catch(() => {});
+    }
+
     // FIXME: not yet used in this app
     const subscription = await applyDailyCreditReset(user.id, user.subscription);
 

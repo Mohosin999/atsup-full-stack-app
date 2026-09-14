@@ -4,6 +4,7 @@ import { authenticate } from "../../shared/middlewares/auth";
 import { authLimiter } from "../../shared/middlewares/middlewareConfig";
 
 import { AuthRequest } from "../../shared/types";
+import { prisma } from "../../lib/prisma";
 import { generateAccessToken, generateRefreshToken } from "../../shared/config/jwt";
 import { storeRefreshToken, deleteAllRefreshTokensForUser } from "../../lib/redis";
 import {
@@ -56,6 +57,10 @@ router.get(
 
       await deleteAllRefreshTokensForUser(user.id);
       await storeRefreshToken(refreshToken, user.id, 1 * 24 * 60 * 60);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date(), lastActiveAt: new Date() },
+      }).catch(() => {});
 
       // Plan A: redirect directly to / with tokens (skip /auth/callback page to avoid double navbar flash)
       const redirectUrl = new URL(`${env.frontendUrl}/`);

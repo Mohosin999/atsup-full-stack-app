@@ -7,6 +7,7 @@ import {
   setUserBan,
   adminUpdateUser,
   adminDeleteUser,
+  adminDeleteInactiveUsers,
   GrowthPeriod,
   getAllResumesForAdmin,
   adminDeleteResume,
@@ -140,6 +141,18 @@ export const deleteUser = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     console.error("Error deleting user:", error);
+    sendError(res, error);
+  }
+};
+
+export const deleteInactiveUsers = async (req: AuthRequest, res: Response) => {
+  if (!ensureAdmin(req, res)) return;
+  try {
+    const days = Number(req.query.days) === 30 ? 30 : 7;
+    const result = await adminDeleteInactiveUsers(req.user.id, days as 7 | 30);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error("Error deleting inactive users:", error);
     sendError(res, error);
   }
 };

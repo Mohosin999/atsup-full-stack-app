@@ -57,6 +57,8 @@ export const configureGoogleStrategy = () => {
                 googleId: profile.id,
                 picture: profile.photos?.[0]?.value,
                 role: userCount === 0 ? 'admin' : 'user',
+                lastLoginAt: new Date(),
+                lastActiveAt: new Date(),
                 subscription: {
                   plan: 'free',
                   credits: 3,

@@ -485,6 +485,8 @@ export interface AdminDashboardMetrics {
   resumeBuilderUsersToday: number;
   atsCheckUsersToday: number;
   bestFeatureToday: string;
+  dailyActiveUsers: number;
+  weeklyActiveUsers: number;
 }
 
 export interface AdminUser {
@@ -496,6 +498,7 @@ export interface AdminUser {
   isBanned: boolean;
   createdAt: string;
   lastLoginAt?: string | null;
+  lastActiveAt?: string | null;
   subscription?: {
     plan?: string;
     credits?: number;

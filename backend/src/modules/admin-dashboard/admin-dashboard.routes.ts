@@ -8,6 +8,7 @@ import {
   toggleBan,
   updateUser,
   deleteUser,
+  deleteInactiveUsers,
   getSupportTickets,
   updateSupportTicket,
   deleteSupportTicket,
@@ -33,6 +34,7 @@ router.use(authenticate);
 router.get("/metrics", getMetrics);
 router.get("/growth", getGrowth);
 router.get("/users", getUsers);
+router.delete("/users/inactive", deleteInactiveUsers);
 router.patch("/users/:id/ban", toggleBan);
 router.patch("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);

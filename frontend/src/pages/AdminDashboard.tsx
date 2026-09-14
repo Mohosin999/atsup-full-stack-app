@@ -153,7 +153,7 @@ const AdminDashboard: React.FC = () => {
     );
   }
 
-  const { totalUsers, todayNewUsers, bestFeatureToday } = metrics;
+  const { totalUsers, todayNewUsers, bestFeatureToday, dailyActiveUsers, weeklyActiveUsers } = metrics;
 
   const periodLabel =
     PERIOD_OPTIONS.find((p) => p.value === period)?.label ?? "Today";
@@ -295,17 +295,33 @@ const AdminDashboard: React.FC = () => {
                 {/* =====================================================
                   * Summary cards
                  ======================================================*/}
-                <div className="grid grid-cols-2 xl:grid-cols-4 gap-0 mb-6 bg-cyan-600 text-white box-shadow">
+                <div className="grid grid-cols-2 xl:grid-cols-3 gap-0 mb-6 bg-cyan-600 text-white box-shadow">
                   {/* New users (today) */}
-                  <div className="p-4 xl:p-6 text-center border-r border-b border-white/30 xl:border-b-0">
+                  <div className="p-4 xl:p-6 text-center border-r border-b border-white/30">
                     <h3 className="text-xs font-medium">New Users (Today)</h3>
                     <p className="text-2xl lg:text-3xl font-bold mt-2">
                       {todayNewUsers}
                     </p>
                   </div>
 
+                  {/* Daily active users */}
+                  <div className="p-4 xl:p-6 text-center border-b border-white/30 xl:border-r">
+                    <h3 className="text-xs font-medium">Daily Active Users</h3>
+                    <p className="text-2xl lg:text-3xl font-bold mt-2">
+                      {dailyActiveUsers ?? 0}
+                    </p>
+                  </div>
+
+                  {/* Weekly active users */}
+                  <div className="p-4 xl:p-6 text-center border-r border-b border-white/30">
+                    <h3 className="text-xs font-medium">Active (7 days)</h3>
+                    <p className="text-2xl lg:text-3xl font-bold mt-2">
+                      {weeklyActiveUsers ?? 0}
+                    </p>
+                  </div>
+
                   {/* Visitors */}
-                  <div className="p-4 xl:p-6 text-center border-b border-white/30 xl:border-r xl:border-b-0">
+                  <div className="p-4 xl:p-6 text-center border-r border-white/30">
                     <h3 className="text-xs font-medium flex items-center justify-center">
                       Total Visitors
                       <span className="relative flex h-2 w-2 ml-2 ">
@@ -319,7 +335,7 @@ const AdminDashboard: React.FC = () => {
                   </div>
 
                   {/* Total users */}
-                  <div className="p-4 xl:p-6 text-center border-r border-white/30 xl:border-b-0">
+                  <div className="p-4 xl:p-6 text-center border-white/30 xl:border-r">
                     <h3 className="text-xs font-medium">Total Users</h3>
                     <p className="text-2xl lg:text-3xl font-bold mt-2">
                       {totalUsers}
@@ -327,7 +343,7 @@ const AdminDashboard: React.FC = () => {
                   </div>
 
                   {/* Best performing feature */}
-                  <div className="p-4 xl:p-6 text-center xl:border-l border-white/30">
+                  <div className="p-4 xl:p-6 text-center border-white/30">
                     <h3 className="text-xs font-medium">
                       Best Performing Feature
                     </h3>

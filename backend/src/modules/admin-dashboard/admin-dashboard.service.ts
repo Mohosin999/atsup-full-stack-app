@@ -202,6 +202,21 @@ export const getBestFeatureToday = async () => {
   return resumeCount > atsCount ? 'resume-builder' : 'ats-check';
 };
 
+export const getDailyActiveUsers = async () => {
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  return prisma.user.count({
+    where: { lastActiveAt: { gte: startOfToday } },
+  });
+};
+
+export const getWeeklyActiveUsers = async () => {
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  return prisma.user.count({
+    where: { lastActiveAt: { gte: weekAgo } },
+  });
+};
+
 export const getAdminDashboardMetrics = async () => {
   const [
     totalUsers,
@@ -209,12 +224,16 @@ export const getAdminDashboardMetrics = async () => {
     resumeBuilderUsersToday,
     atsCheckUsersToday,
     bestFeatureToday,
+    dailyActiveUsers,
+    weeklyActiveUsers,
   ] = await Promise.all([
     getTotalUsers(),
     getTodayNewUsers(),
     getResumeBuilderUsersToday(),
     getATSCheckUsersToday(),
     getBestFeatureToday(),
+    getDailyActiveUsers(),
+    getWeeklyActiveUsers(),
   ]);
 
   return {
@@ -223,6 +242,8 @@ export const getAdminDashboardMetrics = async () => {
     resumeBuilderUsersToday,
     atsCheckUsersToday,
     bestFeatureToday,
+    dailyActiveUsers,
+    weeklyActiveUsers,
   };
 };
 
@@ -238,9 +259,49 @@ export const getUsersForAdmin = async () => {
       isBanned: true,
       createdAt: true,
       lastLoginAt: true,
+      lastActiveAt: true,
       subscription: true,
     },
   });
+};
+
+const inactiveWhere = (days: number) => {
+  const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  return {
+    role: { not: "admin" },
+    AND: [
+      {
+        OR: [{ lastActiveAt: { lt: cutoff } }, { lastActiveAt: null }],
+      },
+      {
+        OR: [{ lastLoginAt: { lt: cutoff } }, { lastLoginAt: null }],
+      },
+      { createdAt: { lt: cutoff } },
+    ],
+  };
+};
+
+export const adminDeleteInactiveUsers = async (
+  adminId: string,
+  days: 7 | 30,
+) => {
+  const targets = await prisma.user.findMany({
+    where: { ...inactiveWhere(days), id: { not: adminId } } as any,
+    select: { id: true },
+  });
+  const ids = targets.map((t) => t.id);
+  if (ids.length === 0) return { deletedCount: 0 };
+
+  await prisma.payment.deleteMany({ where: { userId: { in: ids } } });
+  await prisma.atsScoreHistory.deleteMany({ where: { userId: { in: ids } } });
+  await prisma.analysis.deleteMany({ where: { userId: { in: ids } } });
+  await prisma.atsScore.deleteMany({ where: { userId: { in: ids } } });
+  await prisma.resume.deleteMany({ where: { userId: { in: ids } } });
+  await prisma.jobDescription.deleteMany({ where: { userId: { in: ids } } });
+  await prisma.supportTicket.deleteMany({ where: { userId: { in: ids } } });
+  await prisma.feedback.deleteMany({ where: { userId: { in: ids } } });
+  const result = await prisma.user.deleteMany({ where: { id: { in: ids } } });
+  return { deletedCount: result.count };
 };
 
 const getTargetUser = async (userId: string) => {

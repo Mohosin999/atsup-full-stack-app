@@ -27,6 +27,7 @@ model User {
   lastSeenReviewsAt DateTime?           @db.Timestamp()
 
   @@index([role, isActive])
+  @@index([lastActiveAt])
 
   resumes           Resume[]
   analyses          Analysis[]

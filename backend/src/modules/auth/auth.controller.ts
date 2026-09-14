@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { AuthRequest } from "../../shared/types";
+import { prisma } from "../../lib/prisma";
 import {
   createUser,
   findUserByEmail,
@@ -41,6 +42,10 @@ export const register = async (req: AuthRequest, res: Response) => {
 
     await deleteAllRefreshTokensForUser(user.id);
     await storeRefreshToken(refreshToken, user.id, 1 * 24 * 60 * 60);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date(), lastActiveAt: new Date() },
+    });
 
     res.status(201).json({
       success: true,
@@ -118,6 +123,10 @@ export const login = async (req: AuthRequest, res: Response) => {
 
     await deleteAllRefreshTokensForUser(user.id);
     await storeRefreshToken(refreshToken, user.id, 1 * 24 * 60 * 60);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date(), lastActiveAt: new Date() },
+    });
 
     res.json({
       success: true,

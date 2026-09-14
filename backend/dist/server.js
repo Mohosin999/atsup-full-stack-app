@@ -1075,7 +1075,7 @@ var throwIfQuotaError = (error) => {
 };
 
 // src/shared/config/gemini.ts
-var GEMINI_MODEL = "gemini-2.5-flash";
+var GEMINI_MODEL = "gemini-3.1-flash-lite";
 var keys = [env.geminiApiKey, env.geminiApiKeySecondary].filter(
   Boolean
 );

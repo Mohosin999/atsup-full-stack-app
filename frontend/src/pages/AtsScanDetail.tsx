@@ -6,7 +6,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { atsScoreApi } from "../api/api";
 import { AtsScoreHistory, ResumeContent } from "../types";
 import AtsScoreResult from "../components/ats-result/AtsScoreResult";
-import AnalysisProgressModal, { PipelineStep } from "../components/ui/AnalysisProgressModal";
+import AnalysisProgressModal, {
+  PipelineStep,
+} from "../components/ui/AnalysisProgressModal";
 import Wrapper from "../components/Wrapper";
 import SkeletonAtsResult from "@/components/ui/SkeletonAtsResult";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -71,7 +73,8 @@ export default function AtsScoreDetail() {
   const error = !historyId
     ? "No ATS report specified."
     : queryError
-      ? (queryError as any)?.response?.data?.message || "Failed to load ATS report."
+      ? (queryError as any)?.response?.data?.message ||
+        "Failed to load ATS report."
       : !loading && !result
         ? "ATS report not found."
         : "";
@@ -94,7 +97,8 @@ export default function AtsScoreDetail() {
 
   useEffect(() => {
     const done = completedSteps.length;
-    const newTarget = done < STEP_MILESTONES.length ? STEP_MILESTONES[done] : 100;
+    const newTarget =
+      done < STEP_MILESTONES.length ? STEP_MILESTONES[done] : 100;
     targetRef.current = newTarget;
     if (progressRef.current < newTarget) {
       progressRef.current = newTarget;
@@ -120,9 +124,10 @@ export default function AtsScoreDetail() {
   }, [pipelineOpen]);
 
   // Background pre-parse: rescan modal-এ PDF select হলেই resume LLM parse শুরু (invisible)
-  const rescanPreparseRef = useRef<{ key: string; promise: Promise<any> } | null>(
-    null,
-  );
+  const rescanPreparseRef = useRef<{
+    key: string;
+    promise: Promise<any>;
+  } | null>(null);
   const rescanFileKey = (f: File) => `${f.name}|${f.size}|${f.lastModified}`;
   const startRescanBackgroundParse = (file: File) => {
     if (!user) return;
@@ -147,7 +152,9 @@ export default function AtsScoreDetail() {
       return;
     }
     if (jobDescription.trim().length < 20) {
-      toast.error("Job description is too short. Please provide at least 20 characters.");
+      toast.error(
+        "Job description is too short. Please provide at least 20 characters.",
+      );
       return;
     }
     if (!historyId) return;
@@ -269,7 +276,9 @@ export default function AtsScoreDetail() {
       console.error("Rescan error:", error);
       setPipelineOpen(false);
       setRescanning(false);
-      toast.error(error.response?.data?.message || error.message || "Failed to rescan");
+      toast.error(
+        error.response?.data?.message || error.message || "Failed to rescan",
+      );
     }
   };
 
@@ -304,7 +313,10 @@ export default function AtsScoreDetail() {
             </button>
           </div>
         ) : result ? (
-          <AtsScoreResult result={result} onRescan={() => setRescanOpen(true)} />
+          <AtsScoreResult
+            result={result}
+            onRescan={() => setRescanOpen(true)}
+          />
         ) : null}
       </Wrapper>
 
@@ -325,7 +337,9 @@ export default function AtsScoreDetail() {
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <div className="flex items-center gap-2">
                 <RefreshCw className="w-5 h-5 text-cyan-600" />
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Rescan Your Resume</h2>
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                  Rescan Your Resume
+                </h2>
               </div>
               <button
                 onClick={() => {
@@ -343,13 +357,17 @@ export default function AtsScoreDetail() {
 
             <div className="p-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">Upload Resume (PDF)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                  Upload Resume (PDF)
+                </label>
                 {resumeFile ? (
                   <div className="relative flex items-center gap-3 p-3 border-2 border-cyan-400 bg-cyan-50 dark:bg-cyan-900/30 dark:border-cyan-700 rounded-lg">
                     <div className="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/50 flex items-center justify-center shrink-0">
                       <CheckCircle className="w-6 h-6 text-cyan-500 dark:text-cyan-400" />
                     </div>
-                    <p className="text-sm font-medium text-gray-800 truncate flex-1 dark:text-gray-100">{resumeName}</p>
+                    <p className="text-sm font-medium text-gray-800 truncate flex-1 dark:text-gray-100">
+                      {resumeName}
+                    </p>
                     <button
                       onClick={() => {
                         setResumeFile(null);
@@ -365,9 +383,14 @@ export default function AtsScoreDetail() {
                   <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer rounded-lg transition-colors p-6 dark:border-gray-600 dark:bg-gray-800/50 dark:hover:bg-gray-700">
                     <Upload className="w-8 h-8 text-gray-400 mb-2 dark:text-gray-500" />
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      <span className="font-semibold text-cyan-600">Click to upload</span> or drag and drop
+                      <span className="font-semibold text-cyan-600">
+                        Click to upload
+                      </span>{" "}
+                      or drag and drop
                     </p>
-                    <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">PDF only (MAX. 10MB)</p>
+                    <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">
+                      PDF only (MAX. 10MB)
+                    </p>
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -387,7 +410,9 @@ export default function AtsScoreDetail() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">Job Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                  Job Description
+                </label>
                 <textarea
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
@@ -396,7 +421,9 @@ export default function AtsScoreDetail() {
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none dark:bg-gray-800/50 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
                 />
                 {!aiScan.available && (
-                  <p className="mt-2 text-xs md:text-sm text-red-500 dark:text-red-300">0 credits — New quota at 4 PM BST</p>
+                  <p className="mt-2 text-xs md:text-sm text-red-500 dark:text-red-300">
+                    0 credits — New quota at 4 PM BST
+                  </p>
                 )}
               </div>
             </div>
@@ -415,8 +442,13 @@ export default function AtsScoreDetail() {
               </button>
               <button
                 onClick={handleRescan}
-                disabled={!resumeFile || jobDescription.trim().length < 20 || rescanning || !aiScan.available}
-                className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+                disabled={
+                  !resumeFile ||
+                  jobDescription.trim().length < 20 ||
+                  rescanning ||
+                  !aiScan.available
+                }
+                className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg  active:scale-105 transition-all"
               >
                 <RefreshCw className="w-4 h-4" />
                 Rescan (1 credit)

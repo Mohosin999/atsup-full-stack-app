@@ -6,7 +6,7 @@ import { atsScoreApi } from "../../api/api";
 import AnalysisProgressModal, {
   PipelineStep,
 } from "../ui/AnalysisProgressModal";
-import AiScanButton from "./AiScanButton";
+import ActionButton from "../ui/ActionButton";
 import { getAiScanStatus } from "../../utils/aiScan";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setUserAiScanState } from "@/store/slices/authSlice";
@@ -395,11 +395,11 @@ export default function ResumeScanForm({
           ================================================================*/}
       <div className="mt-3 flex flex-col sm:flex-row items-center justify-end gap-3">
         <CreditBadge />
-        <AiScanButton
+        <ActionButton
+          label="Scan Now"
           onClick={handleAiScan}
           disabled={!aiScan.available || !bothFieldsReady || analyzing}
-          noCredit={!aiScan.available}
-          loading={analyzing}
+          variant="cyan"
         />
       </div>
 

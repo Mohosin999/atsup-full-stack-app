@@ -36,7 +36,7 @@ export default function ActionButton({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className={`group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold text-white rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none ${v.base}`}
+      className={`group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold text-white rounded-xl active:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none ${v.base}`}
     >
       {loading ? (
         <>

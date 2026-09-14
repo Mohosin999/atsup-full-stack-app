@@ -241,12 +241,12 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
 
-    const effectiveCredits = lastReset !== today ? 3 : credits;
+    const effectiveCredits = lastReset !== today ? 7 : credits;
 
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: "Daily limit is 3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+        message: "Daily limit is 7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
         code: "AI_SCAN_UNAVAILABLE",
       });
     }
@@ -282,7 +282,7 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
         lastAiScanResetDate: today,
       },
       message:
-        "AI scan used. Remaining today: " + remainingCredits + "/3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+        "AI scan used. Remaining today: " + remainingCredits + "/7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
     });
   } catch (error: any) {
     console.error("ATS Score analysis error:", error);
@@ -361,12 +361,12 @@ export const rescanAtsScore = async (req: AuthRequest, res: Response) => {
     const today = getBangladeshCreditDateKey();
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 3 : credits;
+    const effectiveCredits = lastReset !== today ? 7 : credits;
 
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: "Daily limit is 3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+        message: "Daily limit is 7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
         code: "AI_SCAN_UNAVAILABLE",
       });
     }
@@ -405,7 +405,7 @@ export const rescanAtsScore = async (req: AuthRequest, res: Response) => {
         credits: remainingCredits,
         lastAiScanResetDate: today,
       },
-      message: "AI rescan used. Remaining today: " + remainingCredits + "/3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+      message: "AI rescan used. Remaining today: " + remainingCredits + "/7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
     });
   } catch (error: any) {
     console.error("ATS rescan error:", error);

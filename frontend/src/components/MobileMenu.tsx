@@ -93,34 +93,9 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
                   : "text-gray-700 dark:text-gray-300"
               }`}
             onClick={() => setMobileMenuOpen(false)}
-          >
+            >
             Pricing
           </Link>
-          {user && user.role !== "admin" && (() => {
-            const getBangladeshCreditDateKey = () => {
-              const now = new Date();
-              const dhakaMs = now.getTime() + 6 * 60 * 60 * 1000;
-              const dhaka = new Date(dhakaMs);
-              const hour = dhaka.getUTCHours();
-              if (hour < 16) dhaka.setUTCDate(dhaka.getUTCDate() - 1);
-              return dhaka.toISOString().slice(0, 10);
-            };
-            const today = getBangladeshCreditDateKey();
-            const credits = user.subscription?.credits ?? 0;
-            const lastReset = user.subscription?.lastAiScanResetDate ?? "";
-            const effectiveCredits = lastReset !== today ? 3 : credits;
-            const exhausted = effectiveCredits < 1;
-
-            return (
-              <div className={`px-3 py-2 text-xs font-medium ${
-                exhausted
-                  ? "text-red-500"
-                  : "text-cyan-600 dark:text-cyan-400"
-              }`}>
-                {exhausted ? "0 credits — New quota at 4 PM BST (Asia/Dhaka, UTC+6)" : `${effectiveCredits}/3 credits`}
-              </div>
-            );
-          })()}
         </div>
 
       </div>

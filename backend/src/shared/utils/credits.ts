@@ -27,7 +27,7 @@ export const applyDailyCreditReset = async (userId: string, subscription: any) =
   const updatedSubscription = { ...(subscription || {}) };
 
   if ((updatedSubscription.lastAiScanResetDate ?? "") !== today) {
-    // Admin = unlimited, don't reset credits; regular user = 3/day
+    // Admin = unlimited, don't reset credits; regular user = 7/day
     const dbUser = await prisma.user.findUnique({
       where: { id: userId },
       select: { role: true },
@@ -35,7 +35,7 @@ export const applyDailyCreditReset = async (userId: string, subscription: any) =
     if (dbUser?.role === "admin") {
       return updatedSubscription;
     }
-    updatedSubscription.credits = 3;
+    updatedSubscription.credits = 7;
     updatedSubscription.lastAiScanResetDate = today;
     await prisma.user.update({
       where: { id: userId },

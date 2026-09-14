@@ -18,9 +18,9 @@ const plans: Plan[] = [
     id: "free",
     name: "Free",
     price: 0,
-    credits: 3,
+    credits: 7,
     features: [
-      "3 free credits per day",
+      "7 free credits per day",
       "Use for ATS check and resume build",
       "AI-powered scan",
       "PDF export",

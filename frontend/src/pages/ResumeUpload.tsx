@@ -21,6 +21,9 @@ import {
 } from "lucide-react";
 import RewriteProgressModal from "@/components/ui/RewriteProgressModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import CreditBadge from "@/components/ui/CreditBadge";
+import { useAppDispatch } from "@/hooks";
+import { setUserAiScanState } from "@/store/slices/authSlice";
 import {
   MAX_RESUMES,
   OldestInfo,
@@ -44,6 +47,7 @@ const REWRITE_MESSAGES = [
 
 export default function ResumeUpload() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [resumeText, setResumeText] = useState("");
   const [resumeName, setResumeName] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -178,6 +182,15 @@ export default function ResumeUpload() {
     try {
       const response = await resumeApi.aiRewrite(resumeText, jobDescription);
       const data = response.data?.data;
+
+      if (response.data.aiScan?.lastAiScanResetDate) {
+        dispatch(
+          setUserAiScanState({
+            credits: response.data.aiScan.credits ?? 0,
+            lastAiScanResetDate: response.data.aiScan.lastAiScanResetDate,
+          }),
+        );
+      }
 
       const newResumeId = data?.id;
       if (!newResumeId) {
@@ -446,22 +459,25 @@ export default function ResumeUpload() {
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
               AI preserves your real experience — nothing invented.
             </p>
-            <button
-              onClick={handleRewrite}
-              disabled={isRewriting || !resumeText || !jdReady}
-              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-700 hover:to-fuchsia-600 shadow-lg shadow-violet-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
-            >
-              {isRewriting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Rewriting...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4" /> Rewrite with AI
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                </>
-              )}
-            </button>
+            <div className="flex items-center gap-3">
+              <CreditBadge />
+              <button
+                onClick={handleRewrite}
+                disabled={isRewriting || !resumeText || !jdReady}
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-700 hover:to-fuchsia-600 shadow-lg shadow-violet-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+              >
+                {isRewriting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Rewriting...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" /> Rewrite with AI
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 

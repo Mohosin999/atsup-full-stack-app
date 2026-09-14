@@ -13,6 +13,18 @@ import {
 import { upload, uploadErrorHandler } from "../../shared/config/multer";
 import fs from "fs";
 import { rewriteResumeWithAI as aiRewriteResume } from "../../shared/ai/gemini";
+import { prisma } from "../../lib/prisma";
+
+const getBangladeshCreditDateKey = (): string => {
+  const now = new Date();
+  const dhakaMs = now.getTime() + 6 * 60 * 60 * 1000;
+  const dhaka = new Date(dhakaMs);
+  const hour = dhaka.getUTCHours();
+  if (hour < 16) {
+    dhaka.setUTCDate(dhaka.getUTCDate() - 1);
+  }
+  return dhaka.toISOString().slice(0, 10);
+};
 
 export const getAllResumes = async (req: AuthRequest, res: Response) => {
   try {
@@ -210,21 +222,70 @@ export const rewriteResumeWithAI = async (
         message: "Resume text and job description are required",
       });
     }
-    
-    // Rewrite the resume using AI
-    const rewrittenContent = await aiRewriteResume(resumeText, jobDescription);
-    
-    // Create the resume in the database
-    const result = await createResumeFromContentService(req.user.id, rewrittenContent);
-    
-    res.status(201).json({
-      success: true,
-      data: {
-        id: result.resume.id,
-        // Optionally return the rewritten content for preview
-        content: rewrittenContent,
-      },
-    });
+
+    const isAdmin = (req.user as any)?.role === "admin";
+
+    if (!isAdmin) {
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: { subscription: true },
+      });
+
+      const subscription = (user?.subscription as any) || {};
+      const today = getBangladeshCreditDateKey();
+      const lastReset = subscription?.lastAiScanResetDate ?? "";
+      const credits = subscription?.credits ?? 0;
+      const effectiveCredits = lastReset !== today ? 7 : credits;
+
+      if (effectiveCredits < 1) {
+        return res.status(403).json({
+          success: false,
+          message: "Daily limit is 7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+          code: "AI_REWRITE_UNAVAILABLE",
+        });
+      }
+
+      const rewrittenContent = await aiRewriteResume(resumeText, jobDescription);
+      const result = await createResumeFromContentService(req.user.id, rewrittenContent);
+
+      const remainingCredits = effectiveCredits - 1;
+      await prisma.user.update({
+        where: { id: req.user.id },
+        data: {
+          subscription: {
+            ...subscription,
+            credits: remainingCredits,
+            lastAiScanResetDate: today,
+          },
+        },
+        select: { subscription: true },
+      });
+
+      res.status(201).json({
+        success: true,
+        data: {
+          id: result.resume.id,
+          content: rewrittenContent,
+        },
+        credits: remainingCredits,
+        aiScan: {
+          available: remainingCredits >= 1,
+          credits: remainingCredits,
+          lastAiScanResetDate: today,
+        },
+      });
+    } else {
+      const rewrittenContent = await aiRewriteResume(resumeText, jobDescription);
+      const result = await createResumeFromContentService(req.user.id, rewrittenContent);
+
+      res.status(201).json({
+        success: true,
+        data: {
+          id: result.resume.id,
+          content: rewrittenContent,
+        },
+      });
+    }
   } catch (error: any) {
     console.error("Error in rewriteResumeWithAI:", error);
     res.status(500).json({

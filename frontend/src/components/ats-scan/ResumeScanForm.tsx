@@ -13,6 +13,7 @@ import { setUserAiScanState } from "@/store/slices/authSlice";
 import { goToLogin } from "../../utils/authGuard";
 import { saveScanDraft } from "../../utils/scanDraft";
 import ConfirmModal from "../ui/ConfirmModal";
+import CreditBadge from "../ui/CreditBadge";
 import {
   MAX_ATS_SCANS,
   OldestInfo,
@@ -392,7 +393,8 @@ export default function ResumeScanForm({
       {/* ===============================================================
            * Button
           ================================================================*/}
-      <div className="mt-3 flex justify-end">
+      <div className="mt-3 flex flex-col sm:flex-row items-center justify-end gap-3">
+        <CreditBadge />
         <AiScanButton
           onClick={handleAiScan}
           disabled={!aiScan.available || !bothFieldsReady || analyzing}

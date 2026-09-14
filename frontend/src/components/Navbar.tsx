@@ -77,31 +77,6 @@ export default function Navbar() {
 
             {/* Right: Auth / Profile */}
             <div className="flex items-center gap-3 md:gap-4 xl:gap-5 shrink-0">
-              {user && user.role !== "admin" && (() => {
-                const getBangladeshCreditDateKey = () => {
-                  const now = new Date();
-                  const dhakaMs = now.getTime() + 6 * 60 * 60 * 1000;
-                  const dhaka = new Date(dhakaMs);
-                  const hour = dhaka.getUTCHours();
-                  if (hour < 16) dhaka.setUTCDate(dhaka.getUTCDate() - 1);
-                  return dhaka.toISOString().slice(0, 10);
-                };
-                const today = getBangladeshCreditDateKey();
-                const credits = user.subscription?.credits ?? 0;
-                const lastReset = user.subscription?.lastAiScanResetDate ?? "";
-                const effectiveCredits = lastReset !== today ? 3 : credits;
-                const exhausted = effectiveCredits < 1;
-
-                return (
-                  <div className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
-                    exhausted
-                      ? "bg-red-500/10 text-red-500"
-                      : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
-                  }`}>
-                    {exhausted ? "0 credits — New quota at 4 PM BST (Asia/Dhaka, UTC+6)" : `${effectiveCredits}/3 credits`}
-                  </div>
-                );
-              })()}
               <ThemeToggle />
               {user ? (
                 <ProfileMenu

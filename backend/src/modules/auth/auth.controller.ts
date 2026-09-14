@@ -11,6 +11,7 @@ import {
   generateNewAccessToken,
 } from "./auth.service";
 import { applyDailyCreditReset } from "../../shared/utils/credits";
+import { checkDuplicateDevice, isGmail } from "../../shared/utils/deviceCheck";
 import {
   storeRefreshToken,
   deleteRefreshToken,
@@ -19,12 +20,20 @@ import {
 
 export const register = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, fingerprint } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
         message: "Name, email and password are required",
+      });
+    }
+
+    // Only @gmail.com allowed
+    if (!isGmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Only Gmail addresses are accepted for registration",
       });
     }
 
@@ -36,7 +45,16 @@ export const register = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const user = await createUser({ name, email, password });
+    // One account per device (fingerprint only)
+    const deviceCheck = await checkDuplicateDevice(fingerprint);
+    if (deviceCheck.blocked) {
+      return res.status(403).json({
+        success: false,
+        message: deviceCheck.reason,
+      });
+    }
+
+    const user = await createUser({ name, email, password, fingerprint });
 
     const { accessToken, refreshToken } = createTokens(user.id, user.email);
 

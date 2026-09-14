@@ -7,6 +7,7 @@ import { AuthRequest } from "../../shared/types";
 import { prisma } from "../../lib/prisma";
 import { generateAccessToken, generateRefreshToken } from "../../shared/config/jwt";
 import { storeRefreshToken, deleteAllRefreshTokensForUser } from "../../lib/redis";
+import { checkDuplicateDevice, isGmail } from "../../shared/utils/deviceCheck";
 import {
   register,
   login,
@@ -45,6 +46,36 @@ router.get(
     try {
       const user = req.user;
 
+      // Only @gmail.com allowed
+      if (!isGmail(user.email)) {
+        res.redirect(`${env.frontendUrl}/login?error=not_gmail&reason=${encodeURIComponent("Only Gmail addresses are accepted")}`);
+        return;
+      }
+
+      // One account per device (Google OAuth)
+      const fingerprint = (req.query?.fingerprint as string) || null;
+      const deviceCheck = await checkDuplicateDevice(fingerprint);
+      if (deviceCheck.blocked) {
+        // If blocked but user already exists (same email linked), allow login
+        const existingByEmail = await prisma.user.findUnique({
+          where: { email: user.email },
+          select: { id: true },
+        });
+        if (!existingByEmail || existingByEmail.id !== user.id) {
+          const reason = encodeURIComponent(deviceCheck.reason || "An account already exists on this device.");
+          res.redirect(`${env.frontendUrl}/login?error=device_blocked&reason=${reason}`);
+          return;
+        }
+      }
+
+      // Store fingerprint on new Google users
+      if (fingerprint) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { fingerprint },
+        }).catch(() => {});
+      }
+
       const accessToken = generateAccessToken({
         userId: user.id,
         email: user.email,
@@ -62,7 +93,6 @@ router.get(
         data: { lastLoginAt: new Date(), lastActiveAt: new Date() },
       }).catch(() => {});
 
-      // Plan A: redirect directly to / with tokens (skip /auth/callback page to avoid double navbar flash)
       const redirectUrl = new URL(`${env.frontendUrl}/`);
       redirectUrl.searchParams.set("accessToken", accessToken);
       redirectUrl.searchParams.set("refreshToken", refreshToken);

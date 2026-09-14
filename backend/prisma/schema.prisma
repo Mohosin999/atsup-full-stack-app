@@ -25,9 +25,13 @@ model User {
   lastActiveAt      DateTime?           @db.Timestamp()
   lastSeenSupportAt DateTime?           @db.Timestamp()
   lastSeenReviewsAt DateTime?           @db.Timestamp()
+  fingerprint       String?             @db.VarChar(64)
+  ipAddress         String?             @db.VarChar(45)
 
   @@index([role, isActive])
   @@index([lastActiveAt])
+  @@index([fingerprint])
+  @@index([ipAddress])
 
   resumes           Resume[]
   analyses          Analysis[]

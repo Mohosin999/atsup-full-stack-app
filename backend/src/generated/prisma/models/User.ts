@@ -40,6 +40,8 @@ export type UserMinAggregateOutputType = {
   lastActiveAt: Date | null
   lastSeenSupportAt: Date | null
   lastSeenReviewsAt: Date | null
+  fingerprint: string | null
+  ipAddress: string | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -58,6 +60,8 @@ export type UserMaxAggregateOutputType = {
   lastActiveAt: Date | null
   lastSeenSupportAt: Date | null
   lastSeenReviewsAt: Date | null
+  fingerprint: string | null
+  ipAddress: string | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -78,6 +82,8 @@ export type UserCountAggregateOutputType = {
   lastActiveAt: number
   lastSeenSupportAt: number
   lastSeenReviewsAt: number
+  fingerprint: number
+  ipAddress: number
   _all: number
 }
 
@@ -98,6 +104,8 @@ export type UserMinAggregateInputType = {
   lastActiveAt?: true
   lastSeenSupportAt?: true
   lastSeenReviewsAt?: true
+  fingerprint?: true
+  ipAddress?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -116,6 +124,8 @@ export type UserMaxAggregateInputType = {
   lastActiveAt?: true
   lastSeenSupportAt?: true
   lastSeenReviewsAt?: true
+  fingerprint?: true
+  ipAddress?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -136,6 +146,8 @@ export type UserCountAggregateInputType = {
   lastActiveAt?: true
   lastSeenSupportAt?: true
   lastSeenReviewsAt?: true
+  fingerprint?: true
+  ipAddress?: true
   _all?: true
 }
 
@@ -229,6 +241,8 @@ export type UserGroupByOutputType = {
   lastActiveAt: Date | null
   lastSeenSupportAt: Date | null
   lastSeenReviewsAt: Date | null
+  fingerprint: string | null
+  ipAddress: string | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -270,6 +284,8 @@ export type UserWhereInput = {
   lastActiveAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastSeenSupportAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastSeenReviewsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  fingerprint?: Prisma.StringNullableFilter<"User"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"User"> | string | null
   resumes?: Prisma.ResumeListRelationFilter
   analyses?: Prisma.AnalysisListRelationFilter
   atsScores?: Prisma.AtsScoreListRelationFilter
@@ -298,6 +314,8 @@ export type UserOrderByWithRelationInput = {
   lastActiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenSupportAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenReviewsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  fingerprint?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   resumes?: Prisma.ResumeOrderByRelationAggregateInput
   analyses?: Prisma.AnalysisOrderByRelationAggregateInput
   atsScores?: Prisma.AtsScoreOrderByRelationAggregateInput
@@ -329,6 +347,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   lastActiveAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastSeenSupportAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastSeenReviewsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  fingerprint?: Prisma.StringNullableFilter<"User"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"User"> | string | null
   resumes?: Prisma.ResumeListRelationFilter
   analyses?: Prisma.AnalysisListRelationFilter
   atsScores?: Prisma.AtsScoreListRelationFilter
@@ -357,6 +377,8 @@ export type UserOrderByWithAggregationInput = {
   lastActiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenSupportAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSeenReviewsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  fingerprint?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -383,6 +405,8 @@ export type UserScalarWhereWithAggregatesInput = {
   lastActiveAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   lastSeenSupportAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   lastSeenReviewsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  fingerprint?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  ipAddress?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
@@ -403,6 +427,8 @@ export type UserCreateInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -431,6 +457,8 @@ export type UserUncheckedCreateInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -459,6 +487,8 @@ export type UserUpdateInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -487,6 +517,8 @@ export type UserUncheckedUpdateInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -515,6 +547,8 @@ export type UserCreateManyInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -535,6 +569,8 @@ export type UserUpdateManyMutationInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -555,6 +591,8 @@ export type UserUncheckedUpdateManyInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -575,6 +613,8 @@ export type UserCountOrderByAggregateInput = {
   lastActiveAt?: Prisma.SortOrder
   lastSeenSupportAt?: Prisma.SortOrder
   lastSeenReviewsAt?: Prisma.SortOrder
+  fingerprint?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -593,6 +633,8 @@ export type UserMaxOrderByAggregateInput = {
   lastActiveAt?: Prisma.SortOrder
   lastSeenSupportAt?: Prisma.SortOrder
   lastSeenReviewsAt?: Prisma.SortOrder
+  fingerprint?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -611,6 +653,8 @@ export type UserMinOrderByAggregateInput = {
   lastActiveAt?: Prisma.SortOrder
   lastSeenSupportAt?: Prisma.SortOrder
   lastSeenReviewsAt?: Prisma.SortOrder
+  fingerprint?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -768,6 +812,8 @@ export type UserCreateWithoutResumesInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
@@ -795,6 +841,8 @@ export type UserUncheckedCreateWithoutResumesInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -838,6 +886,8 @@ export type UserUpdateWithoutResumesInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
@@ -865,6 +915,8 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -892,6 +944,8 @@ export type UserCreateWithoutAnalysesInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
@@ -919,6 +973,8 @@ export type UserUncheckedCreateWithoutAnalysesInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -962,6 +1018,8 @@ export type UserUpdateWithoutAnalysesInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
@@ -989,6 +1047,8 @@ export type UserUncheckedUpdateWithoutAnalysesInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -1016,6 +1076,8 @@ export type UserCreateWithoutAtsScoresInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryCreateNestedManyWithoutUserInput
@@ -1043,6 +1105,8 @@ export type UserUncheckedCreateWithoutAtsScoresInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedCreateNestedManyWithoutUserInput
@@ -1086,6 +1150,8 @@ export type UserUpdateWithoutAtsScoresInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUpdateManyWithoutUserNestedInput
@@ -1113,6 +1179,8 @@ export type UserUncheckedUpdateWithoutAtsScoresInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScoreHistories?: Prisma.AtsScoreHistoryUncheckedUpdateManyWithoutUserNestedInput
@@ -1140,6 +1208,8 @@ export type UserCreateWithoutAtsScoreHistoriesInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1167,6 +1237,8 @@ export type UserUncheckedCreateWithoutAtsScoreHistoriesInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1210,6 +1282,8 @@ export type UserUpdateWithoutAtsScoreHistoriesInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1237,6 +1311,8 @@ export type UserUncheckedUpdateWithoutAtsScoreHistoriesInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1264,6 +1340,8 @@ export type UserCreateWithoutJobDescriptionsInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1291,6 +1369,8 @@ export type UserUncheckedCreateWithoutJobDescriptionsInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1334,6 +1414,8 @@ export type UserUpdateWithoutJobDescriptionsInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1361,6 +1443,8 @@ export type UserUncheckedUpdateWithoutJobDescriptionsInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1388,6 +1472,8 @@ export type UserCreateWithoutPaymentsInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1415,6 +1501,8 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1458,6 +1546,8 @@ export type UserUpdateWithoutPaymentsInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1485,6 +1575,8 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1512,6 +1604,8 @@ export type UserCreateWithoutSupportTicketsInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1539,6 +1633,8 @@ export type UserUncheckedCreateWithoutSupportTicketsInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1582,6 +1678,8 @@ export type UserUpdateWithoutSupportTicketsInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1609,6 +1707,8 @@ export type UserUncheckedUpdateWithoutSupportTicketsInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1636,6 +1736,8 @@ export type UserCreateWithoutFeedbacksInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreCreateNestedManyWithoutUserInput
@@ -1663,6 +1765,8 @@ export type UserUncheckedCreateWithoutFeedbacksInput = {
   lastActiveAt?: Date | string | null
   lastSeenSupportAt?: Date | string | null
   lastSeenReviewsAt?: Date | string | null
+  fingerprint?: string | null
+  ipAddress?: string | null
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   analyses?: Prisma.AnalysisUncheckedCreateNestedManyWithoutUserInput
   atsScores?: Prisma.AtsScoreUncheckedCreateNestedManyWithoutUserInput
@@ -1706,6 +1810,8 @@ export type UserUpdateWithoutFeedbacksInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUpdateManyWithoutUserNestedInput
@@ -1733,6 +1839,8 @@ export type UserUncheckedUpdateWithoutFeedbacksInput = {
   lastActiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenSupportAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSeenReviewsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fingerprint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   analyses?: Prisma.AnalysisUncheckedUpdateManyWithoutUserNestedInput
   atsScores?: Prisma.AtsScoreUncheckedUpdateManyWithoutUserNestedInput
@@ -1854,6 +1962,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lastActiveAt?: boolean
   lastSeenSupportAt?: boolean
   lastSeenReviewsAt?: boolean
+  fingerprint?: boolean
+  ipAddress?: boolean
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   analyses?: boolean | Prisma.User$analysesArgs<ExtArgs>
   atsScores?: boolean | Prisma.User$atsScoresArgs<ExtArgs>
@@ -1883,6 +1993,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastActiveAt?: boolean
   lastSeenSupportAt?: boolean
   lastSeenReviewsAt?: boolean
+  fingerprint?: boolean
+  ipAddress?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1903,6 +2015,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   lastActiveAt?: boolean
   lastSeenSupportAt?: boolean
   lastSeenReviewsAt?: boolean
+  fingerprint?: boolean
+  ipAddress?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1923,9 +2037,11 @@ export type UserSelectScalar = {
   lastActiveAt?: boolean
   lastSeenSupportAt?: boolean
   lastSeenReviewsAt?: boolean
+  fingerprint?: boolean
+  ipAddress?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "googleId" | "password" | "picture" | "preferences" | "subscription" | "createdAt" | "updatedAt" | "lastLoginAt" | "role" | "isBanned" | "isActive" | "lastActiveAt" | "lastSeenSupportAt" | "lastSeenReviewsAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "googleId" | "password" | "picture" | "preferences" | "subscription" | "createdAt" | "updatedAt" | "lastLoginAt" | "role" | "isBanned" | "isActive" | "lastActiveAt" | "lastSeenSupportAt" | "lastSeenReviewsAt" | "fingerprint" | "ipAddress", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   analyses?: boolean | Prisma.User$analysesArgs<ExtArgs>
@@ -1970,6 +2086,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     lastActiveAt: Date | null
     lastSeenSupportAt: Date | null
     lastSeenReviewsAt: Date | null
+    fingerprint: string | null
+    ipAddress: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2418,6 +2536,8 @@ export interface UserFieldRefs {
   readonly lastActiveAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastSeenSupportAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastSeenReviewsAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly fingerprint: Prisma.FieldRef<"User", 'String'>
+  readonly ipAddress: Prisma.FieldRef<"User", 'String'>
 }
     
 

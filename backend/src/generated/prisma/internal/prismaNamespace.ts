@@ -1297,7 +1297,9 @@ export const UserScalarFieldEnum = {
   isActive: 'isActive',
   lastActiveAt: 'lastActiveAt',
   lastSeenSupportAt: 'lastSeenSupportAt',
-  lastSeenReviewsAt: 'lastSeenReviewsAt'
+  lastSeenReviewsAt: 'lastSeenReviewsAt',
+  fingerprint: 'fingerprint',
+  ipAddress: 'ipAddress'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]

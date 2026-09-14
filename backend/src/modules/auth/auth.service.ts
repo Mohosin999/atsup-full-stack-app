@@ -10,8 +10,10 @@ export const createUser = async (userData: {
   name: string;
   email: string;
   password: string;
+  fingerprint?: string | null;
+  ipAddress?: string | null;
 }) => {
-  const { name, email, password } = userData;
+  const { name, email, password, fingerprint, ipAddress } = userData;
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -23,6 +25,8 @@ export const createUser = async (userData: {
       email: email.toLowerCase(),
       password: hashedPassword,
       role: userCount === 0 ? "admin" : "user",
+      fingerprint: fingerprint || null,
+      ipAddress: ipAddress || null,
       preferences: {
         theme: 'system',
         notifications: true,

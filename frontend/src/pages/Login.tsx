@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, User, Eye, EyeOff, LogIn, Loader2 } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, LogIn, Loader2, ShieldCheck } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux";
 import { login, fetchUser } from "../store/slices/authSlice";
 import {
@@ -10,15 +10,40 @@ import {
   saveRedirectForOAuth,
   consumeRedirect,
 } from "../utils/authGuard";
+import { getFingerprint } from "../utils/fingerprint";
 import api, { setTokens } from "../api/api";
 
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const errCode = searchParams.get("error");
+    const reason = searchParams.get("reason");
+    if (errCode === "device_blocked") {
+      setError(
+        reason
+          ? decodeURIComponent(reason)
+          : "An account already exists on this device. Each device is limited to one account."
+      );
+      window.history.replaceState({}, "", "/login");
+    } else if (errCode === "not_gmail") {
+      setError(
+        reason
+          ? decodeURIComponent(reason)
+          : "Only Gmail addresses are accepted for registration."
+      );
+      window.history.replaceState({}, "", "/login");
+    } else if (errCode === "auth_failed") {
+      setError("Google sign-in failed. Please try again.");
+      window.history.replaceState({}, "", "/login");
+    }
+  }, [searchParams]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -38,7 +63,17 @@ export default function Login() {
 
     try {
       const endpoint = isRegister ? "/auth/register" : "/auth/login";
-      const response = await api.post(endpoint, formData);
+      const payload: any = { ...formData };
+
+      if (isRegister) {
+        try {
+          payload.fingerprint = await getFingerprint();
+        } catch {
+          // fingerprint failure should not block registration
+        }
+      }
+
+      const response = await api.post(endpoint, payload);
 
       if (response.data.success) {
         const { accessToken, refreshToken } = response.data.data || {};
@@ -50,7 +85,6 @@ export default function Login() {
         if (redirect) {
           navigate(redirect, { replace: true });
         } else {
-          // Email/password login/register → stay on home page (admin → dashboard)
           navigate(user?.role === "admin" ? "/admin-dashboard" : "/", {
             replace: true,
           });
@@ -63,6 +97,16 @@ export default function Login() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    saveRedirectForOAuth();
+    try {
+      const fingerprint = await getFingerprint();
+      window.location.href = `${api.defaults.baseURL}/auth/google?fingerprint=${encodeURIComponent(fingerprint)}`;
+    } catch {
+      dispatch(login());
+    }
+  };
+
   const toggleMode = () => {
     setIsRegister(!isRegister);
     setError("");
@@ -71,18 +115,11 @@ export default function Login() {
 
   return (
     <div className="min-h-screen w-full flex md:items-center justify-center px-4 pt-16 lg:pt-28 2xl:pt-32 pb-12">
-      {/* Decorative background */}
-      {/* <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-400/20 blur-3xl animate-[pulseSoft_4s_ease-in-out_infinite]" />
-        <div className="absolute -bottom-32 -right-32 w-[28rem] h-[28rem] rounded-full bg-teal-400/20 blur-3xl animate-[pulseSoft_6s_ease-in-out_infinite]" />
-      </div> */}
-
       <motion.div
         initial={false}
         animate={{ opacity: 1, y: 0 }}
         className="relative z-10 w-full max-w-sm xl:max-w-md"
       >
-        {/* Professional card with only the inputs */}
         <div className="bg-white border border-gray-300 rounded-lg p-6 md:p-8 xl:p-10 dark:bg-secondary dark:border-accent shadow-[0_0_6px_rgba(0,0,0,0.2)]">
           <div className="text-center mb-6">
             <h1 className="text-lg xl:text-xl font-bold text-slate-800 dark:text-gray-100">
@@ -95,13 +132,23 @@ export default function Login() {
             </p>
           </div>
 
+          {isRegister && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4 flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 dark:border-amber-500/20 dark:bg-amber-500/5"
+            >
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+              <p className="text-[11px] leading-relaxed text-amber-700 dark:text-amber-300">
+                <span className="font-semibold">One account per device.</span> Each browser or device can only create one CVCoach account. Creating multiple accounts to bypass usage limits is not allowed and will result in all accounts being suspended.
+              </p>
+            </motion.div>
+          )}
+
           <motion.button
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              saveRedirectForOAuth();
-              dispatch(login());
-            }}
+            onClick={handleGoogleLogin}
             className="w-full inline-flex items-center justify-center px-4 py-2 xl:py-2.5 text-[13px] xl:text-sm font-medium rounded-lg border border-slate-300 dark:border-accent bg-white dark:bg-primary text-slate-700 dark:text-gray-300 hover:border-cyan-500"
           >
             <FcGoogle className="w-5 h-5 mr-2" />

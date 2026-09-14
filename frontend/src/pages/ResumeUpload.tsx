@@ -20,6 +20,13 @@ import {
   Loader2,
 } from "lucide-react";
 import RewriteProgressModal from "@/components/ui/RewriteProgressModal";
+import ConfirmModal from "@/components/ui/ConfirmModal";
+import {
+  MAX_RESUMES,
+  OldestInfo,
+  limitMessage,
+  oldestResumeInfo,
+} from "../utils/storageLimits";
 
 const REWRITE_STEPS = [
   { id: "parse", label: "Reading" },
@@ -49,8 +56,21 @@ export default function ResumeUpload() {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(REWRITE_MESSAGES[0]);
   const [displayProgress, setDisplayProgress] = useState(0);
+  const [limitInfo, setLimitInfo] = useState<OldestInfo | null>(null);
+  const limitAllowRef = useRef(false);
   const progressRef = useRef(0);
   const targetRef = useRef(0);
+
+  const handleLimitSave = () => {
+    setLimitInfo(null);
+    limitAllowRef.current = true;
+    void handleRewrite();
+  };
+
+  const handleLimitCancel = () => {
+    setLimitInfo(null);
+    toast.info('Rewrite cancelled. Delete an old resume from history to save a new one.');
+  };
 
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
@@ -117,6 +137,25 @@ export default function ResumeUpload() {
       return;
     }
 
+    // Storage cap gate — before any AI cost. Save replaces oldest, Cancel aborts.
+    if (!limitAllowRef.current) {
+      try {
+        const listRes = await resumeApi.getAll(1, MAX_RESUMES);
+        const total = listRes.data.pagination?.total ?? 0;
+        if (total >= MAX_RESUMES) {
+          const oldest = oldestResumeInfo(listRes.data.data || []);
+          if (oldest) {
+            setLimitInfo(oldest);
+            return;
+          }
+        }
+      } catch {
+        // fail-open: backend still enforces the cap
+      }
+    }
+    const replacing = limitAllowRef.current;
+    limitAllowRef.current = false;
+
     setIsRewriting(true);
     setError(null);
     setPipelineOpen(true);
@@ -152,6 +191,7 @@ export default function ResumeUpload() {
       targetRef.current = 100;
       setDisplayProgress(100);
 
+      if (replacing) toast.success('Saved. Oldest resume was removed to make space.');
       setTimeout(() => {
         setPipelineOpen(false);
         navigate(`/resume-builder/${newResumeId}`);
@@ -498,6 +538,17 @@ export default function ResumeUpload() {
         completedSteps={completedSteps}
         currentMessage={currentMessage}
         simProgress={displayProgress}
+      />
+
+      <ConfirmModal
+        isOpen={!!limitInfo}
+        title="Storage limit reached"
+        message={limitInfo ? limitMessage('resume', limitInfo) : ''}
+        confirmText="Save"
+        cancelText="Cancel"
+        type="warning"
+        onConfirm={handleLimitSave}
+        onCancel={handleLimitCancel}
       />
     </div>
   );

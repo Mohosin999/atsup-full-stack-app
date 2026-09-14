@@ -21,6 +21,8 @@ const normalizeCategories = (sectionScores: any) => {
   return { ...sectionScores, categories };
 };
 
+export const MAX_ATS_HISTORY_PER_USER = 5;
+
 export const createAtsScoreHistory = async (
   userId: string,
   resumeName: string,
@@ -28,6 +30,22 @@ export const createAtsScoreHistory = async (
   structuredJD?: StructuredJD | null,
   aiResearch?: any | null,
 ) => {
+  // Storage cap: keep max 3 scans per user, oldest removed first.
+  const count = await prisma.atsScoreHistory.count({ where: { userId } });
+  if (count >= MAX_ATS_HISTORY_PER_USER) {
+    const oldest = await prisma.atsScoreHistory.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'asc' },
+      take: count - MAX_ATS_HISTORY_PER_USER + 1,
+      select: { id: true },
+    });
+    if (oldest.length > 0) {
+      await prisma.atsScoreHistory.deleteMany({
+        where: { id: { in: oldest.map((o) => o.id) } },
+      });
+    }
+  }
+
   const analysis = calculateAtsScore(resumeContent, structuredJD);
 
   const hasContactInfo =

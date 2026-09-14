@@ -231,7 +231,7 @@ const buildPersonalInfo = (content: ResumeContent): string => {
 
   return `<div class="ats-header">
     <div>
-      <div class="ats-name">${escapeHtml(pi.fullName) || "Your Name"}</div>
+      ${pi.fullName ? `<div class="ats-name">${escapeHtml(pi.fullName)}</div>` : ""}
       ${
         pi.jobTitle
           ? `<div class="ats-job-title">${escapeHtml(pi.jobTitle)}</div>`

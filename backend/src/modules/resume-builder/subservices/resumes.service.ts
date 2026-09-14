@@ -1,6 +1,28 @@
 import { prisma } from '../../../lib/prisma';
 import { findUserById } from '../../auth/auth.service';
 
+export const MAX_RESUMES_PER_USER = 5;
+
+// Storage cap: keep max 3 resumes per user. Deletes oldest first
+// (linked analyses/ATS scores cascade via FK). Silent safety net —
+// the frontend asks for confirmation before reaching here.
+const enforceResumeLimit = async (userId: string) => {
+  const count = await prisma.resume.count({ where: { userId } });
+  if (count >= MAX_RESUMES_PER_USER) {
+    const oldest = await prisma.resume.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'asc' },
+      take: count - MAX_RESUMES_PER_USER + 1,
+      select: { id: true },
+    });
+    if (oldest.length > 0) {
+      await prisma.resume.deleteMany({
+        where: { id: { in: oldest.map((o) => o.id) } },
+      });
+    }
+  }
+};
+
 interface PaginationOptions {
   page: number;
   limit: number;
@@ -83,6 +105,7 @@ export const createResumeFromUpload = async (
   userId: string,
   file: UploadedFile
 ) => {
+  await enforceResumeLimit(userId);
   const { parseResumeFile } = await import('../../../shared/resume-parser');
   const parsed = await parseResumeFile(file.path, file.mimetype);
 
@@ -131,6 +154,8 @@ export const createResumeFromContent = async (
   if (!user) {
     throw new Error('User not found');
   }
+
+  await enforceResumeLimit(userId);
 
   const resume = await prisma.resume.create({
     data: {
@@ -210,6 +235,8 @@ export const duplicateResumeById = async (resumeId: string, userId: string) => {
     (existing.content as any)?.personalInfo?.jobTitle ||
     (existing.content as any)?.personalInfo?.fullName ||
     'Resume';
+
+  await enforceResumeLimit(userId);
 
   const resume = await prisma.resume.create({
     data: {

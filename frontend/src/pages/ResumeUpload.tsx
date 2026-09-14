@@ -9,7 +9,6 @@ import {
   X,
   Upload,
   Sparkles,
-  ArrowRight,
   FileText,
   ShieldCheck,
   Target,
@@ -17,11 +16,11 @@ import {
   ClipboardPaste,
   Eraser,
   Copy,
-  Loader2,
 } from "lucide-react";
 import RewriteProgressModal from "@/components/ui/RewriteProgressModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import CreditBadge from "@/components/ui/CreditBadge";
+import ActionButton from "@/components/ui/ActionButton";
 import { useAppDispatch } from "@/hooks";
 import { setUserAiScanState } from "@/store/slices/authSlice";
 import {
@@ -73,7 +72,9 @@ export default function ResumeUpload() {
 
   const handleLimitCancel = () => {
     setLimitInfo(null);
-    toast.info('Rewrite cancelled. Delete an old resume from history to save a new one.');
+    toast.info(
+      "Rewrite cancelled. Delete an old resume from history to save a new one.",
+    );
   };
 
   const onDrop = async (acceptedFiles: File[]) => {
@@ -204,7 +205,8 @@ export default function ResumeUpload() {
       targetRef.current = 100;
       setDisplayProgress(100);
 
-      if (replacing) toast.success('Saved. Oldest resume was removed to make space.');
+      if (replacing)
+        toast.success("Saved. Oldest resume was removed to make space.");
       setTimeout(() => {
         setPipelineOpen(false);
         navigate(`/resume-builder/${newResumeId}`);
@@ -279,13 +281,15 @@ export default function ResumeUpload() {
             <span
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${resumeText ? "bg-violet-600 text-white border-violet-600" : "bg-white dark:bg-secondary text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700"}`}
             >
-              {resumeText ? <CheckCircle className="w-3.5 h-3.5" /> : "1"} Upload
+              {resumeText ? <CheckCircle className="w-3.5 h-3.5" /> : "1"}{" "}
+              Upload
             </span>
             <span className="w-6 h-px bg-gray-300 dark:bg-gray-700" />
             <span
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${jdReady ? "bg-violet-600 text-white border-violet-600" : "bg-white dark:bg-secondary text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700"}`}
             >
-              {jdReady ? <CheckCircle className="w-3.5 h-3.5" /> : "2"} Job details
+              {jdReady ? <CheckCircle className="w-3.5 h-3.5" /> : "2"} Job
+              details
             </span>
             <span className="w-6 h-px bg-gray-300 dark:bg-gray-700" />
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white dark:bg-secondary text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700">
@@ -322,7 +326,9 @@ export default function ResumeUpload() {
                   <p className="text-sm font-medium text-violet-700 dark:text-violet-300">
                     Extracting text from PDF...
                   </p>
-                  <p className="text-xs text-gray-500">This takes a few seconds</p>
+                  <p className="text-xs text-gray-500">
+                    This takes a few seconds
+                  </p>
                 </div>
               ) : resumeText ? (
                 <div className="relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-3 border-2 border-solid border-violet-200 dark:border-violet-500/30 bg-gradient-to-b from-violet-50 to-white dark:from-violet-500/10 dark:to-transparent rounded-2xl p-6">
@@ -391,7 +397,9 @@ export default function ResumeUpload() {
 
               {error && (
                 <div className="bg-red-50 dark:bg-red-500/10 border-l-4 border-red-400 p-4 mt-4 rounded-r-lg">
-                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                  <p className="text-sm text-red-600 dark:text-red-400">
+                    {error}
+                  </p>
                 </div>
               )}
             </div>
@@ -461,22 +469,14 @@ export default function ResumeUpload() {
             </p>
             <div className="flex items-center gap-3">
               <CreditBadge />
-              <button
+              <ActionButton
+                label="Rewrite with AI"
+                loadingLabel="Rewriting..."
+                loading={isRewriting}
+                disabled={!resumeText || !jdReady}
                 onClick={handleRewrite}
-                disabled={isRewriting || !resumeText || !jdReady}
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-700 hover:to-fuchsia-600 shadow-lg shadow-violet-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
-              >
-                {isRewriting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" /> Rewriting...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" /> Rewrite with AI
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </>
-                )}
-              </button>
+                variant="violet"
+              />
             </div>
           </div>
         </div>
@@ -559,7 +559,7 @@ export default function ResumeUpload() {
       <ConfirmModal
         isOpen={!!limitInfo}
         title="Storage limit reached"
-        message={limitInfo ? limitMessage('resume', limitInfo) : ''}
+        message={limitInfo ? limitMessage("resume", limitInfo) : ""}
         confirmText="Save"
         cancelText="Cancel"
         type="warning"

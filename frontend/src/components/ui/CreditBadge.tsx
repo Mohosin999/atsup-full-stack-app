@@ -24,7 +24,7 @@ export default function CreditBadge() {
     <div
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
         exhausted
-          ? "bg-red-500/10 text-red-500"
+          ? "bg-red-500/10 dark:bg-white text-red-500"
           : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
       }`}
     >

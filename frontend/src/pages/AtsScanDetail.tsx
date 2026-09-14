@@ -321,11 +321,11 @@ export default function AtsScoreDetail() {
               rescanPreparseRef.current = null;
             }}
           />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-800">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-secondary">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <div className="flex items-center gap-2">
                 <RefreshCw className="w-5 h-5 text-cyan-600" />
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Rescan Resume (AI — 1 credit)</h2>
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Rescan Your Resume</h2>
               </div>
               <button
                 onClick={() => {
@@ -356,7 +356,7 @@ export default function AtsScoreDetail() {
                         setResumeName("");
                         rescanPreparseRef.current = null;
                       }}
-                      className="text-xs text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-medium"
+                      className="text-xs text-red-500 hover:text-red-600 dark:text-red-300 dark:hover:text-red-300/80 font-medium"
                     >
                       Remove
                     </button>
@@ -396,7 +396,7 @@ export default function AtsScoreDetail() {
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none dark:bg-gray-800/50 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
                 />
                 {!aiScan.available && (
-                  <p className="mt-2 text-xs text-red-500">No credit available — wait for next day (20/day limit)</p>
+                  <p className="mt-2 text-xs md:text-sm text-red-500 dark:text-red-300">0 credits — New quota at 4 PM BST</p>
                 )}
               </div>
             </div>
@@ -409,7 +409,7 @@ export default function AtsScoreDetail() {
                   setResumeName("");
                   setJobDescription("");
                 }}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors dark:bg-gray-600 dark:hover:bg-gray-600/80 dark:text-gray-300"
               >
                 Cancel
               </button>

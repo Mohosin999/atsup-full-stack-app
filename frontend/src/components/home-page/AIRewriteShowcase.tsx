@@ -1,0 +1,68 @@
+import { Sparkles, ShieldCheck, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import Wrapper from "../Wrapper";
+
+export default function AIRewriteShowcase() {
+  return (
+    <section className="py-16 md:py-20 lg:py-24 xl:py-28">
+      <Wrapper>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-center">
+          <div>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200 dark:bg-violet-500/10 dark:text-violet-300 dark:border-violet-500/20">
+              <Sparkles className="w-3.5 h-3.5" /> AI Rewrite
+            </span>
+            <h2 className="mt-4 text-2xl md:text-3xl xl:text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+              Turn your resume into an{" "}
+              <span className="bg-gradient-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent">
+                interview magnet
+              </span>
+            </h2>
+            <p className="mt-4 text-xs md:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
+              Paste any job description — our AI weaves the right keywords into your real experience. Nothing invented, only better wording and focus.
+            </p>
+            <ul className="mt-6 space-y-3">
+              {[
+                "Keywords from JD woven naturally",
+                "Your experience stays 100% truthful",
+                "Opens in builder — edit then export PDF",
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2.5 text-xs md:text-sm text-gray-700 dark:text-gray-300">
+                  <span className="w-6 h-6 rounded-full bg-violet-50 dark:bg-violet-500/15 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-3.5 h-3.5 text-violet-600 dark:text-violet-300" />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <Link
+              to="/resume-builder/upload"
+              className="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs md:text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-700 hover:to-fuchsia-600 shadow-lg shadow-violet-500/20 transition-all"
+            >
+              Try AI Rewrite <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="relative">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white dark:bg-secondary rounded-2xl border border-gray-200 dark:border-gray-700 p-5">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Before</p>
+                <p className="mt-3 text-xs md:text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-6">
+                  "Worked on React project. Helped team. Used JavaScript and CSS. Did some API work."
+                </p>
+                <span className="mt-3 inline-flex px-2 py-1 rounded-full text-xs font-medium bg-red-50 text-red-600 dark:bg-red-500/10">Generic • Low match</span>
+              </div>
+              <div className="bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-violet-500/10 dark:to-fuchsia-500/10 rounded-2xl border border-violet-200 dark:border-violet-500/20 p-5">
+                <p className="text-xs font-semibold text-violet-600 dark:text-violet-300 uppercase tracking-wider">After AI</p>
+                <p className="mt-3 text-xs md:text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-6">
+                  "Built responsive React.js SPA with TypeScript, integrated REST APIs, improved load time by 35% — aligning with JD's React, TypeScript, performance focus."
+                </p>
+                <span className="mt-3 inline-flex px-2 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10">Keyword-rich • 89% match</span>
+              </div>
+            </div>
+            <p className="mt-4 text-center text-xs text-gray-400 dark:text-gray-500">Example — real rewrite keeps your truth, changes the framing</p>
+          </div>
+        </div>
+      </Wrapper>
+    </section>
+  );
+}

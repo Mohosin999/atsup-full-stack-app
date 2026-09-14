@@ -3,11 +3,17 @@ import { useAppDispatch } from "../hooks/redux";
 import { logoutUser } from "../store/slices/authSlice";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import { allFeatures } from "../constants/landingData";
-// import FloatingOrbs from "../components/home-page/FloatingOrbs";
 import HeroSection from "../components/home-page/HeroSection";
 import FeatureShowcase from "../components/home-page/FeatureShowcase";
-// import StatsSection from "../components/home-page/StatsSection";
+import StatsBar from "../components/home-page/StatsBar";
+import HowItWorks from "../components/home-page/HowItWorks";
+import ATSCategories from "../components/home-page/ATSCategories";
+import AIRewriteShowcase from "../components/home-page/AIRewriteShowcase";
+import BuilderPreview from "../components/home-page/BuilderPreview";
+import PricingTeaser from "../components/home-page/PricingTeaser";
 import WhyChooseUs from "../components/home-page/WhyChooseUs";
+import ComparisonSection from "../components/home-page/ComparisonSection";
+import FAQSection from "../components/home-page/FAQSection";
 import TestimonialsSection from "../components/home-page/TestimonialsSection";
 import CTASection from "../components/home-page/CTASection";
 import Footer from "../components/Footer";
@@ -36,16 +42,19 @@ export default function HomePage() {
   return (
     <>
       <div className="min-h-screen overflow-hidden relative">
-        {/* <FloatingOrbs /> */}
         <main className="relative z-10">
-          <HeroSection
-            user={undefined}
-            onLogout={() => setShowLogoutConfirm(true)}
-          />
+          <HeroSection user={undefined} onLogout={() => setShowLogoutConfirm(true)} />
+          <StatsBar />
+          <HowItWorks />
           <FeatureShowcase />
-          {/* <StatsSection /> */}
+          <ATSCategories />
+          <AIRewriteShowcase />
+          <BuilderPreview />
           <WhyChooseUs features={allFeatures} />
+          <ComparisonSection />
+          <PricingTeaser />
           <TestimonialsSection testimonials={displayTestimonials} />
+          <FAQSection />
           <CTASection />
         </main>
       </div>

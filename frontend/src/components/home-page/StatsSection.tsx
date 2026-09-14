@@ -33,7 +33,7 @@ export default function StatsSection() {
                 initial={{ scale: 0.5 }}
                 whileInView={{ scale: 1 }}
                 transition={{ type: "spring", delay: index * 0.1 }}
-                className="text-4xl sm:text-5xl font-bold text-white"
+                className="text-4xl md:text-5xl font-bold text-white"
               >
                 {stat.value}
               </motion.p>

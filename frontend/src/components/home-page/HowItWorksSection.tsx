@@ -36,7 +36,7 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
           >
             <Award className="w-4 h-4" /> Simple Process
           </motion.div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-8">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-8">
             How It <span className="bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">Works</span>
           </h2>
         </motion.div>

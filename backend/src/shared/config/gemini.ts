@@ -3,8 +3,8 @@ import { env } from "./env";
 import { isGeminiQuotaError } from "../ai/gemini/geminiErrors";
 
 // export const genAI = new GoogleGenAI({ apiKey: env.geminiApiKey });
-// export const GEMINI_MODEL = "gemini-2.5-flash";
-export const GEMINI_MODEL = "gemini-3.1-flash-lite";
+export const GEMINI_MODEL = "gemini-2.5-flash";
+// export const GEMINI_MODEL = "gemini-3.1-flash-lite";
 
 const keys = [env.geminiApiKey, env.geminiApiKeySecondary].filter(
   Boolean,

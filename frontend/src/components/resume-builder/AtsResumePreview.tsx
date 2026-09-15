@@ -8,6 +8,8 @@ interface AtsResumePreviewProps {
 
 // A4 @96dpi — same width the PDF prints at, so line-breaks match.
 const A4_WIDTH = 794;
+// Must match .ats-resume min-height / @page size — this is where the PDF paginates.
+const PAGE_HEIGHT = 1122;
 
 export default function AtsResumePreview({ content }: AtsResumePreviewProps) {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -41,24 +43,45 @@ export default function AtsResumePreview({ content }: AtsResumePreviewProps) {
     return () => ro.disconnect();
   }, [content]);
 
+  const pages = Math.max(1, Math.ceil(paperHeight / PAGE_HEIGHT));
+  const overflow = paperHeight > PAGE_HEIGHT;
+
   return (
-    <div ref={outerRef} className="w-full overflow-hidden">
-      <div style={{ height: paperHeight * scale }}>
-        <div
-          ref={paperRef}
-          className="bg-white box-shadow overflow-hidden"
-          style={{
-            width: A4_WIDTH,
-            maxWidth: "none",
-            transform: `scale(${scale})`,
-            transformOrigin: "top left",
-          }}
-        >
-          <style>{ATS_STYLE}</style>
+    <div className="w-full">
+      <div ref={outerRef} className="w-full overflow-hidden">
+        <div style={{ height: paperHeight * scale }}>
           <div
-            className="ats-resume"
-            dangerouslySetInnerHTML={{ __html: buildAtsResumeMarkup(content) }}
-          />
+            ref={paperRef}
+            className="relative bg-white overflow-hidden border border-stone-200 dark:border-stone-700"
+            style={{
+              width: A4_WIDTH,
+              maxWidth: "none",
+              transform: `scale(${scale})`,
+              transformOrigin: "top left",
+            }}
+          >
+            <style>{ATS_STYLE}</style>
+            <div
+              className="ats-resume"
+              dangerouslySetInnerHTML={{ __html: buildAtsResumeMarkup(content) }}
+            />
+
+            {/* Page-break markers — preview only, not in PDF */}
+            {Array.from({ length: pages - 1 }).map((_, i) => (
+              <div
+                key={i}
+                className="absolute left-0 right-0 pointer-events-none select-none"
+                style={{ top: PAGE_HEIGHT * (i + 1) - 60 }}
+                aria-hidden="true"
+              >
+                <div className="relative border-t-2 border-dashed border-red-400 dark:border-red-500">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded-full whitespace-nowrap shadow">
+                    End of page {i + 1} · continues on page {i + 2}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

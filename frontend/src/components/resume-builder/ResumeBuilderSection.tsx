@@ -268,18 +268,18 @@ export default function ResumeBuilderSection({
                     autoFocus
                     maxLength={60}
                     placeholder={title}
-                    className="text-sm font-semibold text-stone-800 dark:text-stone-100 h-5 px-1.5 py-0 rounded border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 focus:outline-none focus:border-stone-900 dark:focus:border-lime-300"
+                    className="text-sm md:text-base font-semibold text-stone-800 dark:text-stone-100 h-5 px-1.5 py-0 rounded border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 focus:outline-none focus:border-stone-900 dark:focus:border-lime-300"
                   />
                   <span
                     ref={measureRef}
                     aria-hidden="true"
-                    className="invisible whitespace-pre absolute top-0 left-0 text-sm font-semibold"
+                    className="invisible whitespace-pre absolute top-0 left-0 text-sm md:text-base font-semibold"
                   >
                     {draft || title}
                   </span>
                 </div>
                 {subtitle && (
-                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{subtitle}</p>
+                  <p className="text-xs md:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{subtitle}</p>
                 )}
               </div>
               <ChevronDown
@@ -311,7 +311,7 @@ export default function ResumeBuilderSection({
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 group/title">
-                    <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100">
+                    <h3 className="text-sm md:text-base font-semibold text-stone-800 dark:text-stone-100">
                       {title}
                     </h3>
                     {onTitleChange && (
@@ -336,7 +336,7 @@ export default function ResumeBuilderSection({
                     )}
                   </div>
                   {subtitle && (
-                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{subtitle}</p>
+                    <p className="text-xs md:text-sm text-stone-500 dark:text-stone-400 mt-0.5">{subtitle}</p>
                   )}
                 </div>
                 <ChevronDown

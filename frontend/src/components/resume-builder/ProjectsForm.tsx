@@ -69,7 +69,7 @@ export default function ProjectsForm({
               />
 
               <div>
-                  <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+                  <label className="block text-xs md:text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                     Bullet Points
                 </label>
                 <HighlightsEditor

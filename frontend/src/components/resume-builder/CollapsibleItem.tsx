@@ -34,11 +34,11 @@ export default function CollapsibleItem({
           className="flex-1 flex items-center gap-2 text-left min-w-0"
         >
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-stone-700 dark:text-stone-200 truncate">
+            <p className="text-xs md:text-sm font-semibold text-stone-700 dark:text-stone-200 truncate">
               {title}
             </p>
             {subtitle && (
-              <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">{subtitle}</p>
+              <p className="text-[11px] md:text-xs text-stone-500 dark:text-stone-400 truncate">{subtitle}</p>
             )}
           </div>
         </button>

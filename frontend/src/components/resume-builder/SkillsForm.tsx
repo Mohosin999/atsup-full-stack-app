@@ -78,7 +78,7 @@ function SkillTagInput({
         }
       }}
       onBlur={() => addSkills(text)}
-      className="w-full px-4 py-2 lg:py-3 text-xs border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all font-plex"
+      className="w-full px-4 py-2 lg:py-3 text-xs md:text-sm border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all font-plex"
       placeholder={placeholder || "Type a skill and press Enter"}
     />
   );
@@ -109,7 +109,7 @@ return (
     <span
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`font-plex inline-flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 px-2.5 py-1 text-xs text-stone-800 dark:text-stone-100 select-none rounded-lg ${
+      className={`font-plex inline-flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 px-2.5 py-1 text-xs md:text-sm text-stone-800 dark:text-stone-100 select-none rounded-lg ${
         isDragging ? "opacity-60 z-10 shadow-md" : ""
       }`}
     >
@@ -286,7 +286,7 @@ function SortableCategory({
           >
             <GripVertical className="w-4 h-4" />
           </button>
-          <span className="text-xs font-semibold text-stone-700 dark:text-stone-200">
+          <span className="text-xs md:text-sm font-semibold text-stone-700 dark:text-stone-200">
             Cat. {index + 1}
           </span>
         </div>
@@ -305,7 +305,7 @@ function SortableCategory({
             list="skill-category-presets"
             value={cat.name || ""}
             onChange={(e) => onNameChange(e.target.value)}
-            className="w-full px-4 py-2 lg:py-3 text-xs border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all font-plex"
+            className="w-full px-4 py-2 lg:py-3 text-xs md:text-sm border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all font-plex"
             placeholder="e.g. Technical Skills"
           />
         </div>
@@ -383,7 +383,7 @@ export default function SkillsForm({
   return (
     <div className="font-plex w-full space-y-3">
       <div>
-        <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+        <label className="block text-xs md:text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
           Add your own skill
         </label>
         <SkillTagsInput
@@ -419,7 +419,7 @@ export default function SkillsForm({
       <AddButton onClick={addCategory}>Add Skill Category</AddButton>
 
       {categories.length === 0 && (
-        <p className="text-xs text-stone-500 dark:text-stone-400">
+        <p className="text-xs md:text-sm text-stone-500 dark:text-stone-400">
           Tip: Add categories like Technical Skills and Soft Skills. Each
           category appears on its own line in the resume.
         </p>

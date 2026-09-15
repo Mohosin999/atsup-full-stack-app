@@ -115,11 +115,11 @@ function SortableHighlight({
           autoFocus
           rows={1}
           placeholder="e.g. Increased website traffic by 40% through SEO optimization"
-          className="flex-1 text-xs leading-5 text-stone-800 dark:text-stone-100 bg-transparent placeholder-stone-400 dark:placeholder-stone-500 resize-none overflow-hidden focus:outline-none"
+          className="flex-1 text-xs md:text-sm leading-5 md:leading-6 text-stone-800 dark:text-stone-100 bg-transparent placeholder-stone-400 dark:placeholder-stone-500 resize-none overflow-hidden focus:outline-none"
         />
       ) : (
         <span
-          className="flex-1 text-xs leading-5 text-stone-700 dark:text-stone-100 break-words cursor-text px-1 py-0.5 -mx-1"
+          className="flex-1 text-xs md:text-sm leading-5 md:leading-6 text-stone-700 dark:text-stone-100 break-words cursor-text px-1 py-0.5 -mx-1"
           onClick={onStartEdit}
           title="Click to edit"
         >
@@ -239,7 +239,7 @@ export default function HighlightsEditor({
             ))}
 
             {highlights.length === 0 && (
-              <p className="text-xs text-stone-500 dark:text-stone-400">
+              <p className="text-xs md:text-sm text-stone-500 dark:text-stone-400">
                 No bullet points added yet.
               </p>
             )}
@@ -269,13 +269,13 @@ export default function HighlightsEditor({
               "e.g. Increased website traffic by 40% through SEO optimization"
             }
             autoFocus
-            className="flex-1 text-xs text-stone-800 dark:text-stone-100 bg-transparent placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none"
+            className="flex-1 text-xs md:text-sm text-stone-800 dark:text-stone-100 bg-transparent placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none"
           />
           <button
             type="button"
             onClick={handleSave}
             disabled={!text.trim()}
-            className="text-xs font-medium text-stone-900 dark:text-lime-300 hover:text-stone-700 dark:hover:text-lime-200 disabled:text-stone-300 dark:disabled:text-stone-600 flex-shrink-0 mt-0.5 transition-colors"
+            className="text-xs md:text-sm font-medium text-stone-900 dark:text-lime-300 hover:text-stone-700 dark:hover:text-lime-200 disabled:text-stone-300 dark:disabled:text-stone-600 flex-shrink-0 mt-0.5 transition-colors"
           >
             Add
           </button>

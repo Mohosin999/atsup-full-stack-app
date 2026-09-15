@@ -182,7 +182,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="font-plex w-full">
         {label && (
-          <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+          <label className="block text-xs md:text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
             {label}
           </label>
         )}
@@ -195,7 +195,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             className={clsx(
-              'w-full px-4 py-2 lg:py-3 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all text-xs rounded-lg',
+              'w-full px-4 py-2 lg:py-3 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all text-xs md:text-sm rounded-lg',
               icon && 'pl-8',
               error && 'border-red-500 focus:ring-red-500',
               className
@@ -223,21 +223,21 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="font-plex w-full mt-2">
         {label && (
-          <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
+          <label className="block text-xs md:text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
             {label}
           </label>
         )}
         <textarea
           ref={ref}
           className={clsx(
-            'w-full text-xs px-4 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/40 text-stone-700 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all resize-none leading-5 rounded-lg',
+            'w-full text-xs md:text-sm px-4 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/40 text-stone-700 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all resize-none leading-5 md:leading-6 rounded-lg',
             error && 'border-red-500 focus:ring-red-500',
             className
           )}
           {...props}
         />
         {error && (
-          <p className="mt-1 text-xs text-red-500 dark:text-red-400">{error}</p>
+          <p className="mt-1 text-xs md:text-sm text-red-500 dark:text-red-400">{error}</p>
         )}
       </div>
     );
@@ -257,14 +257,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="font-plex w-full">
         {label && (
-          <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+          <label className="block text-xs md:text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
             {label}
           </label>
         )}
         <select
           ref={ref}
           className={clsx(
-            'w-full px-4 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all rounded-lg',
+            'w-full px-4 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all rounded-lg text-xs md:text-sm',
             error && 'border-red-500 focus:ring-red-500',
             className
           )}
@@ -308,7 +308,7 @@ export const DateRangeInput = ({
   return (
     <div className="font-plex grid grid-cols-2 gap-3">
       <div>
-        <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+        <label className="block text-xs md:text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
           Start date
         </label>
         <input
@@ -316,11 +316,11 @@ export const DateRangeInput = ({
           value={startDate || ""}
           onChange={(e) => onStartChange?.(e.target.value)}
           placeholder={startPlaceholder}
-          className="w-full px-3 py-2 lg:py-3 text-xs border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300"
+          className="w-full px-3 py-2 lg:py-3 text-xs md:text-sm border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300"
         />
       </div>
       <div>
-        <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+        <label className="block text-xs md:text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
           End date
         </label>
         <input
@@ -329,7 +329,7 @@ export const DateRangeInput = ({
           disabled={endDisabled}
           onChange={(e) => onEndChange?.(e.target.value)}
           placeholder={endPlaceholder}
-          className="w-full px-3 py-2 lg:py-3 text-xs border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 disabled:opacity-50"
+          className="w-full px-3 py-2 lg:py-3 text-xs md:text-sm border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 disabled:opacity-50"
         />
       </div>
     </div>

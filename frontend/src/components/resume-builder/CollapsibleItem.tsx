@@ -26,19 +26,19 @@ export default function CollapsibleItem({
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 overflow-hidden rounded-md">
-      <div className="flex items-center gap-2 px-3 py-2.5">
+    <div className="font-plex border border-stone-200 dark:border-stone-700 overflow-hidden rounded-lg bg-white dark:bg-stone-900">
+      <div className="flex items-center gap-2 px-4 py-2.5">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           className="flex-1 flex items-center gap-2 text-left min-w-0"
         >
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate">
+            <p className="text-xs font-semibold text-stone-700 dark:text-stone-200 truncate">
               {title}
             </p>
             {subtitle && (
-              <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">{subtitle}</p>
+              <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">{subtitle}</p>
             )}
           </div>
         </button>
@@ -47,7 +47,7 @@ export default function CollapsibleItem({
             type="button"
             onClick={() => setConfirmOpen(true)}
             aria-label="Remove item"
-            className="text-gray-600 dark:text-gray-400 hover:text-red-600 flex-shrink-0"
+            className="text-stone-500 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400 flex-shrink-0 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -56,7 +56,7 @@ export default function CollapsibleItem({
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Collapse item" : "Expand item"}
-          className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 flex-shrink-0"
+          className="text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-100 flex-shrink-0 transition-colors"
         >
           <ChevronDown
             className={`w-4 h-4 transition-transform duration-200 ${
@@ -66,7 +66,7 @@ export default function CollapsibleItem({
         </button>
       </div>
       {open && (
-        <div className="px-3 pb-3 pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
+        <div className="px-4 pb-4 pt-3 border-t border-stone-200 dark:border-stone-700 space-y-3">
           {children}
         </div>
       )}

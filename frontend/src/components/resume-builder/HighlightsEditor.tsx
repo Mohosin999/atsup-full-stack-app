@@ -83,16 +83,16 @@ function SortableHighlight({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex items-start gap-2 border px-3 py-3 bg-white dark:bg-primary rounded-md ${
+      className={`font-plex flex items-start gap-2 border px-4 py-2 lg:py-3 bg-white dark:bg-stone-800/40 rounded-lg transition-all ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
-      } ${editing ? "border-black dark:border-cyan-500" : "border-gray-200 dark:border-gray-600"}`}
+      } ${editing ? "border-stone-900 dark:border-lime-300 ring-2 ring-stone-900 dark:ring-lime-300" : "border-stone-200 dark:border-stone-700"}`}
     >
       <button
         type="button"
         {...attributes}
         {...listeners}
         title="Drag to reorder"
-        className="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing touch-none"
+        className="text-stone-400 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 mt-0.5 flex-shrink-0 cursor-grab active:cursor-grabbing touch-none"
       >
         <GripVertical className="w-4 h-4" />
       </button>
@@ -114,11 +114,12 @@ function SortableHighlight({
           }}
           autoFocus
           rows={1}
-          className="flex-1 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-primary resize-none overflow-hidden focus:outline-none"
+          placeholder="e.g. Increased website traffic by 40% through SEO optimization"
+          className="flex-1 text-xs leading-5 text-stone-800 dark:text-stone-100 bg-transparent placeholder-stone-400 dark:placeholder-stone-500 resize-none overflow-hidden focus:outline-none"
         />
       ) : (
         <span
-          className="flex-1 text-xs text-gray-700 dark:text-gray-300 break-words cursor-text px-1 py-0.5 -mx-1"
+          className="flex-1 text-xs leading-5 text-stone-700 dark:text-stone-100 break-words cursor-text px-1 py-0.5 -mx-1"
           onClick={onStartEdit}
           title="Click to edit"
         >
@@ -129,7 +130,7 @@ function SortableHighlight({
         <button
           type="button"
           onClick={onEditSave}
-          className="text-cyan-600 hover:bg-gray-100 dark:hover:bg-gray-700 mt-0.5 flex-shrink-0 p-0.5"
+          className="text-stone-900 dark:text-lime-300 hover:bg-stone-100 dark:hover:bg-stone-700 mt-0.5 flex-shrink-0 p-0.5 rounded"
           title="Save"
         >
           <Check className="w-4 h-4" />
@@ -138,7 +139,7 @@ function SortableHighlight({
       <button
         type="button"
         onClick={onDelete}
-        className="text-gray-600 dark:text-gray-400 hover:text-red-600 mt-0.5 flex-shrink-0"
+        className="text-stone-500 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400 mt-0.5 flex-shrink-0 transition-colors"
       >
         <Trash2 className="w-4 h-4" />
       </button>
@@ -207,7 +208,7 @@ export default function HighlightsEditor({
   };
 
   return (
-    <div>
+    <div className="font-plex w-full">
       {/* ============================================================
         * Bullet point list
       ============================================================ */}
@@ -238,7 +239,7 @@ export default function HighlightsEditor({
             ))}
 
             {highlights.length === 0 && (
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-stone-500 dark:text-stone-400">
                 No bullet points added yet.
               </p>
             )}
@@ -250,8 +251,7 @@ export default function HighlightsEditor({
         * Add new bullet point
       ============================================================ */}
       {adding && (
-        <div className="flex items-start gap-2 border border-gray-200 dark:border-gray-600 px-3 py-3 bg-white dark:bg-primary mt-2 rounded-md">
-          {/* <Plus className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" /> */}
+        <div className="flex items-start gap-2 border border-stone-200 dark:border-stone-700 px-4 py-2 lg:py-3 bg-white dark:bg-stone-800/40 mt-2 rounded-lg transition-all focus-within:ring-2 focus-within:ring-stone-900 dark:focus-within:ring-lime-300 focus-within:border-transparent">
           <input
             type="text"
             value={text}
@@ -264,25 +264,25 @@ export default function HighlightsEditor({
                 setAdding(false);
               }
             }}
-            // placeholder={
-            //   placeholder ||
-            //   "e.g. Increased website traffic by 40% through SEO optimization"
-            // }
+            placeholder={
+              placeholder ||
+              "e.g. Increased website traffic by 40% through SEO optimization"
+            }
             autoFocus
-            className="flex-1 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-primary focus:outline-none"
+            className="flex-1 text-xs text-stone-800 dark:text-stone-100 bg-transparent placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none"
           />
           <button
             type="button"
             onClick={handleSave}
             disabled={!text.trim()}
-            className="text-xs font-medium text-cyan-600 hover:text-cyan-700 disabled:text-gray-300 flex-shrink-0 mt-0.5"
+            className="text-xs font-medium text-stone-900 dark:text-lime-300 hover:text-stone-700 dark:hover:text-lime-200 disabled:text-stone-300 dark:disabled:text-stone-600 flex-shrink-0 mt-0.5 transition-colors"
           >
             Add
           </button>
           <button
             type="button"
             onClick={() => setAdding(false)}
-            className="text-gray-400 dark:text-gray-500 hover:text-red-600 mt-0.5 flex-shrink-0"
+            className="text-stone-400 dark:text-stone-500 hover:text-red-600 dark:hover:text-red-400 mt-0.5 flex-shrink-0 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

@@ -78,7 +78,7 @@ function SkillTagInput({
         }
       }}
       onBlur={() => addSkills(text)}
-      className="w-full px-3 py-2 lg:py-3 text-xs border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
+      className="w-full px-4 py-2 lg:py-3 text-xs border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all font-plex"
       placeholder={placeholder || "Type a skill and press Enter"}
     />
   );
@@ -109,7 +109,7 @@ return (
     <span
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`inline-flex items-center gap-1.5 bg-cyan-50 border border-cyan-600 px-2.5 py-1 text-xs text-cyan-800 select-none rounded-md ${
+      className={`font-plex inline-flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 px-2.5 py-1 text-xs text-stone-800 dark:text-stone-100 select-none rounded-lg ${
         isDragging ? "opacity-60 z-10 shadow-md" : ""
       }`}
     >
@@ -118,16 +118,16 @@ return (
         {...attributes}
         {...listeners}
         title="Drag to reorder"
-        className="flex items-center text-cyan-400 hover:text-cyan-600 cursor-grab active:cursor-grabbing touch-none"
+        className="flex items-center text-stone-400 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 cursor-grab active:cursor-grabbing touch-none transition-colors"
       >
-        <GripVertical className="w-3 h-3 text-gray-400 dark:text-gray-500" />
+        <GripVertical className="w-3 h-3" />
       </button>
       {children}
       <button
         type="button"
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onRemove}
-        className="text-cyan-700 hover:text-red-600 transition-colors"
+        className="text-stone-500 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
         aria-label={`Remove ${children}`}
       >
         <X className="w-3 h-3" />
@@ -271,7 +271,7 @@ function SortableCategory({
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`border border-gray-200 dark:border-gray-700 p-3 space-y-3 rounded-md ${
+      className={`font-plex border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-900 p-4 space-y-3 ${
         isDragging ? "opacity-70 z-10 shadow-md" : ""
       }`}
     >
@@ -282,18 +282,18 @@ function SortableCategory({
             {...attributes}
             {...listeners}
             title="Drag to reorder category"
-            className="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-grab active:cursor-grabbing touch-none"
+            className="text-stone-400 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 cursor-grab active:cursor-grabbing touch-none transition-colors"
           >
             <GripVertical className="w-4 h-4" />
           </button>
-          <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+          <span className="text-xs font-semibold text-stone-700 dark:text-stone-200">
             Cat. {index + 1}
           </span>
         </div>
         <button
           type="button"
           onClick={() => setConfirmRemove(true)}
-          className="text-gray-600 hover:text-red-600"
+          className="text-stone-500 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
         >
           <Trash2 className="w-4 h-4" />
         </button>
@@ -305,7 +305,7 @@ function SortableCategory({
             list="skill-category-presets"
             value={cat.name || ""}
             onChange={(e) => onNameChange(e.target.value)}
-            className="w-full text-xs px-3 py-2 lg:py-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-xs"
+            className="w-full px-4 py-2 lg:py-3 text-xs border border-stone-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800/40 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent transition-all font-plex"
             placeholder="e.g. Technical Skills"
           />
         </div>
@@ -381,9 +381,9 @@ export default function SkillsForm({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="font-plex w-full space-y-3">
       <div>
-        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+        <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
           Add your own skill
         </label>
         <SkillTagsInput
@@ -419,7 +419,7 @@ export default function SkillsForm({
       <AddButton onClick={addCategory}>Add Skill Category</AddButton>
 
       {categories.length === 0 && (
-        <p className="text-xs text-gray-500 dark:text-gray-400">
+        <p className="text-xs text-stone-500 dark:text-stone-400">
           Tip: Add categories like Technical Skills and Soft Skills. Each
           category appears on its own line in the resume.
         </p>

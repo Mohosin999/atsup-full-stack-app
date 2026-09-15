@@ -86,7 +86,7 @@ export default function ExperienceForm({
               </label> */}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <label className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1">
                   Bullet Points
                 </label>
                 <HighlightsEditor

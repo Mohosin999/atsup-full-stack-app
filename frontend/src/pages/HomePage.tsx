@@ -6,7 +6,7 @@ import { allFeatures, staticReviews } from "../constants/landingData";
 import HeroSection from "../components/home-page/HeroSection";
 import FeatureShowcase from "../components/home-page/FeatureShowcase";
 import StatsBar from "../components/home-page/StatsBar";
-import HowItWorks from "../components/home-page/HowItWorks";
+import HowItWorksTabs from "../components/home-page/HowItWorksTabs";
 import ATSCategories from "../components/home-page/ATSCategories";
 import AIRewriteShowcase from "../components/home-page/AIRewriteShowcase";
 import BuilderPreview from "../components/home-page/BuilderPreview";
@@ -52,7 +52,7 @@ export default function HomePage() {
         <main className="relative z-10">
           <HeroSection user={undefined} onLogout={() => setShowLogoutConfirm(true)} />
           {/* <StatsBar /> */}
-          <HowItWorks />
+          <HowItWorksTabs />
           <FeatureShowcase />
           <ATSCategories />
           <AIRewriteShowcase />

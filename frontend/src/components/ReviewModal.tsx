@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Star, Send } from "lucide-react";
+import { Star, Send, X } from "lucide-react";
 import { reviewApi } from "../api/api";
 import { toast } from "react-toastify";
 
@@ -54,15 +54,41 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const ratingLabel =
+    rating === 1
+      ? "Poor"
+      : rating === 2
+        ? "Fair"
+        : rating === 3
+          ? "Good"
+          : rating === 4
+            ? "Very Good"
+            : rating === 5
+              ? "Excellent"
+              : "";
+
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
-      <div className="absolute inset-0 bg-black/40" onClick={close} />
-      <div className="relative w-full md:max-w-md bg-white dark:bg-gray-800 dark:border dark:border-gray-700 rounded-t-xl md:rounded-lg shadow-xl p-6 max-h-[90vh] overflow-y-auto">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 text-center mb-4">
-          How would you rate this app?
-        </h3>
+      <div className="absolute inset-0 bg-stone-950/50 backdrop-blur-[2px]" onClick={close} />
+      <div className="relative w-full md:max-w-md bg-white dark:bg-stone-900 border-t md:border border-stone-200 dark:border-stone-800 rounded-t-2xl md:rounded-2xl shadow-2xl p-6 max-h-[90vh] overflow-y-auto">
+        <button
+          onClick={close}
+          className="font-plex absolute top-4 right-4 p-1.5 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+          aria-label="Close"
+        >
+          <X className="w-4 h-4" />
+        </button>
 
-        <form onSubmit={submit} className="space-y-5">
+        <div className="text-center">
+          <h3 className="font-fraunces mt-4 text-xl font-normal text-stone-900 dark:text-stone-50">
+            Rate your experience
+          </h3>
+          <p className="font-plex mt-1 text-sm text-stone-500 dark:text-stone-400">
+            Your feedback helps us shape the roadmap.
+          </p>
+        </div>
+
+        <form onSubmit={submit} className="space-y-5 mt-6">
           <div className="text-center">
             <div className="flex items-center justify-center gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -72,29 +98,22 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose }) => {
                   onMouseEnter={() => setHoverRating(star)}
                   onMouseLeave={() => setHoverRating(0)}
                   onClick={() => setRating(star)}
-                  className="p-0.5 transition-colors"
+                  className="p-1 transition-transform hover:scale-110"
+                  aria-label={`${star} star${star > 1 ? "s" : ""}`}
                 >
                   <Star
                     className={`w-8 h-8 transition-colors ${
                       star <= (hoverRating || rating)
                         ? "fill-amber-400 text-amber-400"
-                        : "text-gray-300"
+                        : "text-stone-300 dark:text-stone-600"
                     }`}
                   />
                 </button>
               ))}
             </div>
             {rating > 0 && (
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                {rating === 1
-                  ? "Poor"
-                  : rating === 2
-                    ? "Fair"
-                    : rating === 3
-                      ? "Good"
-                      : rating === 4
-                        ? "Very Good"
-                        : "Excellent"}
+              <p className="font-plex mt-2 text-sm font-medium text-amber-600 dark:text-amber-300">
+                {ratingLabel}
               </p>
             )}
           </div>
@@ -103,30 +122,38 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose }) => {
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Tell us what you think, what can be improved, or what you loved..."
+              placeholder="Tell us what you think — what you loved, or what we can improve..."
               rows={4}
               maxLength={1000}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+              className="font-plex w-full px-3.5 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent resize-none bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500"
             />
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 text-right">
+            <p className="font-plex text-xs text-stone-400 dark:text-stone-500 mt-1 text-right">
               {message.length}/1000
             </p>
           </div>
 
-          {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+          {error && (
+            <p className="font-plex text-sm text-red-600 dark:text-red-400 text-center">
+              {error}
+            </p>
+          )}
 
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-600/90 disabled:opacity-50"
-            >
-              <Send className="w-4 h-4" />
-              {submitting ? "Submitting..." : "Submit Review"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="font-plex w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-xl bg-stone-900 text-white hover:bg-stone-800 dark:bg-lime-300 dark:text-stone-900 dark:hover:bg-lime-200 disabled:opacity-50 transition-colors"
+          >
+            <Send className="w-4 h-4" />
+            {submitting ? "Submitting..." : "Submit Review"}
+          </button>
         </form>
       </div>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+        .font-fraunces { font-family: 'Fraunces', serif; }
+        .font-plex { font-family: 'IBM Plex Sans', sans-serif; }
+      `}</style>
     </div>
   );
 };

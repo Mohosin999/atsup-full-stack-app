@@ -1143,9 +1143,9 @@ export default function ResumeBuilder() {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-5 2xl:grid-cols-[minmax(0,1fr)_794px] gap-6 items-start">
           {/* LEFT: form - hidden scrollbar */}
-          <div className="lg:col-span-2 space-y-4 lg:sticky lg:top-20 lg:h-[calc(100vh-80px)] lg:overflow-y-auto lg:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="lg:col-span-2 2xl:col-span-1 space-y-4 lg:sticky lg:top-20 lg:h-[calc(100vh-80px)] lg:overflow-y-auto lg:pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <ResumeBuilderSection
               title="Profile Info"
               subtitle="Include email, phone & linkedin for easy employer access"
@@ -1221,7 +1221,7 @@ export default function ResumeBuilder() {
           </div>
 
           {/* RIGHT: preview (2/3) - uses main page scrollbar */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 2xl:col-span-1 min-w-0 w-full">
             <AtsResumePreview content={content} />
           </div>
         </div>

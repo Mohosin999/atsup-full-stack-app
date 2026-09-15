@@ -557,13 +557,33 @@ export const downloadAtsPdf = (content: ResumeContent): Promise<void> => {
       doc.close();
 
       const doPrint = () => {
-        iframe.contentWindow?.focus();
-        iframe.contentWindow?.print();
-        setTimeout(() => {
-          const frame = document.getElementById(id);
-          if (frame) frame.remove();
-          resolve();
-        }, 600);
+        const win = iframe.contentWindow;
+        const finish = () => {
+          win?.focus();
+          win?.print();
+          setTimeout(() => {
+            const frame = document.getElementById(id);
+            if (frame) frame.remove();
+            resolve();
+          }, 600);
+        };
+        // Ensure webfonts are loaded inside the print frame so
+        // line-breaks match the on-screen A4 preview (794px).
+        try {
+          const frameDoc = win?.document as Document | undefined;
+          const fonts = (frameDoc as unknown as { fonts?: FontFaceSet })
+            ?.fonts;
+          if (fonts?.ready) {
+            Promise.race([
+              fonts.ready,
+              new Promise((r) => setTimeout(r, 1200)),
+            ]).then(finish);
+          } else {
+            setTimeout(finish, 400);
+          }
+        } catch {
+          setTimeout(finish, 400);
+        }
       };
 
       setTimeout(doPrint, 400);

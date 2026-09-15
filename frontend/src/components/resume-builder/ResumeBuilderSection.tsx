@@ -192,6 +192,7 @@ interface ResumeBuilderSectionProps {
   subtitle?: string;
   defaultOpen?: boolean;
   sortableId?: string;
+  className?: string;
   children: React.ReactNode;
 }
 
@@ -201,6 +202,7 @@ export default function ResumeBuilderSection({
   subtitle,
   defaultOpen = false,
   sortableId,
+  className = "",
   children,
 }: ResumeBuilderSectionProps) {
   const [open, setOpen] = useState(defaultOpen);
@@ -249,7 +251,7 @@ export default function ResumeBuilderSection({
       style={sortableStyle}
       className={sortable && sortable.isDragging ? "relative z-10 opacity-90" : ""}
     >
-      <div className="font-plex bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl overflow-hidden">
+      <div className={`font-plex bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl overflow-hidden ${className}`}>
         <div className="px-4 py-3">
           {editing ? (
             <div className="w-full flex items-center justify-between text-left min-w-0">

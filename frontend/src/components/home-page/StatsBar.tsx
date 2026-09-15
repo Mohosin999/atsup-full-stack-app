@@ -1,7 +1,7 @@
 import Wrapper from "../Wrapper";
 
 const stats = [
-  { value: "7/day", label: "Free AI Scans" },
+  { value: "7/day", label: "Free Credits" },
   { value: "100%", label: "ATS Format Score" },
   { value: "5", label: "Saved Resumes" },
   { value: "2s", label: "Auto-Save" },

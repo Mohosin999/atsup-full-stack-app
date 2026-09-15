@@ -10,15 +10,11 @@ interface HeroSectionProps {
 
 export default function HeroSection({ user, onLogout }: HeroSectionProps) {
   return (
-    <section className="pt-10 md:pt-14 lg:pt-6 xl:pt-20 2xl:pt-24 pb-10 md:pb-12 lg:pb-10 xl:pb-14">
+    <section className="pt-10 md:pt-14 lg:pt-28 2xl:pt-32 pb-10 md:pb-12 lg:pb-10 xl:pb-14">
       <Wrapper>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-6 xl:gap-10 items-center">
           {/* Left Content */}
           <div className="lg:col-span-3 text-center lg:text-start">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/20 mb-4">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              7 Free AI Scans Daily — No Credit Card
-            </div>
 
             <div className="text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-gray-800 dark:text-gray-100 md:space-y-3 xl:space-y-4">
               <h1>Prepare your resume for</h1>
@@ -49,7 +45,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
               </Link>
               <Link
                 to="/resume-builder"
-                className="flex items-center justify-center gap-2 text-xs md:text-sm xl:text-base border-2 border-gray-600 hover:bg-gray-600/10 dark:border-gray-400 dark:hover:bg-gray-400/10 px-6 py-3 lg:py-2.5 rounded-xl font-semibold transition-colors"
+                className="flex items-center justify-center gap-2 text-xs md:text-sm xl:text-base border-2 border-gray-600 hover:bg-gray-600/10 dark:border-gray-400 dark:hover:bg-gray-400/10 px-6 py-3 lg:py-2.5 rounded-xl font-semibold"
               >
                 <FilePlus2 className="w-5 h-5" />
                 Create Resume
@@ -59,14 +55,22 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
             <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs md:text-sm text-gray-500 dark:text-gray-400">
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                7 Free Daily
+                7 Free Credits Daily
               </span>
-              <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
-              <span>5 Saved Resumes</span>
+              {/* <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+              <span>5 Saved Items</span>
               <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
               <span>Truthful AI</span>
-              <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
-              <span>Resets 4 PM BST</span>
+              <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" /> */}
+              {/* <span>Resets 4 PM BST</span> */}
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Resets 4 PM BST
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                100% ATS Format Score
+              </span>
             </div>
           </div>
 

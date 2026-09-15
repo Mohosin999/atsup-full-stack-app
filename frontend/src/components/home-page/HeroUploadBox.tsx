@@ -61,10 +61,10 @@ export default function HeroUploadBox() {
     <motion.div
       initial={{ opacity: 0, x: 50 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.8, delay: 0.4 }}
+      transition={{ duration: 0.4, delay: 0.1 }}
       className="relative"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl shadow-cyan-500/20 p-8 border border-cyan-200">
+      <div className="bg-white dark:bg-secondary rounded-3xl shadow-md shadow-cyan-500/20 dark:shadow-accent/20 p-8 border border-cyan-200 dark:border-accent">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-14 h-14 bg-gradient-to-br from-cyan-500 to-cyan-500 rounded-2xl flex items-center justify-center">
             <Upload className="w-7 h-7 text-white" />
@@ -110,12 +110,12 @@ export default function HeroUploadBox() {
               <div
                 {...getRootProps()}
                 className={clsx(
-                  "min-h-[180px] flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-6 cursor-pointer transition-colors",
+                  "min-h-[180px] flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-6 cursor-pointer ",
                   isDragActive
                     ? "border-cyan-500 bg-cyan-50"
                     : isDragReject
                       ? "border-red-400 bg-red-50"
-                      : "border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700/50",
+                      : "border-gray-200 bg-gray-100 hover:bg-gray-50 dark:border-gray-700 dark:bg-primary dark:hover:bg-gray-700/50",
                 )}
               >
                 <input {...getInputProps()} />
@@ -131,7 +131,7 @@ export default function HeroUploadBox() {
                   or drag and drop
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  PDF only (MAX. 10MB)
+                  PDF only (MAX. 5MB)
                 </p>
               </div>
               {error && (

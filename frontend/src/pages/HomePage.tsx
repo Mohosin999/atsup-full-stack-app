@@ -57,12 +57,12 @@ export default function HomePage() {
           <ATSCategories />
           <AIRewriteShowcase />
           <BuilderPreview />
-          <WhyChooseUs features={allFeatures} />
+          {/* <WhyChooseUs features={allFeatures} /> */}
           <ComparisonSection />
-          <PricingTeaser />
+          {/* <PricingTeaser /> */}
           <TestimonialsSection testimonials={displayTestimonials} />
           <FAQSection />
-          <CTASection />
+          {/* <CTASection /> */}
         </main>
       </div>
       <ConfirmModal

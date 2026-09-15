@@ -1,5 +1,87 @@
+// import { Link } from "react-router-dom";
+// import { ChevronRight, FilePlus2 } from "lucide-react";
+// import Wrapper from "../Wrapper";
+// import HeroUploadBox from "./HeroUploadBox";
+
+// interface HeroSectionProps {
+//   user: any;
+//   onLogout: () => void;
+// }
+
+// export default function HeroSection({ user, onLogout }: HeroSectionProps) {
+//   return (
+//     <section className="pt-10 md:pt-14 lg:pt-28 2xl:pt-32 pb-10 md:pb-12 lg:pb-10 xl:pb-14">
+//       <Wrapper>
+//         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-6 xl:gap-10 items-center">
+//           {/* Left Content */}
+//           <div className="lg:col-span-3 text-center lg:text-start">
+
+//             <div className="text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-gray-800 dark:text-gray-100 md:space-y-3 xl:space-y-4">
+//               <h1>Prepare your resume for</h1>
+//               <h1>
+//                 the{" "}
+//                 <span className="relative inline-block px-1">
+//                   <span className="relative z-10 text-gray-800 dark:text-gray-100">
+//                     ATS screening
+//                   </span>
+//                   <span className="absolute left-0 right-0 bottom-1 h-8 md:h-10 lg:h-8 xl:h-10 2xl:h-12 bg-cyan-200/80 dark:bg-secondary rounded-sm -z-0" />
+//                 </span>
+//               </h1>
+//             </div>
+
+//             <p className="my-8 lg:my-6 xl:my-8 text-base xl:text-lg text-gray-700 dark:text-gray-300 max-w-xl mx-auto lg:mx-0">
+//               Analyze your resume against any job description and get actionable
+//               feedback to improve its ATS compatibility. Build an ATS-friendly
+//               resume (PDF only) that helps you stand out to employers.
+//             </p>
+
+//             <div className="flex flex-col md:flex-row justify-center lg:justify-start gap-4 mx-6 md:mx-0">
+//               <Link
+//                 to="/ats-scan"
+//                 className="group flex items-center justify-center bg-cyan-600 text-white px-6 py-3 lg:py-2.5 rounded-xl text-xs md:text-sm xl:text-base gap-2 font-semibold hover:bg-cyan-700 shadow-lg shadow-cyan-500/20 transition-all"
+//               >
+//                 Scan Your Resume for Free
+//                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+//               </Link>
+//               <Link
+//                 to="/resume-builder"
+//                 className="flex items-center justify-center gap-2 text-xs md:text-sm xl:text-base border-2 border-gray-600 hover:bg-gray-600/10 dark:border-gray-400 dark:hover:bg-gray-400/10 px-6 py-3 lg:py-2.5 rounded-xl font-semibold"
+//               >
+//                 <FilePlus2 className="w-5 h-5" />
+//                 Create Resume
+//               </Link>
+//             </div>
+
+//             <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs md:text-sm text-gray-500 dark:text-gray-400">
+//               <span className="flex items-center gap-1.5">
+//                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+//                 7 Free Credits Daily
+//               </span>
+//               <span className="flex items-center gap-1.5">
+//                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+//                 Resets 4 PM BST
+//               </span>
+//               <span className="flex items-center gap-1.5">
+//                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+//                 100% ATS Format Score
+//               </span>
+//             </div>
+//           </div>
+
+//           {/* Right Content */}
+//           <div className="lg:col-span-2 w-full flex justify-center lg:justify-end">
+//             <div className="w-full max-w-md">
+//               <HeroUploadBox />
+//             </div>
+//           </div>
+//         </div>
+//       </Wrapper>
+//     </section>
+//   );
+// }
+
 import { Link } from "react-router-dom";
-import { ChevronRight, FilePlus2 } from "lucide-react";
+import { ChevronRight, FilePlus2, ScanLine } from "lucide-react";
 import Wrapper from "../Wrapper";
 import HeroUploadBox from "./HeroUploadBox";
 
@@ -10,78 +92,92 @@ interface HeroSectionProps {
 
 export default function HeroSection({ user, onLogout }: HeroSectionProps) {
   return (
-    <section className="pt-10 md:pt-14 lg:pt-28 2xl:pt-32 pb-10 md:pb-12 lg:pb-10 xl:pb-14">
+    <section className="relative overflow-hidden bg-stone-50 dark:bg-stone-950 pt-14 md:pt-20 lg:pt-28 2xl:pt-32 pb-14 md:pb-16 lg:pb-14 xl:pb-20">
+      {/* subtle dot-grid texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-10"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(28,25,23,0.35) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+
       <Wrapper>
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-6 xl:gap-10 items-center">
+        <div className="relative grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-8 xl:gap-14 items-center">
           {/* Left Content */}
-          <div className="lg:col-span-3 text-center lg:text-start">
-
-            <div className="text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-gray-800 dark:text-gray-100 md:space-y-3 xl:space-y-4">
-              <h1>Prepare your resume for</h1>
-              <h1>
-                the{" "}
-                <span className="relative inline-block px-1">
-                  <span className="relative z-10 text-gray-800 dark:text-gray-100">
-                    ATS screening
-                  </span>
-                  <span className="absolute left-0 right-0 bottom-1 h-8 md:h-10 lg:h-8 xl:h-10 2xl:h-12 bg-cyan-200/80 dark:bg-secondary rounded-sm -z-0" />
-                </span>
-              </h1>
-            </div>
-
-            <p className="my-8 lg:my-6 xl:my-8 text-base xl:text-lg text-gray-700 dark:text-gray-300 max-w-xl mx-auto lg:mx-0">
-              Analyze your resume against any job description and get actionable
-              feedback to improve its ATS compatibility. Build an ATS-friendly
-              resume (PDF only) that helps you stand out to employers.
+          <div className="lg:col-span-3 text-center lg:text-left">
+            <p className="font-plex text-xs md:text-sm text-stone-500 dark:text-stone-400 mb-4">
+              Built for job seekers who'd rather get the interview than guess why they didn't
             </p>
 
-            <div className="flex flex-col md:flex-row justify-center lg:justify-start gap-4 mx-6 md:mx-0">
+            <h1 className="font-fraunces font-normal text-4xl md:text-5xl lg:text-[2.75rem] xl:text-6xl 2xl:text-[4.2rem] leading-[1.08] text-stone-900 dark:text-stone-50">
+              Prepare your resume for the{" "}
+              <span className="relative inline-block whitespace-nowrap">
+                <span className="relative z-10">ATS screening</span>
+                <span className="absolute left-0 right-0 bottom-[0.08em] h-[0.32em] bg-lime-300/80 dark:bg-lime-400/70 rounded-[2px] -z-0" />
+              </span>
+            </h1>
+
+            <p className="font-plex mt-6 mb-8 text-base xl:text-lg leading-relaxed text-stone-600 dark:text-stone-300 max-w-xl mx-auto lg:mx-0">
+              Analyze your resume against any job description and get actionable
+              feedback to improve its ATS compatibility. Build an ATS-friendly
+              resume, PDF only, that helps you stand out to employers.
+            </p>
+
+            <div className="font-plex flex flex-col sm:flex-row justify-center lg:justify-start gap-3 mx-6 sm:mx-0">
               <Link
                 to="/ats-scan"
-                className="group flex items-center justify-center bg-cyan-600 text-white px-6 py-3 lg:py-2.5 rounded-xl text-xs md:text-sm xl:text-base gap-2 font-semibold hover:bg-cyan-700 shadow-lg shadow-cyan-500/20 transition-all"
+                className="group inline-flex items-center justify-center gap-2 bg-stone-900 dark:bg-lime-300 text-stone-50 dark:text-stone-900 px-6 py-3.5 lg:py-3 rounded-lg text-sm xl:text-base font-medium hover:bg-stone-800 dark:hover:bg-lime-200 transition-colors"
               >
-                Scan Your Resume for Free
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Scan your resume for free
+                <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 to="/resume-builder"
-                className="flex items-center justify-center gap-2 text-xs md:text-sm xl:text-base border-2 border-gray-600 hover:bg-gray-600/10 dark:border-gray-400 dark:hover:bg-gray-400/10 px-6 py-3 lg:py-2.5 rounded-xl font-semibold"
+                className="inline-flex items-center justify-center gap-2 text-sm xl:text-base border border-stone-300 dark:border-stone-700 hover:border-stone-900 dark:hover:border-stone-400 text-stone-800 dark:text-stone-100 px-6 py-3.5 lg:py-3 rounded-lg font-medium transition-colors"
               >
-                <FilePlus2 className="w-5 h-5" />
-                Create Resume
+                <FilePlus2 className="w-4 h-4" />
+                Create resume
               </Link>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs md:text-sm text-gray-500 dark:text-gray-400">
+            <div className="font-plex mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-xs md:text-sm text-stone-500 dark:text-stone-400">
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                7 Free Credits Daily
+                7 free credits daily
               </span>
-              {/* <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
-              <span>5 Saved Items</span>
-              <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
-              <span>Truthful AI</span>
-              <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" /> */}
-              {/* <span>Resets 4 PM BST</span> */}
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 Resets 4 PM BST
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                100% ATS Format Score
+                100% ATS format score
               </span>
             </div>
           </div>
 
           {/* Right Content */}
           <div className="lg:col-span-2 w-full flex justify-center lg:justify-end">
-            <div className="w-full max-w-md">
+            <div className="relative w-full max-w-md">
+              {/* decorative scan frame around the real upload box */}
+              <div className="absolute -inset-3 rounded-[1.75rem] border border-stone-200 dark:border-stone-800 pointer-events-none" />
+              <div className="absolute -top-3 -right-3 z-10 flex items-center gap-1.5 bg-stone-900 dark:bg-lime-300 text-stone-50 dark:text-stone-900 text-xs font-plex font-semibold px-3 py-1.5 rounded-full shadow-lg">
+                <ScanLine className="w-3.5 h-3.5" />
+                Live scan
+              </div>
               <HeroUploadBox />
             </div>
           </div>
         </div>
       </Wrapper>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+        .font-fraunces { font-family: 'Fraunces', serif; }
+        .font-plex { font-family: 'IBM Plex Sans', sans-serif; }
+      `}</style>
     </section>
   );
 }

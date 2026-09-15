@@ -42,14 +42,7 @@ import AchievementsForm from "../components/resume-builder/AchievementsForm";
 import CertificationsForm from "../components/resume-builder/CertificationsForm";
 import AtsResumePreview from "../components/resume-builder/AtsResumePreview";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import ConfirmModal from "../components/ui/ConfirmModal";
 import Wrapper from "../components/Wrapper";
-import {
-  MAX_RESUMES,
-  OldestInfo,
-  limitMessage,
-  oldestResumeInfo,
-} from "../utils/storageLimits";
 
 const SECTION_SUBTITLES: Record<SectionKey, string> = {
   summary: "Highlight your top skills and achievements",
@@ -88,7 +81,6 @@ export default function ResumeBuilder() {
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [showMore, setShowMore] = useState(false);
-  const [limitInfo, setLimitInfo] = useState<OldestInfo | null>(null);
   const initializedRef = useRef(false);
   const skipAutosaveRef = useRef(false);
   const dirtyRef = useRef(false);
@@ -96,9 +88,6 @@ export default function ResumeBuilder() {
   const resumeIdRef = useRef<string | null>(null);
   const contentRef = useRef<ResumeContent>(defaultContent());
   const savingRef = useRef(false);
-  // 'unknown' → not checked yet, 'checking' → request in flight,
-  // 'awaiting' → modal open, 'allow'/'ok' → may save, 'deny' → never auto-save
-  const limitCheckRef = useRef<'unknown' | 'checking' | 'awaiting' | 'ok' | 'allow' | 'deny'>('unknown');
 
   // keep refs in sync with state for debounce closure
   useEffect(() => {
@@ -189,28 +178,6 @@ export default function ResumeBuilder() {
       if (savingRef.current) return;
       const currentContent = contentRef.current;
       const currentResumeId = resumeIdRef.current;
-      // Storage cap: a brand-new 4th resume needs confirmation first
-      if (!currentResumeId) {
-        if (limitCheckRef.current === 'deny' || limitCheckRef.current === 'awaiting' || limitCheckRef.current === 'checking') return;
-        if (limitCheckRef.current === 'unknown') {
-          limitCheckRef.current = 'checking';
-          try {
-            const listRes = await resumeApi.getAll(1, MAX_RESUMES);
-            const total = listRes.data.pagination?.total ?? 0;
-            if (total >= MAX_RESUMES) {
-              const oldest = oldestResumeInfo(listRes.data.data || []);
-              if (oldest) {
-                setLimitInfo(oldest);
-                limitCheckRef.current = 'awaiting';
-                return;
-              }
-            }
-            limitCheckRef.current = 'ok';
-          } catch {
-            limitCheckRef.current = 'ok'; // fail-open: backend still enforces
-          }
-        }
-      }
       setSaving(true);
       savingRef.current = true;
       try {
@@ -220,10 +187,6 @@ export default function ResumeBuilder() {
           rid = res.data.data.id;
           resumeIdRef.current = rid;
           setResumeId(rid);
-          if (limitCheckRef.current === 'allow') {
-            toast.success('Saved. Oldest resume was removed to make space.');
-          }
-          limitCheckRef.current = 'ok';
           navigate(`/resume-builder/${rid}`, { replace: true });
         } else {
           const res = await resumeApi.update(rid, { content: currentContent });
@@ -266,34 +229,7 @@ export default function ResumeBuilder() {
     }
   };
 
-  // Storage-limit modal: Save replaces oldest, Cancel keeps editing unsaved
-  const handleLimitSave = async () => {
-    setLimitInfo(null);
-    limitCheckRef.current = 'allow';
-    setSaving(true);
-    savingRef.current = true;
-    try {
-      const res = await resumeApi.createFromContent(contentRef.current);
-      const rid = res.data.data.id;
-      resumeIdRef.current = rid;
-      setResumeId(rid);
-      dirtyRef.current = false;
-      setSavedAt(new Date().toLocaleTimeString());
-      toast.success('Saved. Oldest resume was removed to make space.');
-      navigate(`/resume-builder/${rid}`, { replace: true });
-    } catch {
-      toast.error('Failed to save resume.');
-    } finally {
-      setSaving(false);
-      savingRef.current = false;
-    }
-  };
 
-  const handleLimitCancel = () => {
-    setLimitInfo(null);
-    limitCheckRef.current = 'deny';
-    toast.info('Not saved. Delete an old resume from history to save this one. Befor delete, ');
-  };
 
   // ---- updaters ----
   const markContentDirty = (
@@ -675,16 +611,7 @@ export default function ResumeBuilder() {
         </div>
       </Wrapper>
 
-      <ConfirmModal
-        isOpen={!!limitInfo}
-        title="Storage limit reached"
-        message={limitInfo ? limitMessage('resume', limitInfo) : ''}
-        confirmText="Save"
-        cancelText="Cancel"
-        type="warning"
-        onConfirm={handleLimitSave}
-        onCancel={handleLimitCancel}
-      />
+
     </div>
   );
 }

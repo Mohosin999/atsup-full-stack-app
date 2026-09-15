@@ -49,7 +49,7 @@ export default function BuilderPreview() {
             <ul className="mt-6 space-y-2.5 text-xs md:text-sm text-gray-600 dark:text-gray-400">
               <li className="flex gap-2"><span className="text-cyan-600">✓</span> Live preview as you type</li>
               <li className="flex gap-2"><span className="text-cyan-600">✓</span> Auto-save every 2s — never lose work</li>
-              <li className="flex gap-2"><span className="text-cyan-600">✓</span> 5 saves max — oldest auto-rotates with confirm</li>
+              <li className="flex gap-2"><span className="text-cyan-600">✓</span> Unlimited saves — all resumes kept</li>
             </ul>
             <Link
               to="/resume-builder"

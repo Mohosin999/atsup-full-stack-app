@@ -12,14 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setUserAiScanState } from "@/store/slices/authSlice";
 import { goToLogin } from "../../utils/authGuard";
 import { saveScanDraft } from "../../utils/scanDraft";
-import ConfirmModal from "../ui/ConfirmModal";
 import CreditBadge from "../ui/CreditBadge";
-import {
-  MAX_ATS_SCANS,
-  OldestInfo,
-  limitMessage,
-  oldestScanInfo,
-} from "../../utils/storageLimits";
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: "resume", label: "Resume Analysis" },
@@ -57,13 +50,11 @@ export default function ResumeScanForm({
     initialJobDescription || "",
   );
   const [analyzing, setAnalyzing] = useState(false);
-  const [limitInfo, setLimitInfo] = useState<OldestInfo | null>(null);
-  const limitAllowRef = useRef(false);
   const [pipelineOpen, setPipelineOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(PIPELINE_MESSAGES[0]);
-  const STEP_MILESTONES = [90, 100];
+  const STEP_MILESTONES = [70, 90, 100];
   const [displayProgress, setDisplayProgress] = useState(0);
   const progressRef = useRef(0);
   const targetRef = useRef(90);
@@ -82,7 +73,7 @@ export default function ResumeScanForm({
     if (!pipelineOpen) {
       setDisplayProgress(0);
       progressRef.current = 0;
-      targetRef.current = 90;
+      targetRef.current = 70;
       return;
     }
     const id = setInterval(() => {
@@ -144,38 +135,8 @@ export default function ResumeScanForm({
     return true;
   };
 
-  const handleLimitSave = () => {
-    setLimitInfo(null);
-    limitAllowRef.current = true;
-    void handleAiScan();
-  };
-
-  const handleLimitCancel = () => {
-    setLimitInfo(null);
-    toast.info('Scan cancelled. Delete an old scan from history to save a new one.');
-  };
-
   const handleAiScan = async () => {
     if (!(await validate())) return;
-
-    // Storage cap gate — before any AI cost. Save replaces oldest, Cancel aborts.
-    if (!limitAllowRef.current) {
-      try {
-        const h = await atsScoreApi.getHistory(1, MAX_ATS_SCANS);
-        const total = h.data?.pagination?.total ?? 0;
-        if (total >= MAX_ATS_SCANS) {
-          const oldest = oldestScanInfo(h.data?.data || []);
-          if (oldest) {
-            setLimitInfo(oldest);
-            return;
-          }
-        }
-      } catch {
-        // fail-open: backend still enforces the cap
-      }
-    }
-    const replacing = limitAllowRef.current;
-    limitAllowRef.current = false;
 
     if (!aiScan.available) {
       toast.error("No credit available, wait for next day");
@@ -189,7 +150,7 @@ export default function ResumeScanForm({
     setCurrentMessage(PIPELINE_MESSAGES[0]);
     setDisplayProgress(0);
     progressRef.current = 0;
-    targetRef.current = 90;
+    targetRef.current = 70;
 
     try {
       setCurrentMessage(PIPELINE_MESSAGES[0]);
@@ -272,7 +233,6 @@ export default function ResumeScanForm({
       setAnalyzing(false);
 
       const score = response.data.data;
-      if (replacing) toast.success('Saved. Oldest scan was removed to make space.');
       navigate(`/ats-scan/${score.id}`);
     } catch (error: any) {
       console.error("AI analysis error:", error);
@@ -410,17 +370,6 @@ export default function ResumeScanForm({
         completedSteps={completedSteps}
         currentMessage={currentMessage}
         simProgress={displayProgress}
-      />
-
-      <ConfirmModal
-        isOpen={!!limitInfo}
-        title="Storage limit reached"
-        message={limitInfo ? limitMessage('scan', limitInfo) : ''}
-        confirmText="Save"
-        cancelText="Cancel"
-        type="warning"
-        onConfirm={handleLimitSave}
-        onCancel={handleLimitCancel}
       />
     </>
   );

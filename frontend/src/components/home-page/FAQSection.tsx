@@ -6,7 +6,7 @@ const faqs = [
   { q: "What is ATS and why does my resume need to pass it?", a: "Applicant Tracking System — software recruiters use to filter resumes. ~75% get rejected before a human sees them, usually due to formatting or missing keywords. We score and fix both." },
   { q: "Why PDF only and 5MB limit?", a: "ATS parses PDF most reliably. 5MB keeps extraction fast and Gemini cost low. Scanned image PDFs won't work — use a text-based PDF." },
   { q: "How do credits work?", a: "7 AI credits per day, free forever. Each ATS scan, rescan, or AI rewrite costs 1. Resets daily at 4 PM BST (Asia/Dhaka). Admins are unlimited." },
-  { q: "What happens when I hit 5 saved resumes/scans?", a: "Free tier stores 5 each. When full, we ask to replace the oldest — your oldest is deleted to make space. You'll see its name and date before confirming." },
+  { q: "Is there a limit on saved resumes/scans?", a: "No. Save unlimited resumes and ATS scans — all are kept in your history, no auto-delete." },
   { q: "Does AI rewrite invent experience?", a: "Never. It rephrases your real experience and weaves JD keywords naturally. We promise truthful output — nothing hallucinated." },
   { q: "Do I need a credit card?", a: "No. Free tier is fully functional. Paid Pro (15/day) and Enterprise (35/day) are coming soon." },
 ];

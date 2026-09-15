@@ -18,17 +18,10 @@ import {
   Copy,
 } from "lucide-react";
 import RewriteProgressModal from "@/components/ui/RewriteProgressModal";
-import ConfirmModal from "@/components/ui/ConfirmModal";
 import CreditBadge from "@/components/ui/CreditBadge";
 import ActionButton from "@/components/ui/ActionButton";
 import { useAppDispatch } from "@/hooks";
 import { setUserAiScanState } from "@/store/slices/authSlice";
-import {
-  MAX_RESUMES,
-  OldestInfo,
-  limitMessage,
-  oldestResumeInfo,
-} from "../utils/storageLimits";
 
 const REWRITE_STEPS = [
   { id: "parse", label: "Reading" },
@@ -59,23 +52,19 @@ export default function ResumeUpload() {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [currentMessage, setCurrentMessage] = useState(REWRITE_MESSAGES[0]);
   const [displayProgress, setDisplayProgress] = useState(0);
-  const [limitInfo, setLimitInfo] = useState<OldestInfo | null>(null);
-  const limitAllowRef = useRef(false);
   const progressRef = useRef(0);
   const targetRef = useRef(0);
+  const STEP_MILESTONES = [70, 90, 100];
 
-  const handleLimitSave = () => {
-    setLimitInfo(null);
-    limitAllowRef.current = true;
-    void handleRewrite();
-  };
-
-  const handleLimitCancel = () => {
-    setLimitInfo(null);
-    toast.info(
-      "Rewrite cancelled. Delete an old resume from history to save a new one.",
-    );
-  };
+  useEffect(() => {
+    const done = completedSteps.length;
+    const newTarget = done < STEP_MILESTONES.length ? STEP_MILESTONES[done] : 100;
+    targetRef.current = newTarget;
+    if (progressRef.current < newTarget) {
+      progressRef.current = newTarget;
+      setDisplayProgress(newTarget);
+    }
+  }, [completedSteps.length]);
 
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
@@ -119,7 +108,7 @@ export default function ResumeUpload() {
     if (!pipelineOpen) {
       setDisplayProgress(0);
       progressRef.current = 0;
-      targetRef.current = 0;
+      targetRef.current = 70;
       return;
     }
     const id = setInterval(() => {
@@ -142,25 +131,6 @@ export default function ResumeUpload() {
       return;
     }
 
-    // Storage cap gate — before any AI cost. Save replaces oldest, Cancel aborts.
-    if (!limitAllowRef.current) {
-      try {
-        const listRes = await resumeApi.getAll(1, MAX_RESUMES);
-        const total = listRes.data.pagination?.total ?? 0;
-        if (total >= MAX_RESUMES) {
-          const oldest = oldestResumeInfo(listRes.data.data || []);
-          if (oldest) {
-            setLimitInfo(oldest);
-            return;
-          }
-        }
-      } catch {
-        // fail-open: backend still enforces the cap
-      }
-    }
-    const replacing = limitAllowRef.current;
-    limitAllowRef.current = false;
-
     setIsRewriting(true);
     setError(null);
     setPipelineOpen(true);
@@ -169,15 +139,20 @@ export default function ResumeUpload() {
     setCurrentMessage(REWRITE_MESSAGES[0]);
     setDisplayProgress(0);
     progressRef.current = 0;
-    targetRef.current = 90;
+    targetRef.current = 70;
 
     let msgIdx = 0;
     const msgTimer = setInterval(() => {
       msgIdx = Math.min(msgIdx + 1, REWRITE_MESSAGES.length - 1);
       setCurrentMessage(REWRITE_MESSAGES[msgIdx]);
-      const stepIdx = Math.min(msgIdx, REWRITE_STEPS.length - 1);
-      setActiveStep(stepIdx);
-      setCompletedSteps(REWRITE_STEPS.slice(0, msgIdx).map((s) => s.id));
+      // 2.5s → parse done (70%), 5s → match done (90%), 7.5s → rewrite done (100%)
+      if (msgIdx === 1) {
+        setActiveStep(1);
+        setCompletedSteps(["parse"]);
+      } else if (msgIdx === 3) {
+        setActiveStep(2);
+        setCompletedSteps(["parse", "analyze"]);
+      }
     }, 2500);
 
     try {
@@ -205,8 +180,6 @@ export default function ResumeUpload() {
       targetRef.current = 100;
       setDisplayProgress(100);
 
-      if (replacing)
-        toast.success("Saved. Oldest resume was removed to make space.");
       setTimeout(() => {
         setPipelineOpen(false);
         navigate(`/resume-builder/${newResumeId}`);
@@ -554,17 +527,6 @@ export default function ResumeUpload() {
         completedSteps={completedSteps}
         currentMessage={currentMessage}
         simProgress={displayProgress}
-      />
-
-      <ConfirmModal
-        isOpen={!!limitInfo}
-        title="Storage limit reached"
-        message={limitInfo ? limitMessage("resume", limitInfo) : ""}
-        confirmText="Save"
-        cancelText="Cancel"
-        type="warning"
-        onConfirm={handleLimitSave}
-        onCancel={handleLimitCancel}
       />
     </div>
   );

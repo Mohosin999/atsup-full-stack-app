@@ -200,7 +200,7 @@ var applyDailyCreditReset = async (userId, subscription) => {
     if (dbUser?.role === "admin") {
       return updatedSubscription;
     }
-    updatedSubscription.credits = 3;
+    updatedSubscription.credits = 7;
     updatedSubscription.lastAiScanResetDate = today;
     await prisma.user.update({
       where: { id: userId },
@@ -326,7 +326,7 @@ var configureGoogleStrategy = () => {
                 lastActiveAt: /* @__PURE__ */ new Date(),
                 subscription: {
                   plan: "free",
-                  credits: 3
+                  credits: 7
                 }
               }
             });
@@ -553,7 +553,7 @@ var createUser = async (userData) => {
       },
       subscription: {
         plan: "free",
-        credits: 3
+        credits: 7
       }
     },
     select: {
@@ -2617,22 +2617,7 @@ var normalizeCategories = (sectionScores) => {
   }
   return { ...sectionScores, categories };
 };
-var MAX_ATS_HISTORY_PER_USER = 5;
 var createAtsScoreHistory = async (userId, resumeName, resumeContent, structuredJD, aiResearch) => {
-  const count = await prisma.atsScoreHistory.count({ where: { userId } });
-  if (count >= MAX_ATS_HISTORY_PER_USER) {
-    const oldest = await prisma.atsScoreHistory.findMany({
-      where: { userId },
-      orderBy: { createdAt: "asc" },
-      take: count - MAX_ATS_HISTORY_PER_USER + 1,
-      select: { id: true }
-    });
-    if (oldest.length > 0) {
-      await prisma.atsScoreHistory.deleteMany({
-        where: { id: { in: oldest.map((o) => o.id) } }
-      });
-    }
-  }
   const analysis = calculateAtsScore(resumeContent, structuredJD);
   const hasContactInfo = !!resumeContent.personalInfo?.contact?.email || !!resumeContent.personalInfo?.contact?.phone || !!resumeContent.personalInfo?.contact?.address;
   if (!analysis.sectionScores.contactInfo.hasContactInfo && hasContactInfo) {
@@ -2931,11 +2916,11 @@ var analyzeAtsScore = async (req, res) => {
     const today = getBangladeshCreditDateKey2();
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 3 : credits;
+    const effectiveCredits = lastReset !== today ? 7 : credits;
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: "Daily limit is 3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+        message: "Daily limit is 7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
         code: "AI_SCAN_UNAVAILABLE"
       });
     }
@@ -2967,7 +2952,7 @@ var analyzeAtsScore = async (req, res) => {
         credits: remainingCredits,
         lastAiScanResetDate: today
       },
-      message: "AI scan used. Remaining today: " + remainingCredits + "/3. New quota at 4 PM BST (Asia/Dhaka, UTC+6)."
+      message: "AI scan used. Remaining today: " + remainingCredits + "/7. New quota at 4 PM BST (Asia/Dhaka, UTC+6)."
     });
   } catch (error) {
     console.error("ATS Score analysis error:", error);
@@ -3030,11 +3015,11 @@ var rescanAtsScore = async (req, res) => {
     const today = getBangladeshCreditDateKey2();
     const lastReset = subscription?.lastAiScanResetDate ?? "";
     const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 3 : credits;
+    const effectiveCredits = lastReset !== today ? 7 : credits;
     if (effectiveCredits < 1) {
       return res.status(403).json({
         success: false,
-        message: "Daily limit is 3. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+        message: "Daily limit is 7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
         code: "AI_SCAN_UNAVAILABLE"
       });
     }
@@ -3070,7 +3055,7 @@ var rescanAtsScore = async (req, res) => {
         credits: remainingCredits,
         lastAiScanResetDate: today
       },
-      message: "AI rescan used. Remaining today: " + remainingCredits + "/3. New quota at 4 PM BST (Asia/Dhaka, UTC+6)."
+      message: "AI rescan used. Remaining today: " + remainingCredits + "/7. New quota at 4 PM BST (Asia/Dhaka, UTC+6)."
     });
   } catch (error) {
     console.error("ATS rescan error:", error);
@@ -3188,23 +3173,6 @@ var atsScoreCheck_routes_default = router3;
 import { Router as Router4 } from "express";
 
 // src/modules/resume-builder/subservices/resumes.service.ts
-var MAX_RESUMES_PER_USER = 5;
-var enforceResumeLimit = async (userId) => {
-  const count = await prisma.resume.count({ where: { userId } });
-  if (count >= MAX_RESUMES_PER_USER) {
-    const oldest = await prisma.resume.findMany({
-      where: { userId },
-      orderBy: { createdAt: "asc" },
-      take: count - MAX_RESUMES_PER_USER + 1,
-      select: { id: true }
-    });
-    if (oldest.length > 0) {
-      await prisma.resume.deleteMany({
-        where: { id: { in: oldest.map((o) => o.id) } }
-      });
-    }
-  }
-};
 var getAllResumesByUser = async (userId, options) => {
   const { page, limit, sourceType } = options;
   const skip = (page - 1) * limit;
@@ -3261,7 +3229,6 @@ var getResumeById = async (resumeId, userId) => {
   });
 };
 var createResumeFromUpload = async (userId, file) => {
-  await enforceResumeLimit(userId);
   const { parseResumeFile: parseResumeFile2 } = await Promise.resolve().then(() => (init_resume_parser(), resume_parser_exports));
   const parsed = await parseResumeFile2(file.path, file.mimetype);
   const resume = await prisma.resume.create({
@@ -3303,7 +3270,6 @@ var createResumeFromContent = async (userId, content) => {
   if (!user) {
     throw new Error("User not found");
   }
-  await enforceResumeLimit(userId);
   const resume = await prisma.resume.create({
     data: {
       userId,
@@ -3364,7 +3330,6 @@ var duplicateResumeById = async (resumeId, userId) => {
     return null;
   }
   const sourceTitle = existing.metadata?.originalName || existing.content?.personalInfo?.jobTitle || existing.content?.personalInfo?.fullName || "Resume";
-  await enforceResumeLimit(userId);
   const resume = await prisma.resume.create({
     data: {
       userId,
@@ -3938,6 +3903,16 @@ var normalizeRewrittenResume = (raw2, jobDescription = "", finalSkills = {
 };
 
 // src/modules/resume-builder/resumeBuilder.controller.ts
+var getBangladeshCreditDateKey3 = () => {
+  const now = /* @__PURE__ */ new Date();
+  const dhakaMs = now.getTime() + 6 * 60 * 60 * 1e3;
+  const dhaka = new Date(dhakaMs);
+  const hour = dhaka.getUTCHours();
+  if (hour < 16) {
+    dhaka.setUTCDate(dhaka.getUTCDate() - 1);
+  }
+  return dhaka.toISOString().slice(0, 10);
+};
 var getAllResumes = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -4101,16 +4076,62 @@ var rewriteResumeWithAI2 = async (req, res) => {
         message: "Resume text and job description are required"
       });
     }
-    const rewrittenContent = await rewriteResumeWithAI(resumeText, jobDescription);
-    const result = await createResumeFromContent(req.user.id, rewrittenContent);
-    res.status(201).json({
-      success: true,
-      data: {
-        id: result.resume.id,
-        // Optionally return the rewritten content for preview
-        content: rewrittenContent
+    const isAdmin = req.user?.role === "admin";
+    if (!isAdmin) {
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: { subscription: true }
+      });
+      const subscription = user?.subscription || {};
+      const today = getBangladeshCreditDateKey3();
+      const lastReset = subscription?.lastAiScanResetDate ?? "";
+      const credits = subscription?.credits ?? 0;
+      const effectiveCredits = lastReset !== today ? 7 : credits;
+      if (effectiveCredits < 1) {
+        return res.status(403).json({
+          success: false,
+          message: "Daily limit is 7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+          code: "AI_REWRITE_UNAVAILABLE"
+        });
       }
-    });
+      const rewrittenContent = await rewriteResumeWithAI(resumeText, jobDescription);
+      const result = await createResumeFromContent(req.user.id, rewrittenContent);
+      const remainingCredits = effectiveCredits - 1;
+      await prisma.user.update({
+        where: { id: req.user.id },
+        data: {
+          subscription: {
+            ...subscription,
+            credits: remainingCredits,
+            lastAiScanResetDate: today
+          }
+        },
+        select: { subscription: true }
+      });
+      res.status(201).json({
+        success: true,
+        data: {
+          id: result.resume.id,
+          content: rewrittenContent
+        },
+        credits: remainingCredits,
+        aiScan: {
+          available: remainingCredits >= 1,
+          credits: remainingCredits,
+          lastAiScanResetDate: today
+        }
+      });
+    } else {
+      const rewrittenContent = await rewriteResumeWithAI(resumeText, jobDescription);
+      const result = await createResumeFromContent(req.user.id, rewrittenContent);
+      res.status(201).json({
+        success: true,
+        data: {
+          id: result.resume.id,
+          content: rewrittenContent
+        }
+      });
+    }
   } catch (error) {
     console.error("Error in rewriteResumeWithAI:", error);
     res.status(500).json({

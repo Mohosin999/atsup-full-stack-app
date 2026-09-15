@@ -78,7 +78,6 @@ export default function ResumeUpload() {
     try {
       const formData = new FormData();
       formData.append("resume", file);
-      // Use backend parser (same as ATS page) - no CDN worker issues
       const response = await resumeApi.parsePdf(formData);
       const text = response.data?.data?.text || response.data?.text;
       if (!text || !text.trim()) {
@@ -145,7 +144,6 @@ export default function ResumeUpload() {
     const msgTimer = setInterval(() => {
       msgIdx = Math.min(msgIdx + 1, REWRITE_MESSAGES.length - 1);
       setCurrentMessage(REWRITE_MESSAGES[msgIdx]);
-      // 2.5s → parse done (70%), 5s → match done (90%), 7.5s → rewrite done (100%)
       if (msgIdx === 1) {
         setActiveStep(1);
         setCompletedSteps(["parse"]);
@@ -230,97 +228,105 @@ export default function ResumeUpload() {
     : 0;
 
   return (
-    <div className="min-h-screen lg:pt-20 pb-16 bg-gradient-to-b from-violet-50/70 via-white to-white dark:from-violet-950/20 dark:via-background dark:to-background">
-      <Wrapper>
-        {/* Hero */}
-        <div className="py-10 text-center max-w-2xl mx-auto">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300 border border-violet-200 dark:border-violet-500/20">
-            <Sparkles className="w-3.5 h-3.5" />
-            AI-Powered Resume Rewriter
-          </span>
-          <h1 className="mt-4 text-2xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-            Turn your resume into an{" "}
-            <span className="bg-gradient-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent">
-              interview magnet
+    <div className="min-h-screen lg:pt-20 pb-16 bg-stone-50 dark:bg-stone-950">
+      {/* Hero — homepage language */}
+      <section className="relative overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, rgba(28,25,23,0.35) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        <Wrapper className="relative">
+          <div className="py-10 md:py-12 lg:py-16 text-center max-w-3xl mx-auto">
+            <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-400/10 dark:text-amber-200 dark:border-amber-400/20">
+              <Sparkles className="w-3.5 h-3.5" />
+              AI-powered resume rewriter
             </span>
-          </h1>
-          <p className="mt-3 text-sm md:text-base text-gray-600 dark:text-gray-400">
-            Upload your resume, paste the job description — our AI rewrites it
-            to match the role while keeping your experience 100% truthful.
-          </p>
+            <h1 className="font-fraunces mt-4 text-3xl md:text-4xl lg:text-[2.6rem] font-normal leading-[1.08] text-stone-900 dark:text-stone-50">
+              Turn your resume into an{" "}
+              <span className="relative inline-block whitespace-nowrap">
+                <span className="relative z-10">interview magnet</span>
+                <span className="absolute left-0 right-0 bottom-[0.08em] h-[0.32em] bg-lime-300/80 dark:bg-lime-400/70 rounded-[2px] -z-0" />
+              </span>
+            </h1>
+            <p className="font-plex mt-3 text-sm md:text-base leading-relaxed text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
+              Upload your resume, paste the job description — our AI rewrites it to match the
+              role while keeping your experience 100% truthful.
+            </p>
 
-          {/* mini stepper */}
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs font-medium">
-            <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${resumeText ? "bg-violet-600 text-white border-violet-600" : "bg-white dark:bg-secondary text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700"}`}
-            >
-              {resumeText ? <CheckCircle className="w-3.5 h-3.5" /> : "1"}{" "}
-              Upload
-            </span>
-            <span className="w-6 h-px bg-gray-300 dark:bg-gray-700" />
-            <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${jdReady ? "bg-violet-600 text-white border-violet-600" : "bg-white dark:bg-secondary text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700"}`}
-            >
-              {jdReady ? <CheckCircle className="w-3.5 h-3.5" /> : "2"} Job
-              details
-            </span>
-            <span className="w-6 h-px bg-gray-300 dark:bg-gray-700" />
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white dark:bg-secondary text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-              3 Rewrite
-            </span>
+            <div className="font-plex mt-6 flex items-center justify-center gap-2 text-xs font-medium">
+              <span
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${resumeText ? "bg-stone-900 dark:bg-lime-300 text-white dark:text-stone-900 border-stone-900 dark:border-lime-300" : "bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700"}`}
+              >
+                {resumeText ? <CheckCircle className="w-3.5 h-3.5" /> : "1"} Upload
+              </span>
+              <span className="w-6 h-px bg-stone-300 dark:bg-stone-700" />
+              <span
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${jdReady ? "bg-stone-900 dark:bg-lime-300 text-white dark:text-stone-900 border-stone-900 dark:border-lime-300" : "bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700"}`}
+              >
+                {jdReady ? <CheckCircle className="w-3.5 h-3.5" /> : "2"} Job details
+              </span>
+              <span className="w-6 h-px bg-stone-300 dark:bg-stone-700" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700">
+                3 Rewrite
+              </span>
+            </div>
           </div>
-        </div>
+        </Wrapper>
+      </section>
 
+      <Wrapper className="relative">
         {/* Main card */}
-        <div className="bg-white dark:bg-secondary rounded-2xl border border-gray-200 dark:border-gray-800 shadow-[0_20px_60px_-20px_rgba(124,58,237,0.25)] overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500" />
+        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden">
+          <div className="h-1.5 bg-amber-400 dark:bg-amber-300" />
           <div className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left: Upload */}
             <div className="flex flex-col">
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${resumeText ? "bg-violet-600 text-white" : "bg-violet-100 dark:bg-violet-500/15 text-violet-600 dark:text-violet-300"}`}
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold ${resumeText ? "bg-stone-900 dark:bg-lime-300 text-white dark:text-stone-900" : "bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700"}`}
                 >
                   {resumeText ? <CheckCircle className="w-5 h-5" /> : "1"}
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                  <h2 className="font-plex text-base font-semibold text-stone-900 dark:text-stone-100 leading-tight">
                     Upload your resume
                   </h2>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="font-plex text-xs text-stone-500 dark:text-stone-400">
                     PDF format, we extract the text automatically
                   </p>
                 </div>
               </div>
 
               {isExtracting ? (
-                <div className="relative min-h-[300px] flex-1 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-violet-400 bg-violet-50/60 dark:bg-violet-500/10 rounded-2xl">
-                  <div className="w-10 h-10 border-[3px] border-violet-500 border-t-transparent rounded-full animate-spin" />
-                  <p className="text-sm font-medium text-violet-700 dark:text-violet-300">
+                <div className="font-plex relative min-h-[300px] flex-1 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-amber-300 bg-amber-50/60 dark:bg-amber-400/10 rounded-2xl">
+                  <div className="w-10 h-10 border-[3px] border-stone-900 dark:border-lime-300 border-t-transparent rounded-full animate-spin" />
+                  <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
                     Extracting text from PDF...
                   </p>
-                  <p className="text-xs text-gray-500">
-                    This takes a few seconds
-                  </p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">This takes a few seconds</p>
                 </div>
               ) : resumeText ? (
-                <div className="relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-3 border-2 border-solid border-violet-200 dark:border-violet-500/30 bg-gradient-to-b from-violet-50 to-white dark:from-violet-500/10 dark:to-transparent rounded-2xl p-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/30">
-                    <FileText className="w-7 h-7 text-white" />
+                <div className="font-plex relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-3 border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950/40 rounded-2xl p-6">
+                  <div className="w-14 h-14 rounded-2xl bg-stone-900 dark:bg-lime-300 flex items-center justify-center shadow">
+                    <FileText className="w-7 h-7 text-white dark:text-stone-900" />
                   </div>
-                  <p className="text-sm font-semibold text-gray-900 text-center px-4 dark:text-gray-100 break-all">
+                  <p className="text-sm font-semibold text-stone-900 text-center px-4 dark:text-stone-100 break-all">
                     {resumeName || "Resume.pdf"}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-stone-500 dark:text-stone-400">
                     {resumeText.length.toLocaleString()} characters extracted
                   </p>
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full">
                     <CheckCircle className="w-3.5 h-3.5" /> Ready to rewrite
                   </span>
                   <div className="absolute bottom-3 right-3 flex gap-2">
                     <button
                       onClick={clearResume}
-                      className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-stone-600 dark:text-stone-300 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 rounded-lg transition-colors"
                     >
                       <X className="w-3.5 h-3.5" />
                       Replace
@@ -330,49 +336,38 @@ export default function ResumeUpload() {
               ) : (
                 <div
                   {...getRootProps()}
-                  className={`relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-200 ${
+                  className={`font-plex relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-200 ${
                     isDragActive
-                      ? "border-violet-500 bg-violet-50 dark:bg-violet-500/15 scale-[1.01]"
-                      : "border-gray-200 dark:border-gray-700 bg-gray-50/60 dark:bg-primary/40 hover:border-violet-400 hover:bg-violet-50/60 dark:hover:bg-violet-500/10"
+                      ? "border-stone-900 dark:border-lime-300 bg-amber-50 dark:bg-amber-400/10 scale-[1.01]"
+                      : "border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-950/40 hover:border-stone-900 dark:hover:border-lime-300 hover:bg-amber-50/60 dark:hover:bg-amber-400/5"
                   }`}
                 >
                   <input {...getInputProps()} className="hidden" />
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/30">
-                    <Upload className="w-7 h-7 text-white" />
+                  <div className="w-14 h-14 rounded-2xl bg-stone-900 dark:bg-lime-300 flex items-center justify-center shadow">
+                    <Upload className="w-7 h-7 text-white dark:text-stone-900" />
                   </div>
-                  <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                  <p className="mt-2 text-sm text-stone-700 dark:text-stone-300">
                     {isDragActive ? (
-                      <span className="font-semibold text-violet-600">
-                        Drop your file here
-                      </span>
+                      <span className="font-semibold text-stone-900 dark:text-lime-300">Drop your file here</span>
                     ) : (
                       <>
-                        <span className="font-semibold text-violet-600">
-                          Click to upload
-                        </span>{" "}
-                        or drag and drop
+                        <span className="font-semibold text-stone-900 dark:text-lime-300">Click to upload</span> or drag and drop
                       </>
                     )}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-gray-900 text-white dark:bg-white dark:text-gray-900">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-stone-900 text-white dark:bg-lime-300 dark:text-stone-900">
                       PDF
                     </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      Max 5MB
-                    </span>
+                    <span className="text-xs text-stone-500 dark:text-stone-400">Max 5MB</span>
                   </div>
-                  <p className="text-[11px] text-gray-400 mt-2">
-                    Your file stays private and secure
-                  </p>
+                  <p className="text-[11px] text-stone-400 mt-2">Your file stays private and secure</p>
                 </div>
               )}
 
               {error && (
-                <div className="bg-red-50 dark:bg-red-500/10 border-l-4 border-red-400 p-4 mt-4 rounded-r-lg">
-                  <p className="text-sm text-red-600 dark:text-red-400">
-                    {error}
-                  </p>
+                <div className="font-plex bg-red-50 dark:bg-red-500/10 border-l-4 border-red-400 p-4 mt-4 rounded-r-lg">
+                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
                 </div>
               )}
             </div>
@@ -382,48 +377,46 @@ export default function ResumeUpload() {
               <div className="flex items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${jdReady ? "bg-violet-600 text-white" : "bg-violet-100 dark:bg-violet-500/15 text-violet-600 dark:text-violet-300"}`}
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold ${jdReady ? "bg-stone-900 dark:bg-lime-300 text-white dark:text-stone-900" : "bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700"}`}
                   >
                     {jdReady ? <CheckCircle className="w-5 h-5" /> : "2"}
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                    <h2 className="font-plex text-base font-semibold text-stone-900 dark:text-stone-100 leading-tight">
                       Job description
                     </h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="font-plex text-xs text-stone-500 dark:text-stone-400">
                       Paste the role you are targeting
                     </p>
                   </div>
                 </div>
                 {jdReady && (
-                  <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-full">
+                  <span className="font-plex text-[11px] font-semibold text-emerald-700 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full">
                     {jdWords} words
                   </span>
                 )}
               </div>
 
-              <div className="flex-1 flex flex-col rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50/60 dark:bg-primary/40 overflow-hidden focus-within:border-violet-400 focus-within:ring-2 focus-within:ring-violet-500/20 transition-all">
+              <div className="font-plex flex-1 flex flex-col rounded-2xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950/40 overflow-hidden focus-within:border-stone-900 dark:focus-within:border-lime-300 focus-within:ring-2 focus-within:ring-stone-900/10 dark:focus-within:ring-lime-300/20 transition-all">
                 <textarea
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the job title, requirements, responsibilities here...&#10;&#10;Tip: the more detail you paste, the better the rewrite."
-                  className="flex-1 min-h-[260px] w-full bg-transparent p-4 text-sm leading-relaxed text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none resize-none"
+                  className="flex-1 min-h-[260px] w-full bg-transparent p-4 text-sm leading-relaxed text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none resize-none"
                 />
-                <div className="flex items-center justify-between px-3 py-2 border-t border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-secondary/70">
-                  <span className="text-[11px] text-gray-400">
-                    Minimum 20 characters
-                  </span>
+                <div className="flex items-center justify-between px-3 py-2 border-t border-stone-200 dark:border-stone-700 bg-white/70 dark:bg-stone-900/70">
+                  <span className="text-[11px] text-stone-400">Minimum 20 characters</span>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={handlePasteJD}
-                      className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-500/10 rounded-md transition-colors"
+                      className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-md transition-colors"
                     >
                       <ClipboardPaste className="w-3.5 h-3.5" /> Paste
                     </button>
                     {jobDescription && (
                       <button
                         onClick={() => setJobDescription("")}
-                        className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                        className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-md transition-colors"
                       >
                         <Eraser className="w-3.5 h-3.5" /> Clear
                       </button>
@@ -435,8 +428,8 @@ export default function ResumeUpload() {
           </div>
 
           {/* Footer */}
-          <div className="px-6 md:px-8 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/70 dark:bg-primary/30 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+          <div className="font-plex px-6 md:px-8 py-4 border-t border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-stone-600 dark:text-stone-400 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
               AI preserves your real experience — nothing invented.
             </p>
@@ -448,7 +441,7 @@ export default function ResumeUpload() {
                 loading={isRewriting}
                 disabled={!resumeText || !jdReady}
                 onClick={handleRewrite}
-                variant="violet"
+                variant="cyan"
               />
             </div>
           </div>
@@ -456,27 +449,23 @@ export default function ResumeUpload() {
 
         {/* Parsed preview */}
         {resumeText && (
-          <div className="mt-6 bg-white dark:bg-secondary rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+          <div className="font-plex mt-6 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-stone-200 dark:border-stone-800">
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-violet-500" />
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                  Extracted resume text
-                </h3>
-                <span className="text-[11px] text-gray-400">
-                  {resumeText.length.toLocaleString()} chars
-                </span>
+                <FileText className="w-4 h-4 text-stone-700 dark:text-stone-300" />
+                <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100">Extracted resume text</h3>
+                <span className="text-[11px] text-stone-400">{resumeText.length.toLocaleString()} chars</span>
               </div>
               <button
                 onClick={handleCopyResume}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
               >
                 <Copy className="w-3.5 h-3.5" />
                 {copied ? "Copied!" : "Copy"}
               </button>
             </div>
             <div className="max-h-[280px] overflow-y-auto">
-              <pre className="px-6 py-4 text-[13px] leading-relaxed whitespace-pre-wrap break-words text-gray-700 dark:text-gray-300 font-sans">
+              <pre className="px-6 py-4 text-[13px] leading-relaxed whitespace-pre-wrap break-words text-stone-700 dark:text-stone-300 font-plex">
                 {resumeText}
               </pre>
             </div>
@@ -484,7 +473,7 @@ export default function ResumeUpload() {
         )}
 
         {/* Features */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="font-plex mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             {
               icon: Target,
@@ -504,17 +493,13 @@ export default function ResumeUpload() {
           ].map((f) => (
             <div
               key={f.title}
-              className="bg-white dark:bg-secondary rounded-2xl border border-gray-200 dark:border-gray-800 p-5 hover:shadow-lg hover:border-violet-200 dark:hover:border-violet-500/30 transition-all"
+              className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-5 hover:shadow-lg hover:border-stone-300 dark:hover:border-stone-700 transition-all"
             >
-              <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-500/15 flex items-center justify-center mb-3">
-                <f.icon className="w-5 h-5 text-violet-600 dark:text-violet-300" />
+              <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-400/10 flex items-center justify-center mb-3">
+                <f.icon className="w-5 h-5 text-amber-700 dark:text-amber-300" />
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                {f.title}
-              </h3>
-              <p className="mt-1 text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed">
-                {f.desc}
-              </p>
+              <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100">{f.title}</h3>
+              <p className="mt-1 text-[13px] text-stone-500 dark:text-stone-400 leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>
@@ -528,6 +513,12 @@ export default function ResumeUpload() {
         currentMessage={currentMessage}
         simProgress={displayProgress}
       />
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+        .font-fraunces { font-family: 'Fraunces', serif; }
+        .font-plex { font-family: 'IBM Plex Sans', sans-serif; }
+      `}</style>
     </div>
   );
 }

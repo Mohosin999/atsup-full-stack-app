@@ -61,7 +61,7 @@ export const staticReviews = [
     id: "static-1",
     name: "Rahim Ahmed",
     role: "Software Engineer",
-    content: "CVScan helped me boost my ATS score from 42% to 89%. Got 3 interview calls within a week. The category breakdown is super clear!",
+    content: "ATSUp helped me boost my ATS score from 42% to 89%. Got 3 interview calls within a week. The category breakdown is super clear!",
     rating: 5,
   },
   {

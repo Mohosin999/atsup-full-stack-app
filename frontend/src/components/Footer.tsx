@@ -42,11 +42,11 @@ const Footer = () => {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4 text-sm">
           {/* Left: Logo */}
           <div className="flex items-center gap-2 whitespace-nowrap">
-            <img src="/favicon.png" alt="CVScan" className="w-8 h-6" />
+            <img src="/favicon.png" alt="ATSUp" className="w-8 h-6" />
             <span className="font-fraunces text-lg font-medium text-stone-900 dark:text-stone-50">
-              CV
+              ATS
               <span className="relative inline-block">
-                <span className="relative z-10">Scan</span>
+                <span className="relative z-10">Up</span>
                 <span className="absolute left-0 right-0 bottom-[0.1em] h-[0.28em] bg-lime-300/80 dark:bg-lime-400/70 rounded-[2px] -z-0" />
               </span>
             </span>
@@ -85,7 +85,7 @@ const Footer = () => {
 
         {/* Bottom: Copyright */}
         <p className="text-center text-xs text-stone-400 dark:text-stone-500 mt-8">
-          © 2026 CVScan. All rights reserved.
+          © 2026 ATSUp. All rights reserved.
         </p>
       </Wrapper>
 

@@ -5236,12 +5236,12 @@ var app = express2();
 app.set("trust proxy", 1);
 applyMiddleware(app);
 app.get("/", (_req, res) => {
-  res.send("CVScan - Welcome to the API");
+  res.send("ATSUp - Welcome to the API");
 });
 app.get("/health", (_req, res) => {
   res.json({
     status: "OK",
-    message: "CVScan is healthy"
+    message: "ATSUp is healthy"
   });
 });
 moduleRoutes.forEach(({ path: path6, router: router9 }) => {

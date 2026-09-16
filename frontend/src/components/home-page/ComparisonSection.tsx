@@ -20,14 +20,14 @@ export default function ComparisonSection() {
             Comparison
           </span> */}
           <h2 className="font-fraunces text-2xl md:text-3xl xl:text-4xl font-normal text-stone-900 dark:text-stone-50">
-            Why CVScan over others?
+            Why ATSUp over others?
           </h2>
         </div>
 
         <div className="max-w-3xl mx-auto overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900">
           <div className="grid grid-cols-3 gap-4 px-6 py-4 bg-stone-900 dark:bg-stone-800 text-xs md:text-sm font-semibold text-stone-50">
             <span>Feature</span>
-            <span className="text-center text-lime-300">CVScan</span>
+            <span className="text-center text-lime-300">ATSUp</span>
             <span className="text-center text-stone-400">Others</span>
           </div>
           {rows.map((row) => (

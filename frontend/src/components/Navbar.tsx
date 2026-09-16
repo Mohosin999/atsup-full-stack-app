@@ -53,9 +53,9 @@
 //           <div className="flex items-center justify-between h-14">
 //             {/* Left: Logo */}
 //             <Link to="/" className="flex items-center gap-2 font-mono shrink-0">
-//               <img src="/favicon.png" alt="CVScan" className="w-10 h-8" />
+//               <img src="/favicon.png" alt="ATSUp" className="w-10 h-8" />
 //               <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
-//                 CV<span className="text-cyan-500">Scan</span>
+//                 ATS<span className="text-cyan-500">Up</span>
 //               </span>
 //             </Link>
 
@@ -221,10 +221,10 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-14">
             {/* Left: Logo */}
             <Link to="/" className="flex items-center gap-2 shrink-0">
-              <img src="/favicon.png" alt="CVScan" className="w-10 h-8" />
+              <img src="/favicon.png" alt="ATSUp" className="w-10 h-8" />
               <span className="font-fraunces text-xl text-stone-900 dark:text-stone-50">
-                CV<span className="relative inline-block">
-                  <span className="relative z-10">Scan</span>
+                ATS<span className="relative inline-block">
+                  <span className="relative z-10">Up</span>
                   <span className="absolute left-0 right-0 bottom-[0.1em] h-[0.28em] bg-lime-300/80 dark:bg-lime-400/60 rounded-[2px] -z-0" />
                 </span>
               </span>

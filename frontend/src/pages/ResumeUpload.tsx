@@ -280,7 +280,7 @@ export default function ResumeUpload() {
 
       <Wrapper className="relative">
         {/* Main card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden">
+        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 box-shadow overflow-hidden">
           <div className="h-1.5 bg-amber-400 dark:bg-amber-300" />
           <div className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left: Upload */}

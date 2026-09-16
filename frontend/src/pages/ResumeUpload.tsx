@@ -310,7 +310,7 @@ export default function ResumeUpload() {
                   <p className="text-xs text-stone-500 dark:text-stone-400">This takes a few seconds</p>
                 </div>
               ) : resumeText ? (
-                <div className="font-plex relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-3 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-950/40 rounded-2xl p-6">
+                <div className="font-plex relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-3 border-2 border-stone-900 dark:border-lime-300 bg-amber-50/60 dark:bg-amber-400/5 rounded-2xl p-6">
                   <div className="w-14 h-14 rounded-2xl bg-stone-900 dark:bg-lime-300 flex items-center justify-center shadow">
                     <FileText className="w-7 h-7 text-white dark:text-stone-900" />
                   </div>

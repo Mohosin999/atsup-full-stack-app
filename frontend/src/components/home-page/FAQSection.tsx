@@ -33,7 +33,7 @@ export default function FAQSection() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="font-plex bg-stone-50 dark:bg-stone-950 pb-14 md:pb-16 lg:pb-14 xl:pb-16 2xl:pb-20">
+    <section className="font-plex bg-white dark:bg-stone-950 pb-14 md:pb-16 lg:pb-14 xl:pb-16 2xl:pb-20">
       <Wrapper>
         <div className="text-center mb-10 lg:mb-14">
           {/* <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 dark:bg-stone-900 dark:text-stone-300 dark:border-stone-700">

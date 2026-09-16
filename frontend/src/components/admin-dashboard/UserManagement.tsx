@@ -370,13 +370,13 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 mb-3">
-                      <div className="flex items-center justify-between bg-stone-50 dark:bg-stone-800/60 rounded-lg px-3 py-2">
+                      <div className="flex items-center justify-between bg-white dark:bg-stone-800/60 rounded-lg px-3 py-2">
                       <span className="text-xs text-stone-500 dark:text-stone-400">Credits</span>
                       <span className="text-sm font-semibold text-stone-800 dark:text-stone-100">
                         {u.subscription?.credits ?? 0}
                       </span>
                     </div>
-                      <div className="flex items-center justify-between bg-stone-50 dark:bg-stone-800/60 rounded-lg px-3 py-2">
+                      <div className="flex items-center justify-between bg-white dark:bg-stone-800/60 rounded-lg px-3 py-2">
                       <span className="text-xs text-stone-500 dark:text-stone-400">Last active</span>
                       <span className="text-sm font-medium text-stone-800 dark:text-stone-100">
                         {formatDate(lastActivity(u))}

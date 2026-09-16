@@ -47,7 +47,7 @@ export default function Dashboard() {
   const subscriptionPlan = user?.subscription?.plan || "Free";
 
   return (
-    <div className="min-h-screen lg:pt-24 pb-12 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen lg:pt-24 pb-12 bg-white dark:bg-stone-950">
       <Wrapper>
         <div className="space-y-8 pt-8 lg:pt-0">
           <WelcomeHeader user={user} credits={credits} plan={subscriptionPlan} />

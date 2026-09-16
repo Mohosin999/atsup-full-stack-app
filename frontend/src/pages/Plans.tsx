@@ -68,7 +68,7 @@ export default function Plans() {
   };
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 pb-16">
+    <div className="font-plex min-h-screen bg-white dark:bg-stone-950 pb-16">
       {/* Hero with dot-grid like ResumeDashboard */}
       <section className="relative overflow-hidden pt-8 lg:pt-32 pb-10 md:pb-12">
         <div
@@ -90,7 +90,7 @@ export default function Plans() {
             Simple, transparent pricing
           </span> */}
             <h1 className="font-fraunces text-2xl md:text-3xl font-normal text-stone-900 dark:text-stone-50">
-              Choose Your Plan
+              Choose your plan
             </h1>
             <p className="font-plex mt-2 text-sm xl:text-base text-stone-500 dark:text-stone-400 max-w-xl xl:max-w-2xl mx-auto">
               Get more credits to analyze your resumes and land your dream job.
@@ -141,7 +141,7 @@ export default function Plans() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-3 mb-6 p-4 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-800">
+                <div className="flex items-center gap-3 mb-6 p-4 rounded-xl bg-white dark:bg-stone-800/60 border border-stone-200 dark:border-stone-800">
                   <span className="w-10 h-10 rounded-xl bg-stone-900 dark:bg-lime-300 text-lime-300 dark:text-stone-900 flex items-center justify-center shrink-0">
                     <Zap className="w-5 h-5" />
                   </span>

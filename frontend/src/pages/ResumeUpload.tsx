@@ -228,9 +228,9 @@ export default function ResumeUpload() {
     : 0;
 
   return (
-    <div className="min-h-screen lg:pt-24 pb-16 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen bg-white dark:bg-stone-950">
       {/* Hero — homepage language */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden pt-8 lg:pt-32 pb-10 md:pb-12">
         <div
           className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-10"
           style={{
@@ -240,12 +240,12 @@ export default function ResumeUpload() {
           }}
         />
         <Wrapper className="relative">
-          <div className="pt-8 lg:pt-0 pb-10 md:pb-12 lg:pb-16 text-center max-w-3xl mx-auto">
-            <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-400/10 dark:text-amber-200 dark:border-amber-400/20">
+          <div className="pt-8 lg:pt-0 text-center max-w-3xl mx-auto">
+            {/* <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-400/10 dark:text-amber-200 dark:border-amber-400/20">
               <Sparkles className="w-3.5 h-3.5" />
               AI-powered resume rewriter
-            </span>
-            <h1 className="font-fraunces mt-4 text-3xl md:text-4xl lg:text-[2.6rem] font-normal leading-[1.08] text-stone-900 dark:text-stone-50">
+            </span> */}
+            <h1 className="font-fraunces text-2xl md:text-3xl font-normal leading-[1.08] text-stone-900 dark:text-stone-50">
               Turn your resume into an{" "}
               <span className="relative inline-block whitespace-nowrap">
                 <span className="relative z-10">interview magnet</span>
@@ -310,7 +310,7 @@ export default function ResumeUpload() {
                   <p className="text-xs text-stone-500 dark:text-stone-400">This takes a few seconds</p>
                 </div>
               ) : resumeText ? (
-                <div className="font-plex relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-3 border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950/40 rounded-2xl p-6">
+                <div className="font-plex relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-3 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-950/40 rounded-2xl p-6">
                   <div className="w-14 h-14 rounded-2xl bg-stone-900 dark:bg-lime-300 flex items-center justify-center shadow">
                     <FileText className="w-7 h-7 text-white dark:text-stone-900" />
                   </div>
@@ -339,7 +339,7 @@ export default function ResumeUpload() {
                   className={`font-plex relative flex-1 min-h-[300px] flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-200 ${
                     isDragActive
                       ? "border-stone-900 dark:border-lime-300 bg-amber-50 dark:bg-amber-400/10 scale-[1.01]"
-                      : "border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-950/40 hover:border-stone-900 dark:hover:border-lime-300 hover:bg-amber-50/60 dark:hover:bg-amber-400/5"
+                      : "border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-950/40 hover:border-stone-900 dark:hover:border-lime-300 hover:bg-amber-50/60 dark:hover:bg-amber-400/5"
                   }`}
                 >
                   <input {...getInputProps()} className="hidden" />
@@ -397,38 +397,19 @@ export default function ResumeUpload() {
                 )}
               </div>
 
-              <div className="font-plex flex-1 flex flex-col rounded-2xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950/40 overflow-hidden focus-within:border-stone-900 dark:focus-within:border-lime-300 focus-within:ring-2 focus-within:ring-stone-900/10 dark:focus-within:ring-lime-300/20 transition-all">
+              <div className="font-plex flex-1 flex flex-col rounded-2xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-950/40 overflow-hidden focus-within:border-stone-900 dark:focus-within:border-lime-300 focus-within:ring-2 focus-within:ring-stone-900/10 dark:focus-within:ring-lime-300/20 transition-all">
                 <textarea
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the job title, requirements, responsibilities here...&#10;&#10;Tip: the more detail you paste, the better the rewrite."
                   className="flex-1 min-h-[260px] w-full bg-transparent p-4 text-sm leading-relaxed text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none resize-none"
                 />
-                <div className="flex items-center justify-between px-3 py-2 border-t border-stone-200 dark:border-stone-700 bg-white/70 dark:bg-stone-900/70">
-                  <span className="text-[11px] text-stone-400">Minimum 20 characters</span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={handlePasteJD}
-                      className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-md transition-colors"
-                    >
-                      <ClipboardPaste className="w-3.5 h-3.5" /> Paste
-                    </button>
-                    {jobDescription && (
-                      <button
-                        onClick={() => setJobDescription("")}
-                        className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-md transition-colors"
-                      >
-                        <Eraser className="w-3.5 h-3.5" /> Clear
-                      </button>
-                    )}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="font-plex px-6 md:px-8 py-4 border-t border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="font-plex px-6 md:px-8 py-4 border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-950/40 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-stone-600 dark:text-stone-400 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
               AI preserves your real experience — nothing invented.

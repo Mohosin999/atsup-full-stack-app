@@ -76,7 +76,7 @@ export default function ProfileMenu({
             className="absolute right-0 mt-2 w-72 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-2xl py-2 z-50 overflow-hidden"
           >
             {/* Header */}
-            <div className="px-4 py-4 border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900">
+            <div className="px-4 py-4 border-b border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-stone-900 dark:bg-lime-300 text-lime-300 dark:text-stone-900 flex items-center justify-center text-sm font-semibold">
                   {initials || "U"}

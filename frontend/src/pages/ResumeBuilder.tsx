@@ -1087,14 +1087,14 @@ export default function ResumeBuilder() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-stone-50 dark:bg-stone-950 pt-20 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-stone-950 pt-20 flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen lg:pt-24 pb-12 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen lg:pt-24 pb-12 bg-white dark:bg-stone-950">
       <Wrapper className="!px-4 lg:!px-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1102,8 +1102,8 @@ export default function ResumeBuilder() {
           className="pt-8 lg:pt-0 pb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div>
-            <h1 className="font-fraunces text-2xl md:text-[1.75rem] text-stone-900 dark:text-stone-50">
-              ATS Resume Builder
+            <h1 className="font-fraunces text-2xl md:text-3xl text-stone-900 dark:text-stone-50">
+              ATS resume builder
             </h1>
             <p className="font-plex text-sm text-stone-500 dark:text-stone-400 mt-1">
               ATS-friendly layout — no images, emojis, tables or underlines.

@@ -108,7 +108,7 @@ export default function ScanHistory() {
   };
 
   return (
-    <div className="min-h-screen pt-8 lg:pt-32 pb-10 md:pb-12 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen pt-8 lg:pt-32 pb-10 md:pb-12 bg-white dark:bg-stone-950">
       {/* Header */}
       <Wrapper>
         <div className="pt-8 lg:pt-0 pb-6">

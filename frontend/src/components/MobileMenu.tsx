@@ -20,7 +20,7 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: "auto" }}
       exit={{ opacity: 0, height: 0 }}
-      className="lg:hidden bg-stone-50 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800"
+      className="lg:hidden bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800"
     >
       <div className="px-4 py-3 space-y-2">
         {navLinks.map((link) => (

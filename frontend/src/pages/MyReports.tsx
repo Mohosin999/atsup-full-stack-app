@@ -48,7 +48,7 @@ const MyReports: React.FC = () => {
   };
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 pt-8 lg:pt-32 pb-10 md:pb-12">
+    <div className="font-plex min-h-screen bg-white dark:bg-stone-950 pt-8 lg:pt-32 pb-10 md:pb-12">
       <Wrapper>
         <div>
           <div className="pt-8 lg:pt-0 pb-6 flex items-center justify-between">

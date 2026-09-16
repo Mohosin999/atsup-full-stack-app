@@ -61,7 +61,7 @@ export default function ATSCategories() {
           {categories.map((cat) => (
             <div
               key={cat.label}
-              className="bg-stone-50 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 text-center hover:border-lime-300 dark:hover:border-lime-400/30 transition-colors"
+              className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 text-center hover:border-lime-300 dark:hover:border-lime-400/30 transition-colors"
             >
               <div className="w-12 h-12 rounded-xl bg-lime-100 dark:bg-lime-400/10 flex items-center justify-center mx-auto mb-4">
                 <cat.icon className="w-6 h-6 text-stone-800 dark:text-lime-300" />

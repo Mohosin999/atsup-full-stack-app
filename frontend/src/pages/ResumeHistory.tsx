@@ -125,7 +125,7 @@ export default function ResumeHistory() {
       .join(" · ") || "No details yet";
 
   return (
-    <div className="min-h-screen pt-8 lg:pt-32 pb-10 md:pb-12 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen pt-8 lg:pt-32 pb-10 md:pb-12 bg-white dark:bg-stone-950">
       <Wrapper>
         <div className="pt-8 lg:pt-0 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>

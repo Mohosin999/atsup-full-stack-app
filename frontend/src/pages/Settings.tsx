@@ -59,7 +59,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 pt-8 lg:pt-32 pb-10 md:pb-12">
+    <div className="font-plex min-h-screen bg-white dark:bg-stone-950 pt-8 lg:pt-32 pb-10 md:pb-12">
       <Wrapper maxWidth="md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
         <div className="pt-8 lg:pt-0 pb-6">
           <h1 className="font-plex text-2xl md:text-3xl font-bold text-stone-900 dark:text-stone-50">
@@ -144,7 +144,7 @@ const ProfileSection = ({
   hasChanges: boolean;
   onSave: (e: React.FormEvent) => void;
 }) => (
-  <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden">
+  <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 box-shadow overflow-hidden">
     <CardHeader
       icon={<User className="w-4 h-4" />}
       title="Profile Information"
@@ -194,7 +194,7 @@ const ProfileSection = ({
 );
 
 const SubscriptionSection = ({ user }: { user: any }) => (
-  <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden">
+  <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 box-shadow overflow-hidden">
     <CardHeader
       icon={<CreditCard className="w-4 h-4" />}
       title="Subscription"
@@ -236,7 +236,7 @@ const ThemeSection = ({
   theme: string;
   onToggle: () => void;
 }) => (
-  <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden">
+  <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 box-shadow overflow-hidden">
     <CardHeader
       icon={<Palette className="w-4 h-4" />}
       title="Appearance"
@@ -272,7 +272,7 @@ const ThemeSection = ({
 );
 
 const DangerZone = ({ onDelete }: { onDelete: () => void }) => (
-  <div className="bg-white dark:bg-stone-900 rounded-2xl border border-red-200 dark:border-red-900/40 shadow-xl overflow-hidden">
+  <div className="bg-white dark:bg-stone-900 rounded-2xl border border-red-200 dark:border-red-900/40 box-shadow overflow-hidden">
     <CardHeader
       icon={<ShieldAlert className="w-4 h-4" />}
       title="Danger Zone"

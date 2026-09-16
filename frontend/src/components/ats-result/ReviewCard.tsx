@@ -384,7 +384,7 @@ const SubgroupBlock: React.FC<{ subgroup: CategorySubgroup }> = ({
   return (
     <div className="font-plex border border-stone-200 dark:border-stone-800 rounded-lg overflow-hidden xl:flex xl:items-stretch">
       {/* Left side - Title with border on xl screens */}
-      <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-800 xl:border-b-0 xl:border-r xl:w-64 xl:flex-shrink-0 xl:px-6 xl:py-4">
+      <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-white dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-800 xl:border-b-0 xl:border-r xl:w-64 xl:flex-shrink-0 xl:px-6 xl:py-4">
         <div className="min-w-0">
           <h4 className="text-sm font-semibold text-stone-700 dark:text-stone-300 leading-tight">
             {subgroup.title}
@@ -513,7 +513,7 @@ const FormattingLock: React.FC<{ onShowTips: () => void }> = ({
   onShowTips,
 }) => {
   return (
-    <div className="relative border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-800/40 rounded-lg overflow-hidden">
+    <div className="relative border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-800/40 rounded-lg overflow-hidden">
       {/* Blurred content placeholder */}
       <div className="blur-[5px] select-none pointer-events-none p-4 opacity-60">
         <div className="space-y-3">

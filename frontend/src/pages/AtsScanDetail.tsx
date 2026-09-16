@@ -763,7 +763,7 @@ export default function AtsScoreDetail() {
   };
 
   return (
-    <div className="min-h-screen lg:pt-24 pb-12 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen lg:pt-24 pb-12 bg-white dark:bg-stone-950">
       <Wrapper className="!px-4 lg:!px-16">
         {/* Header */}
         <div className="pt-8 lg:pt-0 pb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -838,7 +838,7 @@ export default function AtsScoreDetail() {
                   Upload resume (PDF)
                 </label>
                 {resumeFile ? (
-                  <div className="relative flex items-center gap-3 p-3 border border-stone-900 dark:border-lime-300/60 bg-stone-50 dark:bg-stone-800/60 rounded-lg">
+                  <div className="relative flex items-center gap-3 p-3 border border-stone-900 dark:border-lime-300/60 bg-white dark:bg-stone-800/60 rounded-lg">
                     <div className="w-9 h-9 rounded-full bg-lime-300/70 dark:bg-lime-400/20 flex items-center justify-center shrink-0">
                       <CheckCircle className="w-5 h-5 text-stone-900 dark:text-lime-300" />
                     </div>
@@ -857,7 +857,7 @@ export default function AtsScoreDetail() {
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-stone-200 dark:border-stone-700 bg-stone-50 hover:bg-stone-100 dark:bg-stone-800/40 dark:hover:bg-stone-800 cursor-pointer rounded-lg transition-colors p-6">
+                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-stone-200 dark:border-stone-700 bg-white hover:bg-stone-100 dark:bg-stone-800/40 dark:hover:bg-stone-800 cursor-pointer rounded-lg transition-colors p-6">
                     <Upload className="w-7 h-7 text-stone-400 dark:text-stone-500 mb-2" />
                     <p className="text-sm text-stone-600 dark:text-stone-400">
                       <span className="font-semibold text-stone-900 dark:text-stone-100">
@@ -895,7 +895,7 @@ export default function AtsScoreDetail() {
                   onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the job description here..."
                   rows={8}
-                  className="w-full bg-stone-50 dark:bg-stone-800/40 border border-stone-200 dark:border-stone-700 rounded-lg p-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent resize-none"
+                  className="w-full bg-white dark:bg-stone-800/40 border border-stone-200 dark:border-stone-700 rounded-lg p-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent resize-none"
                 />
                 {!aiScan.available && (
                   <p className="mt-2 text-xs md:text-sm text-red-500 dark:text-red-400">

@@ -172,7 +172,7 @@ export default function HowItWorksTabs() {
   const current = tabs.find((t) => t.id === active)!;
 
   return (
-    <section className="font-plex bg-stone-50 dark:bg-stone-950 pb-14 md:pb-16 lg:pb-14 xl:pb-16 2xl:pb-20">
+    <section className="font-plex bg-white dark:bg-stone-950 pb-14 md:pb-16 lg:pb-14 xl:pb-16 2xl:pb-20">
       <Wrapper>
         {/* header */}
         <div className="text-center mb-8 lg:mb-10">

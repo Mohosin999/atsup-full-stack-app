@@ -191,7 +191,7 @@ export default function TestimonialsSection({
                          transition-shadow duration-300 ease-out border ${
                            isTinted(index)
                              ? "bg-lime-50 border-lime-300 dark:bg-lime-400/10 dark:border-lime-400/25"
-                             : "bg-stone-50 border-stone-200 dark:bg-stone-900 dark:border-stone-800"
+                              : "bg-white border-stone-200 dark:bg-stone-900 dark:border-stone-800"
                          }`}
               style={{
                 transform: `rotate(${cardStyles[index].rotate}deg) translateY(${cardStyles[index].translateY}px) translateX(${cardStyles[index].translateX}px)`,

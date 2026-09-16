@@ -44,7 +44,7 @@ export default function AtsScorePage() {
   }, [locationState, navigate, location.pathname]);
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950">
+    <div className="font-plex min-h-screen bg-white dark:bg-stone-950">
       {/* Hero with dot-grid like ResumeDashboard */}
       <section className="relative overflow-hidden pt-8 lg:pt-32 pb-10 md:pb-12">
         <div

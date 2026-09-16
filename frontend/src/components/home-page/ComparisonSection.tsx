@@ -24,7 +24,7 @@ export default function ComparisonSection() {
           </h2>
         </div>
 
-        <div className="max-w-3xl mx-auto overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900">
+        <div className="max-w-3xl mx-auto overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900">
           <div className="grid grid-cols-3 gap-4 px-6 py-4 bg-stone-900 dark:bg-stone-800 text-xs md:text-sm font-semibold text-stone-50">
             <span>Feature</span>
             <span className="text-center text-lime-300">CVScan</span>

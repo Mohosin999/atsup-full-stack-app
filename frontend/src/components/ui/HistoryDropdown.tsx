@@ -40,7 +40,7 @@ export default function HistoryDropdown() {
             className="absolute top-full right-0 pt-2 w-72 z-50"
           >
             <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden">
-              <div className="px-4 py-3 border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900">
+              <div className="px-4 py-3 border-b border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900">
                 <span className="font-plex text-[11px] font-semibold uppercase tracking-wider text-stone-400 dark:text-stone-500">
                   Your history
                 </span>

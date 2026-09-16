@@ -482,7 +482,7 @@ export default function Login() {
     "block text-[11px] font-medium uppercase tracking-[0.12em] text-stone-400 dark:text-stone-500 mb-1";
 
   return (
-    <div className="font-plex min-h-screen w-full bg-stone-50 dark:bg-stone-950 lg:grid lg:grid-cols-12">
+    <div className="font-plex min-h-screen w-full bg-white dark:bg-stone-950 lg:grid lg:grid-cols-12">
       {/* ============================================================
        * LEFT — brand panel
        * ==========================================================*/}

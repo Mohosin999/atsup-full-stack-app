@@ -11,7 +11,7 @@ export default function ResumeDashboard() {
 
   return (
     // <div className="min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-24 pb-12">
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen bg-white dark:bg-stone-950">
       {/* Hero — same language as homepage HeroSection */}
       {/* <section className="relative overflow-hidden pt-8 lg:pt-0 pb-10 md:pb-12 lg:pb-16"> */}
       <section className="relative overflow-hidden pt-8 lg:pt-32 pb-10 md:pb-12">
@@ -96,7 +96,7 @@ export default function ResumeDashboard() {
                 {["Profile Info", "Summary", "Experience"].map((s) => (
                   <div
                     key={s}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950/40 text-xs font-medium text-stone-600 dark:text-stone-400"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-950/40 text-xs font-medium text-stone-600 dark:text-stone-400"
                   >
                     <GripVertical className="w-3.5 h-3.5 text-stone-400" />
                     {s}

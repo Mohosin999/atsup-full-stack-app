@@ -55,7 +55,7 @@ export default function AIRewriteShowcase() {
 
           <div className="relative">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-stone-50 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-5">
+              <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-5">
                 <p className="text-xs font-semibold text-stone-400 dark:text-stone-500">
                   Before
                 </p>

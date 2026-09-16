@@ -82,7 +82,7 @@ export default function BuilderPreview() {
     <section className="font-plex bg-white dark:bg-stone-950 border-y border-stone-200 dark:border-stone-800 py-14 md:py-16 lg:py-14 xl:py-16 2xl:py-20">
       <Wrapper>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-center">
-          <div className="order-2 lg:order-1 relative bg-stone-50 dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden">
+          <div className="order-2 lg:order-1 relative bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xl overflow-hidden">
             <div className="h-1.5 bg-amber-400 dark:bg-amber-300" />
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">

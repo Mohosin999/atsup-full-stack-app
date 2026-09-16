@@ -127,23 +127,36 @@ export default function AtsScorePage() {
   }, [locationState, navigate, location.pathname]);
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-20 pb-12">
-      <Wrapper>
-        <div className="py-8 lg:mb-4">
-          {/* <span className="flex justify-center mb-3">
+    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950">
+      {/* Hero with dot-grid like ResumeDashboard */}
+      <section className="relative overflow-hidden pt-8 lg:pt-32 pb-10 md:pb-12">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, rgba(28,25,23,0.35) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        <Wrapper className="relative">
+          <div className="pt-8 lg:pt-0">
+            {/* <span className="flex justify-center mb-3">
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-lime-100 text-stone-800 border border-lime-300 dark:bg-lime-400/10 dark:text-lime-200 dark:border-lime-400/20">
               ATS scan
             </span>
           </span> */}
-          <h1 className="font-fraunces text-2xl md:text-3xl font-normal text-stone-900 text-center mb-4 dark:text-stone-50">
-            ATS score check
-          </h1>
-          <p className="text-sm xl:text-base text-stone-600 text-center max-w-xl xl:max-w-2xl mx-auto dark:text-stone-400">
-            Analyze your resume for ATS (Applicant Tracking System)
-            compatibility. Get 20 free AI scans daily for deeper analysis.
-          </p>
-        </div>
+            <h1 className="font-fraunces text-2xl md:text-3xl font-normal text-stone-900 text-center mb-4 dark:text-stone-50">
+              ATS score check
+            </h1>
+            <p className="text-sm xl:text-base text-stone-600 text-center max-w-xl xl:max-w-2xl mx-auto dark:text-stone-400">
+              Analyze your resume for ATS (Applicant Tracking System)
+              compatibility. Get 20 free AI scans daily for deeper analysis.
+            </p>
+          </div>
+        </Wrapper>
+      </section>
 
+      <Wrapper>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -161,7 +174,7 @@ export default function AtsScorePage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="my-8"
+            className="my-0"
           >
             <AtsScoreResult result={result} />
           </motion.div>

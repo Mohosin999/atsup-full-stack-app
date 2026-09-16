@@ -99,13 +99,13 @@ export default function ScanHistory() {
   };
 
   return (
-    <div className="min-h-screen lg:pt-20 pb-16 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen lg:pt-24 pb-16 bg-stone-50 dark:bg-stone-950">
       {/* Header */}
       <Wrapper>
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="pt-8 lg:pt-10 pb-6"
+          className="pt-8 lg:pt-0 pb-6"
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>

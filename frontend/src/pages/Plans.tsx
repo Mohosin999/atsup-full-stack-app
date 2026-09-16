@@ -68,26 +68,39 @@ export default function Plans() {
   };
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-20 pb-12">
-      <Wrapper>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="pt-10 lg:pt-14 pb-8 lg:mb-4 text-center"
-        >
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-lime-50 text-lime-800 border border-lime-300 dark:bg-lime-400/10 dark:text-lime-200 dark:border-lime-400/20">
+    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-24 pb-12">
+      {/* Hero with dot-grid like ResumeDashboard */}
+      <section className="relative overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, rgba(28,25,23,0.35) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        <Wrapper className="relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="pt-8 lg:pt-0 pb-6 lg:mb-4 text-center"
+          >
+            {/* <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-lime-50 text-lime-800 border border-lime-300 dark:bg-lime-400/10 dark:text-lime-200 dark:border-lime-400/20">
             <Zap className="w-3.5 h-3.5" />
             Simple, transparent pricing
-          </span>
-          <h1 className="font-fraunces mt-4 text-2xl md:text-3xl font-normal text-stone-900 dark:text-stone-50">
-            Choose Your Plan
-          </h1>
-          <p className="font-plex mt-2 text-sm xl:text-base text-stone-500 dark:text-stone-400 max-w-xl xl:max-w-2xl mx-auto">
-            Get more credits to analyze your resumes and land your dream job.
-            Upgrade anytime as your needs grow.
-          </p>
-        </motion.div>
+          </span> */}
+            <h1 className="font-fraunces text-2xl md:text-3xl font-normal text-stone-900 dark:text-stone-50">
+              Choose Your Plan
+            </h1>
+            <p className="font-plex mt-2 text-sm xl:text-base text-stone-500 dark:text-stone-400 max-w-xl xl:max-w-2xl mx-auto">
+              Get more credits to analyze your resumes and land your dream job.
+              Upgrade anytime as your needs grow.
+            </p>
+          </motion.div>
+        </Wrapper>
+      </section>
 
+      <Wrapper>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-stretch">
           {plans.map((plan, index) => (
             <motion.div

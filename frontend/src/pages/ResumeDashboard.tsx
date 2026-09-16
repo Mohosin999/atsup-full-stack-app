@@ -10,9 +10,11 @@ export default function ResumeDashboard() {
   const user = useAppSelector((state) => state.auth.user);
 
   return (
+    // <div className="min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-24 pb-12">
     <div className="min-h-screen bg-stone-50 dark:bg-stone-950">
       {/* Hero — same language as homepage HeroSection */}
-      <section className="relative overflow-hidden pt-10 md:pt-16 lg:pt-28 pb-10 md:pb-12 lg:pb-16">
+      {/* <section className="relative overflow-hidden pt-8 lg:pt-0 pb-10 md:pb-12 lg:pb-16"> */}
+      <section className="relative overflow-hidden pt-8 lg:pt-32 pb-10 md:pb-12">
         <div
           className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-10"
           style={{
@@ -33,7 +35,7 @@ export default function ResumeDashboard() {
               ATS resume builder
             </span> */}
 
-            <h1 className="font-fraunces mt-4 text-3xl md:text-4xl lg:text-5xl font-normal leading-[1.08] text-stone-900 dark:text-stone-50">
+            <h1 className="font-fraunces text-2xl md:text-3xl font-normal leading-[1.08] text-stone-900 dark:text-stone-50">
               How would you like to{" "}
               <span className="relative inline-block whitespace-nowrap">
                 <span className="relative z-10">start?</span>

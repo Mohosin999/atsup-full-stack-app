@@ -691,9 +691,9 @@ const AdminDashboard: React.FC = () => {
   const changeIsUp = (growth?.change ?? 0) >= 0;
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 pt-8 md:pt-10 lg:pt-24 pb-12">
+    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-24 pb-12">
       <Wrapper className="!px-4 lg:!px-16">
-        <div className="md:flex md:flex-row items-start gap-6">
+        <div className="pt-8 lg:pt-0 md:flex md:flex-row items-start gap-6">
           <aside className="flex flex-col gap-2.5 w-full md:w-48 lg:w-44 xl:w-64 shrink-0 md:sticky md:top-24">
             <SidebarButton
               icon={LayoutDashboard}

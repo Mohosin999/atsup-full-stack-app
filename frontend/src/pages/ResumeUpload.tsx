@@ -228,7 +228,7 @@ export default function ResumeUpload() {
     : 0;
 
   return (
-    <div className="min-h-screen lg:pt-20 pb-16 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen lg:pt-24 pb-16 bg-stone-50 dark:bg-stone-950">
       {/* Hero — homepage language */}
       <section className="relative overflow-hidden">
         <div
@@ -240,7 +240,7 @@ export default function ResumeUpload() {
           }}
         />
         <Wrapper className="relative">
-          <div className="py-10 md:py-12 lg:py-16 text-center max-w-3xl mx-auto">
+          <div className="pt-8 lg:pt-0 pb-10 md:pb-12 lg:pb-16 text-center max-w-3xl mx-auto">
             <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-400/10 dark:text-amber-200 dark:border-amber-400/20">
               <Sparkles className="w-3.5 h-3.5" />
               AI-powered resume rewriter

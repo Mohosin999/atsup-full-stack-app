@@ -48,10 +48,10 @@ const MyReports: React.FC = () => {
   };
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-20 pb-12">
+    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-24 pb-12">
       <Wrapper>
         <div>
-          <div className="pt-8 pb-6 flex items-center justify-between">
+          <div className="pt-8 lg:pt-0 pb-6 flex items-center justify-between">
             <h1 className="font-fraunces text-xl md:text-2xl text-stone-900 dark:text-stone-50">
               My Reports
             </h1>

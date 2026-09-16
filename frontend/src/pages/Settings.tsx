@@ -59,7 +59,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-24 pb-12">
+    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 pt-8 lg:pt-32 pb-10 md:pb-12">
       <Wrapper maxWidth="md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
         <div className="pt-8 lg:pt-0 pb-6">
           <h1 className="font-plex text-2xl md:text-3xl font-bold text-stone-900 dark:text-stone-50">

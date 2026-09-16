@@ -68,9 +68,9 @@ export default function Plans() {
   };
 
   return (
-    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-24 pb-12">
+    <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 pb-16">
       {/* Hero with dot-grid like ResumeDashboard */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden pt-8 lg:pt-32 pb-10 md:pb-12">
         <div
           className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-10"
           style={{
@@ -83,7 +83,7 @@ export default function Plans() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="pt-8 lg:pt-0 pb-6 lg:mb-4 text-center"
+            className="pt-8 lg:pt-0 text-center"
           >
             {/* <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-lime-50 text-lime-800 border border-lime-300 dark:bg-lime-400/10 dark:text-lime-200 dark:border-lime-400/20">
             <Zap className="w-3.5 h-3.5" />
@@ -108,7 +108,7 @@ export default function Plans() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`relative flex flex-col bg-white dark:bg-stone-900 rounded-2xl border shadow-xl overflow-hidden ${
+              className={`relative flex flex-col bg-white dark:bg-stone-900 rounded-2xl border box-shadow overflow-hidden ${
                 plan.popular
                   ? "border-lime-400 dark:border-lime-400/60 ring-2 ring-lime-400/40 dark:ring-lime-400/30 md:-mt-4 md:mb-4"
                   : "border-stone-200 dark:border-stone-800"

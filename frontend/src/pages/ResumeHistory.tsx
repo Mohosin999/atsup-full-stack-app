@@ -125,19 +125,16 @@ export default function ResumeHistory() {
       .join(" · ") || "No details yet";
 
   return (
-    <div className="min-h-screen lg:pt-24 pb-16 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen pt-8 lg:pt-32 pb-10 md:pb-12 bg-stone-50 dark:bg-stone-950">
       <Wrapper>
         <div className="pt-8 lg:pt-0 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-lime-50 text-lime-800 border border-lime-300 dark:bg-lime-400/10 dark:text-lime-200 dark:border-lime-400/20">
+            {/* <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-lime-50 text-lime-800 border border-lime-300 dark:bg-lime-400/10 dark:text-lime-200 dark:border-lime-400/20">
               <LayoutList className="w-3.5 h-3.5" />
               Builder history
-            </span>
-            <h1 className="font-fraunces mt-3 text-2xl md:text-3xl font-normal text-stone-900 dark:text-stone-50">
-              Resume history{" "}
-              <span className="font-plex text-sm font-normal text-stone-500 dark:text-stone-400">
-                — {totalResumes} resume{totalResumes !== 1 ? "s" : ""}
-              </span>
+            </span> */}
+            <h1 className="font-fraunces text-2xl md:text-3xl font-normal text-stone-900 dark:text-stone-50">
+              Resume history
             </h1>
             <p className="font-plex mt-1 text-sm text-stone-500 dark:text-stone-400">
               All resumes built in the builder — edit, duplicate, or delete any time.
@@ -165,13 +162,13 @@ export default function ResumeHistory() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-8">
+          <div className="flex justify-center">
             <SkeletonHistory />
           </div>
         ) : (
           <>
             {/* Desktop table */}
-            <div className="hidden md:block bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl overflow-hidden shadow-sm">
+            <div className="hidden md:block bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl overflow-hidden box-shadow">
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>

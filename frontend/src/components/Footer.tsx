@@ -27,7 +27,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="font-plex py-8 bg-white dark:bg-stone-950 border-t border-stone-200 dark:border-stone-800">
+    <footer className="font-plex py-8 bg-white dark:bg-stone-950">
       <Wrapper className="!px-4 lg:!px-16">
         {/* Top Divider */}
         <div className="flex items-center gap-4 mb-8">

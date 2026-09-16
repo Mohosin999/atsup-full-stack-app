@@ -1,7 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Trash2, Pencil, Check, X, Eye, ScanSearch, Sparkles, FileSearch } from "lucide-react";
+import {
+  Trash2,
+  Pencil,
+  Check,
+  X,
+  Eye,
+  ScanSearch,
+  Sparkles,
+  FileSearch,
+} from "lucide-react";
 import { toast } from "react-toastify";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { atsScoreApi } from "../api/api";
@@ -99,25 +108,18 @@ export default function ScanHistory() {
   };
 
   return (
-    <div className="min-h-screen lg:pt-24 pb-16 bg-stone-50 dark:bg-stone-950">
+    <div className="min-h-screen pt-8 lg:pt-32 pb-10 md:pb-12 bg-stone-50 dark:bg-stone-950">
       {/* Header */}
       <Wrapper>
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="pt-8 lg:pt-0 pb-6"
-        >
+        <div className="pt-8 lg:pt-0 pb-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-400/10 dark:text-amber-200 dark:border-amber-400/20">
+              {/* <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-400/10 dark:text-amber-200 dark:border-amber-400/20">
                 <Sparkles className="w-3.5 h-3.5" />
                 ATS history
-              </span>
-              <h1 className="font-fraunces mt-3 text-2xl md:text-3xl font-normal text-stone-900 dark:text-stone-50">
-                Scan history{" "}
-                <span className="font-plex text-sm font-normal text-stone-500 dark:text-stone-400">
-                  — {totalScans} scan{totalScans !== 1 ? "s" : ""}
-                </span>
+              </span> */}
+              <h1 className="font-fraunces text-2xl md:text-3xl font-normal text-stone-900 dark:text-stone-50">
+                Scan history
               </h1>
               <p className="font-plex mt-1 text-sm text-stone-500 dark:text-stone-400">
                 Every scan you ran — scores, dates, and quick access to details.
@@ -134,16 +136,16 @@ export default function ScanHistory() {
               </button>
             )}
           </div>
-        </motion.div>
+        </div>
 
         {loading ? (
-          <div className="flex justify-center py-8">
+          <div className="flex justify-center">
             <SkeletonHistory />
           </div>
         ) : (
           <>
             {/* Desktop table */}
-            <div className="hidden md:block bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl overflow-hidden shadow-sm">
+            <div className="hidden md:block bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl overflow-hidden box-shadow">
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
@@ -172,7 +174,8 @@ export default function ScanHistory() {
                               No scans yet
                             </p>
                             <p className="font-plex text-xs text-stone-500 dark:text-stone-400 max-w-sm">
-                              Run your first ATS scan — you will see the score and details here.
+                              Run your first ATS scan — you will see the score
+                              and details here.
                             </p>
                             <button
                               onClick={() => navigate("/ats-scan")}
@@ -265,11 +268,14 @@ export default function ScanHistory() {
                           </td>
 
                           <td className="font-plex px-5 py-4 text-sm text-stone-600 dark:text-stone-400">
-                            {new Date(item.createdAt).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })}
+                            {new Date(item.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
                           </td>
 
                           <td className="px-5 py-4">
@@ -305,8 +311,12 @@ export default function ScanHistory() {
                   <div className="w-12 h-12 rounded-2xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center mx-auto">
                     <FileSearch className="w-6 h-6 text-stone-400" />
                   </div>
-                  <p className="font-plex mt-3 text-sm font-medium text-stone-700 dark:text-stone-300">No scans yet</p>
-                  <p className="font-plex mt-1 text-xs text-stone-500 dark:text-stone-400">Run your first scan to see it here.</p>
+                  <p className="font-plex mt-3 text-sm font-medium text-stone-700 dark:text-stone-300">
+                    No scans yet
+                  </p>
+                  <p className="font-plex mt-1 text-xs text-stone-500 dark:text-stone-400">
+                    Run your first scan to see it here.
+                  </p>
                   <button
                     onClick={() => navigate("/ats-scan")}
                     className="font-plex mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-stone-900 dark:bg-lime-300 text-white dark:text-stone-900 text-sm font-semibold"
@@ -328,20 +338,37 @@ export default function ScanHistory() {
                               value={editValue}
                               onChange={(e) => setEditValue(e.target.value)}
                               onBlur={() =>
-                                renameMutation.mutate({ id: item.id, name: editValue.trim() })
+                                renameMutation.mutate({
+                                  id: item.id,
+                                  name: editValue.trim(),
+                                })
                               }
                               onKeyDown={(e) => {
                                 if (e.key === "Enter")
-                                  renameMutation.mutate({ id: item.id, name: editValue.trim() });
+                                  renameMutation.mutate({
+                                    id: item.id,
+                                    name: editValue.trim(),
+                                  });
                                 if (e.key === "Escape") setEditingId(null);
                               }}
                               autoFocus
                               className="font-plex flex-1 min-w-0 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-600 rounded-lg px-2.5 py-1.5 text-sm text-stone-800 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300"
                             />
-                            <button onClick={() => renameMutation.mutate({ id: item.id, name: editValue.trim() })} className="p-1 text-emerald-600">
+                            <button
+                              onClick={() =>
+                                renameMutation.mutate({
+                                  id: item.id,
+                                  name: editValue.trim(),
+                                })
+                              }
+                              className="p-1 text-emerald-600"
+                            >
                               <Check className="w-4 h-4" />
                             </button>
-                            <button onClick={() => setEditingId(null)} className="p-1 text-red-500">
+                            <button
+                              onClick={() => setEditingId(null)}
+                              className="p-1 text-red-500"
+                            >
                               <X className="w-4 h-4" />
                             </button>
                           </div>
@@ -362,15 +389,20 @@ export default function ScanHistory() {
                           </div>
                         )}
                         <div className="mt-2 flex items-center gap-2">
-                          <span className={`font-plex inline-flex px-2 py-0.5 rounded-full text-xs font-semibold border ${getScoreStyle(item.overallScore)}`}>
+                          <span
+                            className={`font-plex inline-flex px-2 py-0.5 rounded-full text-xs font-semibold border ${getScoreStyle(item.overallScore)}`}
+                          >
                             {item.overallScore}%
                           </span>
                           <span className="font-plex text-xs text-stone-500 dark:text-stone-400">
-                            {new Date(item.createdAt).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })}
+                            {new Date(item.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
                           </span>
                         </div>
                       </div>
@@ -382,7 +414,10 @@ export default function ScanHistory() {
                       >
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button onClick={() => setDeleteId(item.id)} className="p-2 rounded-full bg-red-50 dark:bg-red-950/30 text-red-600">
+                      <button
+                        onClick={() => setDeleteId(item.id)}
+                        className="p-2 rounded-full bg-red-50 dark:bg-red-950/30 text-red-600"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -394,7 +429,11 @@ export default function ScanHistory() {
             {totalPages > 1 && (
               <div className="mt-8 flex justify-center">
                 <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-full px-2 py-2 shadow-sm">
-                  <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+                  <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={setPage}
+                  />
                 </div>
               </div>
             )}

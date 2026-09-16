@@ -75,7 +75,7 @@ export default function ResumeDashboard() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="font-plex group relative flex flex-col overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 shadow-xl"
+            className="font-plex group relative flex flex-col overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 box-shadow"
           >
             <div className="h-1.5 bg-amber-400 dark:bg-amber-300" />
             <div className="p-6 md:p-7 lg:p-8 flex flex-col flex-1">
@@ -135,7 +135,7 @@ export default function ResumeDashboard() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="font-plex group relative flex flex-col overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 shadow-xl"
+            className="font-plex group relative flex flex-col overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 box-shadow"
           >
             <div className="h-1.5 bg-violet-500 dark:bg-violet-400" />
             <div className="p-6 md:p-7 lg:p-8 flex flex-col flex-1">

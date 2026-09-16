@@ -11,12 +11,20 @@ interface HeroSectionProps {
 export default function HeroSection({ user, onLogout }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden bg-white dark:bg-stone-950 pt-14 md:pt-20 lg:pt-28 2xl:pt-32 pb-14 md:pb-16 lg:pb-14 xl:pb-16 2xl:pb-20">
-      {/* subtle dot-grid texture */}
+      {/* subtle dot-grid texture - visible in both light & dark */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-10"
+        className="pointer-events-none absolute inset-0 opacity-40 dark:hidden"
         style={{
           backgroundImage:
             "radial-gradient(circle, rgba(28,25,23,0.35) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 hidden dark:block opacity-[0.18]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(250,250,249,0.5) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />

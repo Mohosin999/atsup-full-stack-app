@@ -694,7 +694,7 @@ const AdminDashboard: React.FC = () => {
     <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 pt-8 md:pt-10 lg:pt-24 pb-12">
       <Wrapper className="!px-4 lg:!px-16">
         <div className="md:flex md:flex-row items-start gap-6">
-          <aside className="flex flex-col w-full md:w-48 lg:w-44 xl:w-64 shrink-0 md:sticky md:top-24">
+          <aside className="flex flex-col gap-2.5 w-full md:w-48 lg:w-44 xl:w-64 shrink-0 md:sticky md:top-24">
             <SidebarButton
               icon={LayoutDashboard}
               label="Overview"
@@ -1052,6 +1052,11 @@ const AdminDashboard: React.FC = () => {
           </main>
         </div>
       </Wrapper>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+        .font-fraunces { font-family: 'Fraunces', serif; }
+        .font-plex { font-family: 'IBM Plex Sans', sans-serif; }
+      `}</style>
     </div>
   );
 };

@@ -17,9 +17,9 @@ interface Props {
 type Filter = 'all' | SupportStatus;
 
 const STATUS_STYLES: Record<SupportStatus, string> = {
-  open: 'bg-amber-100 text-amber-700',
-  'in-progress': 'bg-blue-100 text-blue-700',
-  resolved: 'bg-cyan-100 text-cyan-700',
+  open: 'bg-amber-50 dark:bg-amber-400/10 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-400/20',
+  'in-progress': 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-300 dark:border-stone-600',
+  resolved: 'bg-emerald-50 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-400/20',
 };
 
 const STATUS_LABELS: Record<SupportStatus, string> = {
@@ -104,16 +104,18 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
         isRefreshing={isRefreshing}
       />
 
-      <div className="bg-white dark:bg-gray-800 box-shadow p-4 md:p-6">
+      <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl shadow-xl p-4 md:p-6">
         <div className="flex items-center justify-end mb-4">
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {FILTERS.map((f) => (
               <button
                 key={f.value}
                 type="button"
                 onClick={() => setFilter(f.value)}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                  filter === f.value ? 'bg-cyan-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                className={`font-plex px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                  filter === f.value
+                    ? 'bg-stone-900 dark:bg-lime-300 border-stone-900 dark:border-lime-300 text-white dark:text-stone-900'
+                    : 'bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:border-stone-400 dark:hover:border-stone-500'
                 }`}
               >
                 {f.label}
@@ -127,8 +129,8 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
           <LoadingSpinner size="md" text="Loading tickets..." />
         </div>
       ) : filtered.length === 0 ? (
-          <div className="py-12 text-center text-gray-500 dark:text-gray-400">
-          <Inbox className="w-10 h-10 mx-auto mb-2 text-gray-300" />
+          <div className="py-12 text-center text-stone-500 dark:text-stone-400">
+          <Inbox className="w-10 h-10 mx-auto mb-2 text-stone-300 dark:text-stone-600" />
           No tickets found
         </div>
       ) : (
@@ -136,56 +138,56 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
           {filtered.map((t) => {
             const expanded = expandedId === t.id;
             return (
-              <div key={t.id} className="border border-gray-200 dark:border-gray-700">
+              <div key={t.id} className="border border-stone-200 dark:border-stone-800 rounded-2xl overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setExpandedId(expanded ? null : t.id)}
-                  className="w-full flex items-center gap-3 p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  className="w-full flex items-center gap-3 p-4 text-left hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors"
                 >
-                  <div className="w-9 h-9 bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-semibold shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-stone-900 dark:bg-lime-300 text-lime-300 dark:text-stone-900 flex items-center justify-center text-sm font-bold shrink-0">
                     {t.user?.name?.charAt(0)?.toUpperCase() || '?'}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-800 dark:text-gray-100 truncate flex-1">{t.title}</p>
+                      <p className="font-medium text-stone-800 dark:text-stone-100 truncate flex-1">{t.title}</p>
                       <div className="shrink-0 sm:hidden">
                         {expanded ? (
-                          <ChevronUp className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                          <ChevronUp className="w-4 h-4 text-stone-400 dark:text-stone-500" />
                         ) : (
-                          <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                          <ChevronDown className="w-4 h-4 text-stone-400 dark:text-stone-500" />
                         )}
                       </div>
                     </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                      <p className="text-xs text-stone-500 dark:text-stone-400 truncate mt-0.5">
                       {t.user?.name || 'Unknown'} · {t.user?.email || ''} · {formatDate(t.createdAt)}
                     </p>
                     <div className="flex flex-wrap items-center gap-2 mt-2 sm:hidden">
-                      <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                      <span className="font-plex text-xs font-medium px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
                         {TYPE_LABELS[t.type] || t.type}
                       </span>
-                      <span className={`text-xs font-medium px-2 py-0.5 ${STATUS_STYLES[t.status]}`}>
+                      <span className={`font-plex text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[t.status]}`}>
                         {STATUS_LABELS[t.status]}
                       </span>
                     </div>
                   </div>
                   <div className="hidden sm:flex items-center gap-2 shrink-0">
-                    <span className="text-xs font-medium px-2 py-0.5 bg-gray-100 text-gray-600">
+                    <span className="font-plex text-xs font-medium px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
                       {TYPE_LABELS[t.type] || t.type}
                     </span>
-                    <span className={`text-xs font-medium px-2 py-0.5 ${STATUS_STYLES[t.status]}`}>
+                    <span className={`font-plex text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[t.status]}`}>
                       {STATUS_LABELS[t.status]}
                     </span>
                     {expanded ? (
-                      <ChevronUp className="w-4 h-4 text-gray-400" />
+                      <ChevronUp className="w-4 h-4 text-stone-400" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-gray-400" />
+                      <ChevronDown className="w-4 h-4 text-stone-400" />
                     )}
                   </div>
                 </button>
 
                 {expanded && (
-                  <div className="px-4 pb-4 border-t border-gray-100 dark:border-gray-700 pt-3">
-                      <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{t.message}</p>
+                  <div className="px-4 pb-4 border-t border-stone-100 dark:border-stone-800 pt-3">
+                      <p className="text-sm text-stone-700 dark:text-stone-300 whitespace-pre-wrap">{t.message}</p>
 
                     <div className="mt-4 flex items-center justify-between flex-wrap gap-2">
                       <div className="flex items-center gap-2">
@@ -200,7 +202,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
                                 { onSettled: () => setBusyId(null) }
                               );
                             }}
-                            className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                            className="font-plex px-3 py-1.5 rounded-lg text-xs font-medium bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 disabled:opacity-50 transition-colors"
                           >
                             Mark in progress
                           </button>
@@ -216,7 +218,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
                                 { onSettled: () => setBusyId(null) }
                               );
                             }}
-                            className="px-3 py-1.5 text-xs font-medium bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
+                            className="font-plex px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 transition-colors"
                           >
                             Resolve
                           </button>
@@ -232,7 +234,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
                                 { onSettled: () => setBusyId(null) }
                               );
                             }}
-                            className="px-3 py-1.5 text-xs font-medium bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50"
+                            className="font-plex px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500 text-white hover:bg-amber-600 disabled:opacity-50 transition-colors"
                           >
                             Reopen
                           </button>
@@ -244,7 +246,7 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
                           type="button"
                           onClick={() => setConfirmDelete(t)}
                           disabled={busyId === t.id}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                          className="font-plex inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-400/10 border border-transparent hover:border-red-300 dark:hover:border-red-500/30 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           Delete

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Star, Trash2, CheckCircle, RotateCcw, MessageSquare } from "lucide-react";
+import { Star, Trash2, CheckCircle, MessageSquare } from "lucide-react";
 import { adminReviewApi } from "../../api/api";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import ConfirmModal from "../ui/ConfirmModal";
@@ -92,7 +92,7 @@ export default function ReviewManagement({
         <div className="flex justify-end mb-4">
           <button
             onClick={() => setClearAllOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+            className="font-plex inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-400/10 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
             Clear All
@@ -101,8 +101,8 @@ export default function ReviewManagement({
       )}
 
       {reviews.length === 0 ? (
-        <div className="text-center py-16 text-gray-500 dark:text-gray-400">
-          <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+        <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl shadow-xl text-center py-16 text-stone-500 dark:text-stone-400">
+          <MessageSquare className="w-12 h-12 mx-auto mb-3 text-stone-300 dark:text-stone-600" />
           <p>No reviews yet</p>
         </div>
       ) : (
@@ -110,23 +110,23 @@ export default function ReviewManagement({
           {reviews.map((review) => (
             <div
               key={review.id}
-              className={`bg-white dark:bg-gray-800 border rounded-lg p-4 transition-colors ${
+              className={`bg-white dark:bg-stone-900 border rounded-2xl shadow-xl p-5 transition-colors ${
                 review.showOnHome
-                  ? "border-cyan-300 bg-cyan-50/30 dark:border-cyan-400 dark:bg-cyan-500/10"
-                  : "border-gray-200 dark:border-gray-700"
+                  ? "border-lime-400 dark:border-lime-400 bg-lime-50/40 dark:bg-lime-400/5"
+                  : "border-stone-200 dark:border-stone-800"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3 min-w-0">
-                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  <div className="w-11 h-11 rounded-full bg-stone-900 dark:bg-lime-300 text-lime-300 dark:text-stone-900 flex items-center justify-center text-white dark:text-stone-900 font-bold text-sm flex-shrink-0">
                     {review.user.name?.charAt(0) || "?"}
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm">
+                      <p className="font-semibold text-stone-800 dark:text-stone-100 text-sm">
                         {review.user.name || "Anonymous"}
                       </p>
-                      <span className="text-xs text-gray-400 dark:text-gray-500">
+                      <span className="text-xs text-stone-400 dark:text-stone-500">
                         {review.user.email}
                       </span>
                     </div>
@@ -137,15 +137,15 @@ export default function ReviewManagement({
                           className={`w-3.5 h-3.5 ${
                             i < review.rating
                               ? "fill-amber-400 text-amber-500"
-                              : "text-gray-300"
+                              : "text-stone-300 dark:text-stone-600"
                           }`}
                         />
                       ))}
-                      <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">
+                      <span className="text-xs text-stone-400 dark:text-stone-500 ml-1">
                         {formatDate(review.createdAt)}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
+                    <p className="text-sm text-stone-600 dark:text-stone-400 mt-2 leading-relaxed">
                       {review.message}
                     </p>
                   </div>
@@ -157,8 +157,8 @@ export default function ReviewManagement({
                     title={review.showOnHome ? "Remove from homepage" : "Show on homepage"}
                     className={`p-2 rounded-lg border transition-colors ${
                       review.showOnHome
-                        ? "bg-cyan-100 border-cyan-300 text-cyan-600 hover:bg-cyan-200"
-                        : "bg-gray-50 dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-cyan-600"
+                        ? "bg-lime-100 dark:bg-lime-400/20 border-lime-300 dark:border-lime-400 text-lime-700 dark:text-lime-300 hover:bg-lime-200"
+                        : "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-600 text-stone-400 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-700 hover:text-lime-600 dark:hover:text-lime-300"
                     }`}
                   >
                     <CheckCircle className="w-4 h-4" />
@@ -166,7 +166,7 @@ export default function ReviewManagement({
                   <button
                     onClick={() => setDeleteId(review.id)}
                     title="Delete review"
-                    className="p-2 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-200 dark:hover:border-red-500/50 hover:text-red-500 transition-colors"
+                    className="p-2 rounded-lg border border-stone-200 dark:border-stone-600 text-stone-400 dark:text-stone-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-200 dark:hover:border-red-500/50 hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

@@ -17,9 +17,9 @@ interface AdminAtsScore {
 }
 
 const getScoreColor = (score: number) => {
-  if (score >= 80) return "text-green-600 bg-green-50";
-  if (score >= 60) return "text-yellow-600 bg-yellow-50";
-  return "text-red-600 bg-red-50";
+  if (score >= 80) return "bg-emerald-50 dark:bg-emerald-400/10 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-400/20";
+  if (score >= 60) return "bg-amber-50 dark:bg-amber-400/10 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-400/20";
+  return "bg-red-50 dark:bg-red-400/10 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-500/20";
 };
 
 const AllAtsScores: React.FC<{ onRefresh?: () => void; isRefreshing?: boolean }> = ({ onRefresh, isRefreshing }) => {
@@ -72,8 +72,10 @@ const AllAtsScores: React.FC<{ onRefresh?: () => void; isRefreshing?: boolean }>
           <>
             <button
               onClick={() => setConfirmDeleteAll(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+              disabled={scores.length === 0}
+              className="font-plex inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-lg text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-400/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
+              <Trash2 className="w-4 h-4" />
               Clear All
             </button>
           </>
@@ -81,56 +83,62 @@ const AllAtsScores: React.FC<{ onRefresh?: () => void; isRefreshing?: boolean }>
       />
 
       {scores.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 box-shadow p-6 text-center py-16 text-gray-500 dark:text-gray-400">No ATS scores found.</div>
+        <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl shadow-xl p-6 text-center py-16 text-stone-500 dark:text-stone-400">
+          <ClipboardCheck className="w-10 h-10 mx-auto mb-2 text-stone-300 dark:text-stone-600" />
+          No ATS scores found.
+        </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 box-shadow overflow-hidden">
+        <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  <th className="px-4 py-3">Title</th>
-                  <th className="px-4 py-3">User</th>
-                  <th className="px-4 py-3">Score</th>
-                  <th className="px-4 py-3">ATS Friendliness</th>
-                  <th className="px-4 py-3">Date</th>
-                  <th className="px-4 py-3 text-right">Action</th>
+                <tr className="border-b border-stone-200 dark:border-stone-800 text-left text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-5 py-3.5">Title</th>
+                  <th className="px-5 py-3.5">User</th>
+                  <th className="px-5 py-3.5">Score</th>
+                  {/* <th className="px-5 py-3.5">ATS Friendliness</th> */}
+                  <th className="px-5 py-3.5">Date</th>
+                  <th className="px-5 py-3.5 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="divide-y divide-stone-100 dark:divide-stone-800">
                 {scores.map((score) => (
-                  <tr key={score.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <ClipboardCheck className="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
+                  <tr key={score.id} className="hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors">
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-stone-900 dark:bg-lime-300 text-lime-300 dark:text-stone-900 flex items-center justify-center shrink-0">
+                          <ClipboardCheck className="w-4 h-4" />
+                        </div>
                         <div>
-                          <p className="text-gray-800 dark:text-gray-100 font-medium truncate max-w-[180px]">{score.title}</p>
-                          <p className="text-gray-500 dark:text-gray-400 text-xs truncate max-w-[180px]">{score.resumeName}</p>
+                          <p className="text-stone-800 dark:text-stone-100 font-medium truncate max-w-[180px]">{score.title}</p>
+                          <p className="text-stone-500 dark:text-stone-400 text-xs truncate max-w-[180px]">{score.resumeName}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-3.5">
                       <div>
-                        <p className="text-gray-800 dark:text-gray-100 font-medium">{score.user.name || "—"}</p>
-                        <p className="text-gray-500 dark:text-gray-400 text-xs">{score.user.email}</p>
+                        <p className="text-stone-800 dark:text-stone-100 font-medium">{score.user.name || "—"}</p>
+                        <p className="text-stone-500 dark:text-stone-400 text-xs">{score.user.email}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-0.5 text-xs font-bold rounded ${getScoreColor(score.overallScore)}`}>
+                    <td className="px-5 py-3.5">
+                      <span className={`font-plex inline-flex px-2.5 py-0.5 text-xs font-bold rounded-full ${getScoreColor(score.overallScore)}`}>
                         {score.overallScore}%
                       </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-0.5 text-xs font-bold rounded ${getScoreColor(score.atsFriendliness)}`}>
+                    {/* <td className="px-5 py-3.5">
+                      <span className={`font-plex inline-flex px-2.5 py-0.5 text-xs font-bold rounded-full ${getScoreColor(score.atsFriendliness)}`}>
                         {score.atsFriendliness}%
                       </span>
-                    </td>
-                    <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs whitespace-nowrap">
+                    </td> */}
+                    <td className="px-5 py-3.5 text-stone-500 dark:text-stone-400 text-xs whitespace-nowrap">
                       {new Date(score.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-5 py-3.5 text-right">
                       <button
                         onClick={() => setConfirmDelete(score)}
-                        className="text-gray-400 dark:text-gray-500 hover:text-red-600 transition-colors"
+                        className="p-2 rounded-lg text-stone-400 dark:text-stone-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-400/10 transition-colors"
+                        title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

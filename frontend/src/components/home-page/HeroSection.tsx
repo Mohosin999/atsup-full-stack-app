@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ user, onLogout }: HeroSectionProps) {
   return (
-    <section className="relative overflow-hidden bg-stone-50 dark:bg-stone-950 pt-14 md:pt-20 lg:pt-28 2xl:pt-32 pb-14 md:pb-16 lg:pb-14 xl:pb-20">
+    <section className="relative overflow-hidden bg-stone-50 dark:bg-stone-950 pt-14 md:pt-20 lg:pt-28 2xl:pt-32 pb-14 md:pb-16 lg:pb-14 xl:pb-16 2xl:pb-20">
       {/* subtle dot-grid texture */}
       <div
         className="pointer-events-none absolute inset-0 opacity-40 dark:opacity-10"

@@ -28,10 +28,10 @@ export default function ResumeDashboard() {
             transition={{ duration: 0.4 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-400/10 dark:text-amber-200 dark:border-amber-400/20">
+            {/* <span className="font-plex inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-300 dark:bg-amber-400/10 dark:text-amber-200 dark:border-amber-400/20">
               <Sparkles className="w-3.5 h-3.5" />
               ATS resume builder
-            </span>
+            </span> */}
 
             <h1 className="font-fraunces mt-4 text-3xl md:text-4xl lg:text-5xl font-normal leading-[1.08] text-stone-900 dark:text-stone-50">
               How would you like to{" "}
@@ -47,7 +47,7 @@ export default function ResumeDashboard() {
               auto-saved every 2s.
             </p>
 
-            <div className="font-plex mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-stone-500 dark:text-stone-400">
+            {/* <div className="font-plex mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-stone-500 dark:text-stone-400">
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 Auto-saved every 2s
@@ -60,7 +60,7 @@ export default function ResumeDashboard() {
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 PDF in one click
               </span>
-            </div>
+            </div> */}
           </motion.div>
         </Wrapper>
       </section>
@@ -90,7 +90,7 @@ export default function ResumeDashboard() {
               </p>
 
               {/* mini preview hint — homepage BuilderPreview language */}
-              <div className="mt-5 space-y-1.5">
+              {/* <div className="mt-5 space-y-1.5">
                 {["Profile Info", "Summary", "Experience"].map((s) => (
                   <div
                     key={s}
@@ -102,7 +102,7 @@ export default function ResumeDashboard() {
                   </div>
                 ))}
                 <p className="text-[11px] text-stone-500 dark:text-stone-400">+ Skills, Education, Projects…</p>
-              </div>
+              </div> */}
 
               <ul className="mt-5 space-y-2 text-xs text-stone-600 dark:text-stone-400">
                 {["Live preview as you type", "Auto-save every 2s — never lose work"].map((t) => (
@@ -150,7 +150,7 @@ export default function ResumeDashboard() {
               </p>
 
               {/* steps hint — mirrors /resume-builder/upload */}
-              <div className="mt-5 flex items-center gap-1.5 text-xs font-medium">
+              {/* <div className="mt-5 flex items-center gap-1.5 text-xs font-medium">
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-violet-600 text-white">
                   1 Upload
                 </span>
@@ -162,7 +162,7 @@ export default function ResumeDashboard() {
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300">
                   3 Rewrite
                 </span>
-              </div>
+              </div> */}
 
               <ul className="mt-5 space-y-2 text-xs text-stone-600 dark:text-stone-400">
                 {["Tailored keywords from the JD", "Truthful — nothing invented", "Opens in builder to edit & download"].map((t) => (
@@ -190,9 +190,9 @@ export default function ResumeDashboard() {
         </div>
 
         {/* footnote */}
-        <p className="font-plex mt-8 text-center text-xs text-stone-500 dark:text-stone-400">
+        {/* <p className="font-plex mt-8 text-center text-xs text-stone-500 dark:text-stone-400">
           No credit needed to build — sign in to save. Exports are PDF only, single-column.
-        </p>
+        </p> */}
       </Wrapper>
 
       <style>{`

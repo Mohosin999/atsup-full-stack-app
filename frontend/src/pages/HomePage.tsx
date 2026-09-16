@@ -51,9 +51,9 @@ export default function HomePage() {
       <div className="min-h-screen overflow-hidden relative">
         <main className="relative z-10">
           <HeroSection user={undefined} onLogout={() => setShowLogoutConfirm(true)} />
+          <FeatureShowcase />
           {/* <StatsBar /> */}
           <HowItWorksTabs />
-          <FeatureShowcase />
           <ATSCategories />
           <AIRewriteShowcase />
           <BuilderPreview />

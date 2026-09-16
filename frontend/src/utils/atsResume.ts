@@ -91,18 +91,18 @@ export const ATS_STYLE = `
   .ats-resume {
     width: 100%;
     min-height: 1122px;
-    padding: 60px 56px 56px;
+    padding: 60px 56px 24px;
     background: #ffffff;
     color: #444444;
     font-size: 10pt;
-    font-family: Inter, Calibri, Arial, Helvetica, "Times New Roman";
+    font-family: Calibri, Inter, Arial, Helvetica, "Times New Roman";
     line-height: 1.45;
   }
   .ats-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 0px;
+    margin-bottom: -6px;
   }
   .ats-header-title-date {
     display: flex;
@@ -111,7 +111,7 @@ export const ATS_STYLE = `
     margin-bottom: 0px;
   }
   .ats-name {
-    font-size: 17pt;
+    font-size: 20pt;
     font-weight: 500;
     text-transform: capitalize;
     letter-spacing: 0.5px;

@@ -130,11 +130,11 @@ export default function AtsScorePage() {
     <div className="font-plex min-h-screen bg-stone-50 dark:bg-stone-950 lg:pt-20 pb-12">
       <Wrapper>
         <div className="py-8 lg:mb-4">
-          <span className="flex justify-center mb-3">
+          {/* <span className="flex justify-center mb-3">
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-lime-100 text-stone-800 border border-lime-300 dark:bg-lime-400/10 dark:text-lime-200 dark:border-lime-400/20">
               ATS scan
             </span>
-          </span>
+          </span> */}
           <h1 className="font-fraunces text-2xl md:text-3xl font-normal text-stone-900 text-center mb-4 dark:text-stone-50">
             ATS score check
           </h1>

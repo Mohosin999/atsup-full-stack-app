@@ -12,15 +12,10 @@ export const createTicket = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const attachment = (req as any).file
-      ? `/uploads/${(req as any).file.filename}`
-      : undefined;
-
     const ticket = await createSupportTicket(req.user.id, {
       type: type || "bug",
       title: title.trim().slice(0, 255),
       message: message.trim(),
-      attachment,
     });
 
     res.status(201).json({

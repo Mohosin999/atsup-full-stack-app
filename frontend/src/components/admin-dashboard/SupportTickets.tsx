@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Trash2, Paperclip, Inbox } from 'lucide-react';
+import { ChevronDown, ChevronUp, Trash2, Inbox } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../api/api';
 import { SupportStatus, SupportTicket } from '../../types';
@@ -40,12 +40,6 @@ const FILTERS: { value: Filter; label: string }[] = [
   { value: 'in-progress', label: 'In Progress' },
   { value: 'resolved', label: 'Resolved' },
 ];
-
-const attachmentUrl = (path: string) => {
-  const apiUrl = import.meta.env.VITE_API_URL || '/api';
-  if (apiUrl.startsWith('http')) return new URL(apiUrl).origin + path;
-  return path;
-};
 
 const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, isRefreshing }) => {
   const queryClient = useQueryClient();
@@ -192,18 +186,6 @@ const SupportTickets: React.FC<Props> = ({ refreshKey, onOpenCount, onRefresh, i
                 {expanded && (
                   <div className="px-4 pb-4 border-t border-gray-100 dark:border-gray-700 pt-3">
                       <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{t.message}</p>
-
-                    {t.attachment && (
-                      <a
-                        href={attachmentUrl(t.attachment)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-3 inline-flex items-center gap-1.5 text-sm text-cyan-600 hover:underline"
-                      >
-                        <Paperclip className="w-4 h-4" />
-                        View attachment
-                      </a>
-                    )}
 
                     <div className="mt-4 flex items-center justify-between flex-wrap gap-2">
                       <div className="flex items-center gap-2">

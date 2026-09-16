@@ -1,15 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MessageSquare, X, Paperclip, Send, CheckCircle2 } from "lucide-react";
+import {
+  MessageSquare,
+  X,
+  Send,
+  CheckCircle2,
+} from "lucide-react";
 import { supportApi } from "../../api/api";
 import { SupportType } from "../../types";
+
+const TYPES: { value: string; label: string }[] = [
+  { value: "bug", label: "Bug" },
+  { value: "feature", label: "Feature" },
+  { value: "account", label: "Account" },
+  { value: "billing", label: "Billing" },
+  { value: "performance", label: "Performance" },
+  { value: "ui", label: "UI / Design" },
+  { value: "security", label: "Security" },
+  { value: "other", label: "Other" },
+];
 
 const ReportButton: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<SupportType>("bug");
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [attachment, setAttachment] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
@@ -18,7 +33,6 @@ const ReportButton: React.FC = () => {
     setType("bug");
     setTitle("");
     setMessage("");
-    setAttachment(null);
     setError("");
     setDone(false);
   };
@@ -46,12 +60,11 @@ const ReportButton: React.FC = () => {
     setSubmitting(true);
     setError("");
     try {
-      const fd = new FormData();
-      fd.append("type", type);
-      fd.append("title", title);
-      fd.append("message", message);
-      if (attachment) fd.append("attachment", attachment);
-      await supportApi.create(fd);
+      await supportApi.create({
+        type,
+        title: title.trim(),
+        message: message.trim(),
+      });
       setDone(true);
     } catch (err: any) {
       setError(
@@ -65,155 +78,148 @@ const ReportButton: React.FC = () => {
   return (
     <>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={close} />
-          <div className="relative w-full sm:max-w-md bg-white dark:bg-gray-800 dark:border dark:border-gray-700 rounded-t-xl sm:rounded-lg shadow-xl p-6 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                {done ? "Report Submitted" : "Report a Problem"}
-              </h3>
-              <button
-                type="button"
-                onClick={close}
-                className="p-1 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
+          <div
+            className="absolute inset-0 bg-stone-950/50 backdrop-blur-[2px]"
+            onClick={close}
+          />
+          <div className="relative w-full md:max-w-md bg-white dark:bg-stone-900 border-t md:border border-stone-200 dark:border-stone-800 rounded-t-2xl md:rounded-2xl shadow-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <button
+              type="button"
+              onClick={close}
+              className="font-plex absolute top-4 right-4 p-1.5 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
 
             {done ? (
-              <div className="text-center py-6">
-                <CheckCircle2 className="w-12 h-12 text-cyan-500 mx-auto mb-3" />
-                <p className="text-gray-700 dark:text-gray-300 mb-1">
-                  Thank you! Your report has been sent to our team.
+              <div className="text-center py-8">
+                <span className="w-14 h-14 mx-auto flex items-center justify-center rounded-2xl bg-lime-100 dark:bg-lime-400/10 text-lime-600 dark:text-lime-300 mb-4">
+                  <CheckCircle2 className="w-7 h-7" />
+                </span>
+                <h3 className="font-fraunces text-xl font-normal text-stone-900 dark:text-stone-50">
+                  Report Submitted
+                </h3>
+                <p className="font-plex mt-2 text-sm text-stone-500 dark:text-stone-400">
+                  Thank you! Your report has been sent to our team. You can
+                  track its status from My Reports.
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
-                  You can track its status from My Reports.
-                </p>
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2 mt-6">
                   <Link
                     to="/my-reports"
                     onClick={close}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700"
+                    className="font-plex inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-stone-900 text-white hover:bg-stone-800 dark:bg-lime-300 dark:text-stone-900 dark:hover:bg-lime-200 text-sm font-semibold transition-colors"
                   >
                     My Reports
                   </Link>
                   <button
                     type="button"
                     onClick={close}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    className="font-plex px-5 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 text-sm font-semibold transition-colors"
                   >
                     Close
                   </button>
                 </div>
               </div>
             ) : (
-              <form onSubmit={submit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Problem type
-                  </label>
-                  <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value as SupportType)}
-                    className="w-full px-3 py-2 border-[1px] border-gray-400 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-0 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100"
-                  >
-                    <option value="bug">Bug / Something is broken</option>
-                    <option value="feature">Feature request</option>
-                    <option value="account">Account issue</option>
-                    <option value="billing">Billing / Payment issue</option>
-                    <option value="performance">Performance problem</option>
-                    <option value="ui">UI / Design issue</option>
-                    <option value="security">Security concern</option>
-                    <option value="other">Other</option>
-                  </select>
+              <>
+                <div className="text-center">
+                  <span className="w-14 h-14 mx-auto flex items-center justify-center rounded-2xl bg-stone-900 dark:bg-lime-300 text-lime-300 dark:text-stone-900 mb-4">
+                    <MessageSquare className="w-6 h-6" />
+                  </span>
+                  <h3 className="font-fraunces text-xl font-normal text-stone-900 dark:text-stone-50">
+                    Report a Problem
+                  </h3>
+                  <p className="font-plex mt-1 text-sm text-stone-500 dark:text-stone-400">
+                    Tell us what went wrong — we'll fix it.
+                  </p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Short summary of the problem"
-                    maxLength={255}
-                    className="w-full px-3 py-2 border-[1px] border-gray-400 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-0  bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Tell us what happened and what you expected..."
-                    rows={4}
-                    className="w-full px-3 py-2 border-[1px] border-gray-400 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-0 resize-none bg-white dark:bg-gray-900 text-gray-00 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Screenshot{" "}
-                    <span className="text-gray-500 dark:text-gray-400 font-normal">
-                      (optional)
-                    </span>
-                  </label>
-                  <div className="flex items-center gap-2">
-                      <label className="flex-1 flex items-center gap-2 px-3 py-2 border-[1px] border-dashed border-gray-400 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-300 cursor-pointer hover:border-cyan-500 hover:text-cyan-600 bg-white dark:bg-gray-900">
-                      <Paperclip className="w-4 h-4" />
-                      <span className="truncate">
-                        {attachment ? attachment.name : "Attach an image"}
-                      </span>
-                      <input
-                        type="file"
-                        accept="image/png,image/jpeg,image/webp,image/gif,application/pdf"
-                        className="hidden"
-                        onChange={(e) =>
-                          setAttachment(e.target.files?.[0] || null)
-                        }
-                      />
+                <form onSubmit={submit} className="space-y-5 mt-6">
+                  <div>
+                    <label className="font-plex block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                      Problem type
                     </label>
-                    {attachment && (
-                      <button
-                        type="button"
-                        onClick={() => setAttachment(null)}
-                        className="px-2 py-1 text-xs rounded-md bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 border border-black dark:border-gray-600"
-                      >
-                        Remove
-                      </button>
-                    )}
+                    <div className="flex flex-wrap gap-2">
+                      {TYPES.map((t) => (
+                        <button
+                          key={t.value}
+                          type="button"
+                          onClick={() => setType(t.value as SupportType)}
+                          className={`font-plex px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors cursor-pointer ${
+                            type === t.value
+                              ? "bg-stone-900 dark:bg-lime-300 text-white dark:text-stone-900 border-stone-900 dark:border-lime-300"
+                              : "bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 border-stone-300 dark:border-stone-600 hover:border-stone-500 dark:hover:border-stone-400"
+                          }`}
+                        >
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {error && <p className="text-sm text-red-600">{error}</p>}
+                  <div>
+                    <label className="font-plex block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                      Title
+                    </label>
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Short summary of the problem"
+                      maxLength={255}
+                      className="font-plex w-full px-3.5 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 transition-all"
+                    />
+                  </div>
 
-                <div className="flex items-center justify-between gap-2 pt-1">
-                  <Link
-                    to="/my-reports"
-                    onClick={close}
-                    className="text-sm text-cyan-600 hover:underline"
-                  >
-                    My reports
-                  </Link>
+                  <div>
+                    <label className="font-plex block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                      Description
+                    </label>
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Tell us what happened and what you expected..."
+                      rows={4}
+                      className="font-plex w-full px-3.5 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent resize-none bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 transition-all"
+                    />
+                  </div>
+
+                  {error && (
+                    <p className="font-plex text-sm text-red-600 dark:text-red-400 text-center">
+                      {error}
+                    </p>
+                  )}
+
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 disabled:opacity-50"
+                    className="font-plex w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-semibold rounded-xl bg-stone-900 text-white hover:bg-stone-800 dark:bg-lime-300 dark:text-stone-900 dark:hover:bg-lime-200 disabled:opacity-50 transition-colors"
                   >
                     <Send className="w-4 h-4" />
-                    {submitting ? "Submitting..." : "Submit"}
+                    {submitting ? "Submitting..." : "Submit Report"}
                   </button>
-                </div>
-              </form>
+
+                  <Link
+                    to="/my-reports"
+                    onClick={close}
+                    className="font-plex block text-center text-sm text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-100 transition-colors"
+                  >
+                    View my reports
+                  </Link>
+                </form>
+              </>
             )}
           </div>
         </div>
       )}
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+        .font-fraunces { font-family: 'Fraunces', serif; }
+        .font-plex { font-family: 'IBM Plex Sans', sans-serif; }
+      `}</style>
     </>
   );
 };

@@ -530,7 +530,6 @@ export interface SupportTicket {
   type: SupportType;
   title: string;
   message: string;
-  attachment?: string | null;
   status: SupportStatus;
   createdAt: string;
   updatedAt: string;

@@ -4,7 +4,6 @@ export interface CreateTicketData {
   type: string;
   title: string;
   message: string;
-  attachment?: string;
 }
 
 export const createSupportTicket = async (
@@ -17,7 +16,6 @@ export const createSupportTicket = async (
       type: data.type || "bug",
       title: data.title,
       message: data.message,
-      attachment: data.attachment || null,
       status: "open",
     },
   });

@@ -176,7 +176,6 @@ model SupportTicket {
   type       String   @default("bug") @db.VarChar(50)
   title      String   @db.VarChar(255)
   message    String   @db.Text
-  attachment String?
   status     String   @default("open") @db.VarChar(50)
   createdAt  DateTime @default(now()) @db.Timestamp()
   updatedAt  DateTime @updatedAt @db.Timestamp()

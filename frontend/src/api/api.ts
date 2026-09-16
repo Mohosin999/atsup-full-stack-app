@@ -221,10 +221,8 @@ export const atsScoreApi = {
 
 // Support / problem reporting
 export const supportApi = {
-  create: (formData: FormData) =>
-    api.post("/support", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+  create: (data: { type: string; title: string; message: string }) =>
+    api.post("/support", data),
   getMine: () => api.get("/support/mine"),
 };
 

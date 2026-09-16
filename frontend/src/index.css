@@ -100,36 +100,36 @@ body {
     display: none;
   }
 
-  /* Custom Scrollbar - Cyan */
+  /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #e5e7eb;
+    background: #e7e5e4;
     border-radius: 3px;
   }
 
   .dark ::-webkit-scrollbar-track {
-    background: #1f2937;
+    background: #292524;
   }
 
   .dark ::-webkit-scrollbar-thumb {
-    background: #155e75;
+    background: #57534e;
   }
 
   .dark ::-webkit-scrollbar-thumb:hover {
-    background: #0891b2;
+    background: #78716c;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #06b6d4;
+    background: #a8a29e;
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #0891b2;
+    background: #78716c;
   }
 }
 

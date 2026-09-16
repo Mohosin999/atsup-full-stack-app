@@ -428,31 +428,6 @@ export default function ResumeUpload() {
           </div>
         </div>
 
-        {/* Parsed preview */}
-        {resumeText && (
-          <div className="font-plex mt-6 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-stone-200 dark:border-stone-800">
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-stone-700 dark:text-stone-300" />
-                <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100">Extracted resume text</h3>
-                <span className="text-[11px] text-stone-400">{resumeText.length.toLocaleString()} chars</span>
-              </div>
-              <button
-                onClick={handleCopyResume}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
-              >
-                <Copy className="w-3.5 h-3.5" />
-                {copied ? "Copied!" : "Copy"}
-              </button>
-            </div>
-            <div className="max-h-[280px] overflow-y-auto">
-              <pre className="px-6 py-4 text-[13px] leading-relaxed whitespace-pre-wrap break-words text-stone-700 dark:text-stone-300 font-plex">
-                {resumeText}
-              </pre>
-            </div>
-          </div>
-        )}
-
         {/* Features */}
         <div className="font-plex mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
           {[

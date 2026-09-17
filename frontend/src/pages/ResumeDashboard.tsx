@@ -14,7 +14,7 @@ export default function ResumeDashboard() {
     <div className="min-h-screen bg-white dark:bg-stone-950">
       {/* Hero — same language as homepage HeroSection */}
       {/* <section className="relative overflow-hidden pt-8 lg:pt-0 pb-10 md:pb-12 lg:pb-16"> */}
-      <section className="relative overflow-hidden pt-8 lg:pt-32 pb-10 md:pb-12">
+      <section className="relative overflow-hidden pt-16 lg:pt-32 pb-10 md:pb-12">
         <div
           className="pointer-events-none absolute inset-0 opacity-40 dark:hidden"
           style={{

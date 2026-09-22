@@ -38,7 +38,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
             </p>
 
             <h1 className="font-fraunces font-normal text-4xl md:text-5xl lg:text-[2.75rem] xl:text-6xl 2xl:text-[4.2rem] leading-[1.08] text-stone-900 dark:text-stone-50">
-              Prepare your resume for the{" "}
+              Prepare your resume for{" "}
               <span className="relative inline-block whitespace-nowrap">
                 <span className="relative z-10">ATS screening</span>
                 <span className="absolute left-0 right-0 bottom-[0.08em] h-[0.32em] bg-lime-300/80 dark:bg-lime-400/70 rounded-[2px] -z-0" />

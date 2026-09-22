@@ -1,297 +1,451 @@
-# ATSUp - AI-Powered Resume Analysis & Builder Platform (AI)
+<div align="center">
 
-ATSUp is an AI-powered resume analysis and building platform that helps job seekers optimize their resumes for Applicant Tracking Systems (ATS) and job matching. Users can upload resumes to receive detailed ATS scores, missing keyword identification, and AI-generated improvement recommendations. The platform also features resume-to-job matching with skills gap analysis, a professional resume builder with AI-powered content generation, plus secure authentication, Stripe payment integration for premium features, and a centralized dashboard.
 
-⚠️─ Important: MONGODB*URI now points to mongodb://mongo:27017/cvcoach (inside Docker network) instead of your Atlas URI. You'll need a .env file OpenCode includes free models  
- with the secrets (GEMINI_API_KEY, JWT_SECRET, STRIPE*\* etc.) for Docker Compose to pick up, or replace the values inline. so you can start immediately.
 
-     Run: docker compose up -d
+# ATSUp — AI-Powered Resume Analysis & Builder Platform
 
-![Tech Stack](https://img.shields.io/badge/Stack-React%20%7C%20Node.js%20%7C%20MongoDB%20%7C%20Gemini%20AI-blue)
+**Beat the ATS. Land the Interview.**
 
-![Project Screenshot](./frontend//public/cvscan.png)
+_Upload your resume → Get ATS score, keyword gaps & Improvement suggestions → Build a ats-winning resume in minutes_
+
+</div>
+
+<p align="center">
+  <img src="./frontend/public/atsup_home.png" alt="ATSUp Homepage Preview" width="100%" style="border-radius:12px; border:1px solid #e5e7eb;" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Stack-React%20%7C%20Node.js%20%7C%20PostgreSQL%20%7C%20Prisma%20%7C%20Redis%20%7C%20Gemini%20AI-blue?style=flat-square" alt="Tech Stack" />
+  <img src="https://img.shields.io/badge/Deploy-Vercel-black?style=flat-square&logo=vercel" alt="Vercel" />
+  <img src="https://img.shields.io/badge/Auth-Google%20OAuth%20%7C%20JWT-orange?style=flat-square" alt="Auth" />
+</p>
+
+---
 
 ## 📋 Table of Contents
 
-- [Live Demo](#live-demo)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
+- [Why ATSUp?](#-why-atsup)
+- [Live Demo](#-live-demo)
+- [Features](#-features)
+- [Screenshots](#-screenshots)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#-environment-variables)
+- [Running the App](#-running-the-app)
+- [API Endpoints](#-api-endpoints)
+- [System Design](#-system-design)
+- [Deployment](#-deployment)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-## Live Demo
+---
 
-[ATSUp App](https://cvcoach-client.vercel.app/) - Try the live application
+## 💡 Why ATSUp?
 
-## Features
+> **75% of resumes are rejected by ATS before a human ever sees them.**
 
-### ATS Score Analysis
+ATSUp fixes that. Upload any PDF, get an instant **ATS compatibility score (0-100)**, see **missing keywords**, **section-by-section breakdown**, and **AI-generated rewrites** tailored to the job description. Then build a new ATS-perfect resume with live preview and export to **PDF / DOCX / PNG**.
 
-- **ATS Compatibility Scoring** - Evaluate how well your resume performs against Applicant Tracking Systems
-- **Detailed Analysis Reports** - Get comprehensive breakdowns of your resume's strengths and weaknesses
-- **Missing Keyword Identification** - Discover critical keywords that your resume lacks
-- **ATS Score History** - Track your resume's ATS score improvements over time
-- **AI-Powered Recommendations** - Receive intelligent suggestions to optimize your resume for ATS
+Built for job seekers, career coaches, and anyone tired of the black hole.
 
-### Job Match Analysis
+---
 
-- **Resume-to-Job Matching** - Compare your resume against specific job descriptions
-- **Match Score Calculation** - Get a percentage score showing how well you fit the position
-- **Skills Gap Analysis** - Identify missing skills and qualifications for the target job
-- **Keyword Optimization** - Find relevant keywords to add for better job alignment
-- **Job Match History** - Review all your previous job match analyses
-- **Customizable Job Descriptions** - Paste any job description to get instant matching insights
+## 🌐 Live Demo
 
-### Resume Builder
+**👉 [https://cvcoach-client.vercel.app/](https://cvcoach-client.vercel.app/) — Try it live**
 
-- **Professional Resume Templates** - Choose from multiple ATS-friendly resume templates
-- **AI-Powered Content Generation** - Generate professional summaries, work experience descriptions, and skills automatically
-- **Real-Time Live Preview** - See your resume changes as you edit
-- **Multiple Export Formats** - Download your resume as PDF, DOCX, or PNG
-- **Resume Build History** - Access and manage all your previously created resumes
+- No credit card required for free scans
+- Google OAuth + email/password auth
+- Works on desktop, tablet, and mobile
 
-### Resume Parser & Analysis
+---
 
-- **File Upload Support** - Upload resumes in PDF, DOCX, or TXT formats
-- **Automatic Content Extraction** - Parse and extract information from resume files
-- **AI-Generated Feedback** - Get intelligent suggestions to improve resume content
-- **Section-by-Section Analysis** - Detailed review of each resume section
+## ✨ Features
 
-### User Dashboard & Management
+### 🎯 ATS Score Analysis
 
-- **Secure Authentication** - Email/password login with Google OAuth support
-- **Centralized Dashboard** - View all your resumes, analyses, and match scores in one place
-- **Settings Management** - Customize your profile and application preferences
-- **Activity History** - Track all your resume analyses, ATS scores, and job matches
+- **0-100 ATS Compatibility Score** with `atsFriendliness` and `sectionScores`
+- **Section-by-section breakdown** — education, experience, skills, formatting
+- **Missing & recommended keywords** powered by Gemini + skill normalizer
+- **AI suggestions** — actionable fixes, recruiter tips, searchability score
+- **History & rescan** — track progress over time, rename/delete scans
 
-### Payment & Credits System
+### 🧲 Job Match & JD Parsing
 
-- **Stripe Integration** - Secure and reliable payment processing
-- **Credit-Based System** - Purchase credits to unlock premium features
-- **Multiple Pricing Plans** - Choose from different subscription tiers
-- **Payment Verification** - Real-time payment status tracking
-- **Success & Cancel Pages** - Guided checkout experience
+- Paste any job description → structured parsing (`/ats-score/parse-jd`)
+- Resume ↔ JD match score + gap analysis
+- `originalPdf` + `aiResearch` preserved for rescan
 
-### Technical Features
+### 📄 Resume Builder & Parser
 
-- **Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
-- **Modern UI/UX** - Clean, intuitive interface with smooth animations
-- **Real-Time Updates** - Instant feedback and live preview capabilities
-- **Secure File Handling** - Safe upload and processing of resume documents
-- **API Rate Limiting** - Protected against abuse and excessive requests
-- **Comprehensive Error Handling** - Clear error messages and validation
+- Visual builder with **live preview**, drag-and-drop (`@dnd-kit`), rich text (`react-quill`)
+- **PDF parsing** (`pdf-parse` + `pdfjs-dist`) → auto-extract content to `Resume.content: Json`
+- Export to **PDF (jsPDF + html2canvas), DOCX (docx), PNG**
+- Upload or build from scratch — `sourceType: uploaded | builder`
+- Duplicate, history, and delete-all
 
-## Tech Stack
+### 🔐 Auth & Security
 
-### Frontend
+- **JWT access + refresh** with Redis-backed rotation & queue-safe interceptor (`frontend/src/api/api.ts:30`)
+- **Google OAuth 2.0** via Passport (`GOOGLE_CALLBACK_URL`)
+- Device fingerprinting (`@fingerprintjs`), IP tracking (`cf-connecting-ip` → `x-forwarded-for`), `trust proxy: 1`
+- Helmet, CORS, rate-limiting (RedisStore), Zod validation
 
-- **React 18** with TypeScript
-- **Vite** for build tooling
-- **Redux Toolkit** for state management
-- **TailwindCSS** for styling
-- **React Router** for navigation
-- **Framer Motion** for animations
-- **React Quill** for rich text editing
+### 💳 Credits & Payments
 
-### Backend
+- Stripe checkout (`STRIPE_SECRET_KEY`), free-credits system, `use-credit` / `add-free-credits`
+- Payment history tied to `Payment` model
 
-- **Express.js** with TypeScript
-- **MongoDB** with Mongoose
-- **Google Gemini AI** for AI-powered features
-- **Stripe** for payment processing
-- **Passport.js** for authentication
-- **Multer** for file uploads
+### 👑 Admin, Support & Analytics
 
-## Project Structure
+- Admin dashboard — users, payments, support tickets, **reviews moderation** (`toggle-home`)
+- Support tickets (`/api/support`) + feedback/reviews (`/api/feedback`, home reviews)
+- Visitor tracking via `fingerprint` + `SiteStats` singleton
+- Role-based access (`admin` / `user`), ban/active flags
+
+### ⚡ Technical Highlights
+
+- **PostgreSQL (Neon) + Prisma** with CUIDs, indexed queries, JSON fields for flexible resume content
+- **Redis** for rate limiting & AI cache (`AI_CACHE_TTL=86400`, `PROMPT_VERSION=v1`)
+- **AI cache** — Gemini responses cached by prompt version
+- Responsive Tailwind + Framer Motion, Redux Toolkit + TanStack Query
+- File uploads via Multer (`MAX_FILE_SIZE`), `pdf-parse` pipeline
+
+---
+
+## 🖼️ Screenshots
+
+|                                   ATS Scan                                    |                                 Resume Builder                                  |
+| :---------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
+|  <img src="./frontend/public/scan.png" alt="ATS Scan Light" width="100%" />   |  <img src="./frontend/public/builder.png" alt="Builder Light" width="100%" />   |
+| <img src="./frontend/public/scanDark.png" alt="ATS Scan Dark" width="100%" /> | <img src="./frontend/public/builderDark.png" alt="Builder Dark" width="100%" /> |
+
+> All images from `frontend/public/` — light and dark themes fully supported via `ThemeWrapper`.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend — `frontend/`
+
+| Layer         | Tech                                                                   |
+| :------------ | :--------------------------------------------------------------------- |
+| Framework     | **React 18** + TypeScript + **Vite 5**                                 |
+| State & Data  | **Redux Toolkit**, **TanStack Query**, React Router 6                  |
+| Styling       | **TailwindCSS 3**, `tailwind-merge`, `clsx`, `tailwindcss-animate`     |
+| UI/UX         | **Framer Motion**, `lucide-react`, `react-icons`, `react-toastify`     |
+| Editor & DnD  | `react-quill`, `@dnd-kit` (core/sortable)                              |
+| Export        | `jspdf` + `html2canvas` (PDF/PNG), `docx` + `file-saver`, `pdfjs-dist` |
+| Auth & Upload | `@fingerprintjs`, `axios` (queued 401 refresh), `react-dropzone`       |
+| Validation    | `zod`                                                                  |
+
+### Backend — `backend/`
+
+| Layer         | Tech                                                                              |
+| :------------ | :-------------------------------------------------------------------------------- |
+| Runtime       | **Node 20** + **Express 4** + TypeScript + `tsx watch` / `esbuild` bundle         |
+| Database      | **PostgreSQL (Neon)** + **Prisma 7** (`@prisma/adapter-neon`, `prisma.config.ts`) |
+| Auth          | **Passport** (Google OAuth 20 + JWT), `jsonwebtoken`, `bcryptjs`, `cookie-parser` |
+| AI            | **Google Gemini** (`@google/genai` + `googleapis`, dual keys with fallback)       |
+| Cache & Limit | **ioredis** + `rate-limit-redis` + `express-rate-limit`, `helmet`, `cors`         |
+| Files         | `multer`, `pdf-parse`, `uuid`, `dotenv`                                           |
+| Validation    | `zod`                                                                             |
+
+### Infra
+
+- **Vercel** (frontend + serverless backend — `backend/vercel.json`, `frontend/vercel.json`)
+- **Nginx** (`frontend/nginx.conf` + `Dockerfile`)
+- **Redis** (local or managed — `REDIS_URL`)
+- **Docker Compose** (template in `docker-compose.yml` — currently commented, see below)
+
+---
+
+## 📁 Project Structure
 
 ```
-app/
-├── backend/                 # Express.js backend API
+cvcoach/
+├── backend/                          # Express API — src/server.ts:12 (Vercel-aware)
+│   ├── prisma/
+│   │   ├── schema.prisma             # PostgreSQL + 11 models (User, Resume, Analysis, AtsScore...)
+│   │   └── migrations/
 │   ├── src/
-│   │   ├── config/         # Configuration files
-│   │   ├── controllers/    # Request handlers
-│   │   ├── middlewares/    # Express middlewares
-│   │   ├── models/         # Mongoose models
-│   │   ├── routes/         # API routes
-│   │   ├── services/       # Business logic
-│   │   ├── db/             # Database connection
-│   │   └── utils/          # Utility functions
+│   │   ├── server.ts                 # http.createServer + connectDB(), Vercel export
+│   │   ├── app.ts                    # Express app, middleware, moduleRoutes, 404/errorHandler
+│   │   ├── db/                       # Prisma + Neon connection
+│   │   ├── lib/redis.ts              # ioredis client
+│   │   ├── modules/                  # Feature modules (routes → controller → service)
+│   │   │   ├── index.ts              # moduleRoutes → /api/auth, /api/users, /api/ats-score...
+│   │   │   ├── auth/                 # login, register, google OAuth, refresh, logout, /me
+│   │   │   ├── ats-score-check/      # parse-resume, parse-jd, analyze, rescan, history
+│   │   │   ├── resume-builder/       # /resumes CRUD, /parse, /ai-rewrite, /content, duplicate
+│   │   │   ├── admin-dashboard/      # admin stats, reviews moderation
+│   │   │   ├── users/                # profile, credits, free-credits-status
+│   │   │   ├── support/              # tickets
+│   │   │   ├── feedback/             # reviews / home reviews
+│   │   │   └── visitor/              # fingerprint tracking + SiteStats
+│   │   ├── shared/
+│   │   │   ├── ai/ { gemini/, cache/ }  # Gemini prompts, caching (PROMPT_VERSION, AI_CACHE_TTL)
+│   │   │   ├── config/ { env.ts, passport.ts }
+│   │   │   ├── middlewares/ { middlewareConfig.ts, auth.ts, errorHandler.ts }
+│   │   │   ├── resume-parser/        # pdf-parse helpers
+│   │   │   ├── scoring/              # ATS algorithm: constants, formatting, keywords, skills...
+│   │   │   ├── skills/skillNormalizer.ts
+│   │   │   └── utils/ { credits.ts, tokenService.ts, deviceCheck.ts }
+│   │   └── generated/prisma/         # Prisma client output
+│   ├── Dockerfile
+│   ├── prisma.config.ts
+│   └── package.json                  # dev: tsx watch, build: esbuild bundle
+│
+├── frontend/                         # React SPA — Vite + Redux + Tailwind
+│   ├── src/
+│   │   ├── api/api.ts                # axios + queued 401 refresh interceptor
+│   │   ├── App.tsx                   # Routes, Private/Public guards, OAuth redirect
+│   │   ├── pages/ { HomePage, Login, AtsScan, AtsScanDetail, ScanHistory, ResumeBuilder... }
+│   │   ├── components/ + animations/ + hooks/ (useVisitorTracking)
+│   │   ├── store/ (Redux slices) + types/ + utils/authGuard
+│   │   └── main.tsx
+│   ├── public/ { atsup_home.png, scan.png, scanDark.png, builder.png, builderDark.png }
+│   ├── vite.config.ts                # dev proxy /api → localhost:5000, port 3000
+│   ├── tailwind.config.js + index.css + nginx.conf
 │   └── package.json
 │
-└── frontend/               # React frontend application
-    ├── src/
-    │   ├── api/           # API client
-    │   ├── components/    # React components
-    │   ├── hooks/         # Custom hooks
-    │   ├── pages/         # Page components
-    │   ├── store/         # Redux store
-    │   ├── types/         # TypeScript types
-    │   └── utils/         # Utility functions
-    └── package.json
+├── docker-compose.yml                # Template (Postgres + pgAdmin + backend + frontend) — uncomment to use
+├── systemdesign.md                   # Architecture deep-dive & roadmap
+└── README.md                         # You are here
 ```
 
-## Getting Started
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- MongoDB (local or Atlas)
-- Google Cloud Platform account (for Gemini AI)
-- Stripe account (for payments)
+- **Node.js 20+** (backend `esbuild --target=node20`)
+- **PostgreSQL** — Neon cloud (recommended) or local Postgres 16
+- **Redis** — local (`redis://localhost:6379`) or managed (Upstash/Redis Cloud)
+- **Google Cloud** — Gemini API key + OAuth 2.0 credentials
+- **Stripe** — test keys for payments (optional for local dev)
 
-### Installation
+### 1. Clone
 
-1. **Clone the repository**
+```bash
+git clone <repository-url>
+cd cvcoach
+```
 
-   ```bash
-   git clone <repository-url>
-   cd app
-   ```
+### 2. Install
 
-2. **Install backend dependencies**
+```bash
+# Backend
+cd backend && npm install
+# Frontend
+cd ../frontend && npm install
+```
 
-   ```bash
-   cd backend
-   npm install
-   ```
+### 3. Environment Variables
 
-3. **Install frontend dependencies**
+Create **`backend/.env`** (see `backend/src/shared/config/env.ts:29`):
 
-   ```bash
-   cd frontend
-   npm install
-   ```
+```env
+NODE_ENV=development
+PORT=5000
+DATABASE_URL="postgresql://user:password@ep-xxx.neon.tech/neondb?sslmode=require"
+JWT_SECRET=your_jwt_secret
+JWT_REFRESH_SECRET=your_jwt_refresh_secret
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
+FRONTEND_URL=http://localhost:3000
+MAX_FILE_SIZE=10485760
+REDIS_URL=redis://localhost:6379
+PROMPT_VERSION=v1
+AI_CACHE_TTL=86400
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_API_KEY_SECONDARY=your_secondary_key_optional
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+```
 
-4. **Configure environment variables**
+Create **`frontend/.env`**:
 
-   Create `backend/.env`:
+```env
+VITE_API_URL=/api
+# or for direct backend: VITE_API_URL=http://localhost:5000/api
+VITE_GOOGLE_CLIENT_ID=your_google_client_id
+```
 
-   ```env
-   PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   GOOGLE_CLIENT_ID=your_google_client_id
-   GOOGLE_CLIENT_SECRET=your_google_client_secret
-   GEMINI_API_KEY=your_gemini_api_key
-   STRIPE_SECRET_KEY=your_stripe_secret_key
-   STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-   FRONTEND_URL=http://localhost:5173
-   ```
+> **Tip:** `frontend/vite.config.ts:15` already proxies `/api` → `http://localhost:5000` in dev, so `VITE_API_URL=/api` works out of the box.
 
-   Create `frontend/.env`:
+### 4. Prisma
 
-   ```env
-   VITE_API_URL=http://localhost:5000/api
-   VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-   ```
+```bash
+cd backend
+npx prisma generate
+npx prisma migrate dev   # or prisma db push for quick sync
+```
 
-### Running the Application
+---
 
-1. **Start the backend**
+## ▶️ Running the App
 
-   ```bash
-   cd backend
-   npm run dev
-   ```
+### Local Dev (recommended)
 
-   Backend runs on http://localhost:5000
+```bash
+# Terminal 1 — Backend (http://localhost:5000)
+cd backend
+npm run dev        # tsx watch src/server.ts
 
-2. **Start the frontend**
+# Terminal 2 — Frontend (http://localhost:3000)
+cd frontend
+npm run dev        # vite — proxies /api to backend
+```
 
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+Health check: `GET http://localhost:5000/health` → `{"status":"OK","message":"ATSUp is healthy"}`
 
-   Frontend runs on http://localhost:5173
+### Production Build
 
-3. **Build for production**
+```bash
+# Backend — esbuild bundle → dist/server.js
+cd backend && npm run build && npm start
 
-   ```bash
-   # Backend
-   cd backend
-   npm run build
-   npm start
+# Frontend — tsc + vite build
+cd frontend && npm run build && npm run start   # vite preview
+```
 
-   # Frontend
-   cd frontend
-   npm run build
-   npm run start
-   ```
+### Docker (optional)
 
-## API Endpoints
+`docker-compose.yml` is currently commented as a template. To use:
 
-### Authentication
+1. Uncomment services (`postgres`, `pgadmin`, `backend`, `frontend`)
+2. Create root `.env` with `ROOT_USERNAME`, `ROOT_PASSWORD`, `DATABASE_NAME`, `DATABASE_URL`
+3. Run:
 
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
-- `POST /api/auth/refresh-token` - Refresh access token
-- `POST /api/auth/logout` - User logout
+```bash
+docker compose up -d --build
+```
 
-### Resumes
+---
 
-- `POST /api/resumes/upload` - Upload resume file
-- `GET /api/resumes` - Get all user resumes
-- `GET /api/resumes/:id` - Get single resume
-- `PUT /api/resumes/:id` - Update resume
-- `DELETE /api/resumes/:id` - Delete resume
+## 🔌 API Endpoints
 
-### Analysis
+Base URL: `http://localhost:5000` (or `VITE_API_URL`). All routes prefixed via `backend/src/modules/index.ts:10`.
 
-- `POST /api/analysis/generate` - Generate AI analysis
-- `GET /api/analysis` - Get all analyses
-- `GET /api/analysis/:id` - Get single analysis
-- `DELETE /api/analysis/:id` - Delete analysis
+### Auth — `/api/auth`
 
-### ATS Score
+| Method | Endpoint                    | Description                                                 |
+| :----- | :-------------------------- | :---------------------------------------------------------- |
+| POST   | `/api/auth/register`        | Register (email, password, name)                            |
+| POST   | `/api/auth/login`           | Login → access + refresh tokens                             |
+| GET    | `/api/auth/me`              | Current user (Bearer access)                                |
+| POST   | `/api/auth/refresh`         | Refresh tokens (Bearer refresh) — queued + deduped          |
+| POST   | `/api/auth/logout`          | Logout (Bearer refresh)                                     |
+| GET    | `/api/auth/google`          | Google OAuth start                                          |
+| GET    | `/api/auth/google/callback` | OAuth callback → redirect to `FRONTEND_URL/?accessToken...` |
 
-- `POST /api/ats-score` - Calculate ATS score
-- `GET /api/ats-score/history` - Get ATS score history
-- `GET /api/ats-score/history/:id` - Get single ATS score history
-- `DELETE /api/ats-score/history/:id` - Delete ATS score history
+### ATS Score — `/api/ats-score` (`atsScoreCheck.routes`)
 
-### Job Match
+| Method | Endpoint                              | Description                                                                                                 |
+| :----- | :------------------------------------ | :---------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/ats-score/parse-resume`         | Upload PDF (`multipart/form-data`) → parsed content                                                         |
+| POST   | `/api/ats-score/parse-jd`             | `{ description }` → structured JD                                                                           |
+| POST   | `/api/ats-score/analyze`              | `{ resumeName, jobDescription?, structuredJD?, aiResearch?, originalPdf? }` → full ATS + job-match analysis |
+| POST   | `/api/ats-score/rescan/:id`           | Rescan existing history entry                                                                               |
+| GET    | `/api/ats-score/history?page=&limit=` | Paginated history (default 3)                                                                               |
+| GET    | `/api/ats-score/history/:id`          | Single scan detail                                                                                          |
+| PUT    | `/api/ats-score/history/:id/rename`   | Rename `resumeName`                                                                                         |
+| DELETE | `/api/ats-score/history/:id`          | Delete one                                                                                                  |
+| DELETE | `/api/ats-score/history`              | Delete all                                                                                                  |
 
-- `POST /api/job-match` - Match resume to job description
-- `GET /api/job-match/history` - Get job match history
-- `GET /api/job-match/history/:id` - Get single job match history
-- `DELETE /api/job-match/history/:id` - Delete job match history
+### Resumes — `/api/resumes` (`resumeBuilder.routes`)
 
-### Resume Builder
+| Method | Endpoint                                | Description                                   |
+| :----- | :-------------------------------------- | :-------------------------------------------- |
+| GET    | `/api/resumes?page=&limit=&sourceType=` | List (`uploaded` \| `builder`)                |
+| GET    | `/api/resumes/:id`                      | Get one                                       |
+| POST   | `/api/resumes`                          | Upload resume (`multipart/form-data`)         |
+| POST   | `/api/resumes/parse`                    | Parse PDF only                                |
+| POST   | `/api/resumes/ai-rewrite`               | `{ resumeText, jobDescription }` → AI rewrite |
+| POST   | `/api/resumes/content`                  | Create from `ResumeContent` JSON              |
+| PUT    | `/api/resumes/:id`                      | Update                                        |
+| POST   | `/api/resumes/:id/duplicate`            | Duplicate                                     |
+| DELETE | `/api/resumes/:id`                      | Delete one                                    |
+| DELETE | `/api/resumes/delete-all`               | Delete all                                    |
 
-- `POST /api/resume-builder` - Create resume from content
-- `GET /api/resume-builder/templates` - Get available templates
-- `GET /api/resume-builder/history` - Get resume build history
-- `GET /api/resume-builder/history/:id` - Get single build history
-- `DELETE /api/resume-builder/history/:id` - Delete build history
+### Users — `/api/users`
 
-### Payment
+| Method | Endpoint                         | Description             |
+| :----- | :------------------------------- | :---------------------- |
+| GET    | `/api/users/profile`             | Get profile             |
+| PUT    | `/api/users/profile`             | Update profile          |
+| DELETE | `/api/users/account`             | Delete account          |
+| POST   | `/api/users/use-credit`          | Consume 1 credit        |
+| POST   | `/api/users/add-free-credits`    | Claim free credits      |
+| GET    | `/api/users/free-credits-status` | Free credit eligibility |
 
-- `POST /api/payment/create-checkout-session` - Create Stripe checkout
-- `POST /api/payment/webhook` - Stripe webhook handler
-- `GET /api/payment/verify/:id` - Verify payment status
+### Support / Feedback / Visitor / Admin
 
-### Jobs
+| Method | Endpoint                                       | Description                              |
+| :----- | :--------------------------------------------- | :--------------------------------------- |
+| POST   | `/api/support`                                 | Create ticket `{ type, title, message }` |
+| GET    | `/api/support/mine`                            | My tickets                               |
+| POST   | `/api/feedback`                                | Submit review `{ rating, message }`      |
+| GET    | `/api/feedback/home`                           | Home-page reviews (`showOnHome=true`)    |
+| GET    | `/api/admin-dashboard/reviews`                 | [Admin] All reviews                      |
+| PATCH  | `/api/admin-dashboard/reviews/:id/toggle-home` | [Admin] Toggle home visibility           |
+| DELETE | `/api/admin-dashboard/reviews/:id`             | [Admin] Delete                           |
+| DELETE | `/api/admin-dashboard/reviews`                 | [Admin] Delete all                       |
+| \*     | `/api/visitor/*`                               | Fingerprint tracking                     |
+| \*     | `/api/admin-dashboard/*`                       | Admin stats & management                 |
+| GET    | `/`, `/health`                                 | Welcome + health check (`src/app.ts:17`) |
 
-- `POST /api/jobs` - Create/save job
-- `GET /api/jobs` - Get all jobs
-- `GET /api/jobs/:id` - Get single job
-- `PUT /api/jobs/:id` - Update job
-- `DELETE /api/jobs/:id` - Delete job
+> Auth: `Authorization: Bearer <accessToken>` — refresh via `Authorization: Bearer <refreshToken>` on `/auth/refresh` & `/auth/logout`. Frontend `api.ts:44` handles auto-refresh with request queue.
 
-### Users
+---
 
-- `GET /api/users/profile` - Get user profile
-- `PUT /api/users/profile` - Update user profile
-- `GET /api/users/credits` - Get user credits balance
+## 🏗️ System Design
 
-## Contributing
+See **`systemdesign.md`** for the full analysis. TL;DR:
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/name`)
-3. Commit changes (`git commit -m 'Add feature'`)
-4. Push branch (`git push origin feature/name`)
-5. Open Pull Request
+- **Monolithic modular** — Express modules + React SPA, clear separation but single deployable
+- **Scoring pipeline** — `shared/scoring/` (constants, skills, keywords, searchability, recruiter-tips) + Gemini (`shared/ai/gemini/`) + `skillNormalizer` + **Redis AI cache** by `PROMPT_VERSION`
+- **Rate limiting** — `middlewareConfig.ts` with `RedisStore`, IP-aware (`cf-connecting-ip` → `x-forwarded-for` → `req.ip`) + user-aware keys
+- **Roadmap** — Phase 1: Bull queue for AI, refresh rotation; Phase 2: DB read replicas, API gateway; Phase 3: microservices split (AI, auth, storage)
+
+---
+
+## ☁️ Deployment
+
+- **Vercel** — both `backend/vercel.json` and `frontend/vercel.json` configured. Backend exports `app` for serverless (`src/server.ts:7`), only listens locally when `VERCEL!=1`.
+- **Env on Vercel:** set all `backend/.env` vars in Vercel dashboard. Ensure `DATABASE_URL` (Neon pooled), `REDIS_URL` (managed), `FRONTEND_URL` (your Vercel frontend URL), `GOOGLE_CALLBACK_URL` (Vercel backend URL + `/api/auth/google/callback`).
+- **Frontend:** `VITE_API_URL` should point to deployed backend (or use relative `/api` with Vercel rewrites).
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create a feature branch: `git checkout -b feature/name`
+3. Commit: `git commit -m 'feat: add ...'`
+4. Push: `git push origin feature/name`
+5. Open a Pull Request
+
+Please run `npm run build` in both workspaces before PR and keep Prisma migrations in sync.
+
+---
+
+## 📄 License
+
+MIT — feel free to use, fork, and build on top of ATSUp.
+
+---
+
+<div align="center">
+
+**Built with ❤️ for job seekers everywhere**
+
+_If ATSUp helped you land an interview, leave a ⭐ and a review — it fuels the project!_
+
+[Live Demo](https://cvcoach-client.vercel.app/) · [Report Bug](../../issues) · [Request Feature](../../issues)
+
+</div>

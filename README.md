@@ -1,10 +1,6 @@
 <div align="center">
 
-
-
-# ATSUp — AI-Powered Resume Analysis & Builder Platform
-
-**Beat the ATS. Land the Interview.**
+# ATSUp ➟ AI-Powered Resume Analysis & Builder Platform
 
 _Upload your resume → Get ATS score, keyword gaps & Improvement suggestions → Build a ats-winning resume in minutes_
 
@@ -45,19 +41,13 @@ _Upload your resume → Get ATS score, keyword gaps & Improvement suggestions �
 
 > **75% of resumes are rejected by ATS before a human ever sees them.**
 
-ATSUp fixes that. Upload any PDF, get an instant **ATS compatibility score (0-100)**, see **missing keywords**, **section-by-section breakdown**, and **AI-generated rewrites** tailored to the job description. Then build a new ATS-perfect resume with live preview and export to **PDF / DOCX / PNG**.
-
-Built for job seekers, career coaches, and anyone tired of the black hole.
+ATSUp fixes that. Upload any PDF & job description, get an instant **ATS compatibility score (0-100)**, see **missing keywords**, **section-by-section breakdown**, and **Improvement suggestions** tailored to the job description. Build a new ATS-perfect resume and export to **PDF** only for now. You can also rewrite your resume via AI, providing your existing resume PDF and job description.
 
 ---
 
 ## 🌐 Live Demo
 
-**👉 [https://cvcoach-client.vercel.app/](https://cvcoach-client.vercel.app/) — Try it live**
-
-- No credit card required for free scans
-- Google OAuth + email/password auth
-- Works on desktop, tablet, and mobile
+**Try it live ➜ [https://atsup.vercel.app](https://atsup.vercel.app/)**
 
 ---
 
@@ -65,25 +55,25 @@ Built for job seekers, career coaches, and anyone tired of the black hole.
 
 ### 🎯 ATS Score Analysis
 
-- **0-100 ATS Compatibility Score** with `atsFriendliness` and `sectionScores`
-- **Section-by-section breakdown** — education, experience, skills, formatting
-- **Missing & recommended keywords** powered by Gemini + skill normalizer
-- **AI suggestions** — actionable fixes, recruiter tips, searchability score
-- **History & rescan** — track progress over time, rename/delete scans
+- **0-100 ATS Compatibility Score** based on `resume` and `job description`
+- **Check 24 criteria** including contact information, education, experience, skills, formatting, measurable impacts, action verbs etc.
+- **Improvement suggestions** for missing, weak, or incomplete sections.
+- **History & rescan** where you can track progress over time, rename/delete scans
 
-### 🧲 Job Match & JD Parsing
+### 📄 Resume Builder
 
-- Paste any job description → structured parsing (`/ats-score/parse-jd`)
-- Resume ↔ JD match score + gap analysis
-- `originalPdf` + `aiResearch` preserved for rescan
-
-### 📄 Resume Builder & Parser
-
-- Visual builder with **live preview**, drag-and-drop (`@dnd-kit`), rich text (`react-quill`)
-- **PDF parsing** (`pdf-parse` + `pdfjs-dist`) → auto-extract content to `Resume.content: Json`
-- Export to **PDF (jsPDF + html2canvas), DOCX (docx), PNG**
-- Upload or build from scratch — `sourceType: uploaded | builder`
+- Visual builder with **live preview**, drag-and-drop sections based on need
+- 100% ATS-friendly reusme format that scored on jobscan
+- Export to **PDF** format only for now
 - Duplicate, history, and delete-all
+
+### 🧲 Rewrite Resume with AI
+
+- Upload your existing resume and targeted job description to rewrite
+- Only rewrite existing information, do not invent anything new
+- Review and make changes to the rewritten resume
+- Download if everything looks good
+
 
 ### 🔐 Auth & Security
 
@@ -92,10 +82,6 @@ Built for job seekers, career coaches, and anyone tired of the black hole.
 - Device fingerprinting (`@fingerprintjs`), IP tracking (`cf-connecting-ip` → `x-forwarded-for`), `trust proxy: 1`
 - Helmet, CORS, rate-limiting (RedisStore), Zod validation
 
-### 💳 Credits & Payments
-
-- Stripe checkout (`STRIPE_SECRET_KEY`), free-credits system, `use-credit` / `add-free-credits`
-- Payment history tied to `Payment` model
 
 ### 👑 Admin, Support & Analytics
 
@@ -104,13 +90,10 @@ Built for job seekers, career coaches, and anyone tired of the black hole.
 - Visitor tracking via `fingerprint` + `SiteStats` singleton
 - Role-based access (`admin` / `user`), ban/active flags
 
-### ⚡ Technical Highlights
+### 🌙 Dark Mode
 
-- **PostgreSQL (Neon) + Prisma** with CUIDs, indexed queries, JSON fields for flexible resume content
-- **Redis** for rate limiting & AI cache (`AI_CACHE_TTL=86400`, `PROMPT_VERSION=v1`)
-- **AI cache** — Gemini responses cached by prompt version
-- Responsive Tailwind + Framer Motion, Redux Toolkit + TanStack Query
-- File uploads via Multer (`MAX_FILE_SIZE`), `pdf-parse` pipeline
+- Light Mode is enabled by default
+- Toggle between Light Mode and Dark Mode
 
 ---
 
@@ -118,10 +101,7 @@ Built for job seekers, career coaches, and anyone tired of the black hole.
 
 |                                   ATS Scan                                    |                                 Resume Builder                                  |
 | :---------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
-|  <img src="./frontend/public/scan.png" alt="ATS Scan Light" width="100%" />   |  <img src="./frontend/public/builder.png" alt="Builder Light" width="100%" />   |
-| <img src="./frontend/public/scanDark.png" alt="ATS Scan Dark" width="100%" /> | <img src="./frontend/public/builderDark.png" alt="Builder Dark" width="100%" /> |
-
-> All images from `frontend/public/` — light and dark themes fully supported via `ThemeWrapper`.
+|  <img src="./frontend/public/scan.png" alt="ATS Scan Light" width="100%" />   |  <img src="./frontend/public/builder.png" alt="Builder Light" width="100%" />
 
 ---
 
@@ -136,7 +116,7 @@ Built for job seekers, career coaches, and anyone tired of the black hole.
 | Styling       | **TailwindCSS 3**, `tailwind-merge`, `clsx`, `tailwindcss-animate`     |
 | UI/UX         | **Framer Motion**, `lucide-react`, `react-icons`, `react-toastify`     |
 | Editor & DnD  | `react-quill`, `@dnd-kit` (core/sortable)                              |
-| Export        | `jspdf` + `html2canvas` (PDF/PNG), `docx` + `file-saver`, `pdfjs-dist` |
+| Export        | `jspdf` (PDF)
 | Auth & Upload | `@fingerprintjs`, `axios` (queued 401 refresh), `react-dropzone`       |
 | Validation    | `zod`                                                                  |
 
@@ -164,7 +144,7 @@ Built for job seekers, career coaches, and anyone tired of the black hole.
 ## 📁 Project Structure
 
 ```
-cvcoach/
+atsup/
 ├── backend/                          # Express API — src/server.ts:12 (Vercel-aware)
 │   ├── prisma/
 │   │   ├── schema.prisma             # PostgreSQL + 11 models (User, Resume, Analysis, AtsScore...)
@@ -225,13 +205,12 @@ cvcoach/
 - **PostgreSQL** — Neon cloud (recommended) or local Postgres 16
 - **Redis** — local (`redis://localhost:6379`) or managed (Upstash/Redis Cloud)
 - **Google Cloud** — Gemini API key + OAuth 2.0 credentials
-- **Stripe** — test keys for payments (optional for local dev)
 
 ### 1. Clone
 
 ```bash
 git clone <repository-url>
-cd cvcoach
+cd atsup
 ```
 
 ### 2. Install
@@ -263,8 +242,6 @@ PROMPT_VERSION=v1
 AI_CACHE_TTL=86400
 GEMINI_API_KEY=your_gemini_api_key
 GEMINI_API_KEY_SECONDARY=your_secondary_key_optional
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_PUBLISHABLE_KEY=pk_test_...
 ```
 
 Create **`frontend/.env`**:
@@ -403,17 +380,6 @@ Base URL: `http://localhost:5000` (or `VITE_API_URL`). All routes prefixed via `
 
 ---
 
-## 🏗️ System Design
-
-See **`systemdesign.md`** for the full analysis. TL;DR:
-
-- **Monolithic modular** — Express modules + React SPA, clear separation but single deployable
-- **Scoring pipeline** — `shared/scoring/` (constants, skills, keywords, searchability, recruiter-tips) + Gemini (`shared/ai/gemini/`) + `skillNormalizer` + **Redis AI cache** by `PROMPT_VERSION`
-- **Rate limiting** — `middlewareConfig.ts` with `RedisStore`, IP-aware (`cf-connecting-ip` → `x-forwarded-for` → `req.ip`) + user-aware keys
-- **Roadmap** — Phase 1: Bull queue for AI, refresh rotation; Phase 2: DB read replicas, API gateway; Phase 3: microservices split (AI, auth, storage)
-
----
-
 ## ☁️ Deployment
 
 - **Vercel** — both `backend/vercel.json` and `frontend/vercel.json` configured. Backend exports `app` for serverless (`src/server.ts:7`), only listens locally when `VERCEL!=1`.
@@ -434,18 +400,8 @@ Please run `npm run build` in both workspaces before PR and keep Prisma migratio
 
 ---
 
-## 📄 License
-
-MIT — feel free to use, fork, and build on top of ATSUp.
-
----
-
 <div align="center">
 
 **Built with ❤️ for job seekers everywhere**
 
 _If ATSUp helped you land an interview, leave a ⭐ and a review — it fuels the project!_
-
-[Live Demo](https://cvcoach-client.vercel.app/) · [Report Bug](../../issues) · [Request Feature](../../issues)
-
-</div>

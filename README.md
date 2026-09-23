@@ -30,11 +30,9 @@ _Upload your resume → Get ATS score, keyword gaps & Improvement suggestions �
 - [Environment Variables](#-environment-variables)
 - [Running the App](#-running-the-app)
 - [API Endpoints](#-api-endpoints)
-- [System Design](#-system-design)
 - [Deployment](#-deployment)
 - [Contributing](#-contributing)
-- [License](#-license)
-
+- 
 ---
 
 ## 💡 Why ATSUp?

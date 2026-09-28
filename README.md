@@ -32,7 +32,6 @@ _Upload your resume → Get ATS score, keyword gaps & Improvement suggestions �
 - [API Endpoints](#-api-endpoints)
 - [Deployment](#-deployment)
 - [Contributing](#-contributing)
-- 
 ---
 
 ## 💡 Why ATSUp?

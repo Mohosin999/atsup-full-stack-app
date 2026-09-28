@@ -59,9 +59,7 @@ export const ModelName = {
   JobDescription: 'JobDescription',
   Payment: 'Payment',
   SupportTicket: 'SupportTicket',
-  Feedback: 'Feedback',
-  Visitor: 'Visitor',
-  SiteStats: 'SiteStats'
+  Feedback: 'Feedback'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -238,23 +236,6 @@ export const FeedbackScalarFieldEnum = {
 } as const
 
 export type FeedbackScalarFieldEnum = (typeof FeedbackScalarFieldEnum)[keyof typeof FeedbackScalarFieldEnum]
-
-
-export const VisitorScalarFieldEnum = {
-  fingerprint: 'fingerprint',
-  ipAddress: 'ipAddress'
-} as const
-
-export type VisitorScalarFieldEnum = (typeof VisitorScalarFieldEnum)[keyof typeof VisitorScalarFieldEnum]
-
-
-export const SiteStatsScalarFieldEnum = {
-  id: 'id',
-  totalUniqueVisitors: 'totalUniqueVisitors',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SiteStatsScalarFieldEnum = (typeof SiteStatsScalarFieldEnum)[keyof typeof SiteStatsScalarFieldEnum]
 
 
 export const SortOrder = {

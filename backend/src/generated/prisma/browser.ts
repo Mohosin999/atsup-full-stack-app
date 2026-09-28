@@ -62,13 +62,3 @@ export type SupportTicket = Prisma.SupportTicketModel
  * 
  */
 export type Feedback = Prisma.FeedbackModel
-/**
- * Model Visitor
- * 
- */
-export type Visitor = Prisma.VisitorModel
-/**
- * Model SiteStats
- * 
- */
-export type SiteStats = Prisma.SiteStatsModel

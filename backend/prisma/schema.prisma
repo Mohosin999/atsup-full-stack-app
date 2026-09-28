@@ -201,18 +201,3 @@ model Feedback {
   @@index([userId, createdAt])
   @@map("feedbacks")
 }
-
-model Visitor {
-  fingerprint String  @id
-  ipAddress   String?
-
-  @@map("visitors")
-}
-
-model SiteStats {
-  id                   String   @id @default("singleton")
-  totalUniqueVisitors  Int      @default(0)
-  updatedAt            DateTime @updatedAt
-
-  @@map("site_stats")
-}

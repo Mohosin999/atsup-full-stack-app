@@ -17,14 +17,12 @@ export const createUser = async (userData: {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const userCount = await prisma.user.count();
-
   const user = await prisma.user.create({
     data: {
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
-      role: userCount === 0 ? "admin" : "user",
+      role: "user",
       fingerprint: fingerprint || null,
       ipAddress: ipAddress || null,
       preferences: {

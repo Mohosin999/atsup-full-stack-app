@@ -99,18 +99,8 @@ const AdminDashboard: React.FC = () => {
     enabled: !!user && user.role === "admin",
   });
 
-  const { data: visitorData } = useQuery({
-    queryKey: ["admin-visitors"],
-    queryFn: async () => {
-      const res = await api.get("/visitor/count");
-      return res.data.success ? res.data.data.totalVisitors : 0;
-    },
-    enabled: !!user && user.role === "admin",
-  });
-
   const unreadSupport = unreadData?.unreadSupport ?? 0;
   const unreadReviews = unreadData?.unreadReviews ?? 0;
-  const totalVisitors = visitorData ?? 0;
   const isInitialLoading = loading || growthLoading;
 
   const markSeen = async (section: "support" | "reviews") => {
@@ -124,7 +114,6 @@ const AdminDashboard: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["admin-metrics"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-growth", period] }),
       queryClient.invalidateQueries({ queryKey: ["admin-unread-counts"] }),
-      queryClient.invalidateQueries({ queryKey: ["admin-visitors"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-support"] }),
       queryClient.invalidateQueries({ queryKey: ["admin-all-resumes"] }),
@@ -276,20 +265,6 @@ const AdminDashboard: React.FC = () => {
                     <h3 className="text-xs font-medium">Active (7 days)</h3>
                     <p className="text-2xl lg:text-3xl font-bold mt-2">
                       {weeklyActiveUsers ?? 0}
-                    </p>
-                  </div>
-
-                  {/* Visitors */}
-                  <div className="p-4 xl:p-6 text-center border-r border-white/10">
-                    <h3 className="text-xs font-medium flex items-center justify-center">
-                      Total Visitors
-                      <span className="relative flex h-2 w-2 ml-2 ">
-                        <span className="animate-ping absolute inline-flex h-full w-full bg-lime-300 opacity-75 rounded-full" />
-                        <span className="relative inline-flex h-2 w-2 bg-lime-300 rounded-full" />
-                      </span>
-                    </h3>
-                    <p className="text-2xl lg:text-3xl font-bold mt-2">
-                      {totalVisitors.toLocaleString()}
                     </p>
                   </div>
 

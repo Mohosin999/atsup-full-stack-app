@@ -21,6 +21,7 @@ import {
   updateTicketStatus,
   deleteTicket,
 } from "../support/support.service";
+import { invalidateHomeReviewsCache } from "../feedback/feedback.controller";
 import { prisma } from "../../lib/prisma";
 
 const ensureAdmin = (req: AuthRequest, res: Response): boolean => {
@@ -150,6 +151,7 @@ export const deleteInactiveUsers = async (req: AuthRequest, res: Response) => {
   try {
     const days = Number(req.query.days) === 30 ? 30 : 7;
     const result = await adminDeleteInactiveUsers(req.user.id, days as 7 | 30);
+    await invalidateHomeReviewsCache();
     res.json({ success: true, data: result });
   } catch (error) {
     console.error("Error deleting inactive users:", error);
@@ -292,6 +294,7 @@ export const deleteReview = async (req: AuthRequest, res: Response) => {
   if (!ensureAdmin(req, res)) return;
   try {
     await prisma.feedback.delete({ where: { id: req.params.id } });
+    await invalidateHomeReviewsCache();
     res.json({ success: true, message: "Review deleted successfully" });
   } catch (error) {
     console.error("Error deleting review:", error);
@@ -303,6 +306,7 @@ export const deleteAllReviews = async (req: AuthRequest, res: Response) => {
   if (!ensureAdmin(req, res)) return;
   try {
     const result = await prisma.feedback.deleteMany();
+    await invalidateHomeReviewsCache();
     res.json({ success: true, data: { count: result.count } });
   } catch (error) {
     console.error("Error deleting all reviews:", error);
@@ -324,6 +328,7 @@ export const toggleReviewHome = async (req: AuthRequest, res: Response) => {
       where: { id: req.params.id },
       data: { showOnHome: !existing.showOnHome },
     });
+    await invalidateHomeReviewsCache();
     res.json({ success: true, data: review });
   } catch (error) {
     console.error("Error toggling review home:", error);

@@ -74,8 +74,14 @@ export const generalLimiter = rateLimit({
  ----------------------------------------------------*/
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 50,
-  keyGenerator: (req) => `ip:${getClientIp(req)}`,
+  max: 10,
+  keyGenerator: (req) => {
+    const email = (req.body?.email as string)?.toLowerCase?.()?.trim();
+    if (email) {
+      return `auth:email:${email}`;
+    }
+    return `auth:ip:${getClientIp(req)}`;
+  },
   store: createRedisStore("rl:auth:"),
   message: { message: "Too many requests, please try again later." },
   standardHeaders: true,

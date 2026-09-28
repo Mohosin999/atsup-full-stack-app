@@ -27,6 +27,7 @@ export function getRedisClient(): Redis {
 }
 
 const REFRESH_PREFIX = "refresh:";
+const USER_REFRESH_PREFIX = "refresh:user:";
 
 export async function storeRefreshToken(
   token: string,
@@ -34,11 +35,15 @@ export async function storeRefreshToken(
   expiresInSec: number
 ): Promise<void> {
   const redis = getRedisClient();
-  await redis.setex(
+  const pipeline = redis.pipeline();
+  pipeline.setex(
     `${REFRESH_PREFIX}${token}`,
     expiresInSec,
     JSON.stringify({ userId })
   );
+  pipeline.sadd(`${USER_REFRESH_PREFIX}${userId}`, token);
+  pipeline.expire(`${USER_REFRESH_PREFIX}${userId}`, expiresInSec);
+  await pipeline.exec();
 }
 
 export async function getRefreshToken(
@@ -56,18 +61,41 @@ export async function getRefreshToken(
 
 export async function deleteRefreshToken(token: string): Promise<void> {
   const redis = getRedisClient();
-  await redis.del(`${REFRESH_PREFIX}${token}`);
+  const raw = await redis.get(`${REFRESH_PREFIX}${token}`);
+  const pipeline = redis.pipeline();
+  pipeline.del(`${REFRESH_PREFIX}${token}`);
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as { userId: string };
+      if (parsed.userId) {
+        pipeline.srem(`${USER_REFRESH_PREFIX}${parsed.userId}`, token);
+      }
+    } catch {
+    }
+  }
+  await pipeline.exec();
 }
 
 export async function deleteAllRefreshTokensForUser(
   userId: string
 ): Promise<void> {
   const redis = getRedisClient();
+  const userKey = `${USER_REFRESH_PREFIX}${userId}`;
+  const tokens = await redis.smembers(userKey);
+  if (tokens.length > 0) {
+    const pipeline = redis.pipeline();
+    for (const t of tokens) {
+      pipeline.del(`${REFRESH_PREFIX}${t}`);
+    }
+    pipeline.del(userKey);
+    await pipeline.exec();
+    return;
+  }
   const keys = await redis.keys(`${REFRESH_PREFIX}*`);
-  if (keys.length === 0) return;
-
+  const tokenKeys = keys.filter((k) => !k.startsWith(USER_REFRESH_PREFIX));
+  if (tokenKeys.length === 0) return;
   const pipeline = redis.pipeline();
-  for (const key of keys) {
+  for (const key of tokenKeys) {
     const value = await redis.get(key);
     if (value) {
       try {
@@ -76,9 +104,40 @@ export async function deleteAllRefreshTokensForUser(
           pipeline.del(key);
         }
       } catch {
-        // skip invalid entries
       }
     }
   }
   await pipeline.exec();
+}
+
+// ── Generic JSON cache (cache-aside) ─────────────────────────────
+
+export async function getCache<T>(key: string): Promise<T | null> {
+  try {
+    const raw = await getRedisClient().get(key);
+    if (!raw) return null;
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+}
+
+export async function setCache(
+  key: string,
+  value: unknown,
+  ttlSec: number
+): Promise<void> {
+  try {
+    await getRedisClient().setex(key, ttlSec, JSON.stringify(value));
+  } catch (err) {
+    console.error(`Redis setCache failed (${key}):`, err);
+  }
+}
+
+export async function delCache(key: string): Promise<void> {
+  try {
+    await getRedisClient().del(key);
+  } catch (err) {
+    console.error(`Redis delCache failed (${key}):`, err);
+  }
 }

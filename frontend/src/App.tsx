@@ -27,7 +27,6 @@ import AdminDashboard from "./pages/AdminDashboard";
 import MyReports from "./pages/MyReports";
 import ReviewModal from "./components/ReviewModal";
 import ReportButton from "./components/support/ReportButton";
-import { useVisitorTracking } from "./hooks/useVisitorTracking";
 import { Star } from "lucide-react";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -67,8 +66,6 @@ function App() {
   ];
   const showReviewButton =
     user && reviewButtonPages.some((p) => location.pathname.startsWith(p));
-
-  useVisitorTracking();
 
   useEffect(() => {
     const handleOpen = () => setReviewOpen(true);

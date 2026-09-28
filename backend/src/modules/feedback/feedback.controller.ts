@@ -2,6 +2,21 @@ import { Response } from "express";
 import { AuthRequest } from "../../shared/types";
 import { createFeedback } from "./feedback.service";
 import { prisma } from "../../lib/prisma";
+import { getCache, setCache, delCache } from "../../lib/redis";
+
+export const HOME_REVIEWS_CACHE_KEY = "feedback:home";
+const HOME_REVIEWS_TTL_SEC = 3600; // 1 hour
+
+export const invalidateHomeReviewsCache = () =>
+  delCache(HOME_REVIEWS_CACHE_KEY);
+
+interface HomeReview {
+  id: string;
+  name: string;
+  role: string;
+  content: string;
+  rating: number;
+}
 
 export const submitFeedback = async (req: AuthRequest, res: Response) => {
   try {
@@ -22,6 +37,7 @@ export const submitFeedback = async (req: AuthRequest, res: Response) => {
     }
 
     const feedback = await createFeedback(req.user.id, rating, message.trim());
+    await invalidateHomeReviewsCache();
 
     res.status(201).json({
       success: true,
@@ -39,6 +55,11 @@ export const submitFeedback = async (req: AuthRequest, res: Response) => {
 
 export const getHomeReviews = async (req: AuthRequest, res: Response) => {
   try {
+    const cached = await getCache<HomeReview[]>(HOME_REVIEWS_CACHE_KEY);
+    if (cached) {
+      return res.json({ success: true, data: cached });
+    }
+
     const reviews = await prisma.feedback.findMany({
       where: { showOnHome: true },
       include: {
@@ -47,13 +68,15 @@ export const getHomeReviews = async (req: AuthRequest, res: Response) => {
       orderBy: { createdAt: "desc" },
     });
 
-    const mapped = reviews.map((r) => ({
+    const mapped: HomeReview[] = reviews.map((r) => ({
       id: r.id,
       name: r.user.name || "Anonymous",
       role: "",
       content: r.message,
       rating: r.rating,
     }));
+
+    await setCache(HOME_REVIEWS_CACHE_KEY, mapped, HOME_REVIEWS_TTL_SEC);
 
     res.json({ success: true, data: mapped });
   } catch (error) {

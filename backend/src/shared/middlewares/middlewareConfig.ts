@@ -92,11 +92,11 @@ export const authLimiter = rateLimit({
  * Strict limiter for AI-heavy ATS scan endpoints
  ----------------------------------------------------*/
 export const atsLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 1 * 60 * 1000,
   max: 15,
   keyGenerator: getRateLimitKey,
   store: createRedisStore("rl:ats:"),
-  message: { message: "ATS scan limit reached. Please try again later." },
+  message: { message: "ATS scan limit reached. Please try again after 1 minute." },
   standardHeaders: true,
   legacyHeaders: false,
 });

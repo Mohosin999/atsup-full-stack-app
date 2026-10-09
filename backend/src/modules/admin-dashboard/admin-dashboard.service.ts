@@ -335,7 +335,7 @@ export const setUserBan = async (
 export const adminUpdateUser = async (
   adminId: string,
   userId: string,
-  data: { name?: string; role?: string; credits?: number },
+  data: { name?: string; role?: string },
 ) => {
   if (data.role && !["admin", "user"].includes(data.role)) {
     throw Object.assign(new Error("Invalid role"), { status: 400 });
@@ -350,14 +350,6 @@ export const adminUpdateUser = async (
   const updateData: any = {};
   if (data.name !== undefined) updateData.name = data.name;
   if (data.role !== undefined) updateData.role = data.role;
-  if (data.credits !== undefined) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { subscription: true },
-    });
-    const sub = (user?.subscription as any) || {};
-    updateData.subscription = { ...sub, credits: data.credits };
-  }
 
   return prisma.user.update({
     where: { id: userId },

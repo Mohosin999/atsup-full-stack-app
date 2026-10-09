@@ -11,7 +11,7 @@ export interface User {
   };
   subscription: {
     plan: 'free' | 'pro';
-    credits: number;
+    credits?: number;
     expiresAt?: string;
     lastAiScanResetDate?: string | null;
   };

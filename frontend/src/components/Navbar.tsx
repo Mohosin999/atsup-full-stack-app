@@ -167,7 +167,7 @@
 //   );
 // }
 
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogIn } from "lucide-react";
 
@@ -196,14 +196,13 @@ const getNavLinks = (user?: { role?: string } | null): NavLink[] => [
       : []
     : []),
   { path: "/ats-scan", label: "ATS Scan" },
-  { path: "/resume-builder", label: "Resume Builder" },
+  { path: "/resume-builder/new", label: "Resume Builder" },
 ];
 
 export default function Navbar() {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -234,16 +233,14 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center justify-center flex-1 gap-2">
               <NavLinks navLinks={getNavLinks(user)} />
               {user && <HistoryDropdown />}
-              <Link
-                to="/plans"
-                className={`px-3 py-2 rounded-lg text-sm xl:text-[15px] font-medium transition-colors ${
-                  location.pathname === "/plans"
-                    ? "bg-lime-100 text-stone-900 dark:bg-lime-400/10 dark:text-lime-200"
-                    : "text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-50"
-                }`}
+              <span
+                className="group relative px-3 py-2 rounded-lg text-sm xl:text-[15px] font-medium transition-colors text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-50 cursor-not-allowed"
               >
                 Pricing
-              </Link>
+                <span className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 text-xs font-medium rounded-md bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  Upcoming
+                </span>
+              </span>
             </div>
 
             {/* Right: Auth / Profile */}
@@ -298,13 +295,12 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <Link
-                  to="/plans"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-2 rounded-lg text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800/60"
-                >
+                <span className="group relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-stone-700 dark:text-stone-300 cursor-not-allowed">
                   Pricing
-                </Link>
+                  <span className="px-2 py-0.5 text-[11px] font-medium rounded-full bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-400">
+                    Upcoming
+                  </span>
+                </span>
               </div>
 
               <Link

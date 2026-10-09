@@ -156,7 +156,7 @@ export default function BuilderPreview() {
             </ul>
 
             <Link
-              to="/resume-builder"
+              to="/resume-builder/new"
               className="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-lg text-xs md:text-sm font-semibold bg-stone-900 dark:bg-lime-300 text-stone-50 dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-lime-200 transition-colors"
             >
               Open builder

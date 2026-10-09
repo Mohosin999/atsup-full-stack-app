@@ -12,14 +12,12 @@ import { consumeRedirect } from "./utils/authGuard";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
-import Plans from "./pages/Plans";
+// import Plans from "./pages/Plans";
 import AtsScore from "./pages/AtsScan";
 import AtsScoreDetail from "./pages/AtsScanDetail";
 import ScanHistory from "./pages/ScanHistory";
 import ResumeHistory from "./pages/ResumeHistory";
 import ResumeBuilder from "./pages/ResumeBuilder";
-import ResumeDashboard from "./pages/ResumeDashboard";
-import ResumeUpload from "./pages/ResumeUpload";
 import SkeletonLoader from "./components/ui/SkeletonHistory";
 import ThemeWrapper from "./components/ThemeWrapper";
 import ScrollToTop from "./components/ui/ScrollToTop";
@@ -148,7 +146,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/plans" element={<Plans />} />
+        {/* <Route path="/plans" element={<Plans />} /> */}
         <Route path="/ats-scan" element={<AtsScore />} />
         <Route
           path="/ats-score-history"
@@ -178,18 +176,12 @@ function App() {
             </PrivateRoute>
           }
         />
-<Route path="/resume-builder" element={<ResumeDashboard />} />
-        
+<Route
+          path="/resume-builder"
+          element={<Navigate to="/resume-builder/new" replace />}
+        />
         <Route path="/resume-builder/new" element={<ResumeBuilder />} />
         <Route path="/resume-builder/:id" element={<ResumeBuilder />} />
-        <Route
-          path="/resume-builder/upload"
-          element={
-            <PrivateRoute>
-              <ResumeUpload />
-            </PrivateRoute>
-          }
-        />
         <Route
           path="/my-reports"
           element={

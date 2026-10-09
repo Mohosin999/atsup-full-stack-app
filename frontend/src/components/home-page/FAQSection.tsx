@@ -12,16 +12,12 @@ const faqs = [
     a: "ATS parses PDF most reliably. 5MB keeps extraction fast and Gemini cost low. Scanned image PDFs won't work — use a text-based PDF.",
   },
   {
-    q: "How do credits work?",
-    a: "7 AI credits per day, free forever. Each ATS scan, rescan, or AI rewrite costs 1. Resets daily at 4 PM BST (Asia/Dhaka). Admins are unlimited.",
+    q: "Is there a limit on scans?",
+    a: "No. ATS scans and rescans are unlimited and free forever for everyone.",
   },
   {
     q: "Is there a limit on saved resumes or scans?",
     a: "No. Save unlimited resumes and ATS scans — all are kept in your history, with no auto-delete.",
-  },
-  {
-    q: "Does AI rewrite invent experience?",
-    a: "Never. It rephrases your real experience and weaves JD keywords in naturally. We promise truthful output — nothing hallucinated.",
   },
   {
     q: "Do I need a credit card?",

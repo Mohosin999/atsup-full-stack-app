@@ -1,7 +1,6 @@
 import { Response } from "express";
 import fs from "fs";
 import { AuthRequest, ResumeContent } from "../../shared/types";
-import { prisma } from "../../lib/prisma";
 import { parseResume as parseResumeService } from "./services/resumeParser.service";
 import {
   parseJobDescription as parseJDService,
@@ -18,17 +17,6 @@ import {
 } from "./services/history.service";
 import { calculateAtsScore } from "./services/scoring.service";
 import { AiQuotaError } from "../../shared/ai/gemini/geminiErrors";
-
-const getBangladeshCreditDateKey = (): string => {
-  const now = new Date();
-  const dhakaMs = now.getTime() + 6 * 60 * 60 * 1000;
-  const dhaka = new Date(dhakaMs);
-  const hour = dhaka.getUTCHours();
-  if (hour < 16) {
-    dhaka.setUTCDate(dhaka.getUTCDate() - 1);
-  }
-  return dhaka.toISOString().slice(0, 10);
-};
 
 const parseAddress = (
   raw: string,
@@ -213,44 +201,7 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       ? mapAIToStructuredJD(structuredJD)
       : structuredJD;
 
-    const isAdmin = (req.user as any)?.role === "admin";
-
-    // Admin = unlimited AI scans, no credit check/deduction
-    if (isAdmin) {
-      const score = await createAtsScoreHistory(
-        req.user.id,
-        resumeName || "Untitled Resume",
-        resumeContent,
-        finalStructuredJD || null,
-        aiResearch || null,
-      );
-      return res.status(201).json({
-        success: true,
-        data: score,
-        message: "AI scan completed (admin unlimited).",
-      });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
-      select: { subscription: true },
-    });
-
-    const subscription = (user?.subscription as any) || {};
-    const today = getBangladeshCreditDateKey();
-    const lastReset = subscription?.lastAiScanResetDate ?? "";
-    const credits = subscription?.credits ?? 0;
-
-    const effectiveCredits = lastReset !== today ? 7 : credits;
-
-    if (effectiveCredits < 1) {
-      return res.status(403).json({
-        success: false,
-        message: "Daily limit is 7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
-        code: "AI_SCAN_UNAVAILABLE",
-      });
-    }
-
+    // Scans are unlimited for everyone — no credit check/deduction
     const score = await createAtsScoreHistory(
       req.user.id,
       resumeName || "Untitled Resume",
@@ -259,35 +210,14 @@ export const analyzeAtsScore = async (req: AuthRequest, res: Response) => {
       aiResearch || null,
     );
 
-    const remainingCredits = effectiveCredits - 1;
-    await prisma.user.update({
-      where: { id: req.user.id },
-      data: {
-        subscription: {
-          ...subscription,
-          credits: remainingCredits,
-          lastAiScanResetDate: today,
-        },
-      },
-      select: { subscription: true },
-    });
-
     res.status(201).json({
       success: true,
       data: score,
-      credits: remainingCredits,
-      aiScan: {
-        available: remainingCredits >= 1,
-        credits: remainingCredits,
-        lastAiScanResetDate: today,
-      },
-      message:
-        "AI scan used. Remaining today: " + remainingCredits + "/7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+      message: "AI scan completed.",
     });
   } catch (error: any) {
     console.error("ATS Score analysis error:", error);
-    const status = error.message.includes("Insufficient credits") ? 403 : 500;
-    res.status(status).json({
+    res.status(500).json({
       success: false,
       message: error.message || "Failed to analyze ATS score",
     });
@@ -322,8 +252,6 @@ export const rescanAtsScore = async (req: AuthRequest, res: Response) => {
       ? mapAIToStructuredJD(structuredJD)
       : structuredJD;
 
-    const isAdmin = (req.user as any)?.role === "admin";
-
     // Calculate score (same as create)
     const analysis = calculateAtsScore(resumeContent, finalStructuredJD || null);
     const hasContactInfo =
@@ -334,43 +262,7 @@ export const rescanAtsScore = async (req: AuthRequest, res: Response) => {
       analysis.sectionScores.contactInfo.hasContactInfo = true;
     }
 
-    if (isAdmin) {
-      const updated = await rescanAtsScoreHistory(
-        req.user.id,
-        id,
-        resumeName || "Untitled Resume",
-        resumeContent,
-        { ...analysis.sectionScores, categories: analysis.categories } as any,
-        analysis.overallScore,
-        analysis.atsFriendliness,
-        analysis.suggestions,
-        analysis.matchBreakdown,
-      );
-      return res.status(200).json({
-        success: true,
-        data: updated,
-        message: "AI rescan completed (admin unlimited).",
-      });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
-      select: { subscription: true },
-    });
-    const subscription = (user?.subscription as any) || {};
-    const today = getBangladeshCreditDateKey();
-    const lastReset = subscription?.lastAiScanResetDate ?? "";
-    const credits = subscription?.credits ?? 0;
-    const effectiveCredits = lastReset !== today ? 7 : credits;
-
-    if (effectiveCredits < 1) {
-      return res.status(403).json({
-        success: false,
-        message: "Daily limit is 7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
-        code: "AI_SCAN_UNAVAILABLE",
-      });
-    }
-
+    // Rescans are unlimited for everyone — no credit check/deduction
     const updated = await rescanAtsScoreHistory(
       req.user.id,
       id,
@@ -383,36 +275,17 @@ export const rescanAtsScore = async (req: AuthRequest, res: Response) => {
       analysis.matchBreakdown,
     );
 
-    const remainingCredits = effectiveCredits - 1;
-    await prisma.user.update({
-      where: { id: req.user.id },
-      data: {
-        subscription: {
-          ...subscription,
-          credits: remainingCredits,
-          lastAiScanResetDate: today,
-        },
-      },
-      select: { subscription: true },
-    });
-
     res.status(200).json({
       success: true,
       data: updated,
-      credits: remainingCredits,
-      aiScan: {
-        available: remainingCredits >= 1,
-        credits: remainingCredits,
-        lastAiScanResetDate: today,
-      },
-      message: "AI rescan used. Remaining today: " + remainingCredits + "/7. New quota at 4 PM BST (Asia/Dhaka, UTC+6).",
+      message: "AI rescan completed.",
     });
   } catch (error: any) {
     console.error("ATS rescan error:", error);
     if (error instanceof AiQuotaError) {
       return res.status(429).json({ success: false, message: error.message, code: "AI_QUOTA_EXCEEDED" });
     }
-    const status = error.message?.includes("not found") ? 404 : error.message?.includes("Insufficient credits") ? 403 : 500;
+    const status = error.message?.includes("not found") ? 404 : 500;
     res.status(status).json({ success: false, message: error.message || "Failed to rescan ATS score" });
   }
 };

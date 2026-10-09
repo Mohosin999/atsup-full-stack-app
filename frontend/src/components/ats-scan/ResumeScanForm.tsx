@@ -7,12 +7,9 @@ import AnalysisProgressModal, {
   PipelineStep,
 } from "../ui/AnalysisProgressModal";
 import ActionButton from "../ui/ActionButton";
-import { getAiScanStatus } from "../../utils/aiScan";
-import { useAppDispatch, useAppSelector } from "@/hooks";
-import { setUserAiScanState } from "@/store/slices/authSlice";
+import { useAppSelector } from "@/hooks";
 import { goToLogin } from "../../utils/authGuard";
 import { saveScanDraft } from "../../utils/scanDraft";
-import CreditBadge from "../ui/CreditBadge";
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: "resume", label: "Resume Analysis" },
@@ -39,7 +36,6 @@ export default function ResumeScanForm({
   initialResumeName,
   initialJobDescription,
 }: ResumeScanFormProps) {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
   const [resumeName, setResumeName] = useState(initialResumeName || "");
@@ -107,8 +103,6 @@ export default function ResumeScanForm({
 
   const bothFieldsReady = !!resumeFile && jobDescription.trim().length >= 20;
 
-  const aiScan = getAiScanStatus(user?.subscription, user?.role);
-
   const showMessage = (index: number, delay = 150) =>
     new Promise<void>((resolve) => {
       setCurrentMessage(PIPELINE_MESSAGES[index]);
@@ -138,11 +132,6 @@ export default function ResumeScanForm({
 
   const handleAiScan = async () => {
     if (!(await validate())) return;
-
-    if (!aiScan.available) {
-      toast.error("No credit available, wait for next day");
-      return;
-    }
 
     setPipelineOpen(true);
     setAnalyzing(true);
@@ -217,15 +206,6 @@ export default function ResumeScanForm({
         structuredJD,
         originalPdf,
       } as any);
-
-      if (response.data.aiScan?.lastAiScanResetDate) {
-        dispatch(
-          setUserAiScanState({
-            credits: response.data.aiScan.credits ?? 0,
-            lastAiScanResetDate: response.data.aiScan.lastAiScanResetDate,
-          }),
-        );
-      }
 
       await showMessage(3, 600);
       setCompletedSteps(["resume", "jd", "ats"]);
@@ -357,11 +337,10 @@ export default function ResumeScanForm({
            * Button
           ================================================================*/}
       <div className="mt-3 flex flex-col sm:flex-row items-center justify-end gap-3">
-        <CreditBadge />
         <ActionButton
           label="Scan now"
           onClick={handleAiScan}
-          disabled={!aiScan.available || !bothFieldsReady || analyzing}
+          disabled={!bothFieldsReady || analyzing}
           variant="cyan"
         />
       </div>

@@ -60,7 +60,6 @@ export const configureGoogleStrategy = () => {
                 lastActiveAt: new Date(),
                 subscription: {
                   plan: 'free',
-                  credits: 7,
                 },
               },
             });

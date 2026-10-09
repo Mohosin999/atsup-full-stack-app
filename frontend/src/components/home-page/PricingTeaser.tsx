@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Wrapper from "../Wrapper";
 
 const plans = [
-  { name: "Free", price: "$0", credits: "7", features: ["7 AI scans / day", "ATS check & rewrite", "Resume builder & PDF export", "5 saved each"], cta: "Start Free", popular: false, href: "/ats-scan" },
+  { name: "Free", price: "$0", credits: "7", features: ["7 AI scans / day", "ATS check", "Resume builder & PDF export", "5 saved each"], cta: "Start Free", popular: false, href: "/ats-scan" },
   { name: "Pro", price: "$5", credits: "15", features: ["15 AI scans / day", "Everything in Free", "Priority support", "Coming Soon"], cta: "Upcoming", popular: true, href: "#" },
   { name: "Enterprise", price: "$10", credits: "35", features: ["35 AI scans / day", "Everything in Pro", "Team access", "Coming Soon"], cta: "Upcoming", popular: false, href: "#" },
 ];

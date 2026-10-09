@@ -89,18 +89,13 @@ export default function MobileMenu({ navLinks, user, setMobileMenuOpen }: { navL
         </div>
 
           <div className="border-t border-stone-200 dark:border-stone-800 mt-2 pt-2">
-            <Link
-              to="/plans"
-              className={`block px-3 py-2 rounded-lg text-sm font-medium hover:bg-lime-100 dark:hover:bg-lime-400/10 ${
-                location.pathname === "/plans"
-                  ? "bg-lime-100 text-stone-900 dark:bg-lime-400/10 dark:text-lime-200"
-                  : "text-stone-700 dark:text-stone-300"
-              }`}
-            onClick={() => setMobileMenuOpen(false)}
-            >
-            Pricing
-          </Link>
-        </div>
+            <span className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-stone-700 dark:text-stone-300 cursor-not-allowed">
+              Pricing
+              <span className="px-2 py-0.5 text-[11px] font-medium rounded-full bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-400">
+                Upcoming
+              </span>
+            </span>
+          </div>
 
       </div>
     </motion.div>

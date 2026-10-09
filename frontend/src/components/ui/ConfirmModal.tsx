@@ -45,6 +45,15 @@ export default function ConfirmModal({
 
   const styles = typeStyles[type];
 
+  // Custom confirmClassName replaces the default btn styles (which include
+  // text-white). Delete buttons pass only bg colors, so the text loses its
+  // white color. Append white text unless the caller already sets a text color.
+  const confirmBtnClass = confirmClassName
+    ? confirmClassName.includes("text-")
+      ? confirmClassName
+      : `${confirmClassName} text-white dark:text-white`
+    : styles.btn;
+
   const modalContent = (
     <AnimatePresence>
       {isOpen && (
@@ -96,7 +105,7 @@ export default function ConfirmModal({
               </button>
               <button
                 onClick={onConfirm}
-                className={`font-plex flex-1 px-3 py-3 text-sm rounded-xl font-semibold transition-colors ${confirmClassName || styles.btn}`}
+                className={`font-plex flex-1 px-3 py-3 text-sm rounded-xl font-semibold transition-colors ${confirmBtnClass}`}
               >
                 {confirmText}
               </button>

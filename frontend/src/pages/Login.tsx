@@ -371,7 +371,7 @@ import { getFingerprint } from "../utils/fingerprint";
 import api, { setTokens } from "../api/api";
 
 const PROOF_POINTS = [
-  "7 free credits, every single day",
+  "Unlimited free scans, every single day",
   "Scored against the real ATS checks",
   "PDF in, actionable fixes out",
 ];
@@ -486,7 +486,7 @@ export default function Login() {
       {/* ============================================================
        * LEFT — brand panel
        * ==========================================================*/}
-      <aside className="relative lg:col-span-5 xl:col-span-5 bg-stone-950 text-stone-50 overflow-hidden px-6 py-2 md:px-10 lg:px-12 xl:px-16 lg:py-14 flex flex-col justify-between">
+      <aside className="relative hidden lg:flex lg:col-span-5 xl:col-span-5 bg-stone-950 text-stone-50 overflow-hidden px-6 py-2 md:px-10 lg:px-12 xl:px-16 lg:py-14 flex-col justify-between">
         {/* dot-grid texture */}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.18]"
@@ -544,7 +544,7 @@ export default function Login() {
       {/* ============================================================
        * RIGHT — form
        * ==========================================================*/}
-      <main className="relative lg:col-span-7 xl:col-span-7 flex items-center justify-center px-6 pb-12 pt-4 md:pt-6 xl:pt-32 md:px-10 lg:px-16 xl:px-24">
+      <main className="relative lg:col-span-7 xl:col-span-7 flex items-center justify-center px-6 pb-12 pt-10 md:pt-6 xl:pt-32 md:px-10 lg:px-16 xl:px-24">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

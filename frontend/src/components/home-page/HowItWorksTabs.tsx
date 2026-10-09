@@ -9,13 +9,11 @@ import {
   LayoutList,
   Eye,
   Download,
-  Sparkles,
-  Pencil,
   FileText,
 } from "lucide-react";
 import Wrapper from "../Wrapper";
 
-type TabId = "ats" | "builder" | "rewrite";
+type TabId = "ats" | "builder";
 
 interface Step {
   icon: React.ElementType;
@@ -124,47 +122,6 @@ const tabs: TabConfig[] = [
       },
     ],
   },
-  {
-    id: "rewrite",
-    label: "AI Rewrite",
-    icon: Sparkles,
-    badge: "How it works — AI rewrite",
-    title: "Rewrite for any job in 4 steps",
-    description: "Your truth, better framed — tailored to the job without inventing experience.",
-    theme: {
-      badge: "bg-violet-50 text-stone-800 border-violet-300 dark:bg-violet-400/10 dark:text-violet-200 dark:border-violet-400/20",
-      iconBg: "bg-violet-100 dark:bg-violet-400/10",
-      iconText: "text-violet-700 dark:text-violet-300",
-      numberText: "text-violet-600/50 dark:text-violet-300/40",
-      hoverBorder: "hover:border-violet-300 dark:hover:border-violet-400/30",
-    },
-    steps: [
-      {
-        icon: Upload,
-        number: "01",
-        title: "Upload resume",
-        description: "Drag and drop your PDF (max 5MB). We extract text instantly — the same parser as the ATS scan.",
-      },
-      {
-        icon: ClipboardPaste,
-        number: "02",
-        title: "Paste job description",
-        description: "Paste any role — AI breaks the JD into skills, requirements and must-haves.",
-      },
-      {
-        icon: Sparkles,
-        number: "03",
-        title: "AI rewrite",
-        description: "Keywords woven naturally into your real experience. Nothing invented — only better wording.",
-      },
-      {
-        icon: Pencil,
-        number: "04",
-        title: "Review and export",
-        description: "Opens directly in the builder — tweak any line, then download an ATS-ready PDF in one click.",
-      },
-    ],
-  },
 ];
 
 export default function HowItWorksTabs() {
@@ -183,7 +140,7 @@ export default function HowItWorksTabs() {
             How it works
           </h2>
           <p className="mt-3 text-xs md:text-base text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
-            Scan, build, or rewrite — pick your flow. One platform, three ways to get hired.
+            Scan or build — pick your flow. One platform, two ways to get hired.
           </p>
         </div>
 

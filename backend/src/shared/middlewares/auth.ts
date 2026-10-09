@@ -2,7 +2,6 @@ import { Response, NextFunction } from "express";
 import { verifyAccessToken } from "../config/jwt";
 import { prisma } from "../../lib/prisma";
 import { AuthRequest } from "../types";
-import { applyDailyCreditReset } from "../utils/credits";
 
 
 interface UserRecord {
@@ -67,9 +66,6 @@ export const authenticate = async (
         .update({ where: { id: user.id }, data: { lastActiveAt: new Date() } })
         .catch(() => {});
     }
-
-    // FIXME: not yet used in this app
-    const subscription = await applyDailyCreditReset(user.id, user.subscription);
 
     const userRecord: UserRecord = {
       id: user.id,

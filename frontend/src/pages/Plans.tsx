@@ -69,7 +69,7 @@ export default function Plans() {
 
   return (
     <div className="font-plex min-h-screen bg-white dark:bg-stone-950 pb-16">
-      {/* Hero with dot-grid like ResumeDashboard - visible in both light & dark */}
+      {/* Hero with dot-grid - visible in both light & dark */}
       <section className="relative overflow-hidden pt-8 lg:pt-32 pb-10 md:pb-12">
         <div
           className="pointer-events-none absolute inset-0 opacity-40 dark:hidden"

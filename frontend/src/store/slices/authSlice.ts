@@ -106,24 +106,6 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       localStorage.setItem('user', JSON.stringify(action.payload));
     },
-    setUserCredits: (state, action: PayloadAction<number>) => {
-      if (state.user) {
-        state.user.subscription.credits = action.payload;
-        localStorage.setItem('user', JSON.stringify(state.user));
-      }
-    },
-    // FIXME: not yet used in this app
-    setUserAiScanState: (
-      state,
-      action: PayloadAction<{ credits: number; lastAiScanResetDate: string }>,
-    ) => {
-      if (state.user) {
-        state.user.subscription.credits = action.payload.credits;
-        state.user.subscription.lastAiScanResetDate =
-          action.payload.lastAiScanResetDate;
-        localStorage.setItem('user', JSON.stringify(state.user));
-      }
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -166,5 +148,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { login, clearUser, setUser, setUserCredits, setUserAiScanState } = authSlice.actions;
+export const { login, clearUser, setUser } = authSlice.actions;
 export default authSlice.reducer;

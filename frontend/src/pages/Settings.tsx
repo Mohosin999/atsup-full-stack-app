@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   User,
   Trash2,
@@ -198,33 +197,20 @@ const SubscriptionSection = ({ user }: { user: any }) => (
     <CardHeader
       icon={<CreditCard className="w-4 h-4" />}
       title="Subscription"
-      subtitle="Your current plan and usage"
+      subtitle="Your current plan"
     />
     <div className="p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <span className="font-plex text-sm text-stone-500 dark:text-stone-400">
-            Current plan:
-          </span>
-          <span className="font-plex inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-lime-50 text-lime-800 border border-lime-300 dark:bg-lime-400/10 dark:text-lime-200 dark:border-lime-400/20 capitalize">
-            {user?.subscription.plan}
-          </span>
-        </div>
-        <p className="font-plex text-sm text-stone-500 dark:text-stone-400">
-          Credits remaining:{" "}
-          <span className="font-medium text-stone-800 dark:text-stone-100">
-            {user?.subscription.credits ?? 0}
-          </span>
-        </p>
+      <div className="flex items-center gap-2">
+        <span className="font-plex text-sm text-stone-500 dark:text-stone-400">
+          Current plan:
+        </span>
+        <span className="font-plex inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-lime-50 text-lime-800 border border-lime-300 dark:bg-lime-400/10 dark:text-lime-200 dark:border-lime-400/20 capitalize">
+          {user?.subscription?.plan || "free"}
+        </span>
       </div>
-      {user?.subscription.plan === "free" && (
-        <Link
-          to="/plans"
-          className="font-plex inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-stone-900 dark:bg-lime-300 text-white dark:text-stone-900 text-sm font-semibold hover:bg-stone-800 dark:hover:bg-lime-200 transition-colors"
-        >
-          Upgrade to Pro
-        </Link>
-      )}
+      <span className="font-plex inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300">
+        Unlimited scans
+      </span>
     </div>
   </div>
 );

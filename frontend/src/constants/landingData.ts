@@ -68,7 +68,7 @@ export const staticReviews = [
     id: "static-2",
     name: "Fatima Khan",
     role: "Frontend Developer",
-    content: "The AI rewrite is amazing — it kept my real experience but added the right keywords. No fake stuff, just better framing.",
+    content: "The ATS suggestions are amazing — clear missing keywords and formatting fixes. No guesswork, just actionable feedback.",
     rating: 5,
   },
   {
@@ -82,7 +82,7 @@ export const staticReviews = [
     id: "static-4",
     name: "Nusrat Jahan",
     role: "Product Designer",
-    content: "7 free scans daily is generous. I tested 4 versions of my resume and the suggestions were spot on. Landed my dream job!",
+    content: "Unlimited free scans is generous. I tested 4 versions of my resume and the suggestions were spot on. Landed my dream job!",
     rating: 4,
   },
   {

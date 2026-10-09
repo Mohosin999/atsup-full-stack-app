@@ -60,7 +60,7 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
-                to="/resume-builder"
+                to="/resume-builder/new"
                 className="inline-flex items-center justify-center gap-2 text-sm xl:text-base border border-stone-300 dark:border-stone-700 hover:border-stone-900 dark:hover:border-stone-400 text-stone-800 dark:text-stone-100 px-6 py-3.5 lg:py-3 rounded-lg font-medium transition-colors"
               >
                 <FilePlus2 className="w-4 h-4" />
@@ -71,11 +71,11 @@ export default function HeroSection({ user, onLogout }: HeroSectionProps) {
             <div className="font-plex mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-xs md:text-sm text-stone-500 dark:text-stone-400">
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                7 free credits daily
+                Unlimited free scans
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                Resets 4 PM BST
+                No credit card needed
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />

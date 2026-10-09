@@ -151,7 +151,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
     setConfirmAction(null);
   };
 
-  const handleSave = (data: { name: string; role: string; credits: number }) => {
+  const handleSave = (data: { name: string; role: string }) => {
     if (!editingUser) return;
     setBusyId(editingUser.id);
     editMutation.mutate(
@@ -308,7 +308,6 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
                   <th className="py-3.5 px-5 font-medium text-xs uppercase tracking-wide">User</th>
                   <th className="py-3.5 px-5 font-medium text-xs uppercase tracking-wide">Role</th>
                   <th className="py-3.5 px-5 font-medium text-xs uppercase tracking-wide">Status</th>
-                  <th className="py-3.5 px-5 font-medium text-xs uppercase tracking-wide">Credits</th>
                   <th className="py-3.5 px-5 font-medium text-xs uppercase tracking-wide">Last active</th>
                   <th className="py-3.5 px-5 font-medium text-xs uppercase tracking-wide">Joined</th>
                   <th className="py-3.5 px-5 font-medium text-xs uppercase tracking-wide text-right">Actions</th>
@@ -333,7 +332,6 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
                     </td>
                     <td className="py-3.5 px-5">{renderRole(u)}</td>
                     <td className="py-3.5 px-5">{renderStatus(u, onlineIds.has(u.id))}</td>
-                    <td className="py-3.5 px-5 text-stone-700 dark:text-stone-300">{u.subscription?.credits ?? 0}</td>
                     <td className="py-3.5 px-5 text-stone-500 dark:text-stone-400">{formatDate(lastActivity(u))}</td>
                     <td className="py-3.5 px-5 text-stone-500 dark:text-stone-400">{formatDate(u.createdAt)}</td>
                     <td className="py-3.5 px-5">
@@ -369,13 +367,7 @@ const UserManagement: React.FC<Props> = ({ onlineUsers, currentAdminId, onRefres
                     {renderStatus(u, online)}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 mb-3">
-                      <div className="flex items-center justify-between bg-white dark:bg-stone-800/60 rounded-lg px-3 py-2">
-                      <span className="text-xs text-stone-500 dark:text-stone-400">Credits</span>
-                      <span className="text-sm font-semibold text-stone-800 dark:text-stone-100">
-                        {u.subscription?.credits ?? 0}
-                      </span>
-                    </div>
+                  <div className="grid grid-cols-1 gap-2 mb-3">
                       <div className="flex items-center justify-between bg-white dark:bg-stone-800/60 rounded-lg px-3 py-2">
                       <span className="text-xs text-stone-500 dark:text-stone-400">Last active</span>
                       <span className="text-sm font-medium text-stone-800 dark:text-stone-100">

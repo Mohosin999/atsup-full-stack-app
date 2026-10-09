@@ -10,7 +10,6 @@ import {
   verifyRefreshTokenAndGetUserId,
   generateNewAccessToken,
 } from "./auth.service";
-import { applyDailyCreditReset } from "../../shared/utils/credits";
 import { checkDuplicateDevice, isGmail } from "../../shared/utils/deviceCheck";
 import {
   storeRefreshToken,
@@ -131,11 +130,7 @@ export const login = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // FIXME: not yet used in this app
-    const subscription = await applyDailyCreditReset(
-      user.id,
-      user.subscription,
-    );
+    const subscription = user.subscription;
 
     const { accessToken, refreshToken } = createTokens(user.id, user.email);
 

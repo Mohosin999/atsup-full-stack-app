@@ -7,13 +7,12 @@ interface Props {
   isSelf: boolean;
   busy: boolean;
   onClose: () => void;
-  onSave: (data: { name: string; role: string; credits: number }) => void;
+  onSave: (data: { name: string; role: string }) => void;
 }
 
 const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave }) => {
   const [name, setName] = useState(user.name || '');
   const [role, setRole] = useState(user.role || 'user');
-  const [credits, setCredits] = useState<number>(user.subscription?.credits ?? 0);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -25,7 +24,7 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ name: name.trim() || user.name, role, credits });
+    onSave({ name: name.trim() || user.name, role });
   };
 
   return (
@@ -77,17 +76,6 @@ const EditUserModal: React.FC<Props> = ({ user, isSelf, busy, onClose, onSave })
               <option value="admin">Admin</option>
             </select>
             {isSelf && <p className="font-plex mt-1.5 text-xs text-stone-400 dark:text-stone-500">You cannot change your own role.</p>}
-          </div>
-
-          <div>
-            <label className="font-plex block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">Credits</label>
-            <input
-              type="number"
-              min={0}
-              value={credits}
-              onChange={(e) => setCredits(Number(e.target.value))}
-              className="font-plex w-full px-3.5 py-2.5 border border-stone-300 dark:border-stone-700 rounded-xl bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent"
-            />
           </div>
 
           <div className="flex items-center justify-end gap-2.5 pt-2">

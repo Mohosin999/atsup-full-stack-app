@@ -5,7 +5,7 @@ import Wrapper from "../Wrapper";
 const rows = [
   { feature: "ATS scan + builder in one", us: true, others: false },
   { feature: "Deterministic, explainable score", us: true, others: false },
-  { feature: "7 free AI scans daily", us: true, others: false },
+  { feature: "Unlimited free AI scans", us: true, others: false },
   { feature: "Truthful AI (no hallucination)", us: true, others: false },
   { feature: "100% ATS formatting", us: true, others: false },
   { feature: "No credit card to start", us: true, others: false },

@@ -119,8 +119,8 @@ export const updateUser = async (req: AuthRequest, res: Response) => {
   if (!ensureAdmin(req, res)) return;
   try {
     const { id } = req.params;
-    const { name, role, credits } = req.body || {};
-    const user = await adminUpdateUser(req.user.id, id, { name, role, credits });
+    const { name, role } = req.body || {};
+    const user = await adminUpdateUser(req.user.id, id, { name, role });
     res.json({
       success: true,
       data: user,

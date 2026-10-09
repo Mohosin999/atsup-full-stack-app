@@ -483,9 +483,7 @@ import AnalysisProgressModal, {
 } from "../components/ui/AnalysisProgressModal";
 import Wrapper from "../components/Wrapper";
 import SkeletonAtsResult from "@/components/ui/SkeletonAtsResult";
-import { useAppDispatch, useAppSelector } from "@/hooks";
-import { setUserAiScanState } from "@/store/slices/authSlice";
-import { getAiScanStatus } from "../utils/aiScan";
+import { useAppSelector } from "@/hooks";
 
 const PIPELINE_STEPS: PipelineStep[] = [
   { id: "resume", label: "Resume Analysis" },
@@ -505,9 +503,7 @@ export default function AtsScoreDetail() {
   const navigate = useNavigate();
   const { id: historyId } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
-  const aiScan = getAiScanStatus(user?.subscription, user?.role);
 
   const {
     data: result,
@@ -551,7 +547,7 @@ export default function AtsScoreDetail() {
         ? "ATS report not found."
         : "";
 
-  // Rescan modal state — AI based, 1 credit
+  // Rescan modal state
   const [rescanOpen, setRescanOpen] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeName, setResumeName] = useState("");
@@ -630,10 +626,6 @@ export default function AtsScoreDetail() {
       return;
     }
     if (!historyId) return;
-    if (!aiScan.available) {
-      toast.error("No credit available, wait for next day");
-      return;
-    }
 
     setRescanOpen(false);
     setPipelineOpen(true);
@@ -698,17 +690,6 @@ export default function AtsScoreDetail() {
         structuredJD,
         originalPdf,
       } as any);
-
-      // update credits like main scan
-      const aiScanData = (response.data as any)?.aiScan;
-      if (aiScanData?.lastAiScanResetDate) {
-        dispatch(
-          setUserAiScanState({
-            credits: aiScanData.credits ?? 0,
-            lastAiScanResetDate: aiScanData.lastAiScanResetDate,
-          }),
-        );
-      }
 
       await showMessage(3, 1200);
       setCompletedSteps(["resume", "jd", "ats"]);
@@ -807,7 +788,7 @@ export default function AtsScoreDetail() {
         ) : null}
       </Wrapper>
 
-      {/* Rescan Modal — AI, 1 credit */}
+      {/* Rescan Modal */}
       {rescanOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
@@ -897,11 +878,6 @@ export default function AtsScoreDetail() {
                   rows={8}
                   className="w-full bg-white dark:bg-stone-800/40 border border-stone-200 dark:border-stone-700 rounded-lg p-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-900 dark:focus:ring-lime-300 focus:border-transparent resize-none"
                 />
-                {!aiScan.available && (
-                  <p className="mt-2 text-xs md:text-sm text-red-500 dark:text-red-400">
-                    0 credits — new quota at 4 PM BST
-                  </p>
-                )}
               </div>
             </div>
 
@@ -917,13 +893,12 @@ export default function AtsScoreDetail() {
                 disabled={
                   !resumeFile ||
                   jobDescription.trim().length < 20 ||
-                  rescanning ||
-                  !aiScan.available
+                  rescanning
                 }
                 className="font-plex inline-flex items-center gap-1.5 px-5 py-2 text-sm font-medium bg-stone-900 dark:bg-lime-300 text-stone-50 dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-lime-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
               >
                 <RefreshCw className="w-4 h-4" />
-                Rescan (1 credit)
+                Rescan
               </button>
             </div>
           </div>

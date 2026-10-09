@@ -8,7 +8,6 @@ import FeatureShowcase from "../components/home-page/FeatureShowcase";
 import StatsBar from "../components/home-page/StatsBar";
 import HowItWorksTabs from "../components/home-page/HowItWorksTabs";
 import ATSCategories from "../components/home-page/ATSCategories";
-import AIRewriteShowcase from "../components/home-page/AIRewriteShowcase";
 import BuilderPreview from "../components/home-page/BuilderPreview";
 import PricingTeaser from "../components/home-page/PricingTeaser";
 import WhyChooseUs from "../components/home-page/WhyChooseUs";
@@ -55,7 +54,6 @@ export default function HomePage() {
           {/* <StatsBar /> */}
           <HowItWorksTabs />
           <ATSCategories />
-          <AIRewriteShowcase />
           <BuilderPreview />
           {/* <WhyChooseUs features={allFeatures} /> */}
           <ComparisonSection />

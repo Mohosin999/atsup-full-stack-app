@@ -93,7 +93,7 @@ export const authLimiter = rateLimit({
  ----------------------------------------------------*/
 export const atsLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
-  max: 15,
+  max: 30,
   keyGenerator: getRateLimitKey,
   store: createRedisStore("rl:ats:"),
   message: { message: "ATS scan limit reached. Please try again after 1 minute." },

@@ -207,8 +207,9 @@ export const ATS_STYLE = `
     margin: 0 5px;
   }
   .ats-link {
-    color: #333333;
+    color: #007cb9;
     font-size: 9pt;
+    font-style: italic;
     text-decoration: none;
   }
   .ats-link:hover {
@@ -385,26 +386,15 @@ const buildProjects = (content: ResumeContent): string => {
     ${items
       .map((proj) => {
         const dr = dateRange(proj.startDate, proj.endDate, proj.current);
-        const links: string[] = [];
-        if (proj.links?.live)
-          links.push(
-            `<a class="ats-link" href="${escapeHtml(
-              proj.links.live,
-            )}">Live link</a>`,
-          );
         const bullets = (proj.highlights || []).filter((h) => h.trim());
+        const liveLink = proj.links?.live
+          ? ` <a class="ats-link" href="${escapeHtml(proj.links.live)}"><em>Live link</em></a>`
+          : "";
         return `<div class="ats-item">
           <div class="ats-header-title-date">
-            <div class="ats-strong">${escapeHtml(proj.name)}</div>
+            <div class="ats-strong">${escapeHtml(proj.name)}${liveLink}</div>
             ${dr ? `<div class="ats-date">${escapeHtml(dr)}</div>` : ""}
           </div>
-          ${
-            links.length
-              ? `<div class="ats-links">${links.join(
-                  '<span class="sep">|</span>',
-                )}</div>`
-              : ""
-          }
           ${
             bullets.length
               ? `<ul class="ats-bullets">${bullets

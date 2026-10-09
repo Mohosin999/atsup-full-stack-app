@@ -799,16 +799,12 @@ function generateHtmlContent(content: ResumeContent): string {
           (proj) => `
         <div class="resume-item">
           <div class="resume-item-header">
-            <span class="resume-company">${proj.name}</span>
-            <span class="resume-date">${formatDateRange(proj.startDate, proj.endDate)}</span>
-
-            <span>
-              ${
+            <span class="resume-company">${proj.name}${
                 proj.links?.live
-                  ? `<a href="${proj.links.live}" target="_blank">Live link</a>`
+                  ? ` <a href="${proj.links.live}" target="_blank" style="font-style: italic; font-weight: 400;"><em>Live link</em></a>`
                   : ""
-              }
-            </span>
+              }</span>
+            <span class="resume-date">${formatDateRange(proj.startDate, proj.endDate)}</span>
           </div>
           ${proj.highlights?.length ? `<div class="resume-description">${formatHighlightsHtml(proj.highlights)}</div>` : ""}
         </div>

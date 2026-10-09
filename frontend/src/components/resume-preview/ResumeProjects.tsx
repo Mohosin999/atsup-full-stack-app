@@ -22,19 +22,19 @@ export default function ResumeProjects({ projects, forPdf, formatDescription }: 
       {projects.map((proj, index) => (
         <div key={index} className="mb-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={`font-bold ${titleColor} text-base`}>{proj.name}</span>
-            <div className="flex items-center gap-2">
+            <span className={`font-bold ${titleColor} text-base`}>
+              {proj.name}
               {proj.links?.live && (
                 <a
                   href={proj.links.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-800 underline"
+                  className="text-sm font-normal text-gray-800 underline italic ml-2"
                 >
                   Live link
                 </a>
               )}
-            </div>
+            </span>
           </div>
           {proj.technologies && proj.technologies.length > 0 && (
             <p className={`text-sm ${textColor} mt-1 italic`}>{proj.technologies.join(", ")}</p>

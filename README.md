@@ -38,7 +38,7 @@ _Upload your resume → Get ATS score, keyword gaps & Improvement suggestions �
 
 > **75% of resumes are rejected by ATS before a human ever sees them.**
 
-ATSUp fixes that. Upload any PDF & job description, get an instant **ATS compatibility score (0-100)**, see **missing keywords**, **section-by-section breakdown**, and **Improvement suggestions** tailored to the job description. Build a new ATS-perfect resume and export to **PDF** only for now. You can also rewrite your resume via AI, providing your existing resume PDF and job description.
+ATSUp fixes that. Upload any PDF & job description, get an instant **ATS compatibility score (0-100)**, see **missing keywords**, **section-by-section breakdown**, and **Improvement suggestions** tailored to the job description. Build a new ATS-perfect resume and export to **PDF** only for now.
 
 ---
 
@@ -63,14 +63,6 @@ ATSUp fixes that. Upload any PDF & job description, get an instant **ATS compati
 - 100% ATS-friendly reusme format that scored on jobscan
 - Export to **PDF** format only for now
 - Duplicate, history, and delete-all
-
-### 🧲 Rewrite Resume with AI
-
-- Upload your existing resume and targeted job description to rewrite
-- Only rewrite existing information, do not invent anything new
-- Review and make changes to the rewritten resume
-- Download if everything looks good
-
 
 ### 🔐 Auth & Security
 
@@ -155,7 +147,7 @@ atsup/
 │   │   │   ├── index.ts              # moduleRoutes → /api/auth, /api/users, /api/ats-score...
 │   │   │   ├── auth/                 # login, register, google OAuth, refresh, logout, /me
 │   │   │   ├── ats-score-check/      # parse-resume, parse-jd, analyze, rescan, history
-│   │   │   ├── resume-builder/       # /resumes CRUD, /parse, /ai-rewrite, /content, duplicate
+│   │   │   ├── resume-builder/       # /resumes CRUD, /parse, /content, duplicate
 │   │   │   ├── admin-dashboard/      # admin stats, reviews moderation
 │   │   │   ├── users/                # profile, credits, free-credits-status
 │   │   │   ├── support/              # tickets
@@ -339,7 +331,6 @@ Base URL: `http://localhost:5000` (or `VITE_API_URL`). All routes prefixed via `
 | GET    | `/api/resumes/:id`                      | Get one                                       |
 | POST   | `/api/resumes`                          | Upload resume (`multipart/form-data`)         |
 | POST   | `/api/resumes/parse`                    | Parse PDF only                                |
-| POST   | `/api/resumes/ai-rewrite`               | `{ resumeText, jobDescription }` → AI rewrite |
 | POST   | `/api/resumes/content`                  | Create from `ResumeContent` JSON              |
 | PUT    | `/api/resumes/:id`                      | Update                                        |
 | POST   | `/api/resumes/:id/duplicate`            | Duplicate                                     |

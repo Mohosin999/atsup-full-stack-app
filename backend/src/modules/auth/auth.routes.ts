@@ -87,7 +87,7 @@ router.get(
       });
 
       await deleteAllRefreshTokensForUser(user.id);
-      await storeRefreshToken(refreshToken, user.id, 1 * 24 * 60 * 60);
+      await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
       await prisma.user.update({
         where: { id: user.id },
         data: { lastLoginAt: new Date(), lastActiveAt: new Date() },

@@ -11,7 +11,7 @@ export const generateAccessToken = (payload: JWTPayload): string => {
 
 export const generateRefreshToken = (payload: JWTPayload): string => {
   return jwt.sign(payload, env.jwtRefreshSecret, {
-    expiresIn: "1d",
+    expiresIn: "7d",
   });
 };
 

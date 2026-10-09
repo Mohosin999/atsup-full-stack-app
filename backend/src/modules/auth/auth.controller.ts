@@ -58,7 +58,7 @@ export const register = async (req: AuthRequest, res: Response) => {
     const { accessToken, refreshToken } = createTokens(user.id, user.email);
 
     await deleteAllRefreshTokensForUser(user.id);
-    await storeRefreshToken(refreshToken, user.id, 1 * 24 * 60 * 60);
+    await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
     await prisma.user.update({
       where: { id: user.id },
       data: { lastLoginAt: new Date(), lastActiveAt: new Date() },
@@ -135,7 +135,7 @@ export const login = async (req: AuthRequest, res: Response) => {
     const { accessToken, refreshToken } = createTokens(user.id, user.email);
 
     await deleteAllRefreshTokensForUser(user.id);
-    await storeRefreshToken(refreshToken, user.id, 1 * 24 * 60 * 60);
+    await storeRefreshToken(refreshToken, user.id, 7 * 24 * 60 * 60);
     await prisma.user.update({
       where: { id: user.id },
       data: { lastLoginAt: new Date(), lastActiveAt: new Date() },
@@ -206,7 +206,7 @@ export const refreshToken = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Static refresh token: only issue new access token, keep same refresh token (1d expiry)
+    // Static refresh token: only issue new access token, keep same refresh token (7d expiry)
     // Optional: verify token still exists in Redis (for logout invalidation), but don't rotate
     const newAccessToken = generateNewAccessToken(user.id, user.email);
 

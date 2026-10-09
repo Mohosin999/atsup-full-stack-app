@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { getRedisClient } from "../../../lib/redis";
 import { env } from "../../config/env";
 
-const DEFAULT_TTL = env.aiCacheTtl || 7 * 24 * 60 * 60; // 7 days
+const DEFAULT_TTL = env.aiCacheTtl || 3 * 24 * 60 * 60; // 3 days
 
 export function hashBuffer(buffer: Buffer): string {
   return crypto.createHash("sha256").update(buffer).digest("hex");

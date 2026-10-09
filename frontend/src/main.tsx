@@ -2,7 +2,9 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import App from "./App";
@@ -16,6 +18,7 @@ import Footer from "./components/Footer";
 // ==================================================================
 // React Query Client Configuration
 // 24h cache: page visit -> cached content loads instantly.
+// Reload-proof via localStorage persist (maxAge 24h).
 // Any add/update/delete mutation must invalidate its queryKey
 // so the next visit refetches fresh data.
 // ==================================================================
@@ -30,6 +33,22 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+  key: "cvcoach-cache",
+  throttleTime: 1000,
+});
+
+// Only persist reload-safe keys. Admin + history + reports.
+// Mutations already invalidate these keys, so fresh data stays correct.
+const PERSIST_PREFIXES = ["admin-", "ats-", "resumes", "home-reviews"];
+function shouldPersistQuery(query: { queryKey: unknown }): boolean {
+  const key = query.queryKey as unknown[];
+  const first = key?.[0];
+  if (typeof first !== "string") return false;
+  return PERSIST_PREFIXES.some((p) => first === p || first.startsWith(p));
+}
 
 // Helper: check if access token is expiring soon (within 2m for 15m token)
 function isTokenExpiringSoon(): boolean {
@@ -137,7 +156,17 @@ function InitializeApp() {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister,
+          maxAge: DAY_MS, // 24h, reload-proof
+          buster: "v1",
+          dehydrateOptions: {
+            shouldDehydrateQuery: (query) => shouldPersistQuery(query as never),
+          },
+        }}
+      >
         <BrowserRouter>
           <InitializeApp />
           <div className="bg-white dark:bg-stone-950">
@@ -159,7 +188,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             theme="dark"
           />
         </BrowserRouter>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </Provider>
   </React.StrictMode>,
 );

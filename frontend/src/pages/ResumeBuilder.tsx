@@ -647,6 +647,7 @@ import {
 } from "../types";
 import { downloadAtsPdf, getSectionTitle } from "../utils/atsResume";
 import { resumeApi } from "../api/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { goToLogin } from "../utils/authGuard";
 import { useAppSelector } from "@/hooks";
 import ResumeBuilderSection from "../components/resume-builder/ResumeBuilderSection";
@@ -691,6 +692,7 @@ export default function ResumeBuilder() {
   const location = useLocation();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
+  const queryClient = useQueryClient();
   const isNew = location.pathname === "/resume-builder/new";
   const [content, setContent] = useState<ResumeContent>(defaultContent);
   const [resumeId, setResumeId] = useState<string | null>(null);
@@ -814,6 +816,8 @@ export default function ResumeBuilder() {
         }
         dirtyRef.current = false;
         setSavedAt(new Date().toLocaleTimeString());
+        // add/update -> resume-history must load fresh on next visit
+        queryClient.invalidateQueries({ queryKey: ["resumes"] });
       } catch {
         toast.error("Failed to auto-save resume.");
       } finally {

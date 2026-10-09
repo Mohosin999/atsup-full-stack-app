@@ -46,6 +46,7 @@ export default function ReviewManagement({
     mutationFn: (id: string) => adminReviewApi.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["home-reviews"] });
       setDeleteId(null);
     },
   });
@@ -54,6 +55,7 @@ export default function ReviewManagement({
     mutationFn: () => adminReviewApi.deleteAll(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["home-reviews"] });
       setClearAllOpen(false);
     },
   });
@@ -62,6 +64,7 @@ export default function ReviewManagement({
     mutationFn: (id: string) => adminReviewApi.toggleHome(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["home-reviews"] });
     },
   });
 

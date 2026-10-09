@@ -15,11 +15,16 @@ import Footer from "./components/Footer";
 
 // ==================================================================
 // React Query Client Configuration
+// 24h cache: page visit -> cached content loads instantly.
+// Any add/update/delete mutation must invalidate its queryKey
+// so the next visit refetches fresh data.
 // ==================================================================
+const DAY_MS = 24 * 60 * 60 * 1000; // 24h
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 30000, // 30s
+      staleTime: DAY_MS, // 24h fresh
+      gcTime: DAY_MS, // 24h in memory
       retry: 1,
       refetchOnWindowFocus: false,
     },

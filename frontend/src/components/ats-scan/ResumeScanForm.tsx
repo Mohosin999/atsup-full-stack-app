@@ -8,6 +8,7 @@ import AnalysisProgressModal, {
 } from "../ui/AnalysisProgressModal";
 import ActionButton from "../ui/ActionButton";
 import { useAppSelector } from "@/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 import { goToLogin } from "../../utils/authGuard";
 import { saveScanDraft } from "../../utils/scanDraft";
 
@@ -38,6 +39,7 @@ export default function ResumeScanForm({
 }: ResumeScanFormProps) {
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
+  const queryClient = useQueryClient();
   const [resumeName, setResumeName] = useState(initialResumeName || "");
   const [resumeFile, setResumeFile] = useState<File | null>(
     initialResumeFile || null,
@@ -214,6 +216,8 @@ export default function ResumeScanForm({
       setAnalyzing(false);
 
       const score = response.data.data;
+      // add (new scan) -> scan-history must load fresh on next visit
+      queryClient.invalidateQueries({ queryKey: ["ats-history"] });
       navigate(`/ats-scan/${score.id}`);
     } catch (error: any) {
       console.error("AI analysis error:", error);

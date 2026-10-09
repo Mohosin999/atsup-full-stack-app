@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Star, Send, X } from "lucide-react";
 import { reviewApi } from "../api/api";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 interface ReviewModalProps {
@@ -14,6 +15,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose }) => {
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const queryClient = useQueryClient();
 
   const reset = () => {
     setRating(0);
@@ -42,6 +44,9 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose }) => {
     try {
       await reviewApi.submit({ rating, message: message.trim() });
       toast.success("Thank you for your review!");
+      // add (new review) -> home + admin must load fresh on next visit
+      queryClient.invalidateQueries({ queryKey: ["home-reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
       close();
     } catch (err: any) {
       setError(

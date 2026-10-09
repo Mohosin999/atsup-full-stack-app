@@ -88,6 +88,8 @@ export default function ResumeHistory() {
           ),
         };
       });
+      // update (rename) -> next visit must load fresh across all pages
+      queryClient.invalidateQueries({ queryKey: ["resumes", user?._id] });
       setEditingId(null);
     },
     onError: () => toast.error("Failed to rename"),

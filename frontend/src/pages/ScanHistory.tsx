@@ -83,6 +83,8 @@ export default function ScanHistory() {
           ),
         };
       });
+      // update (rename) -> next visit must load fresh across all pages
+      queryClient.invalidateQueries({ queryKey: ["ats-history", user?._id] });
       setEditingId(null);
     },
     onError: () => toast.error("Failed to rename"),
